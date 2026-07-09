@@ -98,23 +98,16 @@ export function Sidebar({ role, fullName }: { role: "siswa" | "pembimbing" | "ad
       <div>
         <div className="mb-8 px-2">
           <p className="font-display text-lg font-semibold text-deep">Politeknik SSR</p>
-          <p className="text-xs text-mist-dim">Manajemen PKL · SatriaD</p>
+          <p className="text-xs text-mist-dim">Manajemen PKL</p>
         </div>
 
         <nav className="space-y-1">
-=======
-  const sidebarContent = (
     <div className="flex h-full flex-col justify-between px-3 py-5 sm:px-4 sm:py-6">
       <div>
         <div className="mb-6 px-2 sm:mb-8">
           <Image src="/logo.png" alt="Politeknik SSR" width={120} height={34} className="h-auto w-auto sm:w-[140px]" priority />
-          <p className="mt-1 text-[10px] text-mist-dim sm:text-xs">Manajemen PKL</p>
         </div>
         <nav className="space-y-0.5">
->>>>>>> 5602bf6251f6241e94348fd05940a4cef1aa68e0
-          {items.map((item) => {
-            const active = pathname === item.href;
-            const Icon = item.icon;
             return (
 <<<<<<< HEAD
               <Link key={item.href} href={item.href} className="relative block">
