@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="alt="Politeknik SSR" width="220">
+  <img src="alt="[Politeknik SSR](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTQtGTmecHdtFemZ741XK2toGgn4JRGJBTcGYzuuM87cw&s=10)" width="220">
 
   <h1>Politeknik SSR</h1>
   <p><strong>Sistem Manajemen Praktik Kerja Lapangan (PKL)</strong></p>
