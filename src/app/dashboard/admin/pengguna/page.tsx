@@ -8,11 +8,7 @@ export default async function AdminUsersPage() {
 
   const { data: profiles } = await supabase
     .from("profiles")
-<<<<<<< HEAD
-    .select("id, full_name, identity_number, kelas, instansi, role, created_at")
-=======
     .select("id, full_name, identity_number, kelas, instansi, role, created_at, jurusan_id, study_programs!left(nama)")
->>>>>>> 5602bf6251f6241e94348fd05940a4cef1aa68e0
     .order("created_at", { ascending: false });
 
   return (
@@ -38,20 +34,12 @@ export default async function AdminUsersPage() {
             </thead>
             <tbody>
               {profiles && profiles.length > 0 ? (
-<<<<<<< HEAD
-                profiles.map((profile) => (
-=======
                 profiles.map((profile: any) => (
->>>>>>> 5602bf6251f6241e94348fd05940a4cef1aa68e0
                   <tr key={profile.id} className="text-deep">
                     <td className="py-3 px-4">{profile.full_name}</td>
                     <td className="py-3 px-4 text-steel">{profile.identity_number || "-"}</td>
                     <td className="py-3 px-4 text-steel">{profile.kelas || "-"}</td>
-<<<<<<< HEAD
-                    <td className="py-3 px-4 text-steel">{profile.instansi || "-"}</td>
-=======
                     <td className="py-3 px-4 text-steel">{profile.study_programs?.nama || profile.instansi || "-"}</td>
->>>>>>> 5602bf6251f6241e94348fd05940a4cef1aa68e0
                     <td className="py-3 px-4">
                       <Badge
                         tone={

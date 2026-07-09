@@ -215,25 +215,30 @@ alter table public.logbook_entries enable row level security;
 alter table public.allowed_locations enable row level security;
 
 -- --- profiles ---------------------------------------------------------
+drop policy if exists "profiles: user lihat profil sendiri" on public.profiles;
 create policy "profiles: user lihat profil sendiri"
   on public.profiles for select
   using (id = auth.uid());
 
+drop policy if exists "profiles: admin & pembimbing lihat semua" on public.profiles;
 create policy "profiles: admin & pembimbing lihat semua"
   on public.profiles for select
   using (public.current_role() in ('admin', 'pembimbing'));
 
+drop policy if exists "profiles: user update profil sendiri" on public.profiles;
 create policy "profiles: user update profil sendiri"
   on public.profiles for update
   using (id = auth.uid())
   with check (id = auth.uid());
 
+drop policy if exists "profiles: admin kelola semua profil" on public.profiles;
 create policy "profiles: admin kelola semua profil"
   on public.profiles for all
   using (public.current_role() = 'admin')
   with check (public.current_role() = 'admin');
 
 -- --- student_mentors ---------------------------------------------------
+drop policy if exists "student_mentors: pihak terkait & admin bisa lihat" on public.student_mentors;
 create policy "student_mentors: pihak terkait & admin bisa lihat"
   on public.student_mentors for select
   using (
@@ -242,104 +247,127 @@ create policy "student_mentors: pihak terkait & admin bisa lihat"
     or public.current_role() = 'admin'
   );
 
+drop policy if exists "student_mentors: hanya admin kelola relasi" on public.student_mentors;
 create policy "student_mentors: hanya admin kelola relasi"
   on public.student_mentors for all
   using (public.current_role() = 'admin')
   with check (public.current_role() = 'admin');
 
 -- --- attendance_sessions -------------------------------------------------
+drop policy if exists "sesi: semua role login boleh lihat sesi aktif" on public.attendance_sessions;
 create policy "sesi: semua role login boleh lihat sesi aktif"
   on public.attendance_sessions for select
   using (auth.uid() is not null);
 
+drop policy if exists "sesi: hanya admin generate/kelola QR" on public.attendance_sessions;
 create policy "sesi: hanya admin generate/kelola QR"
   on public.attendance_sessions for insert
   with check (public.current_role() = 'admin');
 
+drop policy if exists "sesi: hanya admin update/hapus" on public.attendance_sessions;
 create policy "sesi: hanya admin update/hapus"
   on public.attendance_sessions for update
   using (public.current_role() = 'admin');
 
+drop policy if exists "sesi: hanya admin hapus" on public.attendance_sessions;
 create policy "sesi: hanya admin hapus"
   on public.attendance_sessions for delete
   using (public.current_role() = 'admin');
 
 -- --- attendance_records --------------------------------------------------
+drop policy if exists "presensi: siswa lihat presensi sendiri" on public.attendance_records;
 create policy "presensi: siswa lihat presensi sendiri"
   on public.attendance_records for select
   using (student_id = auth.uid());
 
+drop policy if exists "presensi: pembimbing lihat siswa bimbingannya" on public.attendance_records;
 create policy "presensi: pembimbing lihat siswa bimbingannya"
   on public.attendance_records for select
   using (public.is_mentor_of(student_id));
 
+drop policy if exists "presensi: admin lihat semua" on public.attendance_records;
 create policy "presensi: admin lihat semua"
   on public.attendance_records for select
   using (public.current_role() = 'admin');
 
+drop policy if exists "presensi: siswa insert presensi sendiri via scan" on public.attendance_records;
 create policy "presensi: siswa insert presensi sendiri via scan"
   on public.attendance_records for insert
   with check (student_id = auth.uid());
 
 -- --- leave_requests --------------------------------------------------------
+drop policy if exists "izin: siswa CRUD milik sendiri (kecuali status)" on public.leave_requests;
 create policy "izin: siswa CRUD milik sendiri (kecuali status)"
   on public.leave_requests for select
   using (student_id = auth.uid());
 
+drop policy if exists "izin: siswa insert pengajuan sendiri" on public.leave_requests;
 create policy "izin: siswa insert pengajuan sendiri"
   on public.leave_requests for insert
   with check (student_id = auth.uid());
 
+drop policy if exists "izin: siswa update sebelum direview" on public.leave_requests;
 create policy "izin: siswa update sebelum direview"
   on public.leave_requests for update
   using (student_id = auth.uid() and status = 'pending')
   with check (student_id = auth.uid());
 
+drop policy if exists "izin: pembimbing lihat siswa bimbingannya" on public.leave_requests;
 create policy "izin: pembimbing lihat siswa bimbingannya"
   on public.leave_requests for select
   using (public.is_mentor_of(student_id));
 
+drop policy if exists "izin: pembimbing approve/reject siswa bimbingannya" on public.leave_requests;
 create policy "izin: pembimbing approve/reject siswa bimbingannya"
   on public.leave_requests for update
   using (public.is_mentor_of(student_id));
 
+drop policy if exists "izin: admin full akses" on public.leave_requests;
 create policy "izin: admin full akses"
   on public.leave_requests for all
   using (public.current_role() = 'admin')
   with check (public.current_role() = 'admin');
 
 -- --- logbook_entries -------------------------------------------------------
+drop policy if exists "logbook: siswa CRUD entri sendiri" on public.logbook_entries;
 create policy "logbook: siswa CRUD entri sendiri"
   on public.logbook_entries for select
   using (student_id = auth.uid());
 
+drop policy if exists "logbook: siswa insert entri sendiri" on public.logbook_entries;
 create policy "logbook: siswa insert entri sendiri"
   on public.logbook_entries for insert
   with check (student_id = auth.uid());
 
+drop policy if exists "logbook: siswa update entri sendiri sebelum dinilai" on public.logbook_entries;
 create policy "logbook: siswa update entri sendiri sebelum dinilai"
   on public.logbook_entries for update
   using (student_id = auth.uid() and graded_at is null)
   with check (student_id = auth.uid());
 
+drop policy if exists "logbook: pembimbing lihat & nilai siswa bimbingannya" on public.logbook_entries;
 create policy "logbook: pembimbing lihat & nilai siswa bimbingannya"
   on public.logbook_entries for select
   using (public.is_mentor_of(student_id));
 
+drop policy if exists "logbook: pembimbing update nilai siswa bimbingannya" on public.logbook_entries;
 create policy "logbook: pembimbing update nilai siswa bimbingannya"
   on public.logbook_entries for update
   using (public.is_mentor_of(student_id));
 
+drop policy if exists "logbook: admin full akses" on public.logbook_entries;
 create policy "logbook: admin full akses"
   on public.logbook_entries for all
   using (public.current_role() = 'admin')
   with check (public.current_role() = 'admin');
 
 -- --- allowed_locations -------------------------------------------------
+drop policy if exists "lokasi: semua role login boleh lihat" on public.allowed_locations;
 create policy "lokasi: semua role login boleh lihat"
   on public.allowed_locations for select
   using (auth.uid() is not null);
 
+drop policy if exists "lokasi: hanya admin kelola" on public.allowed_locations;
 create policy "lokasi: hanya admin kelola"
   on public.allowed_locations for all
   using (public.current_role() = 'admin')
@@ -353,6 +381,7 @@ values ('leave-proofs', 'leave-proofs', true)
 on conflict (id) do nothing;
 
 -- Policy storage: siswa hanya boleh upload ke folder dengan prefix uid miliknya
+drop policy if exists "storage: siswa upload bukti izin sendiri" on storage.objects;
 create policy "storage: siswa upload bukti izin sendiri"
   on storage.objects for insert
   with check (
@@ -360,13 +389,12 @@ create policy "storage: siswa upload bukti izin sendiri"
     and (storage.foldername(name))[1] = auth.uid()::text
   );
 
+drop policy if exists "storage: siapa saja yang login boleh baca bukti izin" on storage.objects;
 create policy "storage: siapa saja yang login boleh baca bukti izin"
   on storage.objects for select
   using (bucket_id = 'leave-proofs' and auth.uid() is not null);
 
 -- =====================================================================
-<<<<<<< HEAD
-=======
 -- 12. TABEL: study_programs
 -- Daftar jurusan/program studi di Politeknik SSR.
 -- =====================================================================
@@ -453,10 +481,12 @@ comment on table public.announcement_recipients is 'Target jurusan penerima peng
 -- =====================================================================
 alter table public.study_programs enable row level security;
 
+drop policy if exists "study_programs: semua login boleh lihat" on public.study_programs;
 create policy "study_programs: semua login boleh lihat"
   on public.study_programs for select
   using (auth.uid() is not null);
 
+drop policy if exists "study_programs: hanya admin kelola" on public.study_programs;
 create policy "study_programs: hanya admin kelola"
   on public.study_programs for all
   using (public.current_role() = 'admin')
@@ -467,10 +497,12 @@ create policy "study_programs: hanya admin kelola"
 -- =====================================================================
 alter table public.calendar_events enable row level security;
 
+drop policy if exists "calendar_events: semua role login boleh lihat" on public.calendar_events;
 create policy "calendar_events: semua role login boleh lihat"
   on public.calendar_events for select
   using (auth.uid() is not null);
 
+drop policy if exists "calendar_events: hanya admin kelola" on public.calendar_events;
 create policy "calendar_events: hanya admin kelola"
   on public.calendar_events for all
   using (public.current_role() = 'admin')
@@ -481,10 +513,12 @@ create policy "calendar_events: hanya admin kelola"
 -- =====================================================================
 alter table public.announcements enable row level security;
 
+drop policy if exists "announcements: admin & pembimbing lihat semua" on public.announcements;
 create policy "announcements: admin & pembimbing lihat semua"
   on public.announcements for select
   using (public.current_role() in ('admin', 'pembimbing'));
 
+drop policy if exists "announcements: siswa lihat pengumuman untuk jurusannya" on public.announcements;
 create policy "announcements: siswa lihat pengumuman untuk jurusannya"
   on public.announcements for select
   using (
@@ -496,14 +530,17 @@ create policy "announcements: siswa lihat pengumuman untuk jurusannya"
     )
   );
 
+drop policy if exists "announcements: hanya admin insert" on public.announcements;
 create policy "announcements: hanya admin insert"
   on public.announcements for insert
   with check (public.current_role() = 'admin');
 
+drop policy if exists "announcements: hanya admin update" on public.announcements;
 create policy "announcements: hanya admin update"
   on public.announcements for update
   using (public.current_role() = 'admin');
 
+drop policy if exists "announcements: hanya admin delete" on public.announcements;
 create policy "announcements: hanya admin delete"
   on public.announcements for delete
   using (public.current_role() = 'admin');
@@ -513,17 +550,18 @@ create policy "announcements: hanya admin delete"
 -- =====================================================================
 alter table public.announcement_recipients enable row level security;
 
+drop policy if exists "announcement_recipients: admin full akses" on public.announcement_recipients;
 create policy "announcement_recipients: admin full akses"
   on public.announcement_recipients for all
   using (public.current_role() = 'admin')
   with check (public.current_role() = 'admin');
 
+drop policy if exists "announcement_recipients: semua login boleh lihat" on public.announcement_recipients;
 create policy "announcement_recipients: semua login boleh lihat"
   on public.announcement_recipients for select
   using (auth.uid() is not null);
 
 -- =====================================================================
->>>>>>> 5602bf6251f6241e94348fd05940a4cef1aa68e0
 -- SELESAI. Langkah selanjutnya:
 -- 1. Buat user pertama (role admin) lewat Supabase Dashboard > Authentication > Add user,
 --    lalu update kolom role di tabel profiles menjadi 'admin' untuk user tsb.
