@@ -1,0 +1,27 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: #E3E3E3;
+  color: #1B3C53;
+}
+
+/* Fokus keyboard tetap terlihat jelas demi aksesibilitas, walau tetap selaras desain */
+:focus-visible {
+  outline: 2px solid #234C6A;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
