@@ -8,7 +8,7 @@ export default async function AdminUsersPage() {
 
   const { data: profiles } = await supabase
     .from("profiles")
-    .select("id, full_name, identity_number, kelas, instansi, role, created_at")
+    .select("id, full_name, identity_number, kelas, instansi, role, created_at, jurusan_id, study_programs!left(nama)")
     .order("created_at", { ascending: false });
 
   return (
@@ -34,12 +34,12 @@ export default async function AdminUsersPage() {
             </thead>
             <tbody>
               {profiles && profiles.length > 0 ? (
-                profiles.map((profile) => (
+                profiles.map((profile: any) => (
                   <tr key={profile.id} className="text-deep">
                     <td className="py-3 px-4">{profile.full_name}</td>
                     <td className="py-3 px-4 text-steel">{profile.identity_number || "-"}</td>
                     <td className="py-3 px-4 text-steel">{profile.kelas || "-"}</td>
-                    <td className="py-3 px-4 text-steel">{profile.instansi || "-"}</td>
+                    <td className="py-3 px-4 text-steel">{profile.study_programs?.nama || profile.instansi || "-"}</td>
                     <td className="py-3 px-4">
                       <Badge
                         tone={

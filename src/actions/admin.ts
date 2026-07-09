@@ -11,6 +11,7 @@ interface AddStudentArgs {
   identityNumber?: string;
   instansi?: string;
   kelas?: string;
+  jurusanId?: string;
 }
 
 export async function addStudent({
@@ -20,6 +21,7 @@ export async function addStudent({
   identityNumber,
   instansi,
   kelas,
+  jurusanId,
 }: AddStudentArgs): Promise<{ success: true; studentId: string; permanentToken: string } | { success: false; message: string }> {
   const supabase = createAdminClient();
 
@@ -46,6 +48,7 @@ export async function addStudent({
       identity_number: identityNumber || null,
       instansi: instansi || null,
       kelas: kelas || null,
+      jurusan_id: jurusanId || null,
     })
     .eq("id", studentId);
 
