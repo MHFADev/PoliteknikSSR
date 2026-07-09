@@ -84,55 +84,49 @@ export default function SiswaKalenderPage() {
 
   const calendarCells = [];
   for (let i = 0; i < firstDay; i++) {
-    calendarCells.push(<div key={`empty-${i}`} className="min-h-[80px]" />);
+    calendarCells.push(<div key={`empty-${i}`} className="min-h-[50px] sm:min-h-[80px]" />);
   }
   for (let day = 1; day <= daysInMonth; day++) {
     const dateStr = `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
     const isToday = dateStr === todayStr;
     const status = getDayStatus(dateStr, records, leaves, events);
-    const dayEvents = events.filter((e) => e.event_date === dateStr && e.tipe === "event" && (!e.student_id || e.student_id === "self"));
     const isLibur = events.some((e) => e.event_date === dateStr && e.tipe === "libur");
     const isPast = dateStr < todayStr;
 
     calendarCells.push(
       <div
         key={day}
-        className={`min-h-[80px] rounded-xl border p-1.5 transition-colors ${
+        className={`min-h-[50px] sm:min-h-[80px] rounded-lg sm:rounded-xl border p-1 transition-colors sm:p-1.5 ${
           status?.color ?? (isToday ? "border-blue-vibrant/30 bg-blue-vibrant/5" : isPast && !isLibur ? "border-red-200 bg-red-50/50" : "border-deep/6 bg-white")
         }`}
       >
-        <div className={`mb-1 flex h-6 w-6 items-center justify-center rounded-full text-xs font-medium ${isToday ? "bg-blue-vibrant text-white" : "text-deep"}`}>
+        <div className={`mb-0.5 flex h-5 w-5 items-center justify-center rounded-full text-[10px] font-medium sm:h-6 sm:w-6 sm:text-xs ${isToday ? "bg-blue-vibrant text-white" : "text-deep"}`}>
           {day}
         </div>
         {status && (
-          <div className="flex items-center gap-1">
-            <span className={`h-2 w-2 rounded-full ${status.dot}`} />
-            <span className="text-[10px] font-medium text-deep">{status.label}</span>
+          <div className="flex items-center gap-0.5 sm:gap-1">
+            <span className={`h-1.5 w-1.5 rounded-full sm:h-2 sm:w-2 ${status.dot}`} />
+            <span className="text-[8px] font-medium text-deep sm:text-[10px]">{status.label}</span>
           </div>
         )}
         {isPast && !status && !isLibur && (
-          <div className="flex items-center gap-1">
-            <span className="h-2 w-2 rounded-full bg-red-500" />
-            <span className="text-[10px] font-medium text-deep">Alfa</span>
+          <div className="flex items-center gap-0.5 sm:gap-1">
+            <span className="h-1.5 w-1.5 rounded-full bg-red-500 sm:h-2 sm:w-2" />
+            <span className="text-[8px] font-medium text-deep sm:text-[10px]">Alfa</span>
           </div>
         )}
-        {dayEvents.map((ev) => (
-          <div key={ev.id} className="mt-0.5 rounded bg-blue-100 px-1 py-0.5 text-[10px] text-blue-800 truncate">
-            {ev.title}
-          </div>
-        ))}
       </div>
     );
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       <div>
-        <h1 className="font-display text-2xl font-semibold text-deep">Kalender PKL</h1>
-        <p className="text-sm text-mist-dim">Pantau status absensi harian kamu.</p>
+        <h1 className="font-display text-xl font-semibold text-deep sm:text-2xl">Kalender PKL</h1>
+        <p className="text-xs text-mist-dim sm:text-sm">Pantau status absensi harian kamu.</p>
       </div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
         <StatCard label="Hadir" value={stats.hadir} icon={<CalendarCheck className="h-5 w-5" />} accent="blue" />
         <StatCard label="Sakit" value={stats.sakit} icon={<AlertCircle className="h-5 w-5" />} accent="steel" />
         <StatCard label="Izin" value={stats.izin} icon={<FileClock className="h-5 w-5" />} accent="ocean" />
@@ -146,9 +140,9 @@ export default function SiswaKalenderPage() {
           <button onClick={nextMonth} className="rounded-xl px-3 py-2 text-steel hover:bg-deep/5"><ChevronRight className="h-5 w-5" /></button>
         </div>
 
-        <div className="mb-2 grid grid-cols-7 gap-1">
+        <div className="mb-2 grid grid-cols-7 gap-0.5 sm:gap-1">
           {DAYS.map((d) => (
-            <div key={d} className="rounded-lg px-2 py-1.5 text-center text-xs font-semibold text-steel">{d}</div>
+            <div key={d} className="rounded px-1 py-1 text-center text-[10px] font-semibold text-steel sm:rounded-lg sm:px-2 sm:py-1.5 sm:text-xs">{d}</div>
           ))}
         </div>
 

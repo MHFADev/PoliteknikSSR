@@ -9,9 +9,10 @@ html {
 body {
   background-color: #FFFFFF;
   color: #1B3C53;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* Fokus keyboard tetap terlihat jelas demi aksesibilitas, walau tetap selaras desain */
 :focus-visible {
   outline: 2px solid #234C6A;
   outline-offset: 2px;
@@ -23,5 +24,29 @@ body {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+}
+
+@layer utilities {
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: #D0D0D0 transparent;
+  }
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background-color: #D0D0D0;
+    border-radius: 4px;
+  }
+}
+
+@media (max-width: 640px) {
+  input, select, textarea {
+    font-size: 16px !important;
   }
 }

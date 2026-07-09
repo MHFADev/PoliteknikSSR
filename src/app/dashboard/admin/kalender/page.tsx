@@ -160,7 +160,7 @@ export default function AdminKalenderPage() {
 
   const calendarCells = [];
   for (let i = 0; i < firstDay; i++) {
-    calendarCells.push(<div key={`empty-${i}`} className="min-h-[100px]" />);
+    calendarCells.push(<div key={`empty-${i}`} className="min-h-[60px] sm:min-h-[100px]" />);
   }
   for (let day = 1; day <= daysInMonth; day++) {
     const dateStr = `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
@@ -170,24 +170,22 @@ export default function AdminKalenderPage() {
     calendarCells.push(
       <div
         key={day}
-        className={`min-h-[100px] rounded-xl border border-deep/6 p-1.5 transition-colors hover:border-deep/20 ${isToday ? "bg-blue-vibrant/5 border-blue-vibrant/30" : "bg-white"}`}
+        className={`min-h-[60px] sm:min-h-[100px] rounded-lg sm:rounded-xl border border-deep/6 p-1 transition-colors hover:border-deep/20 sm:p-1.5 ${isToday ? "bg-blue-vibrant/5 border-blue-vibrant/30" : "bg-white"}`}
       >
-        <div className={`mb-1 flex h-6 w-6 items-center justify-center rounded-full text-xs font-medium ${isToday ? "bg-blue-vibrant text-white" : "text-deep"}`}>
+        <div className={`mb-0.5 flex h-5 w-5 items-center justify-center rounded-full text-[10px] font-medium sm:h-6 sm:w-6 sm:text-xs ${isToday ? "bg-blue-vibrant text-white" : "text-deep"}`}>
           {day}
         </div>
         <div className="space-y-0.5">
-          {dayEvents.map((ev) => (
+          {dayEvents.slice(0, 2).map((ev) => (
             <div
               key={ev.id}
-              className={`group relative cursor-pointer rounded-md px-1.5 py-0.5 text-[11px] font-medium ${EVENT_COLORS[ev.tipe].bg} ${EVENT_COLORS[ev.tipe].text}`}
+              className={`group relative cursor-pointer rounded px-1 py-0.5 text-[9px] font-medium leading-tight sm:text-[11px] sm:px-1.5 sm:py-0.5 ${EVENT_COLORS[ev.tipe].bg} ${EVENT_COLORS[ev.tipe].text}`}
             >
               <span className="truncate block">{ev.title}</span>
-              {ev.profiles && (
-                <span className="text-[10px] opacity-75 block truncate">{ev.profiles.full_name}</span>
-              )}
+              {dayEvents.length > 2 && <span className="text-[8px] text-steel sm:text-[10px]">+{dayEvents.length - 2} lainnya</span>}
               <div className="absolute right-0.5 top-0.5 hidden gap-0.5 group-hover:flex">
-                <button onClick={() => openEdit(ev)} className="rounded p-0.5 hover:bg-black/10"><Edit className="h-3 w-3" /></button>
-                <button onClick={() => handleDelete(ev.id)} className="rounded p-0.5 hover:bg-black/10"><Trash2 className="h-3 w-3 text-danger" /></button>
+                <button onClick={() => openEdit(ev)} className="rounded p-0.5 hover:bg-black/10"><Edit className="h-2.5 w-2.5 sm:h-3 sm:w-3" /></button>
+                <button onClick={() => handleDelete(ev.id)} className="rounded p-0.5 hover:bg-black/10"><Trash2 className="h-2.5 w-2.5 sm:h-3 sm:w-3 text-danger" /></button>
               </div>
             </div>
           ))}
@@ -197,16 +195,16 @@ export default function AdminKalenderPage() {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="space-y-4 sm:space-y-6">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="font-display text-2xl font-semibold text-deep">Kalender PKL</h1>
-          <p className="text-sm text-mist-dim">Atur event & libur untuk siswa PKL.</p>
+          <h1 className="font-display text-xl font-semibold text-deep sm:text-2xl">Kalender PKL</h1>
+          <p className="text-xs text-mist-dim sm:text-sm">Atur event & libur untuk siswa PKL.</p>
         </div>
-        <Button onClick={openAdd}><Plus className="h-4 w-4" /> Tambah Event</Button>
+        <Button onClick={openAdd} className="w-full sm:w-auto"><Plus className="h-4 w-4" /> Tambah Event</Button>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
         <StatCard label="Total Event" value={stats.totalEvents} icon={<CalendarDays className="h-5 w-5" />} accent="blue" />
         <StatCard label="Event Mendatang" value={stats.upcomingEvents} icon={<CalendarCheck className="h-5 w-5" />} accent="ocean" />
         <StatCard label="Total Siswa" value={stats.totalSiswa} icon={<Users className="h-5 w-5" />} accent="deep" />
@@ -219,9 +217,9 @@ export default function AdminKalenderPage() {
           <Button variant="ghost" onClick={nextMonth}><ChevronRight className="h-5 w-5" /></Button>
         </div>
 
-        <div className="mb-2 grid grid-cols-7 gap-1">
+        <div className="mb-2 grid grid-cols-7 gap-0.5 sm:gap-1">
           {DAYS.map((d) => (
-            <div key={d} className="rounded-lg px-2 py-1.5 text-center text-xs font-semibold text-steel">{d}</div>
+            <div key={d} className="rounded px-1 py-1 text-center text-[10px] font-semibold text-steel sm:rounded-lg sm:px-2 sm:py-1.5 sm:text-xs">{d}</div>
           ))}
         </div>
 
