@@ -106,7 +106,7 @@ export default async function AdminOverviewPage() {
 
       <Card>
         <CardHeader
-          title="Tren Kehadiran 7 Hari Terakhir"
+          title="Grafik Kehadiran 7 Hari Terakhir"
           subtitle="Seluruh siswa"
         />
         <AttendanceChart data={Array.from(trendMap.values())} />

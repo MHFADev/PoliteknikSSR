@@ -24,7 +24,7 @@ const config: Config = {
         mist: {
           DEFAULT: "#E3E3E3",
           soft: "#F0F0F0",
-          dim: "#D0D0D0",
+          dim: "#646363",
         },
         // Vibrant blue accents for more prominent blue colors
         blue: {
@@ -34,8 +34,8 @@ const config: Config = {
           vibrant: "#2E6A9A",
         },
         // Additional shades for blending
-        success: "#5C8A66",
-        danger: "#B8544A",
+        success: "#10B981 ",
+        danger: "#F43F5E",
       },
       fontFamily: {
         display: ["var(--font-jakarta)", "sans-serif"],
