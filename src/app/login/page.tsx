@@ -63,7 +63,9 @@ export default function LoginPage() {
         return;
       }
     } catch {
-      setError("Akses lokasi dibutuhkan untuk login. Izinkan akses lokasi di browser Anda.");
+      setError(
+        "Akses lokasi dibutuhkan untuk login. Izinkan akses lokasi di browser Anda.",
+      );
       setIsSubmitting(false);
       setGpsStep(false);
       return;
@@ -81,14 +83,34 @@ export default function LoginPage() {
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="relative w-full max-w-sm rounded-xl2 border border-deep/10 bg-white shadow-glass-lg p-6 sm:p-8"
+        className="relative w-full max-w-sm rounded-2xl bg-white p-6 sm:p-8 shadow-2xl"
+        style={{
+          border: "2px solid transparent",
+          backgroundImage:
+            "linear-gradient(white, white), linear-gradient(135deg, #3A5BF0, #9134ED)",
+          backgroundOrigin: "border-box",
+          backgroundClip: "padding-box, border-box",
+        }}
       >
         <div className="mb-6 flex flex-col items-center text-center sm:mb-8">
-          <Image src="/logo.png" alt="Politeknik SSR" width={140} height={42} className="mb-4 h-auto w-auto" priority />
-          <h1 className="font-display text-lg font-semibold text-deep sm:text-xl">Selamat Datang Di</h1>
-          <h1 className="font-display text-lg font-semibold text-deep sm:text-xl">Sistem Absensi Politeknik SSR</h1>
+          <Image
+            src="/logo.png"
+            alt="Politeknik SSR"
+            width={140}
+            height={42}
+            className="mb-4 h-auto w-auto"
+            priority
+          />
+          <h1 className="font-display text-lg font-semibold text-deep sm:text-xl">
+            Selamat Datang Di
+          </h1>
+          <h1 className="font-display text-lg font-semibold text-deep sm:text-xl">
+            Sistem Absensi Politeknik SSR
+          </h1>
           <p className="mt-2 text-xs text-steel sm:text-sm">
-            {gpsStep ? "Memverifikasi lokasi Anda..." : "Masuk menggunakan akun yang sudah terdaftar"}
+            {gpsStep
+              ? "Memverifikasi lokasi Anda..."
+              : "silakan masuk menggunakan akun yang sudah terdaftar"}
           </p>
         </div>
 
@@ -104,12 +126,12 @@ export default function LoginPage() {
               disabled={gpsStep}
               className={cn(
                 "mt-1.5 w-full rounded-xl border bg-white/80 px-3 py-2.5 text-sm outline-none focus:border-ocean disabled:opacity-50",
-                error ? "border-danger/60 bg-danger/5" : "border-deep/10"
+                error ? "border-danger/60 bg-danger/5" : "border-deep/10",
               )}
             />
           </div>
           <div>
-            <label className="text-sm font-medium text-deep">Kata Sandi</label>
+            <label className="text-sm font-medium text-deep">Password</label>
             <input
               type="password"
               required
@@ -119,7 +141,7 @@ export default function LoginPage() {
               disabled={gpsStep}
               className={cn(
                 "mt-1.5 w-full rounded-xl border bg-white/80 px-3 py-2.5 text-sm outline-none focus:border-ocean disabled:opacity-50",
-                error ? "border-danger/60 bg-danger/5" : "border-deep/10"
+                error ? "border-danger/60 bg-danger/5" : "border-deep/10",
               )}
             />
           </div>
@@ -129,7 +151,8 @@ export default function LoginPage() {
           {gpsStep && (
             <p className="text-xs text-mist-dim flex items-center gap-1.5">
               <MapPin className="h-3.5 w-3.5 shrink-0" />
-              Browser akan meminta izin lokasi. Izinkan untuk verifikasi area kampus.
+              Browser akan meminta izin lokasi. Izinkan untuk verifikasi area
+              kampus.
             </p>
           )}
 
@@ -140,7 +163,7 @@ export default function LoginPage() {
         </form>
 
         <p className="mt-6 text-center text-xs text-mist-dim">
-          Akun dibuat oleh Admin. Hubungi admin sekolah jika belum punya akses.
+          Hubungi Admin Sekolah Jika Belum Memiliki Akses.
         </p>
       </motion.div>
     </main>
