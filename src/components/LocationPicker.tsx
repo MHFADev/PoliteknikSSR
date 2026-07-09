@@ -86,9 +86,7 @@ export function LocationPicker({ value, onChange, height = "400px" }: LocationPi
         shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
       });
     });
-
-    // Auto-track lokasi admin saat pertama buka peta
-    autoLocateUser();
+    // Hapus auto-locate otomatis untuk menghindari delay
   }, []);
 
   // Fungsi untuk mencari lokasi via Nominatim OpenStreetMap
