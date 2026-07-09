@@ -16,9 +16,9 @@ export default async function SiswaLayout({ children }: { children: React.ReactN
     .single();
 
   return (
-    <div className="flex min-h-screen bg-cream">
+    <div className="flex min-h-screen bg-white">
       <Sidebar role="siswa" fullName={profile?.full_name ?? "Siswa"} />
-      <main className="flex-1 overflow-y-auto p-6 sm:p-8">{children}</main>
+      <main className="flex-1 overflow-y-auto p-6 sm:p-8 bg-mist-soft">{children}</main>
     </div>
   );
 }

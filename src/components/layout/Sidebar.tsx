@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { createClient } from "@/lib/supabase/client";
@@ -60,11 +61,11 @@ export function Sidebar({
   }
 
   return (
-    <aside className="flex h-screen w-64 shrink-0 flex-col justify-between border-r border-deep/8 bg-mist-soft/80 backdrop-blur-xl px-4 py-6">
+    <aside className="flex h-screen w-64 shrink-0 flex-col justify-between border-r border-deep/8 bg-white px-4 py-6">
       <div>
         <div className="mb-8 px-2">
-          <p className="font-display text-lg font-semibold text-deep">Politeknik SSR</p>
-          <p className="text-xs text-mist-dim">Manajemen PKL · SatriaD</p>
+          <Image src="/logo.png" alt="Politeknik SSR" width={140} height={40} className="h-auto w-auto" priority />
+          <p className="mt-1 text-xs text-mist-dim">Manajemen PKL</p>
         </div>
 
         <nav className="space-y-1">

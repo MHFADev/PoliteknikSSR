@@ -117,8 +117,11 @@ export async function verifyDailyToken(
   secret: string
 ): Promise<{ valid: true; payload: DailyQrPayload } | { valid: false; reason: string }> {
   const result = await verifyAnyToken(token, secret);
-  if (!result.valid || result.payload.type !== "daily") {
-    return { valid: false, reason: result.reason || "Bukan QR harian." };
+  if (!result.valid) {
+    return { valid: false, reason: result.reason };
+  }
+  if (result.payload.type !== "daily") {
+    return { valid: false, reason: "Bukan QR harian." };
   }
   return result as { valid: true; payload: DailyQrPayload };
 }
