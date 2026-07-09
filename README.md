@@ -1,3 +1,56 @@
+<div align="center">
+   <img src="https://raw.githubusercontent.com/MHFADev/asset/main/politeknikssr/logo.png" alt="Politeknik SSR" width="220">
+
+   <h1>Politeknik SSR</h1>
+   <p><strong>Sistem Manajemen Praktik Kerja Lapangan (PKL)</strong></p>
+
+   <p>
+     <img src="https://img.shields.io/badge/Next.js-14-000000?style=for-the-badge&logo=nextdotjs&logoColor=white" alt="Next.js 14">
+     <img src="https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript">
+     <img src="https://img.shields.io/badge/Supabase-3FCF8E?style=for-the-badge&logo=supabase&logoColor=white" alt="Supabase">
+     <img src="https://img.shields.io/badge/Self%20Hosted-Server-4A5568?style=for-the-badge&logo=linux&logoColor=white" alt="Self Hosted">
+   </p>
+</div>
+
+<br>
+
+## Tentang Proyek
+
+**Politeknik SSR** adalah platform manajemen Praktik Kerja Lapangan (PKL) yang dirancang untuk membantu institusi pendidikan mengelola seluruh siklus kegiatan magang peserta didik secara terpusat, mulai dari penempatan, pemantauan progres, hingga pelaporan akhir.
+
+Dibangun di atas **Next.js 14** dan **TypeScript**, dengan **Supabase** sebagai basis data dan backend, sistem ini dirancang untuk memberikan pengalaman administrasi yang cepat, aman, dan andal, baik bagi pihak sekolah maupun mitra industri.
+
+<br>
+
+## Kontributor
+
+<table>
+  <tr>
+    <td align="center">
+      <a href="https://github.com/MHFADev">
+        <img src="https://github.com/MHFADev.png" width="100" alt="MHFADev"><br>
+        <sub><b>MHFADev</b></sub>
+      </a>
+    </td>
+    <td align="center">
+      <a href="https://github.com/ZED-09">
+        <img src="https://github.com/ZED-09.png" width="100" alt="Zidan"><br>
+        <sub><b>Zidan</b></sub>
+      </a>
+    </td>
+    <td align="center">
+      <a href="https://github.com/ferdyafriansyahkosim-wq">
+        <img src="https://github.com/ferdyafriansyahkosim-wq.png" width="100" alt="BANGFER"><br>
+        <sub><b>BANGFER</b></sub>
+      </a>
+    </td>
+  </tr>
+</table>
+
+<br>
+
+---
+
 # Politeknik SSR — Dashboard Manajemen PKL
 
 Dashboard manajemen PKL (Praktik Kerja Lapangan) untuk **Politeknik SSR**, dibuat oleh **SatriaD**.
@@ -21,6 +74,7 @@ Fitur utama: presensi QR harian, pengajuan izin dengan upload bukti terkompresi,
 | QR Generate | qrcode |
 | Kompresi gambar | browser-image-compression |
 | Validasi | Zod |
+| Peta Interaktif | Leaflet + react-leaflet |
 
 ---
 
@@ -34,12 +88,12 @@ politeknik-ssr/
 └── src/
     ├── middleware.ts           # Proteksi rute + role-based redirect
     ├── app/
-    │   ├── login/               # Halaman login
+    │   ├── login/               # Halaman login + toggle password
     │   └── dashboard/
-    │       ├── siswa/           # Ringkasan, Absensi QR, Izin, Logbook
+    │       ├── siswa/           # Ringkasan, Absensi QR, Izin, Logbook, Kalender, Pengumuman
     │       ├── pembimbing/      # Ringkasan, Persetujuan Izin, Penilaian Logbook
-    │       └── admin/           # Ringkasan, Generate QR, Data Izin, Data Logbook, Ekspor
-    ├── actions/                 # Server Actions (attendance, leave, logbook, qr)
+    │       └── admin/           # Ringkasan, Generate QR, Data Izin, Data Logbook, Ekspor, Lokasi GPS, Kalender, Broadcast, Pengguna
+    ├── actions/                 # Server Actions (attendance, leave, logbook, qr, location, broadcast, kalender)
     ├── components/
     │   ├── ui/                  # Card, Button, Modal, Badge, Skeleton
     │   ├── layout/Sidebar.tsx
@@ -47,7 +101,10 @@ politeknik-ssr/
     │   ├── izin/                # Form pengajuan + modal approval
     │   ├── logbook/              # Form logbook + modal penilaian
     │   ├── charts/AttendanceChart.tsx
-    │   └── dashboard/StatCard.tsx
+    │   ├── dashboard/StatCard.tsx
+    │   ├── LocationPicker.tsx   # Peta interaktif Leaflet untuk admin
+    │   ├── Calendar.tsx
+    │   └── StudentCalendar.tsx
     ├── lib/
     │   ├── supabase/            # client.ts (browser), server.ts, middleware.ts
     │   ├── qr-token.ts           # HMAC sign/verify token QR harian
@@ -104,7 +161,9 @@ Buka `http://localhost:3000` → login dengan akun admin yang baru dibuat.
 
 ## 4. Alur Penggunaan Fitur
 
+- **Admin → Lokasi GPS**: buka halaman Lokasi GPS, tambah lokasi dengan peta interaktif (drag marker atau klik peta), atur radius lokasi.
 - **Admin → Generate QR**: klik "Generate QR" tiap pagi, tampilkan QR di layar/proyektor kelas.
+- **Siswa → Login & Verifikasi GPS**: saat login, sistem meminta izin lokasi dan memverifikasi apakah siswa berada di radius lokasi yang diizinkan.
 - **Siswa → Absensi QR**: buka menu Absensi QR, izinkan akses kamera, arahkan ke QR admin. Presensi otomatis ditandai "Hadir" sebelum jam 08:00 dan "Telat" setelahnya (bisa diubah di `src/actions/attendance.ts`, konstanta `ON_TIME_CUTOFF_HOUR`).
 - **Siswa → Pengajuan Izin**: isi form, lampirkan foto (otomatis dikompresi sebelum upload), lalu pantau status di riwayat.
 - **Pembimbing/Admin → Persetujuan Izin**: klik salah satu pengajuan pending untuk buka detail, tulis catatan (opsional), lalu Setujui/Tolak.
@@ -121,6 +180,7 @@ Buka `http://localhost:3000` → login dengan akun admin yang baru dibuat.
 - **Role diverifikasi ulang di server** pada setiap Server Action (tidak percaya begitu saja klaim role dari client).
 - **Constraint unik** di database mencegah presensi ganda per sesi dan entri logbook ganda per tanggal.
 - **`service_role key`** hanya dipakai di script server-side (`scripts/create-user.mjs`), tidak pernah diimpor ke Client Component.
+- **Verifikasi lokasi GPS** saat login untuk memastikan siswa berada di area kampus sebelum bisa mengakses sistem.
 
 ---
 

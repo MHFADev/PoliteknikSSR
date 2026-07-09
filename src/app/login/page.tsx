@@ -152,11 +152,15 @@ export default function LoginPage() {
                 disabled={gpsStep}
                 className="absolute inset-y-0 right-0 flex items-center pr-3 text-deep/60 hover:text-deep transition-colors disabled:opacity-50"
               >
+<<<<<<< HEAD
                 {showPassword ? (
                   <EyeOff className="h-4 w-4" />
                 ) : (
                   <Eye className="h-4 w-4" />
                 )}
+=======
+                {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+>>>>>>> 7e9036d40207c45557e417c7f1d08305e4f43836
               </button>
             </div>
           </div>

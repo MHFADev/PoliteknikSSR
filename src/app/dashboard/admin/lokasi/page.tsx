@@ -2,11 +2,12 @@
 
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Loader2, Plus, MapPin, Trash2, Edit } from "lucide-react";
+import { Loader2, Plus, MapPin, Trash2, Edit, Map } from "lucide-react";
 import { Card, CardHeader } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Modal } from "@/components/ui/Modal";
 import { getLocations, addLocation, updateLocation, deleteLocation } from "@/actions/location";
+import { LocationPicker } from "@/components/LocationPicker";
 
 type Location = {
   id: string;
@@ -23,6 +24,11 @@ export default function AdminLokasiPage() {
   const [editing, setEditing] = useState<Location | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [tempLocation, setTempLocation] = useState({
+    latitude: -6.2088,
+    longitude: 106.8456,
+    radius_meters: 100,
+  });
 
   async function loadLocations() {
     setLoading(true);
@@ -38,12 +44,24 @@ export default function AdminLokasiPage() {
   function openAdd() {
     setEditing(null);
     setError(null);
+    // Default ke lokasi pertama jika ada, atau default Jakarta
+    const defaultLoc = locations[0] ?? { latitude: -6.2088, longitude: 106.8456, radius_meters: 100 };
+    setTempLocation({
+      latitude: defaultLoc.latitude,
+      longitude: defaultLoc.longitude,
+      radius_meters: 100,
+    });
     setModalOpen(true);
   }
 
   function openEdit(loc: Location) {
     setEditing(loc);
     setError(null);
+    setTempLocation({
+      latitude: loc.latitude,
+      longitude: loc.longitude,
+      radius_meters: loc.radius_meters,
+    });
     setModalOpen(true);
   }
 
@@ -54,21 +72,30 @@ export default function AdminLokasiPage() {
 
     const form = new FormData(e.currentTarget);
     const nama = form.get("nama") as string;
-    const latitude = parseFloat(form.get("latitude") as string);
-    const longitude = parseFloat(form.get("longitude") as string);
     const radius_meters = parseFloat(form.get("radius_meters") as string);
 
-    if (isNaN(latitude) || isNaN(longitude) || isNaN(radius_meters)) {
-      setError("Isi semua field dengan benar.");
+    if (isNaN(radius_meters) || radius_meters < 1) {
+      setError("Radius harus lebih dari 0.");
       setIsSubmitting(false);
       return;
     }
 
     let result;
     if (editing) {
-      result = await updateLocation(editing.id, nama, latitude, longitude, radius_meters);
+      result = await updateLocation(
+        editing.id,
+        nama,
+        tempLocation.latitude,
+        tempLocation.longitude,
+        radius_meters
+      );
     } else {
-      result = await addLocation(nama, latitude, longitude, radius_meters);
+      result = await addLocation(
+        nama,
+        tempLocation.latitude,
+        tempLocation.longitude,
+        radius_meters
+      );
     }
 
     setIsSubmitting(false);
@@ -165,30 +192,18 @@ export default function AdminLokasiPage() {
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="text-sm font-medium text-deep">Latitude</label>
-              <input
-                name="latitude"
-                type="number"
-                step="any"
-                required
-                defaultValue={editing?.latitude ?? ""}
-                placeholder="-6.123456"
-                className="mt-1.5 w-full rounded-xl border border-deep/10 bg-white/80 px-3 py-2.5 text-sm outline-none focus:border-ocean"
-              />
+          <div className="space-y-2">
+            <div className="flex items-center gap-2 text-sm text-deep">
+              <Map className="h-4 w-4" />
+              <label className="font-medium">Pilih Lokasi di Peta</label>
             </div>
-            <div>
-              <label className="text-sm font-medium text-deep">Longitude</label>
-              <input
-                name="longitude"
-                type="number"
-                step="any"
-                required
-                defaultValue={editing?.longitude ?? ""}
-                placeholder="106.123456"
-                className="mt-1.5 w-full rounded-xl border border-deep/10 bg-white/80 px-3 py-2.5 text-sm outline-none focus:border-ocean"
-              />
+            <LocationPicker
+              value={tempLocation}
+              onChange={(newLoc) => setTempLocation(newLoc)}
+            />
+            <div className="flex items-center justify-between text-xs text-steel">
+              <span>Koordinat: {tempLocation.latitude.toFixed(6)}, {tempLocation.longitude.toFixed(6)}</span>
+              <span>Radius: {tempLocation.radius_meters}m</span>
             </div>
           </div>
 
@@ -199,7 +214,8 @@ export default function AdminLokasiPage() {
               type="number"
               required
               min={1}
-              defaultValue={editing?.radius_meters ?? 100}
+              value={tempLocation.radius_meters}
+              onChange={(e) => setTempLocation({ ...tempLocation, radius_meters: parseFloat(e.target.value) || 100 })}
               placeholder="100"
               className="mt-1.5 w-full rounded-xl border border-deep/10 bg-white/80 px-3 py-2.5 text-sm outline-none focus:border-ocean"
             />
