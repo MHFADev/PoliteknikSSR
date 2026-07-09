@@ -396,6 +396,8 @@ alter table public.profiles add column if not exists jurusan_id uuid references 
 -- Tipe event:
 --   - libur    : hari libur PKL (hijau)
 --   - event    : event khusus (biru)
+-- Jika student_id diisi, event khusus untuk siswa tsb.
+-- Jika student_id NULL, event berlaku untuk semua (libur nasional dll).
 -- =====================================================================
 create table if not exists public.calendar_events (
   id uuid primary key default gen_random_uuid(),
@@ -404,6 +406,7 @@ create table if not exists public.calendar_events (
   event_date date not null,
   end_date date, -- nullable, untuk event multi-hari
   tipe text not null default 'event' check (tipe in ('libur', 'event')),
+  student_id uuid references public.profiles(id) on delete cascade, -- null = global
   created_by uuid not null references public.profiles(id),
   created_at timestamptz not null default now()
 );

@@ -1,8 +1,11 @@
 import { createClient } from "@/lib/supabase/server";
 import { StatCard } from "@/components/dashboard/StatCard";
 import { Card, CardHeader } from "@/components/ui/Card";
+import { Badge } from "@/components/ui/Badge";
 import { AttendanceChart, type AttendanceTrendPoint } from "@/components/charts/AttendanceChart";
-import { Users, CalendarCheck, FileClock, GraduationCap } from "lucide-react";
+import { Users, CalendarCheck, FileClock, GraduationCap, CalendarDays, Megaphone } from "lucide-react";
+import { formatDate } from "@/lib/utils";
+import Link from "next/link";
 
 export default async function AdminOverviewPage() {
   const supabase = createClient();
@@ -17,12 +20,16 @@ export default async function AdminOverviewPage() {
     { data: todayRecords },
     { count: izinPendingCount },
     { data: weekRecords },
+    { data: upcomingEvents },
+    { count: totalEvents },
   ] = await Promise.all([
     supabase.from("profiles").select("*", { count: "exact", head: true }).eq("role", "siswa"),
     supabase.from("profiles").select("*", { count: "exact", head: true }).eq("role", "pembimbing"),
     supabase.from("attendance_records").select("status").gte("scanned_at", `${today}T00:00:00`),
     supabase.from("leave_requests").select("*", { count: "exact", head: true }).eq("status", "pending"),
     supabase.from("attendance_records").select("status, scanned_at").gte("scanned_at", sevenDaysAgo.toISOString()),
+    supabase.from("calendar_events").select("id, title, event_date, tipe").gte("event_date", today).order("event_date", { ascending: true }).limit(5),
+    supabase.from("calendar_events").select("*", { count: "exact", head: true }),
   ]);
 
   const hadirToday = todayRecords?.filter((r) => r.status === "hadir").length ?? 0;
@@ -54,10 +61,34 @@ export default async function AdminOverviewPage() {
         <StatCard label="Izin Menunggu" value={izinPendingCount ?? 0} icon={<FileClock className="h-5 w-5" />} accent="steel" />
       </div>
 
-      <Card>
-        <CardHeader title="Tren Kehadiran 7 Hari Terakhir" subtitle="Seluruh siswa" />
-        <AttendanceChart data={Array.from(trendMap.values())} />
-      </Card>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <Card>
+          <CardHeader title="Event Mendatang" subtitle={`${totalEvents ?? 0} total event`} action={
+            <Link href="/dashboard/admin/kalender" className="text-sm text-blue-vibrant hover:underline">Lihat Semua</Link>
+          } />
+          <div className="divide-y divide-deep/6">
+            {upcomingEvents && upcomingEvents.length > 0 ? (
+              upcomingEvents.map((ev: any) => (
+                <div key={ev.id} className="flex items-center gap-3 px-4 py-3">
+                  <div className={`h-2.5 w-2.5 shrink-0 rounded-full ${ev.tipe === "libur" ? "bg-green-500" : "bg-blue-500"}`} />
+                  <div className="min-w-0 flex-1">
+                    <p className="text-sm font-medium text-deep truncate">{ev.title}</p>
+                    <p className="text-xs text-mist-dim">{formatDate(ev.event_date)}</p>
+                  </div>
+                  <Badge tone={ev.tipe === "libur" ? "success" : "neutral"}>{ev.tipe === "libur" ? "Libur" : "Event"}</Badge>
+                </div>
+              ))
+            ) : (
+              <p className="py-6 text-center text-sm text-mist-dim">Tidak ada event mendatang.</p>
+            )}
+          </div>
+        </Card>
+
+        <Card>
+          <CardHeader title="Tren Kehadiran 7 Hari Terakhir" subtitle="Seluruh siswa" />
+          <AttendanceChart data={Array.from(trendMap.values())} />
+        </Card>
+      </div>
     </div>
   );
 }

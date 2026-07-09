@@ -1,12 +1,14 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
-import { ChevronLeft, ChevronRight, Plus, Trash2, Edit, Loader2 } from "lucide-react";
+import { ChevronLeft, ChevronRight, Plus, Trash2, Edit, Loader2, CalendarCheck, Users, CalendarDays, Search } from "lucide-react";
 import { Card, CardHeader } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Modal } from "@/components/ui/Modal";
-import { getAllEvents, addEvent, updateEvent, deleteEvent } from "@/actions/kalender";
+import { Badge } from "@/components/ui/Badge";
+import { StatCard } from "@/components/dashboard/StatCard";
+import { getAllEvents, addEvent, updateEvent, deleteEvent, getAdminCalendarStats, getStudents } from "@/actions/kalender";
+import { formatDate } from "@/lib/utils";
 
 const EVENT_COLORS = {
   libur: { bg: "bg-green-200", text: "text-green-900", dot: "bg-green-500" },
@@ -23,6 +25,17 @@ type CalendarEvent = {
   event_date: string;
   end_date: string | null;
   tipe: "libur" | "event";
+  student_id: string | null;
+  profiles: { full_name: string; identity_number: string } | null;
+};
+
+type Student = {
+  id: string;
+  full_name: string;
+  identity_number: string | null;
+  kelas: string | null;
+  jurusan_id: string | null;
+  study_programs: { nama: string } | null;
 };
 
 export default function AdminKalenderPage() {
@@ -33,19 +46,31 @@ export default function AdminKalenderPage() {
   const [editing, setEditing] = useState<CalendarEvent | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [search, setSearch] = useState("");
+  const [stats, setStats] = useState({ totalEvents: 0, upcomingEvents: 0, totalSiswa: 0 });
+  const [students, setStudents] = useState<Student[]>([]);
+  const [selectedStudent, setSelectedStudent] = useState<string>("");
+  const [showStudentPicker, setShowStudentPicker] = useState(false);
+  const [studentSearch, setStudentSearch] = useState("");
 
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
 
-  function loadEvents() {
+  function loadData() {
     setLoading(true);
-    getAllEvents().then((data) => {
-      setEvents(data as CalendarEvent[]);
+    Promise.all([
+      getAllEvents(search || undefined),
+      getAdminCalendarStats(),
+      getStudents(),
+    ]).then(([evts, st, stds]) => {
+      setEvents(evts as CalendarEvent[]);
+      setStats(st);
+      setStudents(stds as Student[]);
       setLoading(false);
     });
   }
 
-  useEffect(() => { loadEvents(); }, []);
+  useEffect(() => { loadData(); }, [search]); // eslint-disable-line react-hooks/exhaustive-deps
 
   function prevMonth() { setCurrentDate(new Date(year, month - 1)); }
   function nextMonth() { setCurrentDate(new Date(year, month + 1)); }
@@ -54,24 +79,41 @@ export default function AdminKalenderPage() {
   const daysInMonth = new Date(year, month + 1, 0).getDate();
   const todayStr = new Date().toISOString().slice(0, 10);
 
+  const monthEvents = events.filter((ev) => {
+    const d = ev.event_date.slice(0, 7);
+    const target = `${year}-${String(month + 1).padStart(2, "0")}`;
+    return d === target;
+  });
+
   const eventMap = new Map<string, CalendarEvent[]>();
-  events.forEach((ev) => {
-    const dateStr = ev.event_date;
-    if (!eventMap.has(dateStr)) eventMap.set(dateStr, []);
-    eventMap.get(dateStr)!.push(ev);
+  monthEvents.forEach((ev) => {
+    if (!eventMap.has(ev.event_date)) eventMap.set(ev.event_date, []);
+    eventMap.get(ev.event_date)!.push(ev);
   });
 
   function getEventsForDate(dateStr: string) {
     return eventMap.get(dateStr) ?? [];
   }
 
-  function openAdd() { setEditing(null); setError(null); setModalOpen(true); }
-
-  function openEdit(ev: CalendarEvent) {
-    setEditing(ev);
+  function openAdd() {
+    setEditing(null);
+    setSelectedStudent("");
     setError(null);
     setModalOpen(true);
   }
+
+  function openEdit(ev: CalendarEvent) {
+    setEditing(ev);
+    setSelectedStudent(ev.student_id ?? "");
+    setError(null);
+    setModalOpen(true);
+  }
+
+  const filteredStudents = students.filter((s) =>
+    s.full_name.toLowerCase().includes(studentSearch.toLowerCase()) ||
+    s.identity_number?.toLowerCase().includes(studentSearch.toLowerCase()) ||
+    s.study_programs?.nama?.toLowerCase().includes(studentSearch.toLowerCase())
+  );
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -84,6 +126,7 @@ export default function AdminKalenderPage() {
     const event_date = form.get("event_date") as string;
     const end_date = (form.get("end_date") as string) || null;
     const tipe = form.get("tipe") as "libur" | "event";
+    const student_id = (form.get("student_id") as string) || null;
 
     if (!title || !event_date) {
       setError("Judul dan tanggal harus diisi.");
@@ -93,9 +136,9 @@ export default function AdminKalenderPage() {
 
     let result;
     if (editing) {
-      result = await updateEvent(editing.id, title, description, event_date, end_date, tipe);
+      result = await updateEvent(editing.id, title, description, event_date, end_date, tipe, student_id);
     } else {
-      result = await addEvent(title, description, event_date, end_date, tipe);
+      result = await addEvent(title, description, event_date, end_date, tipe, student_id);
     }
 
     setIsSubmitting(false);
@@ -106,13 +149,13 @@ export default function AdminKalenderPage() {
 
     setModalOpen(false);
     setEditing(null);
-    loadEvents();
+    loadData();
   }
 
   async function handleDelete(id: string) {
     if (!confirm("Hapus event ini?")) return;
     await deleteEvent(id);
-    loadEvents();
+    loadData();
   }
 
   const calendarCells = [];
@@ -139,6 +182,9 @@ export default function AdminKalenderPage() {
               className={`group relative cursor-pointer rounded-md px-1.5 py-0.5 text-[11px] font-medium ${EVENT_COLORS[ev.tipe].bg} ${EVENT_COLORS[ev.tipe].text}`}
             >
               <span className="truncate block">{ev.title}</span>
+              {ev.profiles && (
+                <span className="text-[10px] opacity-75 block truncate">{ev.profiles.full_name}</span>
+              )}
               <div className="absolute right-0.5 top-0.5 hidden gap-0.5 group-hover:flex">
                 <button onClick={() => openEdit(ev)} className="rounded p-0.5 hover:bg-black/10"><Edit className="h-3 w-3" /></button>
                 <button onClick={() => handleDelete(ev.id)} className="rounded p-0.5 hover:bg-black/10"><Trash2 className="h-3 w-3 text-danger" /></button>
@@ -155,9 +201,15 @@ export default function AdminKalenderPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="font-display text-2xl font-semibold text-deep">Kalender PKL</h1>
-          <p className="text-sm text-mist-dim">Atur hari libur dan event PKL.</p>
+          <p className="text-sm text-mist-dim">Atur event & libur untuk siswa PKL.</p>
         </div>
         <Button onClick={openAdd}><Plus className="h-4 w-4" /> Tambah Event</Button>
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <StatCard label="Total Event" value={stats.totalEvents} icon={<CalendarDays className="h-5 w-5" />} accent="blue" />
+        <StatCard label="Event Mendatang" value={stats.upcomingEvents} icon={<CalendarCheck className="h-5 w-5" />} accent="ocean" />
+        <StatCard label="Total Siswa" value={stats.totalSiswa} icon={<Users className="h-5 w-5" />} accent="deep" />
       </div>
 
       <Card>
@@ -185,6 +237,47 @@ export default function AdminKalenderPage() {
         <span className="flex items-center gap-1.5"><span className="h-3 w-3 rounded-full bg-blue-500" /> Event</span>
       </div>
 
+      <Card>
+        <CardHeader title="Semua Event" action={
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-mist-dim" />
+            <input
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Cari event atau siswa..."
+              className="rounded-xl border border-deep/10 bg-white/80 pl-9 pr-3 py-2 text-sm outline-none focus:border-ocean w-64"
+            />
+          </div>
+        } />
+        <div className="divide-y divide-deep/6">
+          {loading ? (
+            <div className="flex items-center justify-center py-8"><Loader2 className="h-5 w-5 animate-spin text-steel" /></div>
+          ) : events.length === 0 ? (
+            <p className="py-8 text-center text-sm text-mist-dim">Belum ada event.</p>
+          ) : (
+            events.map((ev) => (
+              <div key={ev.id} className="flex items-center justify-between px-4 py-3 hover:bg-deep/5">
+                <div className="flex items-center gap-3 min-w-0">
+                  <span className={`h-2.5 w-2.5 shrink-0 rounded-full ${EVENT_COLORS[ev.tipe].dot}`} />
+                  <div className="min-w-0">
+                    <p className="text-sm font-medium text-deep truncate">{ev.title}</p>
+                    <p className="text-xs text-mist-dim">
+                      {formatDate(ev.event_date)}
+                      {ev.end_date && ` — ${formatDate(ev.end_date)}`}
+                      {ev.profiles && ` · ${ev.profiles.full_name}`}
+                    </p>
+                  </div>
+                </div>
+                <div className="flex gap-2 shrink-0">
+                  <button onClick={() => openEdit(ev)} className="rounded-lg p-1.5 text-steel hover:bg-deep/5"><Edit className="h-4 w-4" /></button>
+                  <button onClick={() => handleDelete(ev.id)} className="rounded-lg p-1.5 text-steel hover:bg-deep/5"><Trash2 className="h-4 w-4 text-danger" /></button>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+      </Card>
+
       <Modal open={modalOpen} onClose={() => { setModalOpen(false); setEditing(null); setError(null); }} title={editing ? "Edit Event" : "Tambah Event"}>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
@@ -211,6 +304,44 @@ export default function AdminKalenderPage() {
               <option value="libur">Libur PKL</option>
               <option value="event">Event</option>
             </select>
+          </div>
+          <div>
+            <label className="text-sm font-medium text-deep">Siswa (opsional — kosongkan jika untuk semua)</label>
+            <div className="relative">
+              <input
+                value={showStudentPicker ? studentSearch : (editing ? students.find(s => s.id === editing?.student_id)?.full_name || "Semua Siswa" : selectedStudent ? students.find(s => s.id === selectedStudent)?.full_name || "Semua Siswa" : "Semua Siswa")}
+                onChange={(e) => { setShowStudentPicker(true); setStudentSearch(e.target.value); }}
+                onFocus={() => setShowStudentPicker(true)}
+                placeholder="Cari siswa..."
+                className="mt-1.5 w-full rounded-xl border border-deep/10 bg-white/80 px-3 py-2.5 text-sm outline-none focus:border-ocean"
+              />
+              {showStudentPicker && (
+                <div className="absolute z-10 mt-1 w-full rounded-xl border border-deep/10 bg-white shadow-glass max-h-48 overflow-y-auto">
+                  <button
+                    type="button"
+                    onClick={() => { setSelectedStudent(""); setShowStudentPicker(false); setStudentSearch(""); }}
+                    className={`w-full px-3 py-2 text-left text-sm hover:bg-deep/5 ${!selectedStudent ? "bg-blue-vibrant/10 font-medium" : "text-steel"}`}
+                  >
+                    Semua Siswa (Global)
+                  </button>
+                  {filteredStudents.map((s) => (
+                    <button
+                      key={s.id}
+                      type="button"
+                      onClick={() => { setSelectedStudent(s.id); setShowStudentPicker(false); setStudentSearch(""); }}
+                      className={`w-full px-3 py-2 text-left text-sm hover:bg-deep/5 ${selectedStudent === s.id ? "bg-blue-vibrant/10 font-medium" : "text-steel"}`}
+                    >
+                      <span className="text-deep">{s.full_name}</span>
+                      <span className="ml-2 text-xs text-mist-dim">{s.study_programs?.nama || "-"}</span>
+                    </button>
+                  ))}
+                  {filteredStudents.length === 0 && (
+                    <p className="px-3 py-2 text-xs text-mist-dim">Tidak ditemukan</p>
+                  )}
+                </div>
+              )}
+              <input type="hidden" name="student_id" value={selectedStudent} />
+            </div>
           </div>
           {error && <p className="text-sm text-danger">{error}</p>}
           <div className="flex justify-end gap-3 pt-2">

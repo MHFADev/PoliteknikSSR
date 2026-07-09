@@ -85,6 +85,7 @@ export type CalendarEvent = {
   event_date: string;
   end_date: string | null;
   tipe: "libur" | "event";
+  student_id: string | null;
   created_by: string;
   created_at: string;
 };
@@ -268,6 +269,7 @@ export type Database = {
           event_date: string;
           end_date?: string | null;
           tipe?: "libur" | "event";
+          student_id?: string | null;
           created_by: string;
           created_at?: string;
         };
@@ -278,6 +280,7 @@ export type Database = {
           event_date?: string;
           end_date?: string | null;
           tipe?: "libur" | "event";
+          student_id?: string | null;
           created_by?: string;
           created_at?: string;
         };

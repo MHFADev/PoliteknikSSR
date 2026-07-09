@@ -1,16 +1,16 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
+import { ChevronLeft, ChevronRight, Loader2, CalendarCheck, FileClock, NotebookPen, AlertCircle } from "lucide-react";
 import { Card, CardHeader } from "@/components/ui/Card";
+import { StatCard } from "@/components/dashboard/StatCard";
 import { createClient } from "@/lib/supabase/client";
-import { getEvents } from "@/actions/kalender";
-import { formatDate } from "@/lib/utils";
+import { getEvents, getStudentAttendanceByMonth } from "@/actions/kalender";
 
 const MONTHS = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
 const DAYS = ["Min", "Sen", "Sel", "Rab", "Kam", "Jum", "Sab"];
 
-type CalendarEvent = { id: string; title: string; description: string | null; event_date: string; end_date: string | null; tipe: "libur" | "event" };
+type CalendarEvent = { id: string; title: string; description: string | null; event_date: string; end_date: string | null; tipe: "libur" | "event"; student_id: string | null };
 type AttendanceRecord = { scanned_at: string; status: string };
 type LeaveRequest = { start_date: string; end_date: string; type: string; status: string };
 
@@ -18,18 +18,13 @@ function getDayStatus(dayStr: string, records: AttendanceRecord[], leaves: Leave
   if (events.some((e) => e.event_date === dayStr && e.tipe === "libur")) {
     return { label: "Libur PKL", color: "bg-green-50 border-green-300", dot: "bg-green-500" };
   }
-
   const leave = leaves.find((l) => dayStr >= l.start_date && dayStr <= l.end_date);
   if (leave) {
     if (leave.type === "sakit") return { label: "Sakit", color: "bg-orange-50 border-orange-300", dot: "bg-orange-500" };
     if (leave.type === "izin") return { label: "Izin", color: "bg-yellow-50 border-yellow-300", dot: "bg-yellow-500" };
   }
-
   const record = records.find((r) => r.scanned_at.slice(0, 10) === dayStr);
-  if (record) {
-    return { label: "Masuk", color: "bg-green-50 border-green-300", dot: "bg-green-500" };
-  }
-
+  if (record) return { label: "Masuk", color: "bg-green-50 border-green-300", dot: "bg-green-500" };
   return null;
 }
 
@@ -39,6 +34,7 @@ export default function SiswaKalenderPage() {
   const [records, setRecords] = useState<AttendanceRecord[]>([]);
   const [leaves, setLeaves] = useState<LeaveRequest[]>([]);
   const [loading, setLoading] = useState(true);
+  const [stats, setStats] = useState({ hadir: 0, sakit: 0, izin: 0, alfa: 0, total: 0 });
 
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
@@ -50,18 +46,29 @@ export default function SiswaKalenderPage() {
 
     supabase.auth.getUser().then(({ data: { user } }) => {
       if (!user) return;
-      const start = `${year}-${String(month + 1).padStart(2, "0")}-01`;
-      const endDate = new Date(year, month + 1, 0);
-      const end = endDate.toISOString().slice(0, 10);
 
       Promise.all([
-        getEvents(year, month + 1),
-        supabase.from("attendance_records").select("scanned_at, status").eq("student_id", user.id).gte("scanned_at", start).lte("scanned_at", end),
-        supabase.from("leave_requests").select("start_date, end_date, type, status").eq("student_id", user.id).eq("status", "disetujui"),
-      ]).then(([evts, { data: recs }, { data: lvs }]) => {
+        getEvents(year, month + 1, user.id),
+        getStudentAttendanceByMonth(user.id, year, month + 1),
+      ]).then(([evts, data]) => {
         setEvents(evts as CalendarEvent[]);
-        setRecords(recs ?? []);
-        setLeaves(lvs ?? []);
+        setRecords(data.records);
+        setLeaves(data.leaves);
+
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+        let hadir = 0, sakit = 0, izin = 0, alfa = 0;
+
+        for (let day = 1; day <= daysInMonth; day++) {
+          const dateStr = `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+          if (dateStr > todayStr) break;
+          const status = getDayStatus(dateStr, data.records, data.leaves, evts as CalendarEvent[]);
+          if (!status) alfa++;
+          else if (status.label === "Masuk" || status.label === "Libur PKL") hadir++;
+          else if (status.label === "Sakit") sakit++;
+          else if (status.label === "Izin") izin++;
+        }
+
+        setStats({ hadir, sakit, izin, alfa, total: hadir + sakit + izin + alfa });
         setLoading(false);
       });
     });
@@ -83,13 +90,15 @@ export default function SiswaKalenderPage() {
     const dateStr = `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
     const isToday = dateStr === todayStr;
     const status = getDayStatus(dateStr, records, leaves, events);
-    const dayEvents = events.filter((e) => e.event_date === dateStr);
+    const dayEvents = events.filter((e) => e.event_date === dateStr && e.tipe === "event" && (!e.student_id || e.student_id === "self"));
+    const isLibur = events.some((e) => e.event_date === dateStr && e.tipe === "libur");
+    const isPast = dateStr < todayStr;
 
     calendarCells.push(
       <div
         key={day}
         className={`min-h-[80px] rounded-xl border p-1.5 transition-colors ${
-          status?.color ?? (isToday ? "border-blue-vibrant/30 bg-blue-vibrant/5" : "border-deep/6 bg-white")
+          status?.color ?? (isToday ? "border-blue-vibrant/30 bg-blue-vibrant/5" : isPast && !isLibur ? "border-red-200 bg-red-50/50" : "border-deep/6 bg-white")
         }`}
       >
         <div className={`mb-1 flex h-6 w-6 items-center justify-center rounded-full text-xs font-medium ${isToday ? "bg-blue-vibrant text-white" : "text-deep"}`}>
@@ -101,7 +110,13 @@ export default function SiswaKalenderPage() {
             <span className="text-[10px] font-medium text-deep">{status.label}</span>
           </div>
         )}
-        {dayEvents.filter((e) => e.tipe === "event").map((ev) => (
+        {isPast && !status && !isLibur && (
+          <div className="flex items-center gap-1">
+            <span className="h-2 w-2 rounded-full bg-red-500" />
+            <span className="text-[10px] font-medium text-deep">Alfa</span>
+          </div>
+        )}
+        {dayEvents.map((ev) => (
           <div key={ev.id} className="mt-0.5 rounded bg-blue-100 px-1 py-0.5 text-[10px] text-blue-800 truncate">
             {ev.title}
           </div>
@@ -115,6 +130,13 @@ export default function SiswaKalenderPage() {
       <div>
         <h1 className="font-display text-2xl font-semibold text-deep">Kalender PKL</h1>
         <p className="text-sm text-mist-dim">Pantau status absensi harian kamu.</p>
+      </div>
+
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+        <StatCard label="Hadir" value={stats.hadir} icon={<CalendarCheck className="h-5 w-5" />} accent="blue" />
+        <StatCard label="Sakit" value={stats.sakit} icon={<AlertCircle className="h-5 w-5" />} accent="steel" />
+        <StatCard label="Izin" value={stats.izin} icon={<FileClock className="h-5 w-5" />} accent="ocean" />
+        <StatCard label="Alfa" value={stats.alfa} icon={<NotebookPen className="h-5 w-5" />} accent="deep" />
       </div>
 
       <Card>
