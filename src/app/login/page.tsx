@@ -5,7 +5,16 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { Loader2, MapPin } from "lucide-react";
+import {
+  Loader2,
+  MapPin,
+  User,
+  Lock,
+  AlertCircle,
+  ArrowRight,
+  Eye,
+  EyeOff,
+} from "lucide-react";
 import { signInWithPassword } from "./actions";
 import { checkLoginLocation, hasLocationsConfigured } from "@/actions/location";
 import { Button } from "@/components/ui/Button";
@@ -27,6 +36,7 @@ export default function LoginPage() {
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [gpsStep, setGpsStep] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -132,18 +142,39 @@ export default function LoginPage() {
           </div>
           <div>
             <label className="text-sm font-medium text-deep">Password</label>
-            <input
-              type="password"
-              required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="••••••••"
-              disabled={gpsStep}
-              className={cn(
-                "mt-1.5 w-full rounded-xl border bg-white/80 px-3 py-2.5 text-sm outline-none focus:border-ocean disabled:opacity-50",
-                error ? "border-danger/60 bg-danger/5" : "border-deep/10",
-              )}
-            />
+            <div className="relative mt-1.5">
+              <div className="absolute left-3 top-1/2 -translate-y-1/2 text-steel">
+                <Lock className="h-4 w-4" />
+              </div>
+              <input
+                type={showPassword ? "text" : "password"} // 👈 GANTI INI
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Masukkan kata sandi"
+                disabled={gpsStep}
+                className={cn(
+                  "w-full rounded-xl border bg-white/90 px-3 py-2.5 pl-9 pr-11 text-sm outline-none focus:border-ocean focus:ring-2 focus:ring-ocean/20 transition-all duration-200 disabled:opacity-50",
+                  error
+                    ? "border-danger/60 bg-danger/5 focus:border-danger"
+                    : "border-deep/10",
+                )}
+              />
+
+              {/* 👇 TAMBAHKAN TOMBOL SHOW/HIDE */}
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-steel hover:text-ocean transition-colors"
+                tabIndex={-1}
+              >
+                {showPassword ? (
+                  <EyeOff className="h-4 w-4" />
+                ) : (
+                  <Eye className="h-4 w-4" />
+                )}
+              </button>
+            </div>
           </div>
 
           {error && <p className="text-sm text-danger">{error}</p>}
