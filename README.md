@@ -33,14 +33,14 @@ Dibangun di atas **Next.js 14** dan **TypeScript**, dengan **Supabase** sebagai 
       </a>
     </td>
     <td align="center">
-      <a href="https://github.com/Zidan">
-        <img src="https://github.com/Zidan.png" width="100" alt="Zidan"><br>
+      <a href="https://github.com/ZED-09">
+        <img src="https://github.com/ZED-09.png" width="100" alt="Zidan"><br>
         <sub><b>Zidan</b></sub>
       </a>
     </td>
     <td align="center">
-      <a href="https://github.com/BANGFER">
-        <img src="https://github.com/BANGFER.png" width="100" alt="BANGFER"><br>
+      <a href="https://github.com/ferdyafriansyahkosim-wq">
+        <img src="https://github.com/ferdyafriansyahkosim-wq.png" width="100" alt="BANGFER"><br>
         <sub><b>BANGFER</b></sub>
       </a>
     </td>
