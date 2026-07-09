@@ -2,6 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer components {
+  .input-error {
+    @apply border-danger/60 bg-danger/5 focus:border-danger;
+  }
+}
+
 html {
   scroll-behavior: smooth;
 }

@@ -71,3 +71,35 @@ export async function addStudent({
 
   return { success: true, studentId, permanentToken };
 }
+
+export async function ensureStudyProgram(
+  nama: string
+): Promise<{ id: string | null; error?: string }> {
+  const supabase = createAdminClient();
+  const trimmed = nama.trim();
+  if (!trimmed) return { id: null };
+
+  const { data: existing } = await supabase
+    .from("study_programs")
+    .select("id")
+    .ilike("nama", trimmed)
+    .maybeSingle();
+
+  if (existing) return { id: existing.id };
+
+  const kode = trimmed
+    .toUpperCase()
+    .replace(/[^A-Z0-9]/g, "-")
+    .replace(/-+/g, "-")
+    .replace(/^-|-$/g, "")
+    .slice(0, 10);
+
+  const { data, error } = await supabase
+    .from("study_programs")
+    .insert({ nama: trimmed, kode })
+    .select("id")
+    .single();
+
+  if (error) return { id: null, error: error.message };
+  return { id: data.id };
+}
