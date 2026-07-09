@@ -73,7 +73,7 @@ export default async function AdminOverviewPage() {
           Ringkasan Data
         </h1>
         <p className="text-sm text-mist-dim">
-          Gambaran umum seluruh peserta PKL Politeknik SSR.
+          Gambaran umum peserta PKL Politeknik SSR.
         </p>
       </div>
 
