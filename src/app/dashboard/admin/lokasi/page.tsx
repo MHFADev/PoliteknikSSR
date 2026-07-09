@@ -44,12 +44,12 @@ export default function AdminLokasiPage() {
   function openAdd() {
     setEditing(null);
     setError(null);
-    // Default ke lokasi pertama jika ada, atau default Jakarta
-    const defaultLoc = locations[0] ?? { latitude: -6.2088, longitude: 106.8456, radius_meters: 100 };
+    // Default ke lokasi pertama jika ada, atau default Jakarta dengan radius 50m
+    const defaultLoc = locations[0] ?? { latitude: -6.2088, longitude: 106.8456, radius_meters: 50 };
     setTempLocation({
       latitude: defaultLoc.latitude,
       longitude: defaultLoc.longitude,
-      radius_meters: 100,
+      radius_meters: 50,
     });
     setModalOpen(true);
   }
