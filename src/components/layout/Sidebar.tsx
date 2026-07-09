@@ -69,7 +69,6 @@ export function Sidebar({ role, fullName }: { role: "siswa" | "pembimbing" | "ad
       <div>
         <div className="mb-6 px-2 sm:mb-8">
           <Image src="/logo.png" alt="Politeknik SSR" width={120} height={34} className="h-auto w-auto sm:w-[140px]" priority />
-          <p className="mt-1 text-[10px] text-mist-dim sm:text-xs">Manajemen PKL</p>
         </div>
         <nav className="space-y-0.5">
           {items.map((item) => {

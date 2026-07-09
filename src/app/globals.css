@@ -35,7 +35,7 @@ body {
 @layer utilities {
   .scrollbar-thin {
     scrollbar-width: thin;
-    scrollbar-color: #D0D0D0 transparent;
+    scrollbar-color: #234C6A transparent;
   }
   .scrollbar-thin::-webkit-scrollbar {
     width: 4px;
