@@ -13,20 +13,11 @@ html {
 }
 
 body {
-<<<<<<< HEAD
-  background-color: #E3E3E3;
-  color: #1B3C53;
-}
-
-/* Fokus keyboard tetap terlihat jelas demi aksesibilitas, walau tetap selaras desain */
-=======
   background-color: #FFFFFF;
   color: #1B3C53;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-
->>>>>>> 5602bf6251f6241e94348fd05940a4cef1aa68e0
 :focus-visible {
   outline: 2px solid #234C6A;
   outline-offset: 2px;
@@ -40,8 +31,6 @@ body {
     transition-duration: 0.01ms !important;
   }
 }
-<<<<<<< HEAD
-=======
 
 @layer utilities {
   .scrollbar-thin {
@@ -66,4 +55,3 @@ body {
     font-size: 16px !important;
   }
 }
->>>>>>> 5602bf6251f6241e94348fd05940a4cef1aa68e0
