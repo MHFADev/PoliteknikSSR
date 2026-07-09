@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="https://raw.githubusercontent.com/MHFADev/asset/main/politeknikssr/logo.png" alt="Politeknik SSR" width="220">
+  <img src="alt="Politeknik SSR" width="220">
 
   <h1>Politeknik SSR</h1>
   <p><strong>Sistem Manajemen Praktik Kerja Lapangan (PKL)</strong></p>
