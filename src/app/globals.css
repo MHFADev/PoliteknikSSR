@@ -7,11 +7,20 @@ html {
 }
 
 body {
+<<<<<<< HEAD
   background-color: #E3E3E3;
   color: #1B3C53;
 }
 
 /* Fokus keyboard tetap terlihat jelas demi aksesibilitas, walau tetap selaras desain */
+=======
+  background-color: #FFFFFF;
+  color: #1B3C53;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+>>>>>>> 5602bf6251f6241e94348fd05940a4cef1aa68e0
 :focus-visible {
   outline: 2px solid #234C6A;
   outline-offset: 2px;
@@ -25,3 +34,30 @@ body {
     transition-duration: 0.01ms !important;
   }
 }
+<<<<<<< HEAD
+=======
+
+@layer utilities {
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: #D0D0D0 transparent;
+  }
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background-color: #D0D0D0;
+    border-radius: 4px;
+  }
+}
+
+@media (max-width: 640px) {
+  input, select, textarea {
+    font-size: 16px !important;
+  }
+}
+>>>>>>> 5602bf6251f6241e94348fd05940a4cef1aa68e0

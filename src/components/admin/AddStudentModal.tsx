@@ -1,17 +1,33 @@
 "use client";
 
+<<<<<<< HEAD
 import { useState } from "react";
+=======
+import { useState, useEffect } from "react";
+>>>>>>> 5602bf6251f6241e94348fd05940a4cef1aa68e0
 import { motion } from "framer-motion";
 import { Loader2, Plus } from "lucide-react";
 import { Modal } from "@/components/ui/Modal";
 import { Button } from "@/components/ui/Button";
 import { addStudent } from "@/actions/admin";
+<<<<<<< HEAD
+=======
+import { getStudyPrograms } from "@/actions/broadcast";
+>>>>>>> 5602bf6251f6241e94348fd05940a4cef1aa68e0
 
 export function AddStudentModal() {
   const [open, setOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+<<<<<<< HEAD
+=======
+  const [programs, setPrograms] = useState<{ id: string; nama: string }[]>([]);
+
+  useEffect(() => {
+    if (open) getStudyPrograms().then((data) => setPrograms(data as any));
+  }, [open]);
+>>>>>>> 5602bf6251f6241e94348fd05940a4cef1aa68e0
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -27,6 +43,10 @@ export function AddStudentModal() {
       identityNumber: (form.get("identityNumber") as string) || undefined,
       instansi: (form.get("instansi") as string) || undefined,
       kelas: (form.get("kelas") as string) || undefined,
+<<<<<<< HEAD
+=======
+      jurusanId: (form.get("jurusanId") as string) || undefined,
+>>>>>>> 5602bf6251f6241e94348fd05940a4cef1aa68e0
     });
 
     setIsSubmitting(false);
@@ -99,12 +119,24 @@ export function AddStudentModal() {
             </div>
             <div>
               <label className="text-sm font-medium text-deep">Jurusan</label>
+<<<<<<< HEAD
               <input
                 name="instansi"
                 type="text"
                 placeholder="RPL, TKJ, dll"
                 className="mt-1.5 w-full rounded-xl border border-deep/10 bg-white/80 px-3 py-2.5 text-sm outline-none focus:border-ocean"
               />
+=======
+              <select
+                name="jurusanId"
+                className="mt-1.5 w-full rounded-xl border border-deep/10 bg-white/80 px-3 py-2.5 text-sm outline-none focus:border-ocean"
+              >
+                <option value="">Pilih Jurusan</option>
+                {programs.map((p) => (
+                  <option key={p.id} value={p.id}>{p.nama}</option>
+                ))}
+              </select>
+>>>>>>> 5602bf6251f6241e94348fd05940a4cef1aa68e0
             </div>
             <div>
               <label className="text-sm font-medium text-deep">Kelas</label>

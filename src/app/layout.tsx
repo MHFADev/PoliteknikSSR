@@ -8,6 +8,13 @@ const jakarta = Plus_Jakarta_Sans({ subsets: ["latin"], variable: "--font-jakart
 export const metadata: Metadata = {
   title: "Politeknik SSR — Manajemen PKL",
   description: "Dashboard manajemen PKL siswa, pembimbing, dan admin — Politeknik SSR",
+<<<<<<< HEAD
+=======
+  icons: {
+    icon: "/favicon.jpg",
+    shortcut: "/favicon.jpg",
+  },
+>>>>>>> 5602bf6251f6241e94348fd05940a4cef1aa68e0
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

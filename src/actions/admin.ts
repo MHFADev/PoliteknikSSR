@@ -11,6 +11,10 @@ interface AddStudentArgs {
   identityNumber?: string;
   instansi?: string;
   kelas?: string;
+<<<<<<< HEAD
+=======
+  jurusanId?: string;
+>>>>>>> 5602bf6251f6241e94348fd05940a4cef1aa68e0
 }
 
 export async function addStudent({
@@ -20,6 +24,10 @@ export async function addStudent({
   identityNumber,
   instansi,
   kelas,
+<<<<<<< HEAD
+=======
+  jurusanId,
+>>>>>>> 5602bf6251f6241e94348fd05940a4cef1aa68e0
 }: AddStudentArgs): Promise<{ success: true; studentId: string; permanentToken: string } | { success: false; message: string }> {
   const supabase = createAdminClient();
 
@@ -46,6 +54,10 @@ export async function addStudent({
       identity_number: identityNumber || null,
       instansi: instansi || null,
       kelas: kelas || null,
+<<<<<<< HEAD
+=======
+      jurusan_id: jurusanId || null,
+>>>>>>> 5602bf6251f6241e94348fd05940a4cef1aa68e0
     })
     .eq("id", studentId);
 

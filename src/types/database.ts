@@ -18,6 +18,10 @@ export type Profile = {
   identity_number: string | null;
   instansi: string | null;
   kelas: string | null;
+<<<<<<< HEAD
+=======
+  jurusan_id: string | null;
+>>>>>>> 5602bf6251f6241e94348fd05940a4cef1aa68e0
   avatar_url: string | null;
   created_at: string;
   updated_at: string;
@@ -70,6 +74,43 @@ export type LogbookEntry = {
   updated_at: string;
 };
 
+<<<<<<< HEAD
+=======
+export type StudyProgram = {
+  id: string;
+  nama: string;
+  kode: string;
+  created_at: string;
+};
+
+export type CalendarEvent = {
+  id: string;
+  title: string;
+  description: string | null;
+  event_date: string;
+  end_date: string | null;
+  tipe: "libur" | "event";
+  student_id: string | null;
+  created_by: string;
+  created_at: string;
+};
+
+export type Announcement = {
+  id: string;
+  title: string;
+  content: string;
+  broadcast_to_all: boolean;
+  created_by: string;
+  created_at: string;
+};
+
+export type AnnouncementRecipient = {
+  id: string;
+  announcement_id: string;
+  study_program_id: string;
+};
+
+>>>>>>> 5602bf6251f6241e94348fd05940a4cef1aa68e0
 export type AllowedLocation = {
   id: string;
   nama: string;
@@ -92,6 +133,10 @@ export type Database = {
           identity_number?: string | null;
           instansi?: string | null;
           kelas?: string | null;
+<<<<<<< HEAD
+=======
+          jurusan_id?: string | null;
+>>>>>>> 5602bf6251f6241e94348fd05940a4cef1aa68e0
           avatar_url?: string | null;
           created_at?: string;
           updated_at?: string;
@@ -103,6 +148,10 @@ export type Database = {
           identity_number?: string | null;
           instansi?: string | null;
           kelas?: string | null;
+<<<<<<< HEAD
+=======
+          jurusan_id?: string | null;
+>>>>>>> 5602bf6251f6241e94348fd05940a4cef1aa68e0
           avatar_url?: string | null;
           created_at?: string;
           updated_at?: string;
@@ -217,6 +266,75 @@ export type Database = {
         };
         Relationships: [];
       };
+<<<<<<< HEAD
+=======
+      study_programs: {
+        Row: StudyProgram;
+        Insert: { id?: string; nama: string; kode: string; created_at?: string };
+        Update: { id?: string; nama?: string; kode?: string; created_at?: string };
+        Relationships: [];
+      };
+      calendar_events: {
+        Row: CalendarEvent;
+        Insert: {
+          id?: string;
+          title: string;
+          description?: string | null;
+          event_date: string;
+          end_date?: string | null;
+          tipe?: "libur" | "event";
+          student_id?: string | null;
+          created_by: string;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          title?: string;
+          description?: string | null;
+          event_date?: string;
+          end_date?: string | null;
+          tipe?: "libur" | "event";
+          student_id?: string | null;
+          created_by?: string;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
+      announcements: {
+        Row: Announcement;
+        Insert: {
+          id?: string;
+          title: string;
+          content: string;
+          broadcast_to_all?: boolean;
+          created_by: string;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          title?: string;
+          content?: string;
+          broadcast_to_all?: boolean;
+          created_by?: string;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
+      announcement_recipients: {
+        Row: AnnouncementRecipient;
+        Insert: {
+          id?: string;
+          announcement_id: string;
+          study_program_id: string;
+        };
+        Update: {
+          id?: string;
+          announcement_id?: string;
+          study_program_id?: string;
+        };
+        Relationships: [];
+      };
+>>>>>>> 5602bf6251f6241e94348fd05940a4cef1aa68e0
       allowed_locations: {
         Row: AllowedLocation;
         Insert: {

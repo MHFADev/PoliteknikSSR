@@ -3,7 +3,12 @@ import { StatCard } from "@/components/dashboard/StatCard";
 import { Card, CardHeader } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { formatDate, todayISODate } from "@/lib/utils";
+<<<<<<< HEAD
 import { CalendarCheck, FileClock, NotebookPen } from "lucide-react";
+=======
+import { CalendarCheck, FileClock, NotebookPen, CalendarDays } from "lucide-react";
+import Link from "next/link";
+>>>>>>> 5602bf6251f6241e94348fd05940a4cef1aa68e0
 
 export default async function SiswaOverviewPage() {
   const supabase = createClient();
@@ -13,8 +18,20 @@ export default async function SiswaOverviewPage() {
 
   const startOfMonth = new Date();
   startOfMonth.setDate(1);
+<<<<<<< HEAD
 
   const [{ count: hadirCount }, { count: izinPendingCount }, { data: recentLogbook }] = await Promise.all([
+=======
+  const today = new Date().toISOString().slice(0, 10);
+
+  const [
+    { count: hadirCount },
+    { count: izinPendingCount },
+    { data: recentLogbook },
+    { data: upcomingEvents },
+    { data: leaves },
+  ] = await Promise.all([
+>>>>>>> 5602bf6251f6241e94348fd05940a4cef1aa68e0
     supabase
       .from("attendance_records")
       .select("*", { count: "exact", head: true })
@@ -32,9 +49,28 @@ export default async function SiswaOverviewPage() {
       .eq("student_id", user!.id)
       .order("entry_date", { ascending: false })
       .limit(5),
+<<<<<<< HEAD
   ]);
 
   const todayEntry = recentLogbook?.find((e) => e.entry_date === todayISODate());
+=======
+    supabase
+      .from("calendar_events")
+      .select("id, title, event_date, tipe")
+      .or(`student_id.eq.${user!.id},student_id.is.null`)
+      .gte("event_date", today)
+      .order("event_date", { ascending: true })
+      .limit(3),
+    supabase
+      .from("leave_requests")
+      .select("start_date, end_date, type")
+      .eq("student_id", user!.id)
+      .eq("status", "disetujui"),
+  ]);
+
+  const todayEntry = recentLogbook?.find((e) => e.entry_date === todayISODate());
+  const activeLeaves = leaves?.filter((l) => l.start_date <= today && l.end_date >= today);
+>>>>>>> 5602bf6251f6241e94348fd05940a4cef1aa68e0
 
   return (
     <div className="space-y-6">
@@ -54,6 +90,7 @@ export default async function SiswaOverviewPage() {
         />
       </div>
 
+<<<<<<< HEAD
       <Card>
         <CardHeader title="Riwayat Logbook Terbaru" />
         <div className="divide-y divide-deep/6">
@@ -76,6 +113,54 @@ export default async function SiswaOverviewPage() {
           )}
         </div>
       </Card>
+=======
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <Card>
+          <CardHeader title="Event Mendatang" action={
+            <Link href="/dashboard/siswa/kalender" className="text-sm text-blue-vibrant hover:underline">Lihat Kalender</Link>
+          } />
+          <div className="divide-y divide-deep/6">
+            {upcomingEvents && upcomingEvents.length > 0 ? (
+              upcomingEvents.map((ev: any) => (
+                <div key={ev.id} className="flex items-center gap-3 px-4 py-3">
+                  <div className={`h-2.5 w-2.5 shrink-0 rounded-full ${ev.tipe === "libur" ? "bg-green-500" : "bg-blue-500"}`} />
+                  <div className="min-w-0 flex-1">
+                    <p className="text-sm font-medium text-deep truncate">{ev.title}</p>
+                    <p className="text-xs text-mist-dim">{formatDate(ev.event_date)}</p>
+                  </div>
+                  <Badge tone={ev.tipe === "libur" ? "success" : "neutral"}>{ev.tipe === "libur" ? "Libur" : "Event"}</Badge>
+                </div>
+              ))
+            ) : (
+              <p className="py-6 text-center text-sm text-mist-dim">Tidak ada event mendatang.</p>
+            )}
+          </div>
+        </Card>
+
+        <Card>
+          <CardHeader title="Riwayat Logbook Terbaru" />
+          <div className="divide-y divide-deep/6">
+            {recentLogbook && recentLogbook.length > 0 ? (
+              recentLogbook.map((entry) => (
+                <div key={entry.entry_date} className="flex items-center justify-between py-3">
+                  <div className="min-w-0">
+                    <p className="text-sm text-mist-dim">{formatDate(entry.entry_date)}</p>
+                    <p className="text-sm text-deep truncate max-w-md">{entry.content}</p>
+                  </div>
+                  {entry.grade !== null ? (
+                    <Badge tone="success">Nilai {entry.grade}</Badge>
+                  ) : (
+                    <Badge tone="neutral">Belum dinilai</Badge>
+                  )}
+                </div>
+              ))
+            ) : (
+              <p className="py-6 text-center text-sm text-mist-dim">Belum ada entri logbook.</p>
+            )}
+          </div>
+        </Card>
+      </div>
+>>>>>>> 5602bf6251f6241e94348fd05940a4cef1aa68e0
     </div>
   );
 }

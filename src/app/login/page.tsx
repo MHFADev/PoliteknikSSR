@@ -2,8 +2,14 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+<<<<<<< HEAD
 import { motion } from "framer-motion";
 import { Loader2, GraduationCap, MapPin } from "lucide-react";
+=======
+import Image from "next/image";
+import { motion } from "framer-motion";
+import { Loader2, MapPin } from "lucide-react";
+>>>>>>> 5602bf6251f6241e94348fd05940a4cef1aa68e0
 import { signInWithPassword } from "./actions";
 import { checkLoginLocation, hasLocationsConfigured } from "@/actions/location";
 import { Button } from "@/components/ui/Button";
@@ -72,14 +78,21 @@ export default function LoginPage() {
   }
 
   return (
+<<<<<<< HEAD
     <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-mist px-4">
       <div className="pointer-events-none absolute -top-32 -left-32 h-96 w-96 rounded-full bg-deep/20 blur-3xl" />
       <div className="pointer-events-none absolute -bottom-32 -right-24 h-96 w-96 rounded-full bg-steel/30 blur-3xl" />
+=======
+    <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-white px-4">
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-deep/5 via-white to-ocean/10" />
+      <div className="pointer-events-none absolute -top-40 -right-40 h-[30rem] w-[30rem] rounded-full bg-deep/[0.03] blur-3xl" />
+>>>>>>> 5602bf6251f6241e94348fd05940a4cef1aa68e0
 
       <motion.div
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
+<<<<<<< HEAD
         className="relative w-full max-w-sm rounded-xl2 border border-steel/30 bg-mist-soft/80 backdrop-blur-xl shadow-glass-lg p-8"
       >
         <div className="mb-8 flex flex-col items-center text-center">
@@ -88,6 +101,13 @@ export default function LoginPage() {
           </div>
           <h1 className="font-display text-xl font-semibold text-deep">Politeknik SSR</h1>
           <p className="mt-1 text-sm text-mist-dim">
+=======
+        className="relative w-full max-w-sm rounded-xl2 border border-deep/10 bg-white shadow-glass-lg p-8"
+      >
+        <div className="mb-8 flex flex-col items-center text-center">
+          <Image src="/logo.png" alt="Politeknik SSR" width={160} height={48} className="mb-4 h-auto w-auto" priority />
+          <p className="text-sm text-steel">
+>>>>>>> 5602bf6251f6241e94348fd05940a4cef1aa68e0
             {gpsStep ? "Memverifikasi lokasi Anda..." : "Masuk untuk mengakses dashboard PKL"}
           </p>
         </div>

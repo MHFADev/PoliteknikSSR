@@ -365,6 +365,165 @@ create policy "storage: siapa saja yang login boleh baca bukti izin"
   using (bucket_id = 'leave-proofs' and auth.uid() is not null);
 
 -- =====================================================================
+<<<<<<< HEAD
+=======
+-- 12. TABEL: study_programs
+-- Daftar jurusan/program studi di Politeknik SSR.
+-- =====================================================================
+create table if not exists public.study_programs (
+  id uuid primary key default gen_random_uuid(),
+  nama text not null unique,
+  kode text not null unique,
+  created_at timestamptz not null default now()
+);
+
+comment on table public.study_programs is 'Daftar jurusan / program studi';
+
+-- Insert program studi default
+insert into public.study_programs (nama, kode) values
+  ('D4 Animation', 'D4-ANM'),
+  ('D4 Tourism Destination', 'D4-TD'),
+  ('D3 Visual Communication Design', 'D3-VCD'),
+  ('D4 Film & Television', 'D4-FTV'),
+  ('D4 Management Hotel', 'D4-MH'),
+  ('D4 Robotic & AI', 'D4-RAI')
+on conflict (kode) do nothing;
+
+-- Tambah kolom jurusan_id ke profiles
+alter table public.profiles add column if not exists jurusan_id uuid references public.study_programs(id) on delete set null;
+
+-- =====================================================================
+-- 13. TABEL: calendar_events
+-- Event / hari libur PKL yang ditampilkan di kalender.
+-- Tipe event:
+--   - libur    : hari libur PKL (hijau)
+--   - event    : event khusus (biru)
+-- Jika student_id diisi, event khusus untuk siswa tsb.
+-- Jika student_id NULL, event berlaku untuk semua (libur nasional dll).
+-- =====================================================================
+create table if not exists public.calendar_events (
+  id uuid primary key default gen_random_uuid(),
+  title text not null,
+  description text,
+  event_date date not null,
+  end_date date, -- nullable, untuk event multi-hari
+  tipe text not null default 'event' check (tipe in ('libur', 'event')),
+  student_id uuid references public.profiles(id) on delete cascade, -- null = global
+  created_by uuid not null references public.profiles(id),
+  created_at timestamptz not null default now()
+);
+
+create index if not exists idx_calendar_events_date on public.calendar_events(event_date);
+
+comment on table public.calendar_events is 'Event dan hari libur PKL yang tampil di kalender';
+
+-- =====================================================================
+-- 14. TABEL: announcements
+-- Pengumuman yang di-broadcast oleh admin ke siswa.
+-- =====================================================================
+create table if not exists public.announcements (
+  id uuid primary key default gen_random_uuid(),
+  title text not null,
+  content text not null,
+  broadcast_to_all boolean not null default false,
+  created_by uuid not null references public.profiles(id),
+  created_at timestamptz not null default now()
+);
+
+create index if not exists idx_announcements_created on public.announcements(created_at desc);
+
+comment on table public.announcements is 'Broadcast pengumuman dari admin ke siswa';
+
+-- =====================================================================
+-- 15. TABEL: announcement_recipients
+-- Menentukan jurusan mana saja yang menerima suatu pengumuman.
+-- Jika broadcast_to_all = true di announcements, tabel ini bisa kosong.
+-- =====================================================================
+create table if not exists public.announcement_recipients (
+  id uuid primary key default gen_random_uuid(),
+  announcement_id uuid not null references public.announcements(id) on delete cascade,
+  study_program_id uuid not null references public.study_programs(id) on delete cascade,
+  unique (announcement_id, study_program_id)
+);
+
+comment on table public.announcement_recipients is 'Target jurusan penerima pengumuman';
+
+-- =====================================================================
+-- 12b. RLS: study_programs
+-- =====================================================================
+alter table public.study_programs enable row level security;
+
+create policy "study_programs: semua login boleh lihat"
+  on public.study_programs for select
+  using (auth.uid() is not null);
+
+create policy "study_programs: hanya admin kelola"
+  on public.study_programs for all
+  using (public.current_role() = 'admin')
+  with check (public.current_role() = 'admin');
+
+-- =====================================================================
+-- 13b. RLS: calendar_events
+-- =====================================================================
+alter table public.calendar_events enable row level security;
+
+create policy "calendar_events: semua role login boleh lihat"
+  on public.calendar_events for select
+  using (auth.uid() is not null);
+
+create policy "calendar_events: hanya admin kelola"
+  on public.calendar_events for all
+  using (public.current_role() = 'admin')
+  with check (public.current_role() = 'admin');
+
+-- =====================================================================
+-- 14b. RLS: announcements
+-- =====================================================================
+alter table public.announcements enable row level security;
+
+create policy "announcements: admin & pembimbing lihat semua"
+  on public.announcements for select
+  using (public.current_role() in ('admin', 'pembimbing'));
+
+create policy "announcements: siswa lihat pengumuman untuk jurusannya"
+  on public.announcements for select
+  using (
+    broadcast_to_all = true
+    or exists (
+      select 1 from public.announcement_recipients ar
+      join public.profiles p on p.jurusan_id = ar.study_program_id
+      where ar.announcement_id = announcements.id and p.id = auth.uid()
+    )
+  );
+
+create policy "announcements: hanya admin insert"
+  on public.announcements for insert
+  with check (public.current_role() = 'admin');
+
+create policy "announcements: hanya admin update"
+  on public.announcements for update
+  using (public.current_role() = 'admin');
+
+create policy "announcements: hanya admin delete"
+  on public.announcements for delete
+  using (public.current_role() = 'admin');
+
+-- =====================================================================
+-- 15b. RLS: announcement_recipients
+-- =====================================================================
+alter table public.announcement_recipients enable row level security;
+
+create policy "announcement_recipients: admin full akses"
+  on public.announcement_recipients for all
+  using (public.current_role() = 'admin')
+  with check (public.current_role() = 'admin');
+
+create policy "announcement_recipients: semua login boleh lihat"
+  on public.announcement_recipients for select
+  using (auth.uid() is not null);
+
+-- =====================================================================
+>>>>>>> 5602bf6251f6241e94348fd05940a4cef1aa68e0
 -- SELESAI. Langkah selanjutnya:
 -- 1. Buat user pertama (role admin) lewat Supabase Dashboard > Authentication > Add user,
 --    lalu update kolom role di tabel profiles menjadi 'admin' untuk user tsb.
