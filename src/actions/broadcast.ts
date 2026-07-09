@@ -31,7 +31,15 @@ export async function getAnnouncementsForStudent(studentId: string, jurusanId: s
 
   if (!data) return [];
 
+  // Filter announcements from the last 2 days
+  const twoDaysAgo = new Date();
+  twoDaysAgo.setDate(twoDaysAgo.getDate() - 2);
+  twoDaysAgo.setHours(0, 0, 0, 0);
+
   return data.filter((a: any) => {
+    const createdAt = new Date(a.created_at);
+    if (createdAt < twoDaysAgo) return false;
+
     if (a.broadcast_to_all) return true;
     if (!jurusanId) return false;
     return a.announcement_recipients?.some((r: any) => r.study_program_id === jurusanId);

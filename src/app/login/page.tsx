@@ -5,7 +5,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { Loader2, MapPin } from "lucide-react";
+import { Loader2, MapPin, Eye, EyeOff } from "lucide-react";
 import { signInWithPassword } from "./actions";
 import { checkLoginLocation, hasLocationsConfigured } from "@/actions/location";
 import { Button } from "@/components/ui/Button";
@@ -24,6 +24,7 @@ export default function LoginPage() {
   const router = useRouter();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [gpsStep, setGpsStep] = useState(false);
@@ -110,18 +111,28 @@ export default function LoginPage() {
           </div>
           <div>
             <label className="text-sm font-medium text-deep">Kata Sandi</label>
-            <input
-              type="password"
-              required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="••••••••"
-              disabled={gpsStep}
-              className={cn(
-                "mt-1.5 w-full rounded-xl border bg-white/80 px-3 py-2.5 text-sm outline-none focus:border-ocean disabled:opacity-50",
-                error ? "border-danger/60 bg-danger/5" : "border-deep/10"
-              )}
-            />
+            <div className="relative mt-1.5">
+              <input
+                type={showPassword ? "text" : "password"}
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••••"
+                disabled={gpsStep}
+                className={cn(
+                  "w-full rounded-xl border bg-white/80 px-3 pr-10 py-2.5 text-sm outline-none focus:border-ocean disabled:opacity-50",
+                  error ? "border-danger/60 bg-danger/5" : "border-deep/10"
+                )}
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                disabled={gpsStep}
+                className="absolute inset-y-0 right-0 flex items-center pr-3 text-deep/60 hover:text-deep transition-colors disabled:opacity-50"
+              >
+                {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+              </button>
+            </div>
           </div>
 
           {error && <p className="text-sm text-danger">{error}</p>}
