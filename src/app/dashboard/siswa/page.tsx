@@ -3,14 +3,21 @@ import { StatCard } from "@/components/dashboard/StatCard";
 import { Card, CardHeader } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { formatDate, todayISODate } from "@/lib/utils";
-import { CalendarCheck, FileClock, NotebookPen, CalendarDays } from "lucide-react";
+import { CalendarCheck, FileClock, NotebookPen, CalendarDays, Megaphone } from "lucide-react";
 import Link from "next/link";
+import { getAnnouncementsForStudent } from "@/actions/broadcast";
 
 export default async function SiswaOverviewPage() {
   const supabase = createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
+
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("full_name, jurusan_id")
+    .eq("id", user!.id)
+    .single();
 
   const startOfMonth = new Date();
   startOfMonth.setDate(1);
@@ -22,6 +29,7 @@ export default async function SiswaOverviewPage() {
     { data: recentLogbook },
     { data: upcomingEvents },
     { data: leaves },
+    announcements,
   ] = await Promise.all([
     supabase
       .from("attendance_records")
@@ -52,6 +60,7 @@ export default async function SiswaOverviewPage() {
       .select("start_date, end_date, type")
       .eq("student_id", user!.id)
       .eq("status", "disetujui"),
+    getAnnouncementsForStudent(user!.id, profile?.jurusan_id ?? null),
   ]);
 
   const todayEntry = recentLogbook?.find((e) => e.entry_date === todayISODate());
@@ -60,7 +69,9 @@ export default async function SiswaOverviewPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="font-display text-2xl font-semibold text-deep">Ringkasan</h1>
+        <h1 className="font-display text-2xl font-semibold text-deep">
+          HI, {profile?.full_name || "Pengguna"} 👋👋
+        </h1>
         <p className="text-sm text-mist-dim">Pantau progres PKL kamu bulan ini.</p>
       </div>
 
@@ -74,6 +85,29 @@ export default async function SiswaOverviewPage() {
           accent="ocean"
         />
       </div>
+
+      {announcements && announcements.length > 0 && (
+        <Card>
+          <CardHeader 
+            title="Pengumuman Terbaru" 
+            icon={<Megaphone className="h-5 w-5" />} 
+            action={
+              <Link href="/dashboard/siswa/pengumuman" className="text-sm text-blue-vibrant hover:underline">Lihat Semua</Link>
+            }
+          />
+          <div className="divide-y divide-deep/6">
+            {announcements.map((a: any) => (
+              <div key={a.id} className="px-4 py-3">
+                <h3 className="text-sm font-semibold text-deep">{a.title}</h3>
+                <p className="text-xs text-mist mt-1">{a.content}</p>
+                <p className="text-[10px] text-mist-dim mt-2">
+                  {formatDate(a.created_at)}
+                </p>
+              </div>
+            ))}
+          </div>
+        </Card>
+      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Card>

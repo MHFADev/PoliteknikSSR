@@ -19,6 +19,13 @@ import Link from "next/link";
 
 export default async function AdminOverviewPage() {
   const supabase = createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("full_name")
+    .eq("id", user!.id)
+    .single();
 
   const today = new Date().toISOString().slice(0, 10);
   const sevenDaysAgo = new Date();
@@ -91,7 +98,7 @@ export default async function AdminOverviewPage() {
     <div className="space-y-6">
       <div>
         <h1 className="font-display text-2xl font-semibold text-deep">
-          Ringkasan Admin
+          HI, {profile?.full_name || "Admin"} 👋👋
         </h1>
         <p className="text-sm text-mist-dim">
           Gambaran umum seluruh peserta PKL Politeknik SSR.
