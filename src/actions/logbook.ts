@@ -7,6 +7,7 @@ import { z } from "zod";
 const entrySchema = z.object({
   entry_date: z.string(),
   content: z.string().min(20, "Isi logbook minimal 20 karakter agar bermakna."),
+  photoUrl: z.string().optional(),
 });
 
 export async function saveLogbookEntry(input: z.infer<typeof entrySchema>) {
@@ -25,6 +26,7 @@ export async function saveLogbookEntry(input: z.infer<typeof entrySchema>) {
       student_id: user.id,
       entry_date: parsed.data.entry_date,
       content: parsed.data.content,
+      photo_url: parsed.data.photoUrl ?? null,
       updated_at: new Date().toISOString(),
     },
     { onConflict: "student_id,entry_date" }
@@ -32,8 +34,26 @@ export async function saveLogbookEntry(input: z.infer<typeof entrySchema>) {
 
   if (error) return { error: "Gagal menyimpan logbook: " + error.message };
 
-  revalidatePath("/dashboard/siswa/logbook");
+  revalidatePath("/dashboard/siswa/kegiatan-harian");
   return { success: true };
+}
+
+// Helper function for handling file uploads (to be used in client component with supabase client)
+export async function getUploadSignedUrl(userId: string, entryDate: string) {
+  const supabase = createClient();
+  
+  const fileExtension = "jpg";
+  const fileName = `${userId}/${entryDate}/proof.${fileExtension}`;
+  
+  const { data, error } = await supabase.storage
+    .from("logbook_photos")
+    .createSignedUploadUrl(fileName, { upsert: true });
+    
+  if (error) {
+    return { error: "Gagal membuat URL upload: " + error.message };
+  }
+  
+  return { signedUrl: data.signedUrl, path: fileName };
 }
 
 const gradeSchema = z.object({
@@ -69,6 +89,6 @@ export async function gradeLogbookEntry(input: z.infer<typeof gradeSchema>) {
 
   if (error) return { error: "Gagal menyimpan nilai: " + error.message };
 
-  revalidatePath("/dashboard/pembimbing/logbook");
+  revalidatePath("/dashboard/pembimbing/kegiatan-harian");
   return { success: true };
 }

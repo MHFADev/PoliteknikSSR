@@ -26,24 +26,24 @@ type NavItem = { href: string; label: string; icon: typeof LayoutDashboard };
 
 const NAV_BY_ROLE: Record<"siswa" | "pembimbing" | "admin", NavItem[]> = {
   siswa: [
-    { href: "/dashboard/siswa", label: "Ringkasan", icon: LayoutDashboard },
+    { href: "/dashboard/siswa", label: "Dashboard", icon: LayoutDashboard },
     { href: "/dashboard/siswa/absensi", label: "Absensi QR", icon: QrCode },
     { href: "/dashboard/siswa/izin", label: "Pengajuan Izin", icon: FileText },
-    { href: "/dashboard/siswa/logbook", label: "Logbook Harian", icon: NotebookPen },
+    { href: "/dashboard/siswa/kegiatan-harian", label: "Kegiatan Harian", icon: NotebookPen },
     { href: "/dashboard/siswa/kalender", label: "Kalender", icon: CalendarDays },
     { href: "/dashboard/siswa/pengumuman", label: "Pengumuman", icon: Megaphone },
   ],
   pembimbing: [
-    { href: "/dashboard/pembimbing", label: "Ringkasan", icon: LayoutDashboard },
+    { href: "/dashboard/pembimbing", label: "Dashboard", icon: LayoutDashboard },
     { href: "/dashboard/pembimbing/izin", label: "Persetujuan Izin", icon: FileText },
-    { href: "/dashboard/pembimbing/logbook", label: "Penilaian Logbook", icon: NotebookPen },
+    { href: "/dashboard/pembimbing/kegiatan-harian", label: "Penilaian Kegiatan", icon: NotebookPen },
   ],
   admin: [
-    { href: "/dashboard/admin", label: "Ringkasan", icon: LayoutDashboard },
+    { href: "/dashboard/admin", label: "Dashboard", icon: LayoutDashboard },
     { href: "/dashboard/admin/pengguna", label: "Kelola Pengguna", icon: Users },
     { href: "/dashboard/admin/qr", label: "Generate QR", icon: QrCode },
     { href: "/dashboard/admin/izin", label: "Data Izin", icon: FileText },
-    { href: "/dashboard/admin/logbook", label: "Data Logbook", icon: NotebookPen },
+    { href: "/dashboard/admin/kegiatan-harian", label: "Data Kegiatan", icon: NotebookPen },
     { href: "/dashboard/admin/kalender", label: "Kalender PKL", icon: CalendarDays },
     { href: "/dashboard/admin/broadcast", label: "Broadcast", icon: Megaphone },
     { href: "/dashboard/admin/export", label: "Ekspor Data", icon: Download },
