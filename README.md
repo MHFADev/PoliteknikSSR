@@ -38,12 +38,7 @@ Dibangun di atas **Next.js 14** dan **TypeScript**, dengan **Supabase** sebagai 
         <sub><b>Zidan</b></sub>
       </a>
     </td>
-    <td align="center">
-      <a href="https://github.com/ferdyafriansyahkosim-wq">
-        <img src="https://github.com/ferdyafriansyahkosim-wq.png" width="100" alt="BANGFER"><br>
-        <sub><b>BANGFER</b></sub>
-      </a>
-    </td>
+    
   </tr>
 </table>
 
