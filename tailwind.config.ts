@@ -99,45 +99,33 @@ const config: Config = {
         sans: ["var(--font-inter)", "sans-serif"],
         josefin: ["var(--font-josefin)", "sans-serif"],
       },
-      backdropBlur: {
-        xs: "2px",
-      },
+      backdropBlur: { xs: "2px" },
       boxShadow: {
-        // Existing shadows
-        glass: "0 8px 32px 0 rgba(36, 35, 32, 0.08)",
-        "glass-lg": "0 16px 48px 0 rgba(36, 35, 32, 0.12)",
-        ring: "0 0 0 1px rgba(63, 108, 99, 0.15)",
-
-        // Skylearn shadows
-        skylearn: "0 8px 24px rgba(15, 23, 42, 0.06)",
-        "skylearn-lg": "0 24px 48px rgba(15, 23, 42, 0.12)",
-        "skylearn-sky": "0 12px 32px rgba(59, 130, 246, 0.15)",
-        "skylearn-sun": "0 0 24px rgba(252, 211, 77, 0.4)",
-
-        // Flip7 colored glow shadows
-        "flip7-sm": "0 2px 8px rgba(0, 0, 0, 0.08)",
-        "flip7-md": "0 4px 16px rgba(0, 0, 0, 0.12)",
-        "flip7-lg": "0 8px 32px rgba(0, 0, 0, 0.16)",
-        "flip7-card": "0 4px 20px rgba(43, 168, 162, 0.1)",
-        "flip7-coral-glow": "0 4px 20px rgba(239, 108, 74, 0.35)",
-        "flip7-teal-glow": "0 4px 20px rgba(43, 168, 162, 0.3)",
-        "flip7-gold-glow": "0 4px 20px rgba(255, 210, 63, 0.4)",
-        "flip7-sky-glow": "0 4px 16px rgba(93, 173, 226, 0.3)",
-        "flip7-focus": "0 0 0 4px rgba(43, 168, 162, 0.15)",
+        glass: "0 8px 32px 0 rgba(36,35,32,0.08)",
+        "glass-lg": "0 16px 48px 0 rgba(36,35,32,0.12)",
+        ring: "0 0 0 1px rgba(63,108,99,0.15)",
+        skylearn: "0 8px 24px rgba(15,23,42,0.06)",
+        "skylearn-lg": "0 24px 48px rgba(15,23,42,0.12)",
+        "skylearn-sky": "0 12px 32px rgba(59,130,246,0.15)",
+        "skylearn-sun": "0 0 24px rgba(252,211,77,0.4)",
+        "flip7-sm": "0 2px 8px rgba(0,0,0,0.08)",
+        "flip7-md": "0 4px 16px rgba(0,0,0,0.12)",
+        "flip7-lg": "0 8px 32px rgba(0,0,0,0.16)",
+        "flip7-card": "0 4px 20px rgba(43,168,162,0.1)",
+        "flip7-coral-glow": "0 4px 20px rgba(239,108,74,0.35)",
+        "flip7-teal-glow": "0 4px 20px rgba(43,168,162,0.3)",
+        "flip7-gold-glow": "0 4px 20px rgba(255,210,63,0.4)",
+        "flip7-sky-glow": "0 4px 16px rgba(93,173,226,0.3)",
+        "flip7-focus": "0 0 0 4px rgba(43,168,162,0.15)",
       },
       borderRadius: {
-        // Existing
         xl2: "1.25rem",
-
-        // Skylearn
         "skylearn-sm": "8px",
         "skylearn-md": "12px",
         "skylearn-lg": "16px",
         "skylearn-xl": "20px",
         "skylearn-2xl": "28px",
         "skylearn-pill": "999px",
-
-        // Flip7
         "flip7-sm": "8px",
         "flip7-md": "16px",
         "flip7-lg": "24px",
@@ -145,7 +133,6 @@ const config: Config = {
         "flip7-pill": "999px",
       },
       keyframes: {
-        // Existing
         "scan-line": {
           "0%": { transform: "translateY(0%)" },
           "50%": { transform: "translateY(100%)" },
@@ -160,8 +147,6 @@ const config: Config = {
           "25%": { transform: "translateX(-4px)" },
           "75%": { transform: "translateX(4px)" },
         },
-
-        // Flip7 animations
         "flip7-crown-bounce": {
           "0%, 100%": { transform: "translateY(0) rotate(0deg)" },
           "25%": { transform: "translateY(-4px) rotate(-2deg)" },
@@ -173,11 +158,9 @@ const config: Config = {
           "50%": { opacity: "1", transform: "scale(1.03)" },
         },
         "flip7-boom-pulse": {
-          "0%, 100%": { boxShadow: "0 4px 20px rgba(239, 108, 74, 0.35)" },
-          "50%": { boxShadow: "0 4px 32px rgba(239, 108, 74, 0.5)" },
+          "0%, 100%": { boxShadow: "0 4px 20px rgba(239,108,74,0.35)" },
+          "50%": { boxShadow: "0 4px 32px rgba(239,108,74,0.5)" },
         },
-
-        // Confetti animations
         "confetti-fall-1": {
           "0%": { transform: "translateY(-100%) rotate(0deg)", opacity: "1" },
           "100%": {
@@ -201,24 +184,19 @@ const config: Config = {
         },
       },
       animation: {
-        // Existing
         "scan-line": "scan-line 2.2s ease-in-out infinite",
-        "pulse-ring": "pulse-ring 1.4s cubic-bezier(0.4, 0, 0.6, 1) infinite",
+        "pulse-ring": "pulse-ring 1.4s cubic-bezier(0.4,0,0.6,1) infinite",
         "skylearn-shake": "skylearn-shake 240ms ease-in-out 2",
-
-        // Flip7 animations
         "flip7-crown-bounce": "flip7-crown-bounce 1.5s ease-in-out infinite",
         "flip7-glow-pulse": "flip7-glow-pulse 2s ease-in-out infinite",
         "flip7-boom-pulse": "flip7-boom-pulse 2s ease-in-out infinite",
-
-        // Confetti
         "confetti-1": "confetti-fall-1 3.2s ease-in forwards",
         "confetti-2": "confetti-fall-2 4s ease-in forwards",
         "confetti-3": "confetti-fall-3 4.5s ease-in forwards",
       },
       transitionTimingFunction: {
-        "skylearn-spring": "cubic-bezier(0.34, 1.56, 0.64, 1)",
-        "flip7-bounce": "cubic-bezier(0.68, -0.55, 0.265, 1.55)",
+        "skylearn-spring": "cubic-bezier(0.34,1.56,0.64,1)",
+        "flip7-bounce": "cubic-bezier(0.68,-0.55,0.265,1.55)",
       },
     },
   },

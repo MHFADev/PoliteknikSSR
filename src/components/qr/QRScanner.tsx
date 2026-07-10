@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Html5Qrcode } from "html5-qrcode";
 import { motion, AnimatePresence } from "framer-motion";
-import { CheckCircle2, XCircle, CameraOff } from "lucide-react";
+import { CheckCircle2, XCircle, CameraOff, Camera, RefreshCw } from "lucide-react";
 import { submitAttendance } from "@/actions/attendance";
 import { Button } from "@/components/ui/Button";
 
@@ -15,29 +15,67 @@ export function QRScanner() {
   const scannerRef = useRef<Html5Qrcode | null>(null);
   const [state, setState] = useState<ScanState>("idle");
   const [message, setMessage] = useState<string>("");
+  const [useFrontCamera, setUseFrontCamera] = useState(false);
 
   useEffect(() => {
     return () => {
       // Pastikan kamera dilepas saat komponen unmount
-      scannerRef.current?.stop().catch(() => {});
+      stopScanner();
     };
   }, []);
 
+  async function stopScanner() {
+    try {
+      if (scannerRef.current) {
+        await scannerRef.current.stop();
+      }
+    } catch {
+      // Ignore errors when stopping
+    }
+  }
+
+  async function checkCameraPermission() {
+    try {
+      const permissionStatus = await navigator.permissions.query({ name: "camera" as PermissionName });
+      if (permissionStatus.state === "denied") {
+        return false;
+      }
+      return true;
+    } catch {
+      return true; // If permissions API not supported, proceed anyway
+    }
+  }
+
   async function startScanning() {
     setState("scanning");
-    setMessage("");
+    setMessage("Meminta izin kamera...");
 
-    const scanner = new Html5Qrcode(SCANNER_ELEMENT_ID);
-    scannerRef.current = scanner;
+    // Check permissions first
+    const hasPermission = await checkCameraPermission();
+    if (!hasPermission) {
+      setState("error");
+      setMessage("Izin kamera ditolak. Silakan aktifkan izin kamera di pengaturan browser Anda.");
+      return;
+    }
 
     try {
+      // Cleanup any existing scanner first
+      await stopScanner();
+
+      const scanner = new Html5Qrcode(SCANNER_ELEMENT_ID);
+      scannerRef.current = scanner;
+
+      const facingMode = useFrontCamera ? "user" : "environment";
+
+      setMessage("Menampilkan kamera...");
       await scanner.start(
-        { facingMode: "environment" },
-        { fps: 10, qrbox: { width: 240, height: 240 } },
+        { facingMode },
+        { fps: 10, qrbox: { width: 240, height: 240 }, aspectRatio: 1 },
         async (decodedText) => {
           // Hentikan kamera segera setelah dapat 1 hasil supaya tidak submit berkali-kali
-          await scanner.stop().catch(() => {});
+          await stopScanner();
           setState("processing");
+          setMessage("Memproses presensi...");
 
           const result = await submitAttendance(decodedText);
           if (result.success) {
@@ -48,17 +86,32 @@ export function QRScanner() {
             setMessage(result.message ?? "Presensi gagal.");
           }
         },
-        undefined
+        (errorMessage) => {
+          // Ignore scan errors, just continue scanning
+          console.debug("QR Scan error:", errorMessage);
+        }
       );
-    } catch {
+
+      // If we got here, camera is running successfully
+      setMessage("Silakan scan QR code!");
+    } catch (error) {
+      console.error("Camera error:", error);
       setState("error");
-      setMessage("Tidak bisa mengakses kamera. Pastikan izin kamera sudah diberikan.");
+      setMessage("Tidak bisa mengakses kamera. Pastikan Anda menggunakan HTTPS (untuk produksi) atau localhost (untuk development).");
     }
   }
 
   function reset() {
     setState("idle");
     setMessage("");
+  }
+
+  function toggleCamera() {
+    setUseFrontCamera(!useFrontCamera);
+    if (state === "scanning") {
+      // Restart scanner with new camera
+      stopScanner().then(startScanning);
+    }
   }
 
   return (
@@ -131,8 +184,27 @@ export function QRScanner() {
       </div>
 
       {(state === "idle" || state === "error") && (
-        <Button variant="teal" onClick={startScanning}>{state === "error" ? "Coba Scan Lagi" : "Mulai Scan QR"}</Button>
+        <div className="flex flex-col items-center gap-3">
+          <Button variant="teal" onClick={startScanning}>
+            <Camera className="h-4 w-4 mr-2" />
+            {state === "error" ? "Coba Scan Lagi" : "Mulai Scan QR"}
+          </Button>
+          {state === "error" && (
+            <Button variant="outline" onClick={toggleCamera}>
+              <RefreshCw className="h-4 w-4 mr-2" />
+              Switch Kamera
+            </Button>
+          )}
+        </div>
       )}
+
+      {state === "scanning" && (
+        <Button variant="outline" onClick={toggleCamera}>
+          <RefreshCw className="h-4 w-4 mr-2" />
+          Switch Kamera
+        </Button>
+      )}
+
       {state === "success" && (
         <Button variant="outline" onClick={reset}>
           Selesai
