@@ -54,13 +54,16 @@ export function Button({
     : skylearnVariantClasses[variant as SkylearnVariant];
 
   const borderRadius = isFlip7Variant ? "rounded-flip7-pill" : "rounded-skylearn-lg";
-  const transitionEase = isFlip7Variant ? "ease-flip7-bounce" : "ease-skylearn-spring";
 
   return (
     <motion.button
       whileHover={!disabled && !isLoading ? { y: -2 } : {}}
       whileTap={!disabled && !isLoading ? (isFlip7Variant ? { scale: 0.95 } : { scale: 0.97 }) : {}}
-      transition={{ duration: 0.2, ease: transitionEase }}
+      transition={
+        isFlip7Variant
+          ? { duration: 0.2, ease: "circOut", type: "spring", stiffness: 300, damping: 20 }
+          : { duration: 0.2, ease: "easeOut", type: "spring", stiffness: 400, damping: 25 }
+      }
       disabled={disabled || isLoading}
       className={cn(
         "inline-flex items-center justify-center gap-2 font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed",

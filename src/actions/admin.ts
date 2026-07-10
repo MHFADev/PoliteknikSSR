@@ -4,6 +4,107 @@ import { createAdminClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 import { generatePermanentStudentToken } from "@/lib/qr-token";
 
+export interface AttendanceStats {
+  studentId: string;
+  fullName: string;
+  kelas: string | null;
+  jurusan: string | null;
+  hadir: number;
+  telat: number;
+  izin: number;
+  sakit: number;
+  alfa: number;
+  total: number;
+}
+
+export async function get30DayAttendanceStats(studentId?: string): Promise<AttendanceStats[]> {
+  const supabase = createAdminClient();
+  
+  const thirtyDaysAgo = new Date();
+  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+  const startDate = thirtyDaysAgo.toISOString().slice(0, 10);
+  
+  // Get all students
+  let studentsQuery = supabase
+    .from("profiles")
+    .select(`
+      id,
+      full_name,
+      kelas,
+      jurusan_id,
+      study_programs ( nama )
+    `)
+    .eq("role", "siswa");
+    
+  if (studentId) {
+    studentsQuery = studentsQuery.eq("id", studentId);
+  }
+  
+  const { data: students, error: studentsError } = await studentsQuery;
+  
+  if (studentsError || !students) return [];
+  
+  // Get all attendance records and leave requests from the last 30 days
+  const [{ data: records }, { data: leaves }] = await Promise.all([
+    supabase
+      .from("attendance_records")
+      .select("student_id, status, scanned_at")
+      .gte("scanned_at", `${startDate}T00:00:00`),
+    supabase
+      .from("leave_requests")
+      .select("student_id, type, start_date, end_date")
+      .eq("status", "approved")
+      .gte("end_date", startDate)
+  ]);
+  
+  // Calculate stats for each student
+  const stats: AttendanceStats[] = students.map(student => {
+    // Attendance records
+    const studentRecords = records?.filter(r => r.student_id === student.id) || [];
+    const hadir = studentRecords.filter(r => r.status === "hadir").length;
+    const telat = studentRecords.filter(r => r.status === "telat").length;
+    
+    // Leave requests - count days (simplified)
+    const studentLeaves = leaves?.filter(l => l.student_id === student.id) || [];
+    let izin = 0;
+    let sakit = 0;
+    
+    studentLeaves.forEach(leave => {
+      const start = new Date(leave.start_date);
+      const end = new Date(leave.end_date);
+      let days = Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+      // Limit to last 30 days
+      const startLimit = new Date(startDate);
+      if (start < startLimit) {
+        days = Math.ceil((end.getTime() - startLimit.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+      }
+      if (leave.type === "izin") izin += days;
+      if (leave.type === "sakit") sakit += days;
+    });
+    
+    // Count alfa
+    const endDate = new Date();
+    let totalDays = Math.ceil((endDate.getTime() - new Date(startDate).getTime()) / (1000 * 60 * 60 * 24));
+    totalDays = Math.max(totalDays, 1);
+    const alfa = Math.max(0, totalDays - (hadir + telat + izin + sakit));
+    
+    return {
+      studentId: student.id,
+      fullName: student.full_name,
+      kelas: student.kelas,
+      jurusan: student.study_programs?.nama || null,
+      hadir,
+      telat,
+      izin,
+      sakit,
+      alfa,
+      total: totalDays
+    };
+  });
+  
+  return stats;
+}
+
 interface AddStudentArgs {
   fullName: string;
   email: string;

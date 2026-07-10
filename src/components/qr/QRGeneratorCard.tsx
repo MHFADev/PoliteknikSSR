@@ -17,7 +17,7 @@ export function QRGeneratorCard({ initialSession }: { initialSession: Attendance
 
   useEffect(() => {
     if (!session) return setQrImage(null);
-    QRCode.toDataURL(session.token, { margin: 1, width: 280, color: { dark: "#1B3C53" } }).then(
+    QRCode.toDataURL(session.token, { margin: 1, width: 280, color: { dark: "#2BA8A2" } }).then(
       setQrImage
     );
   }, [session]);
@@ -30,12 +30,12 @@ export function QRGeneratorCard({ initialSession }: { initialSession: Attendance
   }
 
   return (
-    <Card>
+    <Card variant="flip7">
       <CardHeader
         title="QR Presensi Hari Ini"
         subtitle={session ? `Berlaku sampai ${formatDate(session.expires_at, true)}` : "Belum ada sesi untuk hari ini"}
         action={
-          <Button variant="outline" isLoading={isPending} onClick={handleGenerate}>
+          <Button variant="gold" isLoading={isPending} onClick={handleGenerate}>
             <RefreshCw className="h-4 w-4" />
             {session ? "Generate Ulang" : "Generate QR"}
           </Button>
@@ -50,16 +50,16 @@ export function QRGeneratorCard({ initialSession }: { initialSession: Attendance
             animate={{ opacity: 1, scale: 1 }}
             src={qrImage}
             alt="QR Presensi"
-            className="rounded-xl border border-steel/30 shadow-glass"
+            className="rounded-flip7-lg border border-teal-light shadow-flip7-teal-glow"
           />
         ) : (
-          <div className="flex h-72 w-72 items-center justify-center rounded-xl border border-dashed border-deep/15 text-sm text-mist-dim text-center px-6">
+          <div className="flex h-72 w-72 items-center justify-center rounded-flip7-lg border border-dashed border-teal text-sm text-ink-muted text-center px-6">
             Klik &quot;Generate QR&quot; untuk membuat sesi presensi hari ini
           </div>
         )}
       </div>
 
-      <p className="mt-4 text-xs text-mist-dim text-center">
+      <p className="mt-4 text-xs text-ink-muted text-center">
         Tampilkan QR ini di layar/proyektor. Siswa scan lewat menu Absensi QR di dashboard masing-masing.
       </p>
     </Card>

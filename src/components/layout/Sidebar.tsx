@@ -40,6 +40,7 @@ const NAV_BY_ROLE: Record<"siswa" | "pembimbing" | "admin", NavItem[]> = {
   ],
   admin: [
     { href: "/dashboard/admin", label: "Dashboard", icon: LayoutDashboard },
+    { href: "/dashboard/admin/absensi", label: "Rekap Absensi", icon: FileText },
     { href: "/dashboard/admin/pengguna", label: "Kelola Pengguna", icon: Users },
     { href: "/dashboard/admin/qr", label: "Generate QR", icon: QrCode },
     { href: "/dashboard/admin/izin", label: "Data Izin", icon: FileText },

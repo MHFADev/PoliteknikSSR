@@ -63,18 +63,18 @@ export function QRScanner() {
 
   return (
     <div className="flex flex-col items-center gap-5">
-      <div className="relative h-72 w-72 overflow-hidden rounded-xl2 border border-steel/30 bg-deep/90 shadow-glass-lg">
+      <div className="relative h-72 w-72 overflow-hidden rounded-flip7-lg border border-outline bg-surface shadow-flip7-card">
         <div id={SCANNER_ELEMENT_ID} className="h-full w-full [&_video]:object-cover" />
 
         {state === "scanning" && (
           <>
             {/* Bingkai viewfinder — signature visual untuk fitur scan */}
-            <div className="pointer-events-none absolute inset-6 rounded-2xl border-2 border-mist/70">
-              <span className="absolute -top-0.5 -left-0.5 h-6 w-6 border-l-4 border-t-4 border-ocean rounded-tl-lg" />
-              <span className="absolute -top-0.5 -right-0.5 h-6 w-6 border-r-4 border-t-4 border-ocean rounded-tr-lg" />
-              <span className="absolute -bottom-0.5 -left-0.5 h-6 w-6 border-l-4 border-b-4 border-ocean rounded-bl-lg" />
-              <span className="absolute -bottom-0.5 -right-0.5 h-6 w-6 border-r-4 border-b-4 border-ocean rounded-br-lg" />
-              <div className="absolute inset-x-0 top-0 h-0.5 bg-ocean/80 animate-scan-line" />
+            <div className="pointer-events-none absolute inset-6 rounded-flip7-lg border-2 border-teal">
+              <span className="absolute -top-0.5 -left-0.5 h-6 w-6 border-l-4 border-t-4 border-teal rounded-tl-flip7-pill" />
+              <span className="absolute -top-0.5 -right-0.5 h-6 w-6 border-r-4 border-t-4 border-teal rounded-tr-flip7-pill" />
+              <span className="absolute -bottom-0.5 -left-0.5 h-6 w-6 border-l-4 border-b-4 border-teal rounded-bl-flip7-pill" />
+              <span className="absolute -bottom-0.5 -right-0.5 h-6 w-6 border-r-4 border-b-4 border-teal rounded-br-flip7-pill" />
+              <div className="absolute inset-x-0 top-0 h-0.5 bg-teal animate-scan-line" />
             </div>
           </>
         )}
@@ -85,17 +85,17 @@ export function QRScanner() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-deep/90 text-mist px-6 text-center"
+              className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-surface/95 text-ink px-6 text-center"
             >
               {state === "idle" && (
                 <>
-                  <CameraOff className="h-9 w-9 text-mist/60" />
-                  <p className="text-sm text-mist/80">Kamera belum aktif</p>
+                  <CameraOff className="h-9 w-9 text-ink-muted" />
+                  <p className="text-sm text-ink-muted">Kamera belum aktif</p>
                 </>
               )}
               {state === "processing" && (
                 <motion.div
-                  className="h-9 w-9 rounded-full border-2 border-mist/30 border-t-ocean"
+                  className="h-9 w-9 rounded-full border-2 border-outline border-t-teal"
                   animate={{ rotate: 360 }}
                   transition={{ repeat: Infinity, duration: 0.8, ease: "linear" }}
                 />
@@ -108,10 +108,10 @@ export function QRScanner() {
                   className="relative flex flex-col items-center gap-2"
                 >
                   <div className="relative">
-                    <span className="absolute inset-0 rounded-full bg-ocean/40 animate-pulse-ring" />
-                    <CheckCircle2 className="relative h-12 w-12 text-ocean-light" />
+                    <span className="absolute inset-0 rounded-full bg-leaf/30 animate-pulse-ring" />
+                    <CheckCircle2 className="relative h-12 w-12 text-leaf" />
                   </div>
-                  <p className="text-sm font-medium text-mist">{message}</p>
+                  <p className="text-sm font-medium text-ink">{message}</p>
                 </motion.div>
               )}
               {state === "error" && (
@@ -121,8 +121,8 @@ export function QRScanner() {
                   transition={{ type: "spring", stiffness: 400, damping: 8 }}
                   className="flex flex-col items-center gap-2"
                 >
-                  <XCircle className="h-12 w-12 text-steel" />
-                  <p className="text-sm font-medium text-mist text-center">{message}</p>
+                  <XCircle className="h-12 w-12 text-coral" />
+                  <p className="text-sm font-medium text-ink text-center">{message}</p>
                 </motion.div>
               )}
             </motion.div>
@@ -131,7 +131,7 @@ export function QRScanner() {
       </div>
 
       {(state === "idle" || state === "error") && (
-        <Button onClick={startScanning}>{state === "error" ? "Coba Scan Lagi" : "Mulai Scan QR"}</Button>
+        <Button variant="teal" onClick={startScanning}>{state === "error" ? "Coba Scan Lagi" : "Mulai Scan QR"}</Button>
       )}
       {state === "success" && (
         <Button variant="outline" onClick={reset}>
