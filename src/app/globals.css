@@ -3,44 +3,9 @@
 @tailwind utilities;
 
 @layer components {
-  /* Skylearn Input Styles */
+  // Input error styling: coral border + background
   .input-error {
-    @apply border-coral bg-coral-soft/30 focus:border-coral;
-  }
-
-  .input-skylearn {
-    @apply w-full rounded-skylearn-md border border-outline bg-surface px-4 py-3 text-ink focus:border-sky focus:ring-4 focus:ring-sky-soft/50 focus:outline-none transition-colors;
-  }
-
-  /* Flip7 Card with left accent border */
-  .flip7-card {
-    @apply bg-white rounded-flip7-lg shadow-flip7-card border-l-4 border-teal-light;
-  }
-
-  .flip7-card-highlight {
-    @apply bg-gradient-to-r from-gold-light/10 to-white border-l-4 border-gold shadow-flip7-gold-glow;
-  }
-
-  .flip7-card-boom {
-    @apply bg-gradient-to-r from-flip7-coral-light/10 to-white border-l-4 border-flip7-coral animate-flip7-boom-pulse;
-  }
-
-  /* Flip7 Button Gradient Gold */
-  .flip7-btn-gold {
-    @apply relative overflow-hidden;
-    background: linear-gradient(135deg, #FFD23F 0%, #FFE47A 50%, #FFD23F 100%);
-    background-size: 200% 200%;
-  }
-
-  .flip7-btn-gold::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 40%;
-    background: linear-gradient(to bottom, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0) 100%);
-    pointer-events: none;
+    @apply border-coral/60 bg-coral-soft/30 focus:border-coral;
   }
 }
 
@@ -49,21 +14,22 @@ html {
 }
 
 body {
-  background-color: #f8fafc;
-  color: #0f172a;
+  background-color: #FFFFFF;
+  color: #0F172A;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+// Focus ring styling: sky color dengan outline offset
 :focus-visible {
-  outline: 2px solid #3b82f6;
+  outline: 2px solid #3B82F6;
   outline-offset: 2px;
   border-radius: 8px;
 }
 
+// Reduced motion support: animasi harus di-disable untuk aksesibilitas
 @media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
+  *, *::before, *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
@@ -73,7 +39,7 @@ body {
 @layer utilities {
   .scrollbar-thin {
     scrollbar-width: thin;
-    scrollbar-color: #3b82f6 transparent;
+    scrollbar-color: #3B82F6 transparent;
   }
   .scrollbar-thin::-webkit-scrollbar {
     width: 4px;
@@ -83,27 +49,14 @@ body {
     background: transparent;
   }
   .scrollbar-thin::-webkit-scrollbar-thumb {
-    background-color: #cbd5e1;
-    border-radius: 4px;
-  }
-
-  /* Flip7 Text Shadow */
-  .text-shadow-flip7 {
-    text-shadow: 1px 1px 0px #1E8C86;
-  }
-
-  .text-shadow-gold {
-    text-shadow: 2px 2px 0px #E6B800;
+    background-color: #CBD5E1;
+    border-radius: 8px;
   }
 }
 
+// Pastikan input tidak zoom di mobile (iOS Safari)
 @media (max-width: 640px) {
-  input,
-  select,
-  textarea {
+  input, select, textarea {
     font-size: 16px !important;
   }
-}
-.font-josefin {
-  font-family: var(--font-josefin), sans-serif;
 }

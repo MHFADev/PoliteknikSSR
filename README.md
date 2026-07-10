@@ -65,7 +65,7 @@ Fitur utama: presensi QR harian, pengajuan izin dengan upload bukti terkompresi,
 | Bagian | Teknologi |
 |---|---|
 | Framework | Next.js 14 (App Router) + TypeScript |
-| Styling | Tailwind CSS (palet krem hangat + aksen teal/sage/terracotta, bukan warna default indigo/ungu) |
+| Styling | Tailwind CSS (Skylearn + Flip7 design system) |
 | Animasi | Framer Motion |
 | Database & Auth | Supabase (PostgreSQL + Supabase Auth + Row Level Security) |
 | Storage | Supabase Storage (bucket `leave-proofs`) |
@@ -113,7 +113,7 @@ politeknik-ssr/
     ├── lib/
     │   ├── supabase/            # client.ts (browser), server.ts, middleware.ts
     │   ├── utils.ts             # Helper: cn(), formatDate, todayISODate
-    │   ├── constants.ts         # Warna & konstanta global
+    │   ├── constants/           # Konstanta global (colors.ts untuk palet warna)
     │   ├── qr-token.ts          # HMAC sign/verify token QR harian
     │   └── export-csv.ts        # Utilitas ekspor CSV
     └── types/database.ts        # Tipe TypeScript sesuai schema.sql
@@ -204,3 +204,52 @@ Buka `http://localhost:3000` → login dengan akun admin yang baru dibuat.
 - Ganti `ON_TIME_CUTOFF_HOUR` di `src/actions/attendance.ts` sesuai jam masuk instansi.
 - `SESSION_DURATION_HOURS` di `src/actions/qr.ts` mengatur berapa lama QR berlaku (default 12 jam).
 - Tambahkan halaman manajemen user & mapping siswa-pembimbing di dashboard Admin (saat ini masih manual lewat Supabase Table Editor) kalau ingin sepenuhnya self-service tanpa buka Supabase dashboard.
+
+---
+
+## 8. Desain Sistem (Design System)
+
+Project ini menggunakan **Skylearn Design System** sebagai basis utama + **Flip7 Accent** untuk tombol aksen:
+
+### Skylearn (Utama)
+- **Warna utama**: Sky (#3B82F6), Sun (#FBBF24), Leaf (#22C55E), Coral (#F87171)
+- **Tipografi: Plus Jakarta Sans (display) + Inter (body)
+- **Radius**: 12px (input), 16px (tombol), 20px (kartu), 28px (panel)
+- **Shadow**: Skylearn soft shadow (`0 8px 24px rgba(15,23,42,0.06)`)
+- **Animasi**: Spring easing `cubic-bezier(0.34,1.56,0.64,1)` durasi 240ms
+
+### Flip7 (Aksen)
+- **Warna**: Teal (#2BA8A2), Gold (#FFD23F), Coral (#EF6C4A)
+- **Radius**: Pill (999px)
+- **Animasi**: Bounce `cubic-bezier(0.68,-0.55,0.265,1.55)`
+
+### Komponen UI Base (`src/components/ui/`)
+- `Button` — Tombol dengan varian primary/secondary/outline/ghost/danger + gold/teal/coral/boom/flip7
+- `Card`, `CardHeader` — Kartu konten
+- `Modal` — Dialog overlay
+- `Badge`, `Skeleton`, `ProgressBar`, `StarBadge`, `AnswerTile`, `Confetti` — Elemen UI pendukung
+
+---
+
+## 9. Konvensi Kode (Best Practices)
+
+| Aturan | Penjelasan |
+|---|---|
+| **Path alias** | Gunakan `@/` untuk import dari `src/` (mis. `@/lib/utils`) |
+| **Server Actions** | Taruh di `src/actions/`, gunakan `"use server"` di awal file |
+| **Client Components** | Taruh di `src/components/`, gunakan `"use client"` di awal file |
+| **TypeScript** | Strict mode aktif, definisikan tipe di `src/types/database.ts` |
+| **Tailwind** | Pakai class utilitas, hindari CSS custom kecuali diperlukan |
+| **Commit** | Gunakan conventional commits: `feat:`, `fix:`, `docs:`, `refactor:` |
+
+---
+
+## 10. Troubleshooting Umum
+
+| Masalah | Solusi |
+|---|---|
+| Build error: `MODULE_NOT_FOUND` | Hapus folder `.next/` lalu `npm run dev` ulang |
+| Tailwind class tidak berlaku | Cek `tailwind.config.ts` content paths, restart dev server |
+| Supabase auth redirect loop | Cek `middleware.ts` dan `NEXT_PUBLIC_SUPABASE_URL` |
+| Location picker tidak load | Pastikan Leaflet CSS di-load di `layout.tsx` |
+| QR tidak scan di mobile | Izinkan akses kamera di browser, gunakan HTTPS (localhost OK) |
