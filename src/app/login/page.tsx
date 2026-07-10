@@ -5,7 +5,16 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { Loader2, MapPin, Eye, EyeOff } from "lucide-react";
+import {
+  Loader2,
+  MapPin,
+  User,
+  Lock,
+  AlertCircle,
+  ArrowRight,
+  Eye,
+  EyeOff,
+} from "lucide-react";
 import { signInWithPassword } from "./actions";
 import { checkLoginLocation, hasLocationsConfigured } from "@/actions/location";
 import { Button } from "@/components/ui/Button";
@@ -24,10 +33,10 @@ export default function LoginPage() {
   const router = useRouter();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [gpsStep, setGpsStep] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -88,7 +97,7 @@ export default function LoginPage() {
         style={{
           border: "2px solid transparent",
           backgroundImage:
-            "linear-gradient(white, white), linear-gradient(135deg, #3A5BF0, #9134ED)",
+            "linear-gradient(white, white), linear-gradient(135deg, #0A00BF, #0EC6CC, #3A5BF0)",
           backgroundOrigin: "border-box",
           backgroundClip: "padding-box, border-box",
         }}
@@ -97,21 +106,21 @@ export default function LoginPage() {
           <Image
             src="/logo.png"
             alt="Politeknik SSR"
-            width={140}
-            height={42}
+            width={200}
+            height={60}
             className="mb-4 h-auto w-auto"
             priority
           />
-          <h1 className="font-display text-lg font-semibold text-deep sm:text-xl">
-            Selamat Datang Di
+          <h1 className="font-josefin text-lg font-semibold text-deep sm:text-xl">
+            Selamat Datang di
           </h1>
-          <h1 className="font-display text-lg font-semibold text-deep sm:text-xl">
+          <h1 className="font-josefin text-lg font-semibold text-deep sm:text-xl">
             Sistem Absensi Politeknik SSR
           </h1>
           <p className="mt-2 text-xs text-steel sm:text-sm">
             {gpsStep
               ? "Memverifikasi lokasi Anda..."
-              : "silakan masuk menggunakan akun yang sudah terdaftar"}
+              : "Silakan masuk menggunakan akun yang sudah terdaftar"}
           </p>
         </div>
 
@@ -131,36 +140,38 @@ export default function LoginPage() {
               )}
             />
           </div>
+
           <div>
-            <label className="text-sm font-medium text-deep">Kata Sandi</label>
+            <label className="text-sm font-medium text-deep">Password</label>
             <div className="relative mt-1.5">
+              <div className="absolute left-3 top-1/2 -translate-y-1/2 text-steel">
+                <Lock className="h-4 w-4" />
+              </div>
               <input
                 type={showPassword ? "text" : "password"}
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
+                placeholder="Masukkan kata sandi"
                 disabled={gpsStep}
                 className={cn(
-                  "w-full rounded-xl border bg-white/80 px-3 pr-10 py-2.5 text-sm outline-none focus:border-ocean disabled:opacity-50",
-                  error ? "border-danger/60 bg-danger/5" : "border-deep/10",
+                  "w-full rounded-xl border bg-white/90 px-3 py-2.5 pl-9 pr-11 text-sm outline-none focus:border-ocean focus:ring-2 focus:ring-ocean/20 transition-all duration-200 disabled:opacity-50",
+                  error
+                    ? "border-danger/60 bg-danger/5 focus:border-danger"
+                    : "border-deep/10",
                 )}
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                disabled={gpsStep}
-                className="absolute inset-y-0 right-0 flex items-center pr-3 text-deep/60 hover:text-deep transition-colors disabled:opacity-50"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-steel hover:text-ocean transition-colors"
+                tabIndex={-1}
               >
-<<<<<<< HEAD
                 {showPassword ? (
                   <EyeOff className="h-4 w-4" />
                 ) : (
                   <Eye className="h-4 w-4" />
                 )}
-=======
-                {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
->>>>>>> 7e9036d40207c45557e417c7f1d08305e4f43836
               </button>
             </div>
           </div>
@@ -175,14 +186,18 @@ export default function LoginPage() {
             </p>
           )}
 
-          <Button type="submit" className="w-full" disabled={isSubmitting}>
+          <Button
+            type="submit"
+            className="w-full  !bg-blue-600 hover:!from-blue-600 hover:!to-purple-700 !text-white !shadow-lg hover:!shadow-xl !border-0"
+            disabled={isSubmitting}
+          >
             {isSubmitting && <Loader2 className="h-4 w-4 animate-spin" />}
             {gpsStep ? "Memverifikasi Lokasi..." : "Login"}
           </Button>
         </form>
 
         <p className="mt-6 text-center text-xs text-mist-dim">
-          Hubungi Admin Sekolah Jika Belum Memiliki Akses.
+          Hubungi Pembimbing PKL Jika Belum Memiliki Akses.
         </p>
       </motion.div>
     </main>
