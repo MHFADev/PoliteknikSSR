@@ -14,9 +14,9 @@ export default async function SiswaLogbookPage() {
     .from("logbook_entries")
     .select("*")
     .eq("student_id", user!.id)
-    .order("entry_date", { ascending: false });
+    .order("entry_date", { ascending: false }) as any;
 
-  const todayEntry = history?.find((e) => e.entry_date === todayISODate());
+  const todayEntry = history?.find((e: any) => e.entry_date === todayISODate());
 
   return (
     <div className="space-y-6">

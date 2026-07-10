@@ -1,4 +1,5 @@
 export const COLORS = {
+  // Skylearn Design System
   sky: {
     DEFAULT: "#3B82F6",
     bright: "#60A5FA",
@@ -35,5 +36,27 @@ export const COLORS = {
   outline: {
     DEFAULT: "#E2E8F0",
     strong: "#94A3B8",
+  },
+
+  // Flip7 Design System
+  teal: {
+    DEFAULT: "#2BA8A2",
+    light: "#3CC4BD",
+    dark: "#1E8C86",
+    bg: "#E8F6F5",
+  },
+  gold: {
+    DEFAULT: "#FFD23F",
+    light: "#FFE47A",
+    dark: "#E6B800",
+  },
+  flip7: {
+    coral: {
+      DEFAULT: "#EF6C4A",
+      light: "#FF8A6A",
+      dark: "#D45233",
+    },
+    cream: "#FFF8E7",
+    sky: "#5DADE2",
   },
 };

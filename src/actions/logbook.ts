@@ -7,7 +7,7 @@ import { z } from "zod";
 const entrySchema = z.object({
   entry_date: z.string(),
   content: z.string().min(20, "Isi logbook minimal 20 karakter agar bermakna."),
-  photoUrl: z.string().optional(),
+  photoUrl: z.string().optional().nullable(),
 });
 
 export async function saveLogbookEntry(input: z.infer<typeof entrySchema>) {
@@ -28,7 +28,7 @@ export async function saveLogbookEntry(input: z.infer<typeof entrySchema>) {
       content: parsed.data.content,
       photo_url: parsed.data.photoUrl ?? null,
       updated_at: new Date().toISOString(),
-    },
+    } as any,
     { onConflict: "student_id,entry_date" }
   );
 
