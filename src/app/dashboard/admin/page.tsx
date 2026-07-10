@@ -42,11 +42,11 @@ export default async function AdminOverviewPage() {
   ] = await Promise.all([
     supabase
       .from("profiles")
-      .select("*", { count: "exact", head: true })
+      .select("id", { count: "exact", head: true }) // Hanya id untuk count
       .eq("role", "siswa"),
     supabase
       .from("profiles")
-      .select("*", { count: "exact", head: true })
+      .select("id", { count: "exact", head: true }) // Hanya id untuk count
       .eq("role", "pembimbing"),
     supabase
       .from("attendance_records")
@@ -54,7 +54,7 @@ export default async function AdminOverviewPage() {
       .gte("scanned_at", `${today}T00:00:00`),
     supabase
       .from("leave_requests")
-      .select("*", { count: "exact", head: true })
+      .select("id", { count: "exact", head: true }) // Hanya id untuk count
       .eq("status", "pending"),
     supabase
       .from("attendance_records")
@@ -68,7 +68,7 @@ export default async function AdminOverviewPage() {
       .limit(5),
     supabase
       .from("calendar_events")
-      .select("*", { count: "exact", head: true }),
+      .select("id", { count: "exact", head: true }), // Hanya id untuk count
   ]);
 
   const hadirToday =

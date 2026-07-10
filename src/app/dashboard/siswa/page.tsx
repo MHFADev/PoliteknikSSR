@@ -28,18 +28,17 @@ export default async function SiswaOverviewPage() {
     { count: izinPendingCount },
     { data: recentLogbook },
     { data: upcomingEvents },
-    { data: leaves },
     announcements,
   ] = await Promise.all([
     supabase
       .from("attendance_records")
-      .select("*", { count: "exact", head: true })
+      .select("id", { count: "exact", head: true }) // Hanya select id untuk count
       .eq("student_id", user!.id)
       .eq("status", "hadir")
       .gte("scanned_at", startOfMonth.toISOString()),
     supabase
       .from("leave_requests")
-      .select("*", { count: "exact", head: true })
+      .select("id", { count: "exact", head: true }) // Hanya select id untuk count
       .eq("student_id", user!.id)
       .eq("status", "pending"),
     supabase
@@ -55,16 +54,10 @@ export default async function SiswaOverviewPage() {
       .gte("event_date", today)
       .order("event_date", { ascending: true })
       .limit(3),
-    supabase
-      .from("leave_requests")
-      .select("start_date, end_date, type")
-      .eq("student_id", user!.id)
-      .eq("status", "disetujui"),
     getAnnouncementsForStudent(user!.id, profile?.jurusan_id ?? null),
   ]);
 
   const todayEntry = recentLogbook?.find((e) => e.entry_date === todayISODate());
-  const activeLeaves = leaves?.filter((l) => l.start_date <= today && l.end_date >= today);
 
   return (
     <div className="space-y-6">
