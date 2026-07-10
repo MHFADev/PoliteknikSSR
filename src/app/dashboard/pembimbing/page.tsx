@@ -49,9 +49,9 @@ export default async function PembimbingOverviewPage() {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <StatCard label="Siswa Bimbingan" value={studentCount ?? 0} icon={<Users className="h-5 w-5" />} accent="blue" />
-        <StatCard label="Hadir Hari Ini" value={hadirToday} icon={<CalendarCheck className="h-5 w-5" />} accent="ocean" />
-        <StatCard label="Izin Menunggu Review" value={izinPendingCount ?? 0} icon={<FileClock className="h-5 w-5" />} accent="steel" />
+        <StatCard label="Siswa Bimbingan" value={studentCount ?? 0} icon={<Users className="h-5 w-5" />} accent="teal" />
+        <StatCard label="Hadir Hari Ini" value={hadirToday} icon={<CalendarCheck className="h-5 w-5" />} accent="leaf" />
+        <StatCard label="Izin Menunggu Review" value={izinPendingCount ?? 0} icon={<FileClock className="h-5 w-5" />} accent="sun" />
       </div>
 
       <Card>

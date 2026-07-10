@@ -82,34 +82,40 @@ Fitur utama: presensi QR harian, pengajuan izin dengan upload bukti terkompresi,
 
 ```
 politeknik-ssr/
+├── docs/                       # Dokumentasi referensi & desain
 ├── schema.sql                  # Jalankan di Supabase SQL Editor
 ├── .env.example                # Template environment variable
 ├── scripts/create-user.mjs     # Bikin akun admin/pembimbing/siswa pertama
 └── src/
     ├── middleware.ts           # Proteksi rute + role-based redirect
     ├── app/
-    │   ├── login/               # Halaman login + toggle password
+    │   ├── login/               # Halaman login (Skylearn design system)
+    │   ├── api/locations/       # API endpoint lokasi GPS
     │   └── dashboard/
+    │       ├── (auth)/          # Route group untuk halaman login
     │       ├── siswa/           # Ringkasan, Absensi QR, Izin, Logbook, Kalender, Pengumuman
     │       ├── pembimbing/      # Ringkasan, Persetujuan Izin, Penilaian Logbook
     │       └── admin/           # Ringkasan, Generate QR, Data Izin, Data Logbook, Ekspor, Lokasi GPS, Kalender, Broadcast, Pengguna
     ├── actions/                 # Server Actions (attendance, leave, logbook, qr, location, broadcast, kalender)
     ├── components/
-    │   ├── ui/                  # Card, Button, Modal, Badge, Skeleton
-    │   ├── layout/Sidebar.tsx
-    │   ├── qr/                  # QRScanner (siswa), QRGeneratorCard (admin)
-    │   ├── izin/                # Form pengajuan + modal approval
-    │   ├── logbook/              # Form logbook + modal penilaian
-    │   ├── charts/AttendanceChart.tsx
-    │   ├── dashboard/StatCard.tsx
-    │   ├── LocationPicker.tsx   # Peta interaktif Leaflet untuk admin
-    │   ├── Calendar.tsx
-    │   └── StudentCalendar.tsx
+    │   ├── ui/                  # Base UI primitives: Button, Card, Modal, Badge, Skeleton, ProgressBar, StarBadge, AnswerTile, Confetti
+    │   ├── layout/              # Layout components: Sidebar
+    │   ├── features/
+    │   │   ├── izin/            # LeaveRequestForm, LeaveApprovalModal
+    │   │   ├── logbook/         # LogbookForm, LogbookGradeModal
+    │   │   ├── qr/              # QRScanner (siswa), QRGeneratorCard (admin)
+    │   │   ├── location/        # LocationPicker, LocationVerifier (Leaflet)
+    │   │   ├── admin/           # AddStudentModal
+    │   │   ├── charts/          # AttendanceChart (Recharts)
+    │   │   ├── dashboard/       # StatCard
+    │   │   └── calendar/        # Calendar, StudentCalendar
+    │   └── shared/              # Komponen yang dipakai lintas fitur
     ├── lib/
     │   ├── supabase/            # client.ts (browser), server.ts, middleware.ts
-    │   ├── qr-token.ts           # HMAC sign/verify token QR harian
-    │   ├── export-csv.ts
-    │   └── utils.ts
+    │   ├── utils.ts             # Helper: cn(), formatDate, todayISODate
+    │   ├── constants.ts         # Warna & konstanta global
+    │   ├── qr-token.ts          # HMAC sign/verify token QR harian
+    │   └── export-csv.ts        # Utilitas ekspor CSV
     └── types/database.ts        # Tipe TypeScript sesuai schema.sql
 ```
 

@@ -6,6 +6,7 @@ import {
   AttendanceChart,
   type AttendanceTrendPoint,
 } from "@/components/charts/AttendanceChart";
+import { Calendar } from "@/components/Calendar";
 import {
   Users,
   CalendarCheck,
@@ -19,6 +20,15 @@ import Link from "next/link";
 
 export default async function AdminOverviewPage() {
   const supabase = createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("full_name")
+    .eq("id", user!.id)
+    .single();
 
   const today = new Date().toISOString().slice(0, 10);
   const sevenDaysAgo = new Date();
@@ -31,15 +41,16 @@ export default async function AdminOverviewPage() {
     { count: izinPendingCount },
     { data: weekRecords },
     { data: upcomingEvents },
+    { data: allEvents },
     { count: totalEvents },
   ] = await Promise.all([
     supabase
       .from("profiles")
-      .select("*", { count: "exact", head: true })
+      .select("id", { count: "exact", head: true }) // Hanya id untuk count
       .eq("role", "siswa"),
     supabase
       .from("profiles")
-      .select("*", { count: "exact", head: true })
+      .select("id", { count: "exact", head: true }) // Hanya id untuk count
       .eq("role", "pembimbing"),
     supabase
       .from("attendance_records")
@@ -47,7 +58,7 @@ export default async function AdminOverviewPage() {
       .gte("scanned_at", `${today}T00:00:00`),
     supabase
       .from("leave_requests")
-      .select("*", { count: "exact", head: true })
+      .select("id", { count: "exact", head: true }) // Hanya id untuk count
       .eq("status", "pending"),
     supabase
       .from("attendance_records")
@@ -61,7 +72,11 @@ export default async function AdminOverviewPage() {
       .limit(5),
     supabase
       .from("calendar_events")
-      .select("*", { count: "exact", head: true }),
+      .select("id, title, event_date, tipe")
+      .order("event_date", { ascending: true }),
+    supabase
+      .from("calendar_events")
+      .select("id", { count: "exact", head: true }), // Hanya id untuk count
   ]);
 
   const hadirToday =
@@ -90,15 +105,15 @@ export default async function AdminOverviewPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="font-display text-2xl font-semibold text-ocean">
-          Ringkasan Admin
+        <h1 className="font-display text-2xl font-semibold text-teal-dark">
+          HI, {profile?.full_name || "Admin"} 👋👋
         </h1>
-        <p className="text-sm text-mist-ell">
+        <p className="text-sm text-ink-muted">
           Gambaran umum seluruh peserta PKL Politeknik SSR.
         </p>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard
           label="Total Siswa"
           value={siswaCount ?? 0}
@@ -133,34 +148,34 @@ export default async function AdminOverviewPage() {
             action={
               <Link
                 href="/dashboard/admin/kalender"
-                className="text-sm text-blue-vibrant hover:underline"
+                className="text-sm text-teal hover:underline"
               >
                 Lihat Semua
               </Link>
             }
           />
-          <div className="divide-y divide-deep/6">
+          <div className="divide-y divide-outline">
             {upcomingEvents && upcomingEvents.length > 0 ? (
               upcomingEvents.map((ev: any) => (
                 <div key={ev.id} className="flex items-center gap-3 px-4 py-3">
                   <div
-                    className={`h-2.5 w-2.5 shrink-0 rounded-full ${ev.tipe === "libur" ? "bg-green-500" : "bg-blue-500"}`}
+                    className={`h-2.5 w-2.5 shrink-0 rounded-full ${ev.tipe === "libur" ? "bg-flip7-coral" : "bg-teal"}`}
                   />
                   <div className="min-w-0 flex-1">
-                    <p className="text-sm font-medium text-deep truncate">
+                    <p className="text-sm font-medium text-ink truncate">
                       {ev.title}
                     </p>
-                    <p className="text-xs text-mist-dim">
+                    <p className="text-xs text-ink-subtle">
                       {formatDate(ev.event_date)}
                     </p>
                   </div>
-                  <Badge tone={ev.tipe === "libur" ? "success" : "neutral"}>
+                  <Badge tone={ev.tipe === "libur" ? "coral" : "teal"}>
                     {ev.tipe === "libur" ? "Libur" : "Event"}
                   </Badge>
                 </div>
               ))
             ) : (
-              <p className="py-6 text-center text-sm text-mist-dim">
+              <p className="py-6 text-center text-sm text-ink-subtle">
                 Tidak ada event mendatang.
               </p>
             )}
@@ -174,6 +189,10 @@ export default async function AdminOverviewPage() {
           />
           <AttendanceChart data={Array.from(trendMap.values())} />
         </Card>
+      </div>
+
+      <div className="mt-6">
+        <Calendar events={allEvents || []} />
       </div>
     </div>
   );
