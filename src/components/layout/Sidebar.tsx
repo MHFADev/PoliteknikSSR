@@ -66,10 +66,17 @@ export function Sidebar({ role, fullName }: { role: "siswa" | "pembimbing" | "ad
   }
 
   const sidebarContent = (
-    <div className="flex h-full flex-col justify-between px-4 py-6">
-      <div>
-        <div className="mb-8 px-2">
+    <div className="flex h-full flex-col justify-between px-4 py-6 overflow-y-auto">
+      <div className="flex-1">
+        <div className="mb-8 px-2 flex items-center justify-between">
           <Image src="/logo.png" alt="Politeknik SSR" width={140} height={40} className="h-auto w-auto" priority />
+          <button
+            onClick={() => setOpen(false)}
+            className="lg:hidden p-2 rounded-lg hover:bg-surface"
+            aria-label="Tutup menu"
+          >
+            <X className="h-5 w-5 text-ink-muted" />
+          </button>
         </div>
         <nav className="space-y-1">
           {items.map((item) => {
@@ -86,34 +93,34 @@ export function Sidebar({ role, fullName }: { role: "siswa" | "pembimbing" | "ad
                 )}
                 <span
                   className={cn(
-                    "relative flex items-center gap-3 rounded-skylearn-lg px-3 py-2.5 text-sm font-medium transition-colors",
+                    "relative flex items-center gap-3 rounded-skylearn-lg px-3 py-3 text-sm font-medium transition-colors min-h-[50px]",
                     active ? "text-sky-deep" : "text-ink-muted hover:text-ink hover:bg-surface"
                   )}
                 >
-                  <Icon className="h-5 w-5" />
-                  {item.label}
+                  <Icon className="h-6 w-6 flex-shrink-0" />
+                  <span className="truncate">{item.label}</span>
                 </span>
               </Link>
             );
           })}
         </nav>
       </div>
-      <div className="space-y-3 px-2">
+      <div className="space-y-3 px-2 pt-4 border-t border-outline mt-4">
         <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-sky-soft text-sky-deep text-base font-bold border-2 border-white shadow-skylearn">
+          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-sky-soft text-sky-deep text-lg font-bold border-2 border-white shadow-skylearn flex-shrink-0">
             {fullName.charAt(0).toUpperCase()}
           </div>
           <div className="min-w-0">
-            <p className="truncate text-ink font-semibold text-sm">{fullName}</p>
+            <p className="truncate text-ink font-semibold">{fullName}</p>
             <p className="text-xs text-ink-subtle capitalize">{role}</p>
           </div>
         </div>
         <button
           onClick={handleLogout}
-          className="flex w-full items-center gap-3 rounded-skylearn-lg px-3 py-2.5 text-sm text-ink-muted hover:bg-surface hover:text-coral transition-colors"
+          className="flex w-full items-center gap-3 rounded-skylearn-lg px-3 py-3 text-sm font-medium text-ink-muted hover:bg-surface hover:text-coral transition-colors min-h-[50px]"
         >
-          <LogOut className="h-5 w-5" />
-          Keluar
+          <LogOut className="h-6 w-6 flex-shrink-0" />
+          <span>Keluar</span>
         </button>
       </div>
     </div>
@@ -123,10 +130,10 @@ export function Sidebar({ role, fullName }: { role: "siswa" | "pembimbing" | "ad
     <>
       <button
         onClick={() => setOpen(!open)}
-        className="fixed left-4 top-4 z-50 flex h-12 w-12 items-center justify-center rounded-skylearn-lg bg-white shadow-skylearn border border-outline text-ink lg:hidden"
+        className="fixed left-4 top-4 z-50 flex h-14 w-14 items-center justify-center rounded-skylearn-lg bg-white shadow-skylearn border border-outline text-ink lg:hidden"
         aria-label={open ? "Tutup menu" : "Buka menu"}
       >
-        {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+        {open ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
       </button>
 
       <aside className="hidden h-screen w-64 shrink-0 border-r border-outline bg-white lg:flex lg:flex-col">
@@ -147,7 +154,7 @@ export function Sidebar({ role, fullName }: { role: "siswa" | "pembimbing" | "ad
               animate={{ x: 0 }}
               exit={{ x: "-100%" }}
               transition={{ type: "spring", damping: 28, stiffness: 300 }}
-              className="h-full w-72 border-r border-outline bg-white"
+              className="h-full w-full max-w-xs border-r border-outline bg-white"
               onClick={(e) => e.stopPropagation()}
             >
               {sidebarContent}
