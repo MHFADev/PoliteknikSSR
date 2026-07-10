@@ -3,6 +3,7 @@
 import { useState, useRef } from "react";
 import { motion } from "framer-motion";
 import { CheckCircle2, UploadCloud, X } from "lucide-react";
+import imageCompression from "browser-image-compression";
 import { saveLogbookEntry } from "@/actions/logbook";
 import { Button } from "@/components/ui/Button";
 import { Card, CardHeader } from "@/components/ui/Card";
@@ -16,17 +17,40 @@ export function LogbookForm({ existingContent, existingPhotoUrl }: { existingCon
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [saved, setSaved] = useState(false);
+  const [isCompressing, setIsCompressing] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const today = todayISODate();
   const supabase = createClient();
 
-  function handlePhotoChange(e: React.ChangeEvent<HTMLInputElement>) {
+  async function handlePhotoChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (file) {
-      setPhoto(file);
-      const reader = new FileReader();
-      reader.onload = () => setPhotoPreview(reader.result as string);
-      reader.readAsDataURL(file);
+      try {
+        setIsCompressing(true);
+        
+        // Compress image
+        const options = {
+          maxSizeMB: 0.5,
+          maxWidthOrHeight: 1920,
+          useWebWorker: true,
+          fileType: "image/jpeg",
+        };
+        
+        const compressedFile = await imageCompression(file, options);
+        
+        setPhoto(compressedFile);
+        
+        // Preview
+        const reader = new FileReader();
+        reader.onload = () => setPhotoPreview(reader.result as string);
+        reader.readAsDataURL(compressedFile);
+        
+      } catch (err) {
+        console.error("Compression error:", err);
+        setError("Gagal memproses foto, coba lagi");
+      } finally {
+        setIsCompressing(false);
+      }
     }
   }
 
@@ -47,13 +71,13 @@ export function LogbookForm({ existingContent, existingPhotoUrl }: { existingCon
 
       if (photo) {
         // Upload to Supabase Storage
-        const fileExt = photo.name.split(".").pop();
+        const fileExt = "jpeg"; // We converted to jpeg
         const fileName = `${Date.now()}.${fileExt}`;
         const filePath = `logbook_photos/${fileName}`;
 
         const { error: uploadError } = await supabase.storage
           .from("attachments")
-          .upload(filePath, photo, { upsert: true });
+          .upload(filePath, photo, { upsert: true, contentType: "image/jpeg" });
 
         if (uploadError) throw new Error("Gagal mengupload foto: " + uploadError.message);
 
@@ -109,7 +133,7 @@ export function LogbookForm({ existingContent, existingPhotoUrl }: { existingCon
               <UploadCloud className="h-8 w-8 text-ink-muted" />
               <div className="text-center">
                 <p className="text-sm font-medium text-ink">Klik untuk upload foto</p>
-                <p className="text-xs text-ink-subtle">Max 5MB (JPG/PNG)</p>
+                <p className="text-xs text-ink-subtle">Foto akan dikompres otomatis (max 500KB)</p>
               </div>
               <input
                 ref={fileInputRef}
@@ -117,7 +141,9 @@ export function LogbookForm({ existingContent, existingPhotoUrl }: { existingCon
                 accept="image/*"
                 className="hidden"
                 onChange={handlePhotoChange}
+                disabled={isCompressing}
               />
+              {isCompressing && <p className="text-sm text-ink-subtle">Mengompres foto...</p>}
             </label>
           )}
         </div>
@@ -132,7 +158,7 @@ export function LogbookForm({ existingContent, existingPhotoUrl }: { existingCon
             <CheckCircle2 className="h-4 w-4" /> Kegiatan tersimpan.
           </motion.div>
         )}
-        <Button type="submit" isLoading={isSubmitting} className="w-full bg-sky hover:bg-sky-deep text-white h-14 rounded-skylearn-lg text-lg">
+        <Button type="submit" isLoading={isSubmitting || isCompressing} className="w-full bg-sky hover:bg-sky-deep text-white h-14 rounded-skylearn-lg text-lg">
           Simpan Kegiatan
         </Button>
       </form>

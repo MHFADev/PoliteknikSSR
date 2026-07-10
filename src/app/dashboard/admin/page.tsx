@@ -6,6 +6,7 @@ import {
   AttendanceChart,
   type AttendanceTrendPoint,
 } from "@/components/charts/AttendanceChart";
+import { Calendar } from "@/components/Calendar";
 import {
   Users,
   CalendarCheck,
@@ -38,6 +39,7 @@ export default async function AdminOverviewPage() {
     { count: izinPendingCount },
     { data: weekRecords },
     { data: upcomingEvents },
+    { data: allEvents },
     { count: totalEvents },
   ] = await Promise.all([
     supabase
@@ -66,6 +68,10 @@ export default async function AdminOverviewPage() {
       .gte("event_date", today)
       .order("event_date", { ascending: true })
       .limit(5),
+    supabase
+      .from("calendar_events")
+      .select("id, title, event_date, tipe")
+      .order("event_date", { ascending: true }),
     supabase
       .from("calendar_events")
       .select("id", { count: "exact", head: true }), // Hanya id untuk count
@@ -97,38 +103,38 @@ export default async function AdminOverviewPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="font-display text-2xl font-semibold text-deep">
+        <h1 className="font-display text-2xl font-semibold text-teal-dark">
           HI, {profile?.full_name || "Admin"} 👋👋
         </h1>
-        <p className="text-sm text-mist-dim">
+        <p className="text-sm text-ink-muted">
           Gambaran umum seluruh peserta PKL Politeknik SSR.
         </p>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard
           label="Total Siswa"
           value={siswaCount ?? 0}
           icon={<GraduationCap className="h-5 w-5" />}
-          accent="blue"
+          accent="teal"
         />
         <StatCard
           label="Total Pembimbing"
           value={pembimbingCount ?? 0}
           icon={<Users className="h-5 w-5" />}
-          accent="ocean"
+          accent="gold"
         />
         <StatCard
           label="Hadir Hari Ini"
           value={hadirToday}
           icon={<CalendarCheck className="h-5 w-5" />}
-          accent="blue"
+          accent="leaf"
         />
         <StatCard
           label="Izin Menunggu"
           value={izinPendingCount ?? 0}
           icon={<FileClock className="h-5 w-5" />}
-          accent="steel"
+          accent="sun"
         />
       </div>
 
@@ -140,34 +146,34 @@ export default async function AdminOverviewPage() {
             action={
               <Link
                 href="/dashboard/admin/kalender"
-                className="text-sm text-blue-vibrant hover:underline"
+                className="text-sm text-teal hover:underline"
               >
                 Lihat Semua
               </Link>
             }
           />
-          <div className="divide-y divide-deep/6">
+          <div className="divide-y divide-outline">
             {upcomingEvents && upcomingEvents.length > 0 ? (
               upcomingEvents.map((ev: any) => (
                 <div key={ev.id} className="flex items-center gap-3 px-4 py-3">
                   <div
-                    className={`h-2.5 w-2.5 shrink-0 rounded-full ${ev.tipe === "libur" ? "bg-green-500" : "bg-blue-500"}`}
+                    className={`h-2.5 w-2.5 shrink-0 rounded-full ${ev.tipe === "libur" ? "bg-flip7-coral" : "bg-teal"}`}
                   />
                   <div className="min-w-0 flex-1">
-                    <p className="text-sm font-medium text-deep truncate">
+                    <p className="text-sm font-medium text-ink truncate">
                       {ev.title}
                     </p>
-                    <p className="text-xs text-mist-dim">
+                    <p className="text-xs text-ink-subtle">
                       {formatDate(ev.event_date)}
                     </p>
                   </div>
-                  <Badge tone={ev.tipe === "libur" ? "success" : "neutral"}>
+                  <Badge tone={ev.tipe === "libur" ? "coral" : "teal"}>
                     {ev.tipe === "libur" ? "Libur" : "Event"}
                   </Badge>
                 </div>
               ))
             ) : (
-              <p className="py-6 text-center text-sm text-mist-dim">
+              <p className="py-6 text-center text-sm text-ink-subtle">
                 Tidak ada event mendatang.
               </p>
             )}
@@ -181,6 +187,10 @@ export default async function AdminOverviewPage() {
           />
           <AttendanceChart data={Array.from(trendMap.values())} />
         </Card>
+      </div>
+
+      <div className="mt-6">
+        <Calendar events={allEvents || []} />
       </div>
     </div>
   );

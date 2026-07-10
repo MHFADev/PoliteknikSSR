@@ -61,29 +61,29 @@ export function Calendar({ events = [], getDayStatus }: CalendarProps) {
     const status = getDayStatus?.(dateStr);
     const isLibur = dayEvents.some((e) => e.tipe === "libur");
 
-    let cellClass = "min-h-[50px] sm:min-h-[70px] md:min-h-[90px] rounded-lg border border-deep/6 p-1.5 transition-all hover:border-deep/20 bg-white flex flex-col gap-1";
+    let cellClass = "min-h-[50px] sm:min-h-[70px] md:min-h-[90px] rounded-flip7-lg border border-outline p-1.5 transition-all hover:border-teal-light hover:shadow-flip7-card bg-surface flex flex-col gap-1";
     if (isToday) {
-      cellClass += " border-blue-vibrant/50 bg-blue-vibrant/5";
+      cellClass += " border-gold bg-gold-light/10 shadow-flip7-gold-glow";
     }
     
     // Apply status color with clear visual feedback
     if (status?.color) {
-      cellClass = `min-h-[50px] sm:min-h-[70px] md:min-h-[90px] rounded-lg border p-1.5 transition-all flex flex-col gap-1 ${status.color}`;
+      cellClass = `min-h-[50px] sm:min-h-[70px] md:min-h-[90px] rounded-flip7-lg border p-1.5 transition-all flex flex-col gap-1 ${status.color}`;
     }
 
-    // Holiday styling override for prominent display (different red for holiday)
+    // Holiday styling override for prominent display
     if (isLibur) {
-      cellClass = `min-h-[50px] sm:min-h-[70px] md:min-h-[90px] rounded-lg border-2 border-red-600 p-1.5 transition-all flex flex-col gap-1 bg-red-50`;
+      cellClass = `min-h-[50px] sm:min-h-[70px] md:min-h-[90px] rounded-flip7-lg border-2 border-flip7-coral p-1.5 transition-all flex flex-col gap-1 bg-flip7-coral-light/20`;
     }
 
     calendarCells.push(
       <div key={day} className={cellClass}>
         <div className={`flex h-6 w-6 items-center justify-center rounded-full text-xs font-bold sm:h-7 sm:w-7 sm:text-sm ${
           isToday 
-            ? "bg-blue-vibrant text-white shadow-md" 
+            ? "bg-gold text-teal-dark shadow-flip7-gold-glow" 
             : isLibur 
-              ? "bg-red-700 text-white shadow-sm" 
-              : "bg-white/70 text-deep border border-deep/10"
+              ? "bg-flip7-coral text-white shadow-flip7-coral-glow" 
+              : "bg-surface-elevated text-ink border border-outline"
         }`}>
           {day}
         </div>
@@ -91,15 +91,15 @@ export function Calendar({ events = [], getDayStatus }: CalendarProps) {
         {status && !isLibur && (
           <div className="flex items-center gap-1">
             <span className={`h-2 w-2 rounded-full sm:h-2.5 sm:w-2.5 ${status.dot}`} />
-            <span className="text-[9px] font-semibold text-deep sm:text-[10px]">{status.label}</span>
+            <span className="text-[9px] font-semibold text-ink sm:text-[10px]">{status.label}</span>
           </div>
         )}
         
         {dayEvents.map((ev) => (
           <div
             key={ev.id}
-            className={`mt-auto rounded-md px-1.5 py-0.5 text-[8px] font-bold leading-tight sm:text-[10px] ${
-              ev.tipe === "libur" ? "bg-red-700 text-white shadow-sm" : "bg-blue-600 text-white shadow-sm"
+            className={`mt-auto rounded-flip7-sm px-1.5 py-0.5 text-[8px] font-bold leading-tight sm:text-[10px] ${
+              ev.tipe === "libur" ? "bg-flip7-coral text-white shadow-flip7-coral-glow" : "bg-teal text-white shadow-flip7-teal-glow"
             } truncate`}
           >
             {ev.title}
@@ -113,20 +113,20 @@ export function Calendar({ events = [], getDayStatus }: CalendarProps) {
     <div className="space-y-4 w-full max-w-full overflow-hidden">
       <Card className="p-3 sm:p-4 md:p-6">
         <div className="mb-4 flex items-center justify-between">
-          <button onClick={prevMonth} className="rounded-xl p-2 text-steel hover:bg-deep/5 transition-colors">
+          <button onClick={prevMonth} className="rounded-flip7-pill p-2 text-ink-muted hover:bg-teal-bg transition-colors">
             <ChevronLeft className="h-5 w-5 sm:h-6 sm:w-6" />
           </button>
-          <h3 className="font-display text-lg sm:text-xl md:text-2xl font-bold text-deep">
+          <h3 className="font-display text-lg sm:text-xl md:text-2xl font-bold text-teal-dark">
             {MONTHS[month]} {year}
           </h3>
-          <button onClick={nextMonth} className="rounded-xl p-2 text-steel hover:bg-deep/5 transition-colors">
+          <button onClick={nextMonth} className="rounded-flip7-pill p-2 text-ink-muted hover:bg-teal-bg transition-colors">
             <ChevronRight className="h-5 w-5 sm:h-6 sm:w-6" />
           </button>
         </div>
         
         <div className="mb-2 grid grid-cols-7 gap-1 sm:gap-2">
           {DAYS.map((d) => (
-            <div key={d} className="rounded-lg px-1 sm:px-2 py-1.5 text-center text-[10px] sm:text-xs font-bold text-steel bg-deep/5">
+            <div key={d} className="rounded-flip7-md px-1 sm:px-2 py-1.5 text-center text-[10px] sm:text-xs font-bold text-teal-dark bg-teal-bg">
               {d}
             </div>
           ))}
@@ -134,26 +134,26 @@ export function Calendar({ events = [], getDayStatus }: CalendarProps) {
         <div className="grid grid-cols-7 gap-1 sm:gap-2 mb-4">{calendarCells}</div>
 
         {/* Legend below calendar */}
-        <div className="flex flex-wrap items-center gap-2 sm:gap-3 p-2 sm:p-3 bg-deep/5 rounded-xl">
+        <div className="flex flex-wrap items-center gap-2 sm:gap-3 p-2 sm:p-3 bg-teal-bg rounded-flip7-lg">
           <div className="flex items-center gap-2">
-            <div className="h-3.5 w-3.5 sm:h-4 sm:w-4 rounded-full bg-green-500"></div>
-            <span className="text-[11px] sm:text-sm text-deep font-medium">Hadir</span>
+            <div className="h-3.5 w-3.5 sm:h-4 sm:w-4 rounded-full bg-leaf"></div>
+            <span className="text-[11px] sm:text-sm text-teal-dark font-medium">Hadir</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="h-3.5 w-3.5 sm:h-4 sm:w-4 rounded-full bg-yellow-500"></div>
-            <span className="text-[11px] sm:text-sm text-deep font-medium">Izin</span>
+            <div className="h-3.5 w-3.5 sm:h-4 sm:w-4 rounded-full bg-sun"></div>
+            <span className="text-[11px] sm:text-sm text-teal-dark font-medium">Izin</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="h-3.5 w-3.5 sm:h-4 sm:w-4 rounded-full bg-orange-500"></div>
-            <span className="text-[11px] sm:text-sm text-deep font-medium">Sakit</span>
+            <div className="h-3.5 w-3.5 sm:h-4 sm:w-4 rounded-full bg-flip7-coral"></div>
+            <span className="text-[11px] sm:text-sm text-teal-dark font-medium">Sakit</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="h-3.5 w-3.5 sm:h-4 sm:w-4 rounded-full bg-red-500/70"></div>
-            <span className="text-[11px] sm:text-sm text-deep font-medium">Alfa</span>
+            <div className="h-3.5 w-3.5 sm:h-4 sm:w-4 rounded-full bg-coral"></div>
+            <span className="text-[11px] sm:text-sm text-teal-dark font-medium">Alfa</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="h-3.5 w-3.5 sm:h-4 sm:w-4 rounded-full bg-red-700"></div>
-            <span className="text-[11px] sm:text-sm text-deep font-medium">Libur PKL</span>
+            <div className="h-3.5 w-3.5 sm:h-4 sm:w-4 rounded-full bg-flip7-coral"></div>
+            <span className="text-[11px] sm:text-sm text-teal-dark font-medium">Libur PKL</span>
           </div>
         </div>
       </Card>
