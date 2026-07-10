@@ -28,18 +28,22 @@
   /* Flip7 Button Gradient Gold */
   .flip7-btn-gold {
     @apply relative overflow-hidden;
-    background: linear-gradient(135deg, #FFD23F 0%, #FFE47A 50%, #FFD23F 100%);
+    background: linear-gradient(135deg, #ffd23f 0%, #ffe47a 50%, #ffd23f 100%);
     background-size: 200% 200%;
   }
 
   .flip7-btn-gold::before {
-    content: '';
+    content: "";
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
     height: 40%;
-    background: linear-gradient(to bottom, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0) 100%);
+    background: linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0.4) 0%,
+      rgba(255, 255, 255, 0) 100%
+    );
     pointer-events: none;
   }
 }
@@ -89,11 +93,11 @@ body {
 
   /* Flip7 Text Shadow */
   .text-shadow-flip7 {
-    text-shadow: 1px 1px 0px #1E8C86;
+    text-shadow: 1px 1px 0px #1e8c86;
   }
 
   .text-shadow-gold {
-    text-shadow: 2px 2px 0px #E6B800;
+    text-shadow: 2px 2px 0px #e6b800;
   }
 }
 

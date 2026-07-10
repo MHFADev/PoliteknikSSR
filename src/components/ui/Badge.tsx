@@ -1,14 +1,6 @@
 import { cn } from "@/lib/utils";
 
-type SkylearnTone =
-  | "neutral"
-  | "success"
-  | "warning"
-  | "danger"
-  | "sky"
-  | "sun"
-  | "leaf"
-  | "berry";
+type SkylearnTone = "neutral" | "success" | "warning" | "danger" | "sky";
 type Flip7Tone = "teal" | "gold" | "coral" | "cream";
 type Tone = SkylearnTone | Flip7Tone;
 
@@ -18,9 +10,6 @@ const skylearnToneClasses: Record<SkylearnTone, string> = {
   warning: "bg-sun-soft text-sun-deep",
   danger: "bg-coral-soft text-coral",
   sky: "bg-sky-soft text-sky-deep",
-  sun: "bg-sun-soft text-sun-deep",
-  leaf: "bg-leaf-soft text-leaf-deep",
-  berry: "bg-berry/10 text-berry",
 };
 
 const flip7ToneClasses: Record<Flip7Tone, string> = {

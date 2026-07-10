@@ -148,7 +148,7 @@ export default async function AdminOverviewPage() {
             action={
               <Link
                 href="/dashboard/admin/kalender"
-                className="text-sm text-teal hover:underline"
+                className="text-sm text-ocean hover:underline"
               >
                 Lihat Semua
               </Link>

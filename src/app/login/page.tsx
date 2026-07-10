@@ -120,14 +120,14 @@ export default function LoginPage() {
               disabled={gpsStep}
               className={cn(
                 "mt-1.5 w-full rounded-skylearn-md border bg-white px-4 py-3 text-lg outline-none transition-shadow duration-200 focus:border-sky focus:ring-4 focus:ring-sky-soft disabled:opacity-50",
-                error
-                  ? "border-coral bg-coral-soft/30"
-                  : "border-outline",
+                error ? "border-coral bg-coral-soft/30" : "border-outline",
               )}
             />
           </div>
           <div>
-            <label className="text-base font-semibold text-ink">Kata Sandi</label>
+            <label className="text-base font-semibold text-ink">
+              Kata Sandi
+            </label>
             <div className="relative mt-1.5">
               <input
                 type={showPassword ? "text" : "password"}
@@ -138,9 +138,7 @@ export default function LoginPage() {
                 disabled={gpsStep}
                 className={cn(
                   "w-full rounded-skylearn-md border bg-white px-4 py-3 pr-12 text-lg outline-none transition-shadow duration-200 focus:border-sky focus:ring-4 focus:ring-sky-soft disabled:opacity-50",
-                  error
-                    ? "border-coral bg-coral-soft/30"
-                    : "border-outline",
+                  error ? "border-coral bg-coral-soft/30" : "border-outline",
                 )}
               />
               <button
@@ -177,17 +175,8 @@ export default function LoginPage() {
             </p>
           )}
 
-<<<<<<< HEAD
-          <Button
-            type="submit"
-            className="w-full hover:!from-bg-blue-100 hover:!to-bg-blue-700 !text-white !shadow-lg hover:!shadow-xl !border-0"
-            disabled={isSubmitting}
-          >
-            {isSubmitting && <Loader2 className="h-4 w-4 animate-spin" />}
-=======
           <Button type="submit" className="w-full" disabled={isSubmitting}>
             {isSubmitting && <Loader2 className="h-5 w-5 animate-spin" />}
->>>>>>> 0200e1df9ba792cd0ab5fa816124e03680896bdd
             {gpsStep ? "Memverifikasi Lokasi..." : "Login"}
           </Button>
         </form>

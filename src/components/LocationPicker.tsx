@@ -8,11 +8,14 @@ import { useMap, useMapEvents } from "react-leaflet";
 // Import komponen Leaflet secara dinamis dengan loading component
 const MapContainer = dynamic(
   () => import("react-leaflet").then((mod) => mod.MapContainer),
-<<<<<<< HEAD
-  { ssr: false },
-=======
-  { ssr: false, loading: () => <div className="h-[400px] w-full flex items-center justify-center bg-teal-bg rounded-xl border border-outline"><p className="text-ink-muted text-sm">Memuat peta...</p></div> }
->>>>>>> 0200e1df9ba792cd0ab5fa816124e03680896bdd
+  {
+    ssr: false,
+    loading: () => (
+      <div className="h-[400px] w-full flex items-center justify-center bg-teal-bg rounded-xl border border-outline">
+        <p className="text-ink-muted text-sm">Memuat peta...</p>
+      </div>
+    ),
+  },
 );
 const TileLayer = dynamic(
   () => import("react-leaflet").then((mod) => mod.TileLayer),
@@ -26,19 +29,15 @@ const Circle = dynamic(
   () => import("react-leaflet").then((mod) => mod.Circle),
   { ssr: false },
 );
-<<<<<<< HEAD
-const useMap = dynamic(
-  () => import("react-leaflet").then((mod) => mod.useMap),
-  { ssr: false },
-);
-const useMapEvents = dynamic(
-  () => import("react-leaflet").then((mod) => mod.useMapEvents),
-  { ssr: false },
-);
-=======
 
 // Komponen MapController dengan useMap
-const MapController = ({ center, zoom }: { center: [number, number]; zoom?: number }) => {
+const MapController = ({
+  center,
+  zoom,
+}: {
+  center: [number, number];
+  zoom?: number;
+}) => {
   const map = useMap();
   useEffect(() => {
     map.setView(center, zoom || 16);
@@ -47,13 +46,16 @@ const MapController = ({ center, zoom }: { center: [number, number]; zoom?: numb
 };
 
 // Komponen MapClickHandler dengan useMapEvents
-const MapClickHandler = ({ onPick }: { onPick: (lat: number, lng: number) => void }) => {
+const MapClickHandler = ({
+  onPick,
+}: {
+  onPick: (lat: number, lng: number) => void;
+}) => {
   useMapEvents({
     click: (e) => onPick(e.latlng.lat, e.latlng.lng),
   });
   return null;
 };
->>>>>>> 0200e1df9ba792cd0ab5fa816124e03680896bdd
 
 type Location = {
   latitude: number;
@@ -67,36 +69,6 @@ type LocationPickerProps = {
   height?: string;
 };
 
-<<<<<<< HEAD
-// Komponen untuk mengupdate center peta
-function MapController({
-  center,
-  zoom,
-}: {
-  center: [number, number];
-  zoom?: number;
-}) {
-  const map = useMap();
-  useEffect(() => {
-    map.setView(center, zoom || 16);
-  }, [map, center, zoom]);
-  return null;
-}
-
-// Komponen untuk handle map click
-function MapClickHandler({
-  onPick,
-}: {
-  onPick: (lat: number, lng: number) => void;
-}) {
-  const map = useMapEvents({
-    click(e: any) {
-      onPick(e.latlng.lat, e.latlng.lng);
-    },
-  });
-  return null;
-}
-
 export function LocationPicker({
   value,
   onChange,
@@ -109,14 +81,6 @@ export function LocationPicker({
     value.latitude,
     value.longitude,
   ]);
-  const mapRef = useRef<any>(null);
-=======
-export function LocationPicker({ value, onChange, height = "400px" }: LocationPickerProps) {
-  const [isClient, setIsClient] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [isSearching, setIsSearching] = useState(false);
-  const [mapCenter, setMapCenter] = useState<[number, number]>([value.latitude, value.longitude]);
->>>>>>> 0200e1df9ba792cd0ab5fa816124e03680896bdd
 
   // Inisialisasi Leaflet hanya di client
   useEffect(() => {
@@ -194,20 +158,6 @@ export function LocationPicker({ value, onChange, height = "400px" }: LocationPi
     );
   };
 
-<<<<<<< HEAD
-  if (!isClient) {
-    return (
-      <div
-        style={{ height }}
-        className="flex items-center justify-center bg-gray-100 rounded-xl border border-gray-200"
-      >
-        <p className="text-gray-500 text-sm">Memuat peta...</p>
-      </div>
-    );
-  }
-
-=======
->>>>>>> 0200e1df9ba792cd0ab5fa816124e03680896bdd
   const position: [number, number] = [value.latitude, value.longitude];
 
   return (
@@ -247,53 +197,6 @@ export function LocationPicker({ value, onChange, height = "400px" }: LocationPi
       </form>
 
       {/* Map */}
-<<<<<<< HEAD
-      <div className="rounded-xl border border-deep/10 overflow-hidden relative">
-        <MapContainer
-          ref={mapRef}
-          center={mapCenter}
-          zoom={16}
-          style={{ height, width: "100%" }}
-        >
-          <TileLayer
-            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          />
-          <MapController center={mapCenter} zoom={16} />
-          <Marker
-            position={position}
-            draggable={true}
-            eventHandlers={{
-              dragend(e: any) {
-                const latLng = e.target.getLatLng();
-                onChange({
-                  ...value,
-                  latitude: latLng.lat,
-                  longitude: latLng.lng,
-                });
-                setMapCenter([latLng.lat, latLng.lng]);
-              },
-            }}
-          />
-          <Circle
-            center={position}
-            radius={value.radius_meters}
-            pathOptions={{
-              color: "#3A5BF0",
-              fillColor: "#3A5BF0",
-              fillOpacity: 0.15,
-              weight: 2,
-            }}
-          />
-          <MapClickHandler
-            onPick={(lat, lng) => {
-              onChange({ ...value, latitude: lat, longitude: lng });
-              setMapCenter([lat, lng]);
-            }}
-          />
-        </MapContainer>
-      </div>
-=======
       {isClient && (
         <div className="rounded-xl border border-outline overflow-hidden relative">
           <MapContainer
@@ -312,7 +215,11 @@ export function LocationPicker({ value, onChange, height = "400px" }: LocationPi
               eventHandlers={{
                 dragend(e) {
                   const latLng = e.target.getLatLng();
-                  onChange({ ...value, latitude: latLng.lat, longitude: latLng.lng });
+                  onChange({
+                    ...value,
+                    latitude: latLng.lat,
+                    longitude: latLng.lng,
+                  });
                   setMapCenter([latLng.lat, latLng.lng]);
                 },
               }}
@@ -320,7 +227,12 @@ export function LocationPicker({ value, onChange, height = "400px" }: LocationPi
             <Circle
               center={position}
               radius={value.radius_meters}
-              pathOptions={{ color: "#2BA8A2", fillColor: "#2BA8A2", fillOpacity: 0.15, weight: 2 }}
+              pathOptions={{
+                color: "#a82b2b",
+                fillColor: "#2BA8A2",
+                fillOpacity: 0.15,
+                weight: 2,
+              }}
             />
             <MapClickHandler
               onPick={(lat, lng) => {
@@ -331,7 +243,6 @@ export function LocationPicker({ value, onChange, height = "400px" }: LocationPi
           </MapContainer>
         </div>
       )}
->>>>>>> 0200e1df9ba792cd0ab5fa816124e03680896bdd
 
       {/* Info Koordinat */}
       <div className="flex items-center justify-between text-xs text-ink-subtle bg-teal-bg p-3 rounded-xl">

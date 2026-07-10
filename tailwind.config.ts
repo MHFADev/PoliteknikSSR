@@ -6,6 +6,9 @@ const config: Config = {
     extend: {
       colors: {
         // Flip7 Design System Colors
+        merah: {
+          DEFAULT: "#ff0000",
+        },
         teal: {
           DEFAULT: "#2BA8A2",
           light: "#3CC4BD",
@@ -21,13 +24,10 @@ const config: Config = {
           coral: {
             DEFAULT: "#EF6C4A",
             light: "#FF8A6A",
-            dark: "#D45233",
+            dark: "#e73f15",
           },
           cream: "#FFF8E7",
-          sky: "#5DADE2",
         },
-
-        // Skylearn Design System Colors (existing preserved)
         deep: {
           DEFAULT: "#1B3C53",
           light: "#2A5A75",
@@ -55,8 +55,6 @@ const config: Config = {
           dark: "#1A3A52",
           vibrant: "#2E6A9A",
         },
-        success: "#10B981",
-        danger: "#F43F5E",
         sky: {
           DEFAULT: "#3B82F6",
           bright: "#60A5FA",
@@ -73,7 +71,7 @@ const config: Config = {
           soft: "#DCFCE7",
           deep: "#16A34A",
         },
-        coral: {
+        coral1: {
           DEFAULT: "#F87171",
           soft: "#FEE2E2",
         },
@@ -93,6 +91,8 @@ const config: Config = {
           DEFAULT: "#E2E8F0",
           strong: "#94A3B8",
         },
+        success: "#10B981",
+        danger: "#F43F5E",
       },
       fontFamily: {
         display: ["var(--font-jakarta)", "sans-serif"],
@@ -107,13 +107,13 @@ const config: Config = {
         glass: "0 8px 32px 0 rgba(36, 35, 32, 0.08)",
         "glass-lg": "0 16px 48px 0 rgba(36, 35, 32, 0.12)",
         ring: "0 0 0 1px rgba(63, 108, 99, 0.15)",
-        
+
         // Skylearn shadows
         skylearn: "0 8px 24px rgba(15, 23, 42, 0.06)",
         "skylearn-lg": "0 24px 48px rgba(15, 23, 42, 0.12)",
         "skylearn-sky": "0 12px 32px rgba(59, 130, 246, 0.15)",
         "skylearn-sun": "0 0 24px rgba(252, 211, 77, 0.4)",
-        
+
         // Flip7 colored glow shadows
         "flip7-sm": "0 2px 8px rgba(0, 0, 0, 0.08)",
         "flip7-md": "0 4px 16px rgba(0, 0, 0, 0.12)",
@@ -128,7 +128,7 @@ const config: Config = {
       borderRadius: {
         // Existing
         xl2: "1.25rem",
-        
+
         // Skylearn
         "skylearn-sm": "8px",
         "skylearn-md": "12px",
@@ -136,7 +136,7 @@ const config: Config = {
         "skylearn-xl": "20px",
         "skylearn-2xl": "28px",
         "skylearn-pill": "999px",
-        
+
         // Flip7
         "flip7-sm": "8px",
         "flip7-md": "16px",
@@ -160,7 +160,7 @@ const config: Config = {
           "25%": { transform: "translateX(-4px)" },
           "75%": { transform: "translateX(4px)" },
         },
-        
+
         // Flip7 animations
         "flip7-crown-bounce": {
           "0%, 100%": { transform: "translateY(0) rotate(0deg)" },
@@ -176,19 +176,28 @@ const config: Config = {
           "0%, 100%": { boxShadow: "0 4px 20px rgba(239, 108, 74, 0.35)" },
           "50%": { boxShadow: "0 4px 32px rgba(239, 108, 74, 0.5)" },
         },
-        
+
         // Confetti animations
         "confetti-fall-1": {
           "0%": { transform: "translateY(-100%) rotate(0deg)", opacity: "1" },
-          "100%": { transform: "translateY(100vh) rotate(720deg)", opacity: "0" },
+          "100%": {
+            transform: "translateY(100vh) rotate(720deg)",
+            opacity: "0",
+          },
         },
         "confetti-fall-2": {
           "0%": { transform: "translateY(-100%) rotate(0deg)", opacity: "1" },
-          "100%": { transform: "translateY(100vh) rotate(-720deg)", opacity: "0" },
+          "100%": {
+            transform: "translateY(100vh) rotate(-720deg)",
+            opacity: "0",
+          },
         },
         "confetti-fall-3": {
           "0%": { transform: "translateY(-100%) rotate(0deg)", opacity: "1" },
-          "100%": { transform: "translateY(100vh) rotate(540deg)", opacity: "0" },
+          "100%": {
+            transform: "translateY(100vh) rotate(540deg)",
+            opacity: "0",
+          },
         },
       },
       animation: {
@@ -196,12 +205,12 @@ const config: Config = {
         "scan-line": "scan-line 2.2s ease-in-out infinite",
         "pulse-ring": "pulse-ring 1.4s cubic-bezier(0.4, 0, 0.6, 1) infinite",
         "skylearn-shake": "skylearn-shake 240ms ease-in-out 2",
-        
+
         // Flip7 animations
         "flip7-crown-bounce": "flip7-crown-bounce 1.5s ease-in-out infinite",
         "flip7-glow-pulse": "flip7-glow-pulse 2s ease-in-out infinite",
         "flip7-boom-pulse": "flip7-boom-pulse 2s ease-in-out infinite",
-        
+
         // Confetti
         "confetti-1": "confetti-fall-1 3.2s ease-in forwards",
         "confetti-2": "confetti-fall-2 4s ease-in forwards",
