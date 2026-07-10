@@ -12,9 +12,9 @@ const config: Config = {
           dark: "#0F2838",
         },
         ocean: {
-          DEFAULT: "#234C6A",
-          light: "#345F82",
-          dark: "#163A52",
+          DEFAULT: "#3572EF",
+          light: "#3ABEF9",
+          dark: "#050C9C",
         },
         steel: {
           DEFAULT: "#456882",
@@ -25,6 +25,7 @@ const config: Config = {
           DEFAULT: "#E3E3E3",
           soft: "#F0F0F0",
           dim: "#646363",
+          ell: "#475569",
         },
         // Vibrant blue accents for more prominent blue colors
         blue: {

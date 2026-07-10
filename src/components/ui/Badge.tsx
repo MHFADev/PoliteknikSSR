@@ -9,12 +9,18 @@ const toneClasses: Record<Tone, string> = {
   danger: "bg-danger/10 text-danger",
 };
 
-export function Badge({ tone = "neutral", children }: { tone?: Tone; children: React.ReactNode }) {
+export function Badge({
+  tone = "neutral",
+  children,
+}: {
+  tone?: Tone;
+  children: React.ReactNode;
+}) {
   return (
     <span
       className={cn(
         "inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium",
-        toneClasses[tone]
+        toneClasses[tone],
       )}
     >
       {children}

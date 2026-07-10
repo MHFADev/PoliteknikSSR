@@ -9,7 +9,15 @@ interface StatCardProps {
   label: string;
   value: string | number;
   icon: ReactNode;
-  accent?: "deep" | "ocean" | "steel" | "blue";
+  accent?:
+    | "deep"
+    | "ocean"
+    | "steel"
+    | "blue"
+    | "biru1"
+    | "kuning"
+    | "hijau"
+    | "ungu";
   hint?: string;
 }
 
@@ -18,9 +26,19 @@ const accentClasses = {
   ocean: "bg-ocean/20 text-deep",
   blue: "bg-blue-vibrant/15 text-blue-vibrant",
   steel: "bg-steel/10 text-deep",
+  biru1: "bg-[#1D4ED8]/15 text-[#1D4ED8]",
+  kuning: "bg-[#FBBF24]/15 text-[#FBBF24]",
+  hijau: "bg-[#16A34A]/15 text-[#16A34A]",
+  ungu: "bg-[#8B5CF6]/15 text-[#8B5CF6]",
 };
 
-export function StatCard({ label, value, icon, accent = "deep", hint }: StatCardProps) {
+export function StatCard({
+  label,
+  value,
+  icon,
+  accent = "deep",
+  hint,
+}: StatCardProps) {
   return (
     <Card className="relative overflow-hidden">
       <div className="flex items-start justify-between">
@@ -41,7 +59,12 @@ export function StatCard({ label, value, icon, accent = "deep", hint }: StatCard
         </div>
       </div>
       {/* garis aksen tipis di bawah — signature kecil yang konsisten di semua stat card */}
-      <div className={cn("absolute bottom-0 left-0 h-1 w-full opacity-70", accentClasses[accent])} />
+      <div
+        className={cn(
+          "absolute bottom-0 left-0 h-1 w-full opacity-70",
+          accentClasses[accent],
+        )}
+      />
     </Card>
   );
 }

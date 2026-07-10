@@ -90,10 +90,10 @@ export default async function AdminOverviewPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="font-display text-2xl font-semibold text-deep">
+        <h1 className="font-display text-2xl font-semibold text-ocean">
           Ringkasan Admin
         </h1>
-        <p className="text-sm text-mist-dim">
+        <p className="text-sm text-mist-ell">
           Gambaran umum seluruh peserta PKL Politeknik SSR.
         </p>
       </div>
@@ -103,25 +103,25 @@ export default async function AdminOverviewPage() {
           label="Total Siswa"
           value={siswaCount ?? 0}
           icon={<GraduationCap className="h-5 w-5" />}
-          accent="blue"
+          accent="biru1"
         />
         <StatCard
           label="Total Pembimbing"
           value={pembimbingCount ?? 0}
           icon={<Users className="h-5 w-5" />}
-          accent="ocean"
+          accent="kuning"
         />
         <StatCard
           label="Hadir Hari Ini"
           value={hadirToday}
           icon={<CalendarCheck className="h-5 w-5" />}
-          accent="blue"
+          accent="hijau"
         />
         <StatCard
           label="Izin Menunggu"
           value={izinPendingCount ?? 0}
           icon={<FileClock className="h-5 w-5" />}
-          accent="steel"
+          accent="ungu"
         />
       </div>
 

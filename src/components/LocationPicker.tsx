@@ -7,23 +7,27 @@ import { Search, MapPin, LocateFixed } from "lucide-react";
 // Import komponen Leaflet secara dinamis untuk menghindari SSR
 const MapContainer = dynamic(
   () => import("react-leaflet").then((mod) => mod.MapContainer),
-  { ssr: false }
+  { ssr: false },
 );
 const TileLayer = dynamic(
   () => import("react-leaflet").then((mod) => mod.TileLayer),
-  { ssr: false }
+  { ssr: false },
 );
 const Marker = dynamic(
   () => import("react-leaflet").then((mod) => mod.Marker),
-  { ssr: false }
+  { ssr: false },
 );
 const Circle = dynamic(
   () => import("react-leaflet").then((mod) => mod.Circle),
-  { ssr: false }
+  { ssr: false },
 );
 const useMap = dynamic(
   () => import("react-leaflet").then((mod) => mod.useMap),
-  { ssr: false }
+  { ssr: false },
+);
+const useMapEvents = dynamic(
+  () => import("react-leaflet").then((mod) => mod.useMapEvents),
+  { ssr: false },
 );
 
 type Location = {
@@ -39,7 +43,13 @@ type LocationPickerProps = {
 };
 
 // Komponen untuk mengupdate center peta
-function MapController({ center, zoom }: { center: [number, number]; zoom?: number }) {
+function MapController({
+  center,
+  zoom,
+}: {
+  center: [number, number];
+  zoom?: number;
+}) {
   const map = useMap();
   useEffect(() => {
     map.setView(center, zoom || 16);
@@ -48,45 +58,48 @@ function MapController({ center, zoom }: { center: [number, number]; zoom?: numb
 }
 
 // Komponen untuk handle map click
-function MapClickHandler({ onPick }: { onPick: (lat: number, lng: number) => void }) {
-  const useMapEvents = dynamic(
-    () => import("react-leaflet").then((mod) => mod.useMapEvents),
-    { ssr: false }
-  ) as any;
-  
-  const MapEvents = () => {
-    const map = useMapEvents({
-      click(e: any) {
-        onPick(e.latlng.lat, e.latlng.lng);
-      },
-    });
-    return null;
-  };
-  
-  return <MapEvents />;
+function MapClickHandler({
+  onPick,
+}: {
+  onPick: (lat: number, lng: number) => void;
+}) {
+  const map = useMapEvents({
+    click(e: any) {
+      onPick(e.latlng.lat, e.latlng.lng);
+    },
+  });
+  return null;
 }
 
-export function LocationPicker({ value, onChange, height = "400px" }: LocationPickerProps) {
+export function LocationPicker({
+  value,
+  onChange,
+  height = "400px",
+}: LocationPickerProps) {
   const [isClient, setIsClient] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearching, setIsSearching] = useState(false);
-  const [mapCenter, setMapCenter] = useState<[number, number]>([value.latitude, value.longitude]);
+  const [mapCenter, setMapCenter] = useState<[number, number]>([
+    value.latitude,
+    value.longitude,
+  ]);
   const mapRef = useRef<any>(null);
 
   // Inisialisasi Leaflet hanya di client
   useEffect(() => {
     setIsClient(true);
-    
+
     // Fix icon marker Leaflet di Next.js
-    import('leaflet').then((L) => {
+    import("leaflet").then((L) => {
       delete (L.Icon.Default.prototype as any)._getIconUrl;
       L.Icon.Default.mergeOptions({
-        iconRetinaUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
+        iconRetinaUrl:
+          "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
         iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
-        shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
+        shadowUrl:
+          "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
       });
     });
-    // Hapus auto-locate otomatis untuk menghindari delay
   }, []);
 
   // Fungsi untuk mencari lokasi via Nominatim OpenStreetMap
@@ -97,16 +110,16 @@ export function LocationPicker({ value, onChange, height = "400px" }: LocationPi
     setIsSearching(true);
     try {
       const response = await fetch(
-        `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(searchQuery)}&format=json&limit=5&countrycodes=id`
+        `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(searchQuery)}&format=json&limit=5&countrycodes=id`,
       );
       const data = await response.json();
-      
+
       if (data && data.length > 0) {
         const firstResult = data[0];
         const newLocation = {
           ...value,
           latitude: parseFloat(firstResult.lat),
-          longitude: parseFloat(firstResult.lon)
+          longitude: parseFloat(firstResult.lon),
         };
         onChange(newLocation);
         setMapCenter([newLocation.latitude, newLocation.longitude]);
@@ -132,7 +145,7 @@ export function LocationPicker({ value, onChange, height = "400px" }: LocationPi
         const newLocation = {
           ...value,
           latitude,
-          longitude
+          longitude,
         };
         onChange(newLocation);
         setMapCenter([latitude, longitude]);
@@ -143,15 +156,15 @@ export function LocationPicker({ value, onChange, height = "400px" }: LocationPi
       {
         enableHighAccuracy: true,
         timeout: 10000,
-        maximumAge: 0
-      }
+        maximumAge: 0,
+      },
     );
   };
 
   if (!isClient) {
     return (
-      <div 
-        style={{ height }} 
+      <div
+        style={{ height }}
         className="flex items-center justify-center bg-gray-100 rounded-xl border border-gray-200"
       >
         <p className="text-gray-500 text-sm">Memuat peta...</p>
@@ -195,7 +208,7 @@ export function LocationPicker({ value, onChange, height = "400px" }: LocationPi
         >
           <LocateFixed className="w-4 h-4" />
         </button>
-      </div>
+      </form>
 
       {/* Map */}
       <div className="rounded-xl border border-deep/10 overflow-hidden relative">
@@ -216,7 +229,11 @@ export function LocationPicker({ value, onChange, height = "400px" }: LocationPi
             eventHandlers={{
               dragend(e: any) {
                 const latLng = e.target.getLatLng();
-                onChange({ ...value, latitude: latLng.lat, longitude: latLng.lng });
+                onChange({
+                  ...value,
+                  latitude: latLng.lat,
+                  longitude: latLng.lng,
+                });
                 setMapCenter([latLng.lat, latLng.lng]);
               },
             }}
@@ -224,7 +241,12 @@ export function LocationPicker({ value, onChange, height = "400px" }: LocationPi
           <Circle
             center={position}
             radius={value.radius_meters}
-            pathOptions={{ color: "#3A5BF0", fillColor: "#3A5BF0", fillOpacity: 0.15, weight: 2 }}
+            pathOptions={{
+              color: "#3A5BF0",
+              fillColor: "#3A5BF0",
+              fillOpacity: 0.15,
+              weight: 2,
+            }}
           />
           <MapClickHandler
             onPick={(lat, lng) => {
@@ -243,9 +265,7 @@ export function LocationPicker({ value, onChange, height = "400px" }: LocationPi
             Lat: {value.latitude.toFixed(6)}, Lng: {value.longitude.toFixed(6)}
           </span>
         </div>
-        <span>
-          Radius: {value.radius_meters}m
-        </span>
+        <span>Radius: {value.radius_meters}m</span>
       </div>
     </div>
   );

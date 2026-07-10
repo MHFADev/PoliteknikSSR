@@ -188,7 +188,7 @@ export default function LoginPage() {
 
           <Button
             type="submit"
-            className="w-full  !bg-blue-600 hover:!from-blue-600 hover:!to-purple-700 !text-white !shadow-lg hover:!shadow-xl !border-0"
+            className="w-full hover:!from-bg-blue-100 hover:!to-bg-blue-700 !text-white !shadow-lg hover:!shadow-xl !border-0"
             disabled={isSubmitting}
           >
             {isSubmitting && <Loader2 className="h-4 w-4 animate-spin" />}
