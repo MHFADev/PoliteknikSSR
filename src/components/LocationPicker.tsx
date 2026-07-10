@@ -195,7 +195,7 @@ export function LocationPicker({ value, onChange, height = "400px" }: LocationPi
         >
           <LocateFixed className="w-4 h-4" />
         </button>
-      </div>
+      </form>
 
       {/* Map */}
       <div className="rounded-xl border border-deep/10 overflow-hidden relative">

@@ -14,11 +14,12 @@ interface ButtonProps extends Omit<HTMLMotionProps<"button">, "children"> {
 }
 
 const variantClasses: Record<Variant, string> = {
-  primary: "bg-blue-vibrant text-mist hover:bg-blue-dark",
-  secondary: "bg-steel text-deep hover:bg-steel-dark",
-  outline: "border border-blue/15 text-blue hover:bg-blue/5",
-  ghost: "text-steel hover:bg-deep/5",
-  danger: "bg-danger text-mist hover:opacity-90",
+  primary:
+    "bg-sky text-white hover:bg-sky-deep shadow-skylearn",
+  secondary: "bg-surface text-ink-muted hover:bg-outline border border-outline",
+  outline: "border border-outline text-ink-muted hover:bg-surface",
+  ghost: "text-ink-muted hover:bg-surface",
+  danger: "bg-coral text-white hover:opacity-90",
 };
 
 export function Button({
@@ -35,14 +36,14 @@ export function Button({
       whileHover={{ y: -1 }}
       disabled={disabled || isLoading}
       className={cn(
-        "inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-medium",
+        "inline-flex items-center justify-center gap-2 min-h-[56px] rounded-skylearn-lg px-6 py-3 text-lg font-semibold",
         "transition-colors disabled:opacity-50 disabled:cursor-not-allowed",
         variantClasses[variant],
         className
       )}
       {...props}
     >
-      {isLoading && <Loader2 className="h-4 w-4 animate-spin" />}
+      {isLoading && <Loader2 className="h-5 w-5 animate-spin" />}
       {children}
     </motion.button>
   );
