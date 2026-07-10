@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
+import { cn } from "@/lib/utils";
 
 const CONFETTI_COLORS = [
   "#3B82F6", // sky
@@ -14,7 +15,8 @@ const CONFETTI_COLORS = [
   "#EF6C4A", // flip7 coral
 ];
 
-const CONFETTI_SHAPES = ["circle", "square", "triangle"];
+const CONFETTI_SHAPES = ["circle", "square", "triangle"] as const;
+type ConfettiShape = typeof CONFETTI_SHAPES[number];
 
 interface ConfettiPieceProps {
   index: number;
@@ -32,7 +34,7 @@ function ConfettiPiece({ index, total }: ConfettiPieceProps) {
   const duration = 3 + Math.random() * 2;
   const delay = Math.random() * 0.5;
 
-  const shapeStyles = {
+  const shapeStyles: Record<ConfettiShape, string> = {
     circle: "rounded-full",
     square: "rounded-sm",
     triangle: "clip-triangle",
@@ -65,9 +67,6 @@ function ConfettiPiece({ index, total }: ConfettiPieceProps) {
     />
   );
 }
-
-// Add cn import
-import { cn } from "@/lib/utils";
 
 interface ConfettiProps {
   active?: boolean;

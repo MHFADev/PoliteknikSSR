@@ -11,8 +11,8 @@ import { getAllEvents, addEvent, updateEvent, deleteEvent, getAdminCalendarStats
 import { formatDate } from "@/lib/utils";
 
 const EVENT_COLORS = {
-  libur: { bg: "bg-green-200", text: "text-green-900", dot: "bg-green-500" },
-  event: { bg: "bg-blue-200", text: "text-blue-900", dot: "bg-blue-500" },
+  libur: { bg: "bg-flip7-coral-light/20", text: "text-flip7-coral-dark", dot: "bg-flip7-coral" },
+  event: { bg: "bg-teal-bg", text: "text-teal-dark", dot: "bg-teal" },
 } as const;
 
 const MONTHS = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
@@ -205,9 +205,9 @@ export default function AdminKalenderPage() {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
-        <StatCard label="Total Event" value={stats.totalEvents} icon={<CalendarDays className="h-5 w-5" />} accent="blue" />
-        <StatCard label="Event Mendatang" value={stats.upcomingEvents} icon={<CalendarCheck className="h-5 w-5" />} accent="ocean" />
-        <StatCard label="Total Siswa" value={stats.totalSiswa} icon={<Users className="h-5 w-5" />} accent="deep" />
+        <StatCard label="Total Event" value={stats.totalEvents} icon={<CalendarDays className="h-5 w-5" />} accent="teal" />
+        <StatCard label="Event Mendatang" value={stats.upcomingEvents} icon={<CalendarCheck className="h-5 w-5" />} accent="sky" />
+        <StatCard label="Total Siswa" value={stats.totalSiswa} icon={<Users className="h-5 w-5" />} accent="sun" />
       </div>
 
       <Card>

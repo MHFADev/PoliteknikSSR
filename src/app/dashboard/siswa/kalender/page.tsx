@@ -16,15 +16,15 @@ type LeaveRequest = { start_date: string; end_date: string; type: string; status
 
 function getDayStatus(dayStr: string, records: AttendanceRecord[], leaves: LeaveRequest[], events: CalendarEvent[]): { label: string; color: string; dot: string } | null {
   if (events.some((e) => e.event_date === dayStr && e.tipe === "libur")) {
-    return { label: "Libur PKL", color: "bg-green-50 border-green-300", dot: "bg-green-500" };
+    return { label: "Libur PKL", color: "bg-flip7-coral-light/20 border-flip7-coral", dot: "bg-flip7-coral" };
   }
   const leave = leaves.find((l) => dayStr >= l.start_date && dayStr <= l.end_date);
   if (leave) {
-    if (leave.type === "sakit") return { label: "Sakit", color: "bg-orange-50 border-orange-300", dot: "bg-orange-500" };
-    if (leave.type === "izin") return { label: "Izin", color: "bg-yellow-50 border-yellow-300", dot: "bg-yellow-500" };
+    if (leave.type === "sakit") return { label: "Sakit", color: "bg-coral-soft border-coral", dot: "bg-coral" };
+    if (leave.type === "izin") return { label: "Izin", color: "bg-sun-soft border-sun", dot: "bg-sun" };
   }
   const record = records.find((r) => r.scanned_at.slice(0, 10) === dayStr);
-  if (record) return { label: "Masuk", color: "bg-green-50 border-green-300", dot: "bg-green-500" };
+  if (record) return { label: "Masuk", color: "bg-leaf-soft border-leaf", dot: "bg-leaf" };
   return null;
 }
 
@@ -127,10 +127,10 @@ export default function SiswaKalenderPage() {
       </div>
 
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
-        <StatCard label="Hadir" value={stats.hadir} icon={<CalendarCheck className="h-5 w-5" />} accent="blue" />
-        <StatCard label="Sakit" value={stats.sakit} icon={<AlertCircle className="h-5 w-5" />} accent="steel" />
-        <StatCard label="Izin" value={stats.izin} icon={<FileClock className="h-5 w-5" />} accent="ocean" />
-        <StatCard label="Alfa" value={stats.alfa} icon={<NotebookPen className="h-5 w-5" />} accent="deep" />
+        <StatCard label="Hadir" value={stats.hadir} icon={<CalendarCheck className="h-5 w-5" />} accent="leaf" />
+        <StatCard label="Sakit" value={stats.sakit} icon={<AlertCircle className="h-5 w-5" />} accent="coral" />
+        <StatCard label="Izin" value={stats.izin} icon={<FileClock className="h-5 w-5" />} accent="sun" />
+        <StatCard label="Alfa" value={stats.alfa} icon={<NotebookPen className="h-5 w-5" />} accent="berry" />
       </div>
 
       <Card>

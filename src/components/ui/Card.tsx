@@ -2,15 +2,15 @@ import { cn } from "@/lib/utils";
 import { HTMLAttributes, ReactNode } from "react";
 import { ProgressBar } from "./ProgressBar";
 
-type CardStyle = "skylearn" | "flip7" | "flip7-highlight" | "flip7-boom";
+type CardVariant = "skylearn" | "flip7" | "flip7-highlight" | "flip7-boom";
 
 interface CardProps extends HTMLAttributes<HTMLDivElement> {
-  style?: CardStyle;
+  variant?: CardVariant;
   children?: ReactNode;
 }
 
-export function Card({ style = "skylearn", className, children, ...props }: CardProps) {
-  const styleClasses: Record<CardStyle, string> = {
+export function Card({ variant = "skylearn", className, children, ...props }: CardProps) {
+  const variantClasses: Record<CardVariant, string> = {
     skylearn: "bg-white rounded-skylearn-xl border border-outline shadow-skylearn",
     flip7: "bg-white rounded-flip7-lg shadow-flip7-card border-l-4 border-teal-light",
     "flip7-highlight": "bg-gradient-to-r from-gold-light/10 to-white rounded-flip7-lg shadow-flip7-gold-glow border-l-4 border-gold",
@@ -21,7 +21,7 @@ export function Card({ style = "skylearn", className, children, ...props }: Card
     <div
       className={cn(
         "p-5 sm:p-6",
-        styleClasses[style],
+        variantClasses[variant],
         className
       )}
       {...props}

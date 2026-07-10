@@ -10,13 +10,27 @@ export default async function SiswaLogbookPage() {
     data: { user },
   } = await supabase.auth.getUser();
 
+  type LogbookEntry = {
+    id: string;
+    student_id: string;
+    entry_date: string;
+    content: string;
+    grade: number | null;
+    photo_url?: string | null;
+    feedback: string | null;
+    graded_by: string | null;
+    graded_at: string | null;
+    created_at: string;
+    updated_at: string;
+  };
+
   const { data: history } = await supabase
     .from("logbook_entries")
     .select("*")
     .eq("student_id", user!.id)
-    .order("entry_date", { ascending: false }) as any;
+    .order("entry_date", { ascending: false }) as unknown as { data: LogbookEntry[] | null };
 
-  const todayEntry = history?.find((e: any) => e.entry_date === todayISODate());
+  const todayEntry = history?.find((e) => e.entry_date === todayISODate());
 
   return (
     <div className="space-y-6">
@@ -26,7 +40,7 @@ export default async function SiswaLogbookPage() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <LogbookForm existingContent={todayEntry?.content} existingPhotoUrl={todayEntry?.photo_url} />
+        <LogbookForm existingContent={todayEntry?.content} existingPhotoUrl={todayEntry?.photo_url ?? undefined} />
 
         <Card>
           <CardHeader title="Riwayat Kegiatan" />
@@ -37,7 +51,7 @@ export default async function SiswaLogbookPage() {
                   <div className="flex items-center justify-between">
                     <p className="text-sm font-medium text-ink">{formatDate(entry.entry_date)}</p>
                     {entry.grade !== null ? (
-                      <Badge tone="success">Nilai {entry.grade}</Badge>
+                      <Badge tone="leaf">Nilai {entry.grade}</Badge>
                     ) : (
                       <Badge tone="neutral">Belum dinilai</Badge>
                     )}
