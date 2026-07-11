@@ -105,11 +105,11 @@ export default async function AdminOverviewPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="font-display text-2xl font-semibold text-teal-dark">
-          HI, {profile?.full_name || "Admin"} 👋👋
+        <h1 className="font-display text-2xl font-semibold text-ink">
+          Halo, {profile?.full_name || "Admin"}
         </h1>
         <p className="text-sm text-ink-muted">
-          Gambaran umum seluruh peserta PKL Politeknik SSR.
+          Gambaran umum seluruh peserta PKL Politeknik SSR
         </p>
       </div>
 

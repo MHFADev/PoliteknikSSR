@@ -86,7 +86,8 @@ export function Calendar({ events = [], getDayStatus }: CalendarProps) {
     let cellClass =
       "min-h-[50px] sm:min-h-[70px] md:min-h-[90px] rounded-flip7-lg border border-outline p-1.5 transition-all hover:border-oce hover:shadow-flip7-card bg-surface flex flex-col gap-1";
     if (isToday) {
-      cellClass += " border-gold bg-ocean-light/10 shadow-flip7-gold-glow";
+      cellClass +=
+        " border-ocean-light bg-ocean-light/25  shadow-flip7-ocean-glow hover:border-ocean hover:shadow-flip7-card";
     }
 
     // Apply status color with clear visual feedback
@@ -104,7 +105,7 @@ export function Calendar({ events = [], getDayStatus }: CalendarProps) {
         <div
           className={`flex h-6 w-6 items-center justify-center rounded-full text-xs font-bold sm:h-7 sm:w-7 sm:text-sm ${
             isToday
-              ? "bg-ocean-light text-ink shadow-flip7-gold-glow"
+              ? "bg-ocean-light text-white shadow-flip7-gold-glow"
               : isLibur
                 ? "bg-flip7-coral text-white shadow-flip7-coral-glow"
                 : "bg-surface-elevated text-ink border border-outline"
@@ -146,16 +147,16 @@ export function Calendar({ events = [], getDayStatus }: CalendarProps) {
         <div className="mb-4 flex items-center justify-between">
           <button
             onClick={prevMonth}
-            className="rounded-flip7-pill p-2 text-ink-muted hover:bg-teal-bg transition-colors"
+            className="rounded-flip7-pill p-2 text-ink-muted hover:bg-ocean-light/10 transition-colors"
           >
             <ChevronLeft className="h-5 w-5 sm:h-6 sm:w-6" />
           </button>
-          <h3 className="font-display text-lg sm:text-xl md:text-2xl font-bold text-teal-dark">
+          <h3 className="font-display text-lg sm:text-xl md:text-2xl font-bold text-ocean">
             {MONTHS[month]} {year}
           </h3>
           <button
             onClick={nextMonth}
-            className="rounded-flip7-pill p-2 text-ink-muted hover:bg-teal-bg transition-colors"
+            className="rounded-flip7-pill p-2 text-ink-muted hover:bg-ocean-light/10 transition-colors"
           >
             <ChevronRight className="h-5 w-5 sm:h-6 sm:w-6" />
           </button>
@@ -190,21 +191,27 @@ export function Calendar({ events = [], getDayStatus }: CalendarProps) {
             </span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="h-3.5 w-3.5 sm:h-4 sm:w-4 rounded-full bg-flip7-coral"></div>
+            <div className="h-3.5 w-3.5 sm:h-4 sm:w-4 rounded-full  bg-[#A855F7]"></div>
             <span className="text-[11px] sm:text-sm text-ink font-medium">
               Sakit
             </span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="h-3.5 w-3.5 sm:h-4 sm:w-4 rounded-full bg-coral"></div>
+            <div className="h-3.5 w-3.5 sm:h-4 sm:w-4 rounded-full bg-coral1"></div>
             <span className="text-[11px] sm:text-sm text-ink font-medium">
               Alfa
             </span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="h-3.5 w-3.5 sm:h-4 sm:w-4 rounded-full bg-flip7-coral"></div>
+            <div className="h-3.5 w-3.5 sm:h-4 sm:w-4 rounded-full bg-merah"></div>
             <span className="text-[11px] sm:text-sm text-ink font-medium">
               Libur PKL
+            </span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="h-3.5 w-3.5 sm:h-4 sm:w-4 rounded-full bg-ocean-light"></div>
+            <span className="text-[11px] sm:text-sm text-ink font-medium">
+              Hari Ini
             </span>
           </div>
         </div>

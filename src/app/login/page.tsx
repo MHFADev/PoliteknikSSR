@@ -108,15 +108,27 @@ export default function LoginPage() {
           <Image
             src="/logo.png"
             alt="Politeknik SSR"
-            width={160}
-            height={48}
+            width={200}
+            height={60}
             className="mb-5"
             priority
           />
-          <h1 className="font-display text-2xl font-bold text-ink">Selamat Datang Di</h1>
-          <h1 className="font-display text-2xl font-bold text-ink">Sistem Absensi Politeknik SSR</h1>
+          <h1
+            style={{ fontFamily: "var(--font-josefin), sans-serif" }}
+            className="text-xl font-semibold text-deep sm:text-2xl"
+          >
+            Selamat Datang di
+          </h1>
+          <h1
+            style={{ fontFamily: "var(--font-josefin), sans-serif" }}
+            className="text-lg font-semibold text-deep sm:text-xl"
+          >
+            Sistem Absensi Politeknik SSR
+          </h1>
           <p className="mt-2 text-base text-ink-muted">
-            {gpsStep ? "Memverifikasi lokasi Anda..." : "Silakan masuk menggunakan akun yang sudah terdaftar"}
+            {gpsStep
+              ? "Memverifikasi lokasi Anda..."
+              : "Silakan masuk menggunakan akun yang sudah terdaftar"}
           </p>
         </div>
 
@@ -163,7 +175,11 @@ export default function LoginPage() {
                 disabled={gpsStep}
                 className="absolute inset-y-0 right-0 flex items-center pr-4 text-ink-subtle hover:text-ink transition-colors disabled:opacity-50"
               >
-                {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                {showPassword ? (
+                  <EyeOff className="h-5 w-5" />
+                ) : (
+                  <Eye className="h-5 w-5" />
+                )}
               </button>
             </div>
           </div>
@@ -184,7 +200,8 @@ export default function LoginPage() {
           {gpsStep && (
             <p className="flex items-center gap-2 text-sm text-ink-muted">
               <MapPin className="h-4 w-4 shrink-0 text-sky" />
-              Browser akan meminta izin lokasi. Izinkan untuk verifikasi area kampus.
+              Browser akan meminta izin lokasi. Izinkan untuk verifikasi area
+              kampus.
             </p>
           )}
 

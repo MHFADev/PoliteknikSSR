@@ -23,8 +23,12 @@ export default function AdminAttendancePage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="font-display text-2xl font-semibold text-ink">Rekap Absensi 30 Hari Terakhir</h1>
-        <p className="text-sm text-ink-muted">Lihat rekapitulasi kehadiran semua siswa atau filter per siswa.</p>
+        <h1 className="font-display text-2xl font-semibold text-ink">
+          Rekap Absensi 30 Hari Terakhir
+        </h1>
+        <p className="text-sm text-ink-muted">
+          Lihat rekapitulasi kehadiran siswa
+        </p>
       </div>
 
       <Card variant="flip7">
@@ -51,15 +55,33 @@ export default function AdminAttendancePage() {
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-outline">
-                <th className="text-left py-3 px-4 font-semibold text-ink">Nama Siswa</th>
-                <th className="text-left py-3 px-4 font-semibold text-ink">Kelas</th>
-                <th className="text-left py-3 px-4 font-semibold text-ink">Jurusan</th>
-                <th className="text-center py-3 px-4 font-semibold text-leaf">Hadir</th>
-                <th className="text-center py-3 px-4 font-semibold text-sun">Telat</th>
-                <th className="text-center py-3 px-4 font-semibold text-sky">Izin</th>
-                <th className="text-center py-3 px-4 font-semibold text-berry">Sakit</th>
-                <th className="text-center py-3 px-4 font-semibold text-coral">Alfa</th>
-                <th className="text-center py-3 px-4 font-semibold text-ink">Total Hari</th>
+                <th className="text-left py-3 px-4 font-semibold text-ink">
+                  Nama Siswa
+                </th>
+                <th className="text-left py-3 px-4 font-semibold text-ink">
+                  Kelas
+                </th>
+                <th className="text-left py-3 px-4 font-semibold text-ink">
+                  Jurusan
+                </th>
+                <th className="text-center py-3 px-4 font-semibold text-leaf">
+                  Hadir
+                </th>
+                <th className="text-center py-3 px-4 font-semibold text-ink-muted">
+                  Telat
+                </th>
+                <th className="text-center py-3 px-4 font-semibold text-sun">
+                  Izin
+                </th>
+                <th className="text-center py-3 px-4 font-semibold text-[#A855F7]">
+                  Sakit
+                </th>
+                <th className="text-center py-3 px-4 font-semibold text-coral1">
+                  Alfa
+                </th>
+                <th className="text-center py-3 px-4 font-semibold text-ink">
+                  Total Hari
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -77,18 +99,25 @@ export default function AdminAttendancePage() {
                 </tr>
               ) : (
                 stats.map((student) => (
-                  <tr key={student.studentId} className="border-b border-outline hover:bg-surface/50">
+                  <tr
+                    key={student.studentId}
+                    className="border-b border-outline hover:bg-surface/50"
+                  >
                     <td className="py-3 px-4 text-ink">{student.fullName}</td>
-                    <td className="py-3 px-4 text-ink-muted">{student.kelas || "-"}</td>
-                    <td className="py-3 px-4 text-ink-muted">{student.jurusan || "-"}</td>
+                    <td className="py-3 px-4 text-ink-muted">
+                      {student.kelas || "-"}
+                    </td>
+                    <td className="py-3 px-4 text-ink-muted">
+                      {student.jurusan || "-"}
+                    </td>
                     <td className="py-3 px-4 text-center">
                       <Badge tone="leaf">{student.hadir}</Badge>
                     </td>
                     <td className="py-3 px-4 text-center">
-                      <Badge tone="sun">{student.telat}</Badge>
+                      <Badge tone="ink">{student.telat}</Badge>
                     </td>
                     <td className="py-3 px-4 text-center">
-                      <Badge tone="sky">{student.izin}</Badge>
+                      <Badge tone="sun">{student.izin}</Badge>
                     </td>
                     <td className="py-3 px-4 text-center">
                       <Badge tone="berry">{student.sakit}</Badge>
@@ -96,7 +125,9 @@ export default function AdminAttendancePage() {
                     <td className="py-3 px-4 text-center">
                       <Badge tone="coral">{student.alfa}</Badge>
                     </td>
-                    <td className="py-3 px-4 text-center text-ink font-semibold">{student.total}</td>
+                    <td className="py-3 px-4 text-center text-ink font-semibold">
+                      {student.total}
+                    </td>
                   </tr>
                 ))
               )}

@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 @layer components {
-  // Input error styling: coral border + background
+  /* Input error styling: coral border + background */
   .input-error {
     @apply border-coral/60 bg-coral-soft/30 focus:border-coral;
   }
@@ -20,14 +20,14 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-// Focus ring styling: sky color dengan outline offset
+/* Focus ring styling: sky color dengan outline offset */
 :focus-visible {
   outline: 2px solid #3b82f6;
   outline-offset: 2px;
   border-radius: 8px;
 }
 
-// Reduced motion support: animasi harus di-disable untuk aksesibilitas
+/* Reduced motion support: animasi harus di-disable untuk aksesibilitas */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -54,9 +54,12 @@ body {
     background-color: #cbd5e1;
     border-radius: 8px;
   }
+  .font-josefin {
+    font-family: var(--font-josefin);
+  }
 }
 
-// Pastikan input tidak zoom di mobile (iOS Safari)
+/* Pastikan input tidak zoom di mobile (iOS Safari) */
 @media (max-width: 640px) {
   input,
   select,
