@@ -20,7 +20,7 @@ import { createClient } from "@/lib/supabase/client";
 import {
   LayoutDashboard, QrCode, FileText, NotebookPen,
   Users, Download, MapPin, CalendarDays, Megaphone,
-  LogOut, Menu, X,
+  LogOut, Menu, X, UserCircle, Settings,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import styles from "@/styles/components/layout/Sidebar.module.css";
@@ -39,11 +39,15 @@ const NAV: Record<string, NavItem[]> = {
     { href: "/dashboard/siswa/kegiatan-harian", label: "Kegiatan Harian", icon: NotebookPen },
     { href: "/dashboard/siswa/kalender",     label: "Kalender",           icon: CalendarDays },
     { href: "/dashboard/siswa/pengumuman",   label: "Pengumuman",         icon: Megaphone },
+    { href: "/dashboard/siswa/profile",      label: "Profil Saya",        icon: UserCircle },
+    { href: "/dashboard/siswa/settings",     label: "Pengaturan",         icon: Settings },
   ],
   pembimbing: [
     { href: "/dashboard/pembimbing",             label: "Dashboard",           icon: LayoutDashboard },
     { href: "/dashboard/pembimbing/izin",        label: "Persetujuan Izin",    icon: FileText },
     { href: "/dashboard/pembimbing/kegiatan-harian", label: "Penilaian Kegiatan", icon: NotebookPen },
+    { href: "/dashboard/pembimbing/profile",     label: "Profil Saya",         icon: UserCircle },
+    { href: "/dashboard/pembimbing/settings",    label: "Pengaturan",          icon: Settings },
   ],
   admin: [
     { href: "/dashboard/admin",            label: "Dashboard",        icon: LayoutDashboard },
@@ -56,6 +60,8 @@ const NAV: Record<string, NavItem[]> = {
     { href: "/dashboard/admin/broadcast",   label: "Broadcast",        icon: Megaphone },
     { href: "/dashboard/admin/export",      label: "Ekspor Data",      icon: Download },
     { href: "/dashboard/admin/lokasi",      label: "Lokasi GPS",       icon: MapPin },
+    { href: "/dashboard/admin/profile",     label: "Profil Saya",      icon: UserCircle },
+    { href: "/dashboard/admin/settings",    label: "Pengaturan",       icon: Settings },
   ],
 };
 
