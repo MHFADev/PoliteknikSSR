@@ -3,6 +3,7 @@ import { LeaveRequestForm } from "@/components/izin/LeaveRequestForm";
 import { Card, CardHeader } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { formatDate } from "@/lib/utils";
+import styles from "@/styles/pages/dashboard/siswa/Izin.module.css";
 
 const STATUS_TONE = {
   pending: "warning",
@@ -23,36 +24,36 @@ export default async function SiswaIzinPage() {
     .order("created_at", { ascending: false });
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="font-display text-2xl font-semibold text-deep">Pengajuan Izin</h1>
-        <p className="text-sm text-mist-dim">Ajukan izin, sakit, atau cuti selama masa PKL.</p>
+    <div className={styles.pageContainer}>
+      <div className={styles.pageHeader}>
+        <h1>Pengajuan Izin</h1>
+        <p>Ajukan izin, sakit, atau cuti selama masa PKL.</p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className={styles.formGrid}>
         <LeaveRequestForm />
 
         <Card>
           <CardHeader title="Riwayat Pengajuan" />
-          <div className="divide-y divide-deep/6 max-h-[28rem] overflow-y-auto">
+          <div className={styles.historyList}>
             {history && history.length > 0 ? (
               history.map((req) => (
-                <div key={req.id} className="py-3">
-                  <div className="flex items-center justify-between">
-                    <p className="text-sm font-medium text-deep capitalize">{req.type}</p>
+                <div key={req.id} className={styles.historyItem}>
+                  <div className={styles.historyItemHeader}>
+                    <p className={styles.historyItemTitle}>{req.type}</p>
                     <Badge tone={STATUS_TONE[req.status as keyof typeof STATUS_TONE]}>{req.status}</Badge>
                   </div>
-                  <p className="text-xs text-mist-dim mt-0.5">
+                  <p className={styles.historyItemDate}>
                     {formatDate(req.start_date)} – {formatDate(req.end_date)}
                   </p>
-                  <p className="text-sm text-steel mt-1 truncate">{req.reason}</p>
+                  <p className={styles.historyItemReason}>{req.reason}</p>
                   {req.review_note && (
-                    <p className="text-xs text-mist-dim mt-1 italic">Catatan: {req.review_note}</p>
+                    <p className={styles.historyItemNote}>Catatan: {req.review_note}</p>
                   )}
                 </div>
               ))
             ) : (
-              <p className="py-6 text-center text-sm text-mist-dim">Belum ada pengajuan.</p>
+              <p className={styles.emptyState}>Belum ada pengajuan.</p>
             )}
           </div>
         </Card>

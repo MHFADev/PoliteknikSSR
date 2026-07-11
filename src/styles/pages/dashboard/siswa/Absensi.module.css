@@ -1,0 +1,24 @@
+/* Absensi Siswa - Halaman scan QR untuk absensi */
+.pageContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.pageHeader h1 {
+  font-family: var(--font-jakarta), sans-serif;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--color-deep, #0F172A);
+}
+
+.pageHeader p {
+  font-size: 0.875rem;
+  color: var(--color-mist-dim, #64748B);
+}
+
+.scannerCard {
+  display: flex;
+  justify-content: center;
+  padding: 2rem 0;
+}

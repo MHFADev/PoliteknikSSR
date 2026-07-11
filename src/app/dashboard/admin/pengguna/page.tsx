@@ -2,6 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import { Card, CardHeader } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { AddStudentModal } from "@/components/admin/AddStudentModal";
+import styles from "@/styles/pages/dashboard/admin/Pengguna.module.css";
 
 export default async function AdminUsersPage() {
   const supabase = createClient();
@@ -12,35 +13,35 @@ export default async function AdminUsersPage() {
     .order("created_at", { ascending: false });
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="font-display text-2xl font-semibold text-deep">Kelola Pengguna</h1>
-        <p className="text-sm text-mist-dim">Lihat dan kelola semua pengguna (siswa, pembimbing, dan admin).</p>
+    <div className={styles.pageContainer}>
+      <div className={styles.pageHeader}>
+        <h1>Kelola Pengguna</h1>
+        <p>Lihat dan kelola semua pengguna (siswa, pembimbing, dan admin).</p>
       </div>
 
       <Card>
         <CardHeader title="Daftar Pengguna" action={<AddStudentModal />} />
-        <div className="divide-y divide-deep/6 overflow-x-auto">
-          <table className="w-full text-sm">
+        <div className={styles.tableWrapper}>
+          <table className={styles.table}>
             <thead>
-              <tr className="text-left text-mist-dim">
-                <th className="py-3 px-4 font-medium">Nama</th>
-                <th className="py-3 px-4 font-medium">NIS/NIP</th>
-                <th className="py-3 px-4 font-medium">Kelas</th>
-                <th className="py-3 px-4 font-medium">Jurusan</th>
-                <th className="py-3 px-4 font-medium">Role</th>
-                <th className="py-3 px-4 font-medium">Dibuat</th>
+              <tr>
+                <th>Nama</th>
+                <th>NIS/NIP</th>
+                <th>Kelas</th>
+                <th>Jurusan</th>
+                <th>Role</th>
+                <th>Dibuat</th>
               </tr>
             </thead>
             <tbody>
               {profiles && profiles.length > 0 ? (
                 profiles.map((profile: any) => (
-                  <tr key={profile.id} className="text-deep">
-                    <td className="py-3 px-4">{profile.full_name}</td>
-                    <td className="py-3 px-4 text-steel">{profile.identity_number || "-"}</td>
-                    <td className="py-3 px-4 text-steel">{profile.kelas || "-"}</td>
-                    <td className="py-3 px-4 text-steel">{profile.study_programs?.nama || profile.instansi || "-"}</td>
-                    <td className="py-3 px-4">
+                  <tr key={profile.id}>
+                    <td>{profile.full_name}</td>
+                    <td className={styles.tableCellMuted}>{profile.identity_number || "-"}</td>
+                    <td className={styles.tableCellMuted}>{profile.kelas || "-"}</td>
+                    <td className={styles.tableCellMuted}>{profile.study_programs?.nama || profile.instansi || "-"}</td>
+                    <td>
                       <Badge
                         tone={
                           profile.role === "admin"
@@ -53,16 +54,14 @@ export default async function AdminUsersPage() {
                         {profile.role}
                       </Badge>
                     </td>
-                    <td className="py-3 px-4 text-steel">
+                    <td className={styles.tableCellMuted}>
                       {new Date(profile.created_at).toLocaleDateString("id-ID")}
                     </td>
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan={6} className="py-8 text-center text-mist-dim">
-                    Belum ada pengguna.
-                  </td>
+                  <td colSpan={6} className={styles.emptyState}>Belum ada pengguna.</td>
                 </tr>
               )}
             </tbody>

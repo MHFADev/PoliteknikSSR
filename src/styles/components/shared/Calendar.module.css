@@ -1,0 +1,439 @@
+/* ============================================ */
+/* CSS Module untuk Komponen Kalender           */
+/* File: Calendar.module.css                    */
+/* Kalender bulanan dengan event, status, legend */
+/* ============================================ */
+
+/* ===== WRAPPER UTAMA ===== */
+/* Membungkus seluruh komponen kalender */
+/* Menggantikan className="space-y-4 w-full max-w-full overflow-hidden" */
+.wrapper {
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem; /* space-y-4 */
+}
+
+/* ===== CARD PEMBUNGKUS ===== */
+/* Card container menggunakan komponen Card dengan padding responsif */
+/* className="p-3 sm:p-4 md:p-6" */
+.card {
+  padding: 0.75rem; /* p-3 */
+}
+
+@media (min-width: 640px) {
+  .card {
+    padding: 1rem; /* sm:p-4 */
+  }
+}
+
+@media (min-width: 768px) {
+  .card {
+    padding: 1.5rem; /* md:p-6 */
+  }
+}
+
+/* ===== HEADER ROW (Navigasi Bulan) ===== */
+/* Baris navigasi bulan sebelumnya & berikutnya */
+/* Menggantikan className="mb-4 flex items-center justify-between" */
+.headerRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem; /* mb-4 */
+}
+
+/* ===== TOMBOL NAVIGASI (Prev/Next) ===== */
+/* Tombol panah kiri/kanan untuk ganti bulan */
+/* className="rounded-flip7-pill p-2 text-ink-muted hover:bg-teal-bg transition-colors" */
+.navButton {
+  border-radius: var(--radius-flip7-pill, 9999px);
+  padding: 0.5rem; /* p-2 */
+  color: var(--color-ink-muted, #6b7280);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.15s ease-in-out, color 0.15s ease-in-out;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Hover state tombol navigasi */
+.navButton:hover {
+  background-color: var(--color-teal-bg, #e6f7f6);
+}
+
+/* Ukuran ikon navigasi */
+/* ChevronLeft/Right className="h-5 w-5 sm:h-6 sm:w-6" */
+.navButton svg {
+  height: 1.25rem; /* h-5 */
+  width: 1.25rem;  /* w-5 */
+}
+
+@media (min-width: 640px) {
+  .navButton svg {
+    height: 1.5rem;  /* sm:h-6 */
+    width: 1.5rem;   /* sm:w-6 */
+  }
+}
+
+/* ===== JUDUL BULAN & TAHUN ===== */
+/* Teks nama bulan dan tahun di tengah header */
+/* className="font-display text-lg sm:text-xl md:text-2xl font-bold text-teal-dark" */
+.title {
+  font-family: var(--font-display, inherit);
+  font-size: 1.125rem;    /* text-lg */
+  line-height: 1.75rem;
+  font-weight: 700;        /* font-bold */
+  color: var(--color-teal-dark, #1e7a75);
+}
+
+@media (min-width: 640px) {
+  .title {
+    font-size: 1.25rem;   /* sm:text-xl */
+    line-height: 1.75rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .title {
+    font-size: 1.5rem;    /* md:text-2xl */
+    line-height: 2rem;
+  }
+}
+
+/* ===== HEADER HARI (Baris Nama Hari) ===== */
+/* Baris berisi nama-nama hari (Min, Sen, Sel, ...) */
+/* className="mb-2 grid grid-cols-7 gap-1 sm:gap-2" */
+.dayHeader {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.25rem;  /* gap-1 */
+  margin-bottom: 0.5rem; /* mb-2 */
+}
+
+@media (min-width: 640px) {
+  .dayHeader {
+    gap: 0.5rem; /* sm:gap-2 */
+  }
+}
+
+/* Teks di dalam header hari */
+/* className="rounded-flip7-md px-1 sm:px-2 py-1.5 text-center
+   text-[10px] sm:text-xs font-bold text-teal-dark bg-teal-bg" */
+.dayHeaderText {
+  border-radius: var(--radius-flip7-md, 0.5rem);
+  padding: 0.25rem 0.375rem;  /* px-1 */
+  padding-top: 0.375rem;       /* py-1.5 */
+  padding-bottom: 0.375rem;
+  text-align: center;
+  font-size: 0.625rem;         /* text-[10px] */
+  font-weight: 700;
+  color: var(--color-teal-dark, #1e7a75);
+  background-color: var(--color-teal-bg, #e6f7f6);
+}
+
+@media (min-width: 640px) {
+  .dayHeaderText {
+    padding-left: 0.5rem;      /* sm:px-2 */
+    padding-right: 0.5rem;
+    font-size: 0.75rem;        /* sm:text-xs */
+    line-height: 1rem;
+  }
+}
+
+/* ===== GRID TANGGAL ===== */
+/* Grid 7 kolom untuk menampilkan tanggal */
+/* className="grid grid-cols-7 gap-1 sm:gap-2 mb-4" */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.25rem;  /* gap-1 */
+  margin-bottom: 1rem; /* mb-4 */
+}
+
+@media (min-width: 640px) {
+  .grid {
+    gap: 0.5rem; /* sm:gap-2 */
+  }
+}
+
+/* ===== SEL KOSONG (Placeholder) ===== */
+/* Sel kosong sebelum tanggal 1 untuk align hari */
+/* className="min-h-[50px] sm:min-h-[70px] md:min-h-[90px]" */
+.emptyCell {
+  min-height: 50px;
+}
+
+@media (min-width: 640px) {
+  .emptyCell {
+    min-height: 70px; /* sm:min-h-[70px] */
+  }
+}
+
+@media (min-width: 768px) {
+  .emptyCell {
+    min-height: 90px; /* md:min-h-[90px] */
+  }
+}
+
+/* ===== SEL TANGGAL (Default) ===== */
+/* Sel untuk setiap tanggal */
+/* className="min-h-[50px] sm:min-h-[70px] md:min-h-[90px] rounded-flip7-lg
+   border border-outline p-1.5 transition-all hover:border-teal-light
+   hover:shadow-flip7-card bg-surface flex flex-col gap-1" */
+.cell {
+  min-height: 50px;
+  border-radius: var(--radius-flip7-lg, 0.75rem);
+  border: 1px solid var(--color-outline, #d1d5db);
+  padding: 0.375rem; /* p-1.5 */
+  background-color: var(--color-surface, #ffffff);
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem; /* gap-1 */
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+/* Hover state untuk sel tanggal — border teal dan shadow */
+.cell:hover {
+  border-color: var(--color-teal-light, #5cc5c0);
+  box-shadow: var(--shadow-flip7-card, 0 2px 8px rgba(0,0,0,0.08));
+}
+
+@media (min-width: 640px) {
+  .cell {
+    min-height: 70px; /* sm:min-h-[70px] */
+  }
+}
+
+@media (min-width: 768px) {
+  .cell {
+    min-height: 90px; /* md:min-h-[90px] */
+  }
+}
+
+/* ===== SEL HARI INI (Today Highlight) ===== */
+/* Tambahan styling jika tanggal adalah hari ini */
+/* className="border-gold bg-gold-light/10 shadow-flip7-gold-glow" */
+.cellToday {
+  border-color: var(--color-gold, #e6b800);
+  background-color: color-mix(in srgb, var(--color-gold-light, #fff3cd) 10%, transparent);
+  box-shadow: var(--shadow-flip7-gold-glow, 0 0 8px rgba(230, 184, 0, 0.3));
+}
+
+/* ===== SEL LIBUR (Holiday) ===== */
+/* Sel dengan status libur — border tebal coral */
+/* className="min-h-[50px] sm:min-h-[70px] md:min-h-[90px] rounded-flip7-lg
+   border-2 border-flip7-coral p-1.5 transition-all flex flex-col gap-1
+   bg-flip7-coral-light/20" */
+.cellLibur {
+  min-height: 50px;
+  border-radius: var(--radius-flip7-lg, 0.75rem);
+  border: 2px solid var(--color-flip7-coral, #e74c3c);
+  padding: 0.375rem;
+  background-color: color-mix(in srgb, var(--color-flip7-coral-light, #fde8e8) 20%, transparent);
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  transition: all 0.15s ease-in-out;
+}
+
+@media (min-width: 640px) {
+  .cellLibur {
+    min-height: 70px;
+  }
+}
+
+@media (min-width: 768px) {
+  .cellLibur {
+    min-height: 90px;
+  }
+}
+
+/* ===== SEL DENGAN STATUS DINAMIS ===== */
+/* Warna border & background diatur oleh prop status.color dari JS */
+/* Tidak ada style tambahan karena warnanya di-inline dari JS sebagai string kelas */
+.cellStatus {
+  /* Warna border, background diatur inline dari getDayStatus */
+}
+
+/* ===== LINGKARAN NOMOR TANGGAL ===== */
+/* Lingkaran kecil berisi nomor tanggal */
+/* className="flex h-6 w-6 items-center justify-center rounded-full
+   text-xs font-bold sm:h-7 sm:w-7 sm:text-sm" */
+.dayNumber {
+  display: flex;
+  height: 1.5rem;  /* h-6 */
+  width: 1.5rem;   /* w-6 */
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px; /* rounded-full */
+  font-size: 0.75rem;    /* text-xs */
+  line-height: 1rem;
+  font-weight: 700;      /* font-bold */
+}
+
+@media (min-width: 640px) {
+  .dayNumber {
+    height: 1.75rem;  /* sm:h-7 */
+    width: 1.75rem;   /* sm:w-7 */
+    font-size: 0.875rem; /* sm:text-sm */
+    line-height: 1.25rem;
+  }
+}
+
+/* Nomor tanggal untuk hari ini — gold background */
+/* className="bg-gold text-teal-dark shadow-flip7-gold-glow" */
+.dayNumberToday {
+  background-color: var(--color-gold, #e6b800);
+  color: var(--color-teal-dark, #1e7a75);
+  box-shadow: var(--shadow-flip7-gold-glow, 0 0 8px rgba(230, 184, 0, 0.3));
+}
+
+/* Nomor tanggal untuk hari libur — coral background */
+/* className="bg-flip7-coral text-white shadow-flip7-coral-glow" */
+.dayNumberLibur {
+  background-color: var(--color-flip7-coral, #e74c3c);
+  color: #ffffff;
+  box-shadow: var(--shadow-flip7-coral-glow, 0 0 8px rgba(231, 76, 60, 0.3));
+}
+
+/* Nomor tanggal untuk hari biasa — surface elevated */
+/* className="bg-surface-elevated text-ink border border-outline" */
+.dayNumberDefault {
+  background-color: var(--color-surface-elevated, #f3f4f6);
+  color: var(--color-ink, #1a1a2e);
+  border: 1px solid var(--color-outline, #d1d5db);
+}
+
+/* ===== DOT STATUS ===== */
+/* Dot kecil untuk menandai status kehadiran */
+/* className="h-2 w-2 rounded-full sm:h-2.5 sm:w-2.5" */
+.statusDot {
+  display: inline-block;
+  height: 0.5rem;   /* h-2 */
+  width: 0.5rem;    /* w-2 */
+  border-radius: 9999px; /* rounded-full */
+  /* Warna dot dari props status.dot via className tambahan */
+}
+
+@media (min-width: 640px) {
+  .statusDot {
+    height: 0.625rem; /* sm:h-2.5 */
+    width: 0.625rem;  /* sm:w-2.5 */
+  }
+}
+
+/* Label status di samping dot */
+/* className="text-[9px] font-semibold text-ink sm:text-[10px]" */
+.statusLabel {
+  font-size: 9px;        /* text-[9px] */
+  font-weight: 600;      /* font-semibold */
+  color: var(--color-ink, #1a1a2e);
+}
+
+@media (min-width: 640px) {
+  .statusLabel {
+    font-size: 10px;     /* sm:text-[10px] */
+  }
+}
+
+/* ===== BADGE EVENT ===== */
+/* Badge untuk menampilkan event di dalam sel */
+/* className="mt-auto rounded-flip7-sm px-1.5 py-0.5 text-[8px] font-bold
+   leading-tight sm:text-[10px] truncate" */
+.eventBadge {
+  margin-top: auto;
+  border-radius: var(--radius-flip7-sm, 0.375rem);
+  padding: 0.125rem 0.375rem; /* px-1.5 py-0.5 */
+  font-size: 8px;            /* text-[8px] */
+  font-weight: 700;          /* font-bold */
+  line-height: 1.25;          /* leading-tight */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;    /* truncate */
+}
+
+@media (min-width: 640px) {
+  .eventBadge {
+    font-size: 10px;         /* sm:text-[10px] */
+  }
+}
+
+/* Badge untuk event libur — coral background */
+/* className="bg-flip7-coral text-white shadow-flip7-coral-glow" */
+.eventLibur {
+  background-color: var(--color-flip7-coral, #e74c3c);
+  color: #ffffff;
+  box-shadow: var(--shadow-flip7-coral-glow, 0 0 8px rgba(231, 76, 60, 0.3));
+}
+
+/* Badge untuk event biasa — teal background */
+/* className="bg-teal text-white shadow-flip7-teal-glow" */
+.eventDefault {
+  background-color: var(--color-teal, #2BA8A2);
+  color: #ffffff;
+  box-shadow: var(--shadow-flip7-teal-glow, 0 0 8px rgba(43, 168, 162, 0.3));
+}
+
+/* ===== LEGENDA ===== */
+/* Bar legend di bawah kalender */
+/* className="flex flex-wrap items-center gap-2 sm:gap-3 p-2 sm:p-3
+   bg-teal-bg rounded-flip7-lg" */
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;  /* gap-2 */
+  padding: 0.5rem; /* p-2 */
+  background-color: var(--color-teal-bg, #e6f7f6);
+  border-radius: var(--radius-flip7-lg, 0.75rem);
+}
+
+@media (min-width: 640px) {
+  .legend {
+    gap: 0.75rem;  /* sm:gap-3 */
+    padding: 0.75rem; /* sm:p-3 */
+  }
+}
+
+/* Setiap item dalam legend */
+/* className="flex items-center gap-2" */
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem; /* gap-2 */
+}
+
+/* Dot warna dalam legend */
+/* className="h-3.5 w-3.5 sm:h-4 sm:w-4 rounded-full" */
+.legendDot {
+  height: 0.875rem;  /* h-3.5 */
+  width: 0.875rem;   /* w-3.5 */
+  border-radius: 9999px;
+}
+
+@media (min-width: 640px) {
+  .legendDot {
+    height: 1rem;    /* sm:h-4 */
+    width: 1rem;     /* sm:w-4 */
+  }
+}
+
+/* Teks label legend */
+/* className="text-[11px] sm:text-sm text-teal-dark font-medium" */
+.legendText {
+  font-size: 11px;            /* text-[11px] */
+  color: var(--color-teal-dark, #1e7a75);
+  font-weight: 500;           /* font-medium */
+}
+
+@media (min-width: 640px) {
+  .legendText {
+    font-size: 0.875rem;      /* sm:text-sm */
+    line-height: 1.25rem;
+  }
+}

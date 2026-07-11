@@ -1,3 +1,15 @@
+/*
+ * colors.ts — Design System Colors
+ * ==========================================
+ * Konstanta warna untuk UI komponen.
+ * Terdiri dari 2 design system:
+ * - Skylearn Design System (sky, sun, leaf, coral, berry, ink, outline)
+ * - Flip7 Design System (teal, gold, flip7)
+ *
+ * Dipakai oleh komponen UI untuk menjaga konsistensi warna.
+ * Bisa diganti/ditambah sesuai kebutuhan branding.
+ */
+
 export const COLORS = {
   // Skylearn Design System
   sky: {

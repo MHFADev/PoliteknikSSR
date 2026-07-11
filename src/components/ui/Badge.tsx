@@ -1,4 +1,18 @@
+/**
+ * Badge — Label kecil dengan 12 warna tone
+ * ==========================================
+ * Mendukung Skylearn (8 tone) dan Flip7 (4 tone) dengan 2 ukuran.
+ *
+ * Cara pakai:
+ *   <Badge tone="success">Aktif</Badge>
+ *   <Badge tone="gold" size="sm">Premium</Badge>
+ */
+
 import { cn } from "@/lib/utils";
+
+// ---------------------------------------------------------------------------
+// Tipe
+// ---------------------------------------------------------------------------
 
 type SkylearnTone =
   | "neutral"
@@ -19,10 +33,10 @@ const skylearnToneClasses: Record<SkylearnTone, string> = {
   warning: "bg-sun-soft text-sun-deep",
   danger: "bg-coral-soft text-coral",
   sky: "bg-sky-soft text-sky-deep",
-  leaf: "bg-emerald-100 text-emerald-700", // 👈 TAMBAHKAN
-  sun: "bg-amber-100 text-amber-700", // 👈 TAMBAHKAN
-  berry: "bg-purple-100 text-purple-700", // 👈 TAMBAHKAN
-  ink: "bg-ink-muted/10 text-ink-muted", // 👈 TAMBAHKAN
+  leaf: "bg-emerald-100 text-emerald-700",
+  sun: "bg-amber-100 text-amber-700",
+  berry: "bg-purple-100 text-purple-700",
+  ink: "bg-ink-muted/10 text-ink-muted",
 };
 
 const flip7ToneClasses: Record<Flip7Tone, string> = {
@@ -38,6 +52,10 @@ interface BadgeProps {
   size?: "sm" | "md";
   className?: string;
 }
+
+// ---------------------------------------------------------------------------
+// Komponen
+// ---------------------------------------------------------------------------
 
 export function Badge({
   tone = "neutral",

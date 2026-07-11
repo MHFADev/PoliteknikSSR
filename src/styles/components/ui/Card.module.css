@@ -1,0 +1,33 @@
+.card { padding: 20px; }
+@media (min-width: 640px) { .card { padding: 24px; } }
+
+/* Variants */
+.cardSkylearn { background: #FFF; border-radius: 20px; border: 1px solid #E2E8F0; box-shadow: 0 8px 24px rgba(15,23,42,0.06); }
+.cardFlip7 { background: #FFF; border-radius: 24px; border-left: 4px solid #3CC4BD; box-shadow: 0 4px 20px rgba(43,168,162,0.1); }
+.cardFlip7Highlight { background: linear-gradient(90deg, rgba(255,228,122,0.1), #FFF); border-radius: 24px; border-left: 4px solid #FFD23F; box-shadow: 0 4px 20px rgba(255,210,63,0.4); }
+.cardFlip7Boom { background: linear-gradient(90deg, rgba(255,138,106,0.1), #FFF); border-radius: 24px; border-left: 4px solid #EF6C4A; animation: boomPulse 2s ease-in-out infinite; }
+
+/* CardHeader */
+.header { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 16px; }
+.headerLeft { display: flex; gap: 12px; }
+.headerIcon { flex-shrink: 0; color: #3B82F6; }
+.headerTitle { font-family: var(--font-jakarta), sans-serif; font-size: 18px; font-weight: 600; color: #0F172A; }
+.headerSubtitle { font-size: 14px; color: #94A3B8; margin-top: 2px; }
+
+/* LessonCard */
+.lessonCard { background: #FFF; border-radius: 20px; border: 1px solid #E2E8F0; padding: 20px; cursor: pointer; transition: all 200ms ease; }
+.lessonCard:hover { box-shadow: 0 12px 32px rgba(59,130,246,0.15); border-color: #3B82F6; transform: translateY(-4px); }
+.lessonCardLocked { opacity: 0.6; cursor: not-allowed; }
+.lessonCardLocked:hover { box-shadow: none; border-color: #E2E8F0; transform: none; }
+
+.lessonIcon { width: 64px; height: 64px; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 30px; }
+.lessonIconLocked { background: #FEF3C7; color: #FBBF24; }
+.lessonIconActive { background: #DBEAFE; color: #3B82F6; }
+
+.lessonTitle { font-family: var(--font-jakarta), sans-serif; font-size: 18px; font-weight: 600; color: #0F172A; margin-bottom: 4px; }
+.lessonDesc { font-size: 14px; color: #94A3B8; margin-bottom: 12px; }
+
+@keyframes boomPulse {
+  0%, 100% { box-shadow: 0 4px 20px rgba(239,108,74,0.35); }
+  50% { box-shadow: 0 4px 32px rgba(239,108,74,0.5); }
+}

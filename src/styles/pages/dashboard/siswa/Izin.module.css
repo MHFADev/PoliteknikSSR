@@ -1,0 +1,83 @@
+/* Izin Siswa - Halaman pengajuan izin, sakit, dan cuti */
+.pageContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.pageHeader h1 {
+  font-family: var(--font-jakarta), sans-serif;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--color-deep, #0F172A);
+}
+
+.pageHeader p {
+  font-size: 0.875rem;
+  color: var(--color-mist-dim, #64748B);
+}
+
+.formGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+@media (min-width: 1024px) {
+  .formGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.historyList {
+  display: flex;
+  flex-direction: column;
+  max-height: 28rem;
+  overflow-y: auto;
+}
+
+.historyItem {
+  padding: 0.75rem 0;
+}
+
+.historyItemHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.historyItemTitle {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-deep, #0F172A);
+  text-transform: capitalize;
+}
+
+.historyItemDate {
+  font-size: 0.75rem;
+  color: var(--color-mist-dim, #64748B);
+  margin-top: 0.125rem;
+}
+
+.historyItemReason {
+  font-size: 0.875rem;
+  color: var(--color-steel, #475569);
+  margin-top: 0.25rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.historyItemNote {
+  font-size: 0.75rem;
+  color: var(--color-mist-dim, #64748B);
+  margin-top: 0.25rem;
+  font-style: italic;
+}
+
+.emptyState {
+  padding: 1.5rem 0;
+  text-align: center;
+  font-size: 0.875rem;
+  color: var(--color-mist-dim, #64748B);
+}

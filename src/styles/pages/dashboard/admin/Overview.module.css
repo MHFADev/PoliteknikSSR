@@ -1,0 +1,68 @@
+/* Overview Admin - Halaman utama dashboard admin */
+.pageContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.pageHeader h1 {
+  font-family: var(--font-jakarta), sans-serif;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--color-teal-dark, #1E8C86);
+}
+
+.pageHeader p {
+  font-size: 0.875rem;
+  color: var(--color-ink-muted, #475569);
+}
+
+.statGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+@media (min-width: 640px) {
+  .statGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .statGrid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.twoColumnGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+@media (min-width: 1024px) {
+  .twoColumnGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.calendarSection {
+  margin-top: 1.5rem;
+}
+
+.eventDotLibur {
+  width: 0.625rem;
+  height: 0.625rem;
+  border-radius: 9999px;
+  background: #F87171;
+  flex-shrink: 0;
+}
+
+.eventDotEvent {
+  width: 0.625rem;
+  height: 0.625rem;
+  border-radius: 9999px;
+  background: #2BA8A2;
+  flex-shrink: 0;
+}

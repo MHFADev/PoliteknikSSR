@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/Button";
 import { Modal } from "@/components/ui/Modal";
 import { getLocations, addLocation, updateLocation, deleteLocation } from "@/actions/location";
 import { LocationPicker } from "@/components/LocationPicker";
+import styles from "@/styles/pages/dashboard/admin/Lokasi.module.css";
 
 type Location = {
   id: string;
@@ -117,12 +118,10 @@ export default function AdminLokasiPage() {
   }
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="font-display text-2xl font-semibold text-deep">Lokasi GPS</h1>
-        <p className="text-sm text-mist-dim">
-          Atur lokasi yang diizinkan untuk verifikasi GPS saat login. Siswa hanya bisa login jika berada dalam radius lokasi ini.
-        </p>
+    <div className={styles.pageContainer}>
+      <div className={styles.pageHeader}>
+        <h1>Lokasi GPS</h1>
+        <p>Atur lokasi yang diizinkan untuk verifikasi GPS saat login. Siswa hanya bisa login jika berada dalam radius lokasi ini.</p>
       </div>
 
       <Card>
@@ -138,29 +137,27 @@ export default function AdminLokasiPage() {
         />
 
         {loading ? (
-          <div className="flex items-center justify-center py-12">
+          <div className={styles.loadingSpinner}>
             <Loader2 className="h-6 w-6 animate-spin text-steel" />
           </div>
         ) : locations.length === 0 ? (
-          <p className="py-8 text-center text-sm text-mist-dim">
-            Belum ada lokasi. Tambahkan lokasi untuk mengaktifkan verifikasi GPS.
-          </p>
+          <p className={styles.emptyState}>Belum ada lokasi. Tambahkan lokasi untuk mengaktifkan verifikasi GPS.</p>
         ) : (
-          <div className="divide-y divide-deep/6">
+          <div className={styles.locationList}>
             {locations.map((loc) => (
-              <div key={loc.id} className="flex items-start justify-between px-4 py-4">
-                <div className="flex items-start gap-3">
-                  <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-ocean/10 text-ocean">
+              <div key={loc.id} className={styles.locationItem}>
+                <div className={styles.locationInfo}>
+                  <div className={styles.locationIcon}>
                     <MapPin className="h-4 w-4" />
                   </div>
                   <div>
-                    <p className="font-medium text-deep">{loc.nama}</p>
-                    <p className="text-xs text-steel mt-0.5">
+                    <p className={styles.locationName}>{loc.nama}</p>
+                    <p className={styles.locationCoords}>
                       {loc.latitude.toFixed(6)}, {loc.longitude.toFixed(6)} &mdash; Radius {loc.radius_meters}m
                     </p>
                   </div>
                 </div>
-                <div className="flex gap-2">
+                <div className={styles.locationActions}>
                   <Button variant="ghost" onClick={() => openEdit(loc)}>
                     <Edit className="h-4 w-4" />
                   </Button>
@@ -180,20 +177,20 @@ export default function AdminLokasiPage() {
         title={editing ? "Edit Lokasi" : "Tambah Lokasi"}
       >
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="text-sm font-medium text-deep">Nama Lokasi</label>
+          <div className={styles.formGroup}>
+            <label className={styles.formLabel}>Nama Lokasi</label>
             <input
               name="nama"
               type="text"
               required
               defaultValue={editing?.nama ?? ""}
               placeholder="Gedung Utama Kampus"
-              className="mt-1.5 w-full rounded-xl border border-deep/10 bg-white/80 px-3 py-2.5 text-sm outline-none focus:border-ocean"
+              className={styles.formInput}
             />
           </div>
 
-          <div className="space-y-2">
-            <div className="flex items-center gap-2 text-sm text-deep">
+          <div className={styles.locationPickerSection}>
+            <div className={styles.locationPickerHeader}>
               <Map className="h-4 w-4" />
               <label className="font-medium">Pilih Lokasi di Peta</label>
             </div>
@@ -201,14 +198,14 @@ export default function AdminLokasiPage() {
               value={tempLocation}
               onChange={(newLoc) => setTempLocation(newLoc)}
             />
-            <div className="flex items-center justify-between text-xs text-steel">
+            <div className={styles.locationPickerCoords}>
               <span>Koordinat: {tempLocation.latitude.toFixed(6)}, {tempLocation.longitude.toFixed(6)}</span>
               <span>Radius: {tempLocation.radius_meters}m</span>
             </div>
           </div>
 
-          <div>
-            <label className="text-sm font-medium text-deep">Radius (meter)</label>
+          <div className={styles.formGroup}>
+            <label className={styles.formLabel}>Radius (meter)</label>
             <input
               name="radius_meters"
               type="number"
@@ -217,13 +214,13 @@ export default function AdminLokasiPage() {
               value={tempLocation.radius_meters}
               onChange={(e) => setTempLocation({ ...tempLocation, radius_meters: parseFloat(e.target.value) || 100 })}
               placeholder="100"
-              className="mt-1.5 w-full rounded-xl border border-deep/10 bg-white/80 px-3 py-2.5 text-sm outline-none focus:border-ocean"
+              className={styles.formInput}
             />
           </div>
 
-          {error && <p className="text-sm text-danger">{error}</p>}
+          {error && <p className={styles.formError}>{error}</p>}
 
-          <div className="flex justify-end gap-3 pt-2">
+          <div className={styles.formActions}>
             <Button type="button" variant="ghost" onClick={() => { setModalOpen(false); setEditing(null); setError(null); }}>
               Batal
             </Button>

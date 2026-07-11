@@ -1,0 +1,91 @@
+/* Pengumuman Siswa - Halaman daftar pengumuman dari admin */
+.pageContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.pageHeader h1 {
+  font-family: var(--font-jakarta), sans-serif;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--color-deep, #0F172A);
+}
+
+.pageHeader p {
+  font-size: 0.875rem;
+  color: var(--color-mist-dim, #64748B);
+}
+
+.loadingSpinner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 0;
+}
+
+.emptyState {
+  padding: 3rem 0;
+  text-align: center;
+  font-size: 0.875rem;
+  color: var(--color-mist-dim, #64748B);
+}
+
+.announcementList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.announcementCard {
+  padding: 1rem;
+}
+
+.announcementInner {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.announcementIcon {
+  display: flex;
+  height: 2.5rem;
+  width: 2.5rem;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  background: rgba(59,130,246,0.1);
+  color: #3B82F6;
+}
+
+.announcementContent {
+  min-width: 0;
+  flex: 1;
+}
+
+.announcementTitleRow {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.announcementTitle {
+  font-family: var(--font-jakarta), sans-serif;
+  font-weight: 600;
+  color: var(--color-deep, #0F172A);
+}
+
+.announcementBody {
+  margin-top: 0.25rem;
+  font-size: 0.875rem;
+  color: var(--color-steel, #475569);
+  white-space: pre-wrap;
+}
+
+.announcementDate {
+  margin-top: 0.5rem;
+  font-size: 0.75rem;
+  color: var(--color-mist-dim, #64748B);
+}

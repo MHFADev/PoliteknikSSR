@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { LogbookReviewList } from "@/components/logbook/LogbookGradeModal";
+import styles from "@/styles/pages/dashboard/admin/Logbook.module.css";
 
 export default async function AdminLogbookPage() {
   const supabase = createClient();
@@ -13,10 +14,10 @@ export default async function AdminLogbookPage() {
     .limit(100);
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="font-display text-2xl font-semibold text-ink">Data Kegiatan</h1>
-        <p className="text-sm text-ink-muted">Pantau seluruh entri kegiatan siswa. Admin juga dapat menilai langsung.</p>
+    <div className={styles.pageContainer}>
+      <div className={styles.pageHeader}>
+        <h1>Data Kegiatan</h1>
+        <p>Pantau seluruh entri kegiatan siswa. Admin juga dapat menilai langsung.</p>
       </div>
 
       <LogbookReviewList initialEntries={(data as any) ?? []} />

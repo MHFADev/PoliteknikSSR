@@ -1,8 +1,10 @@
+import Image from "next/image";
 import { createClient } from "@/lib/supabase/server";
 import { LogbookForm } from "@/components/logbook/LogbookForm";
 import { Card, CardHeader } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { formatDate, todayISODate } from "@/lib/utils";
+import styles from "@/styles/pages/dashboard/siswa/Logbook.module.css";
 
 export default async function SiswaLogbookPage() {
   const supabase = createClient();
@@ -33,48 +35,50 @@ export default async function SiswaLogbookPage() {
   const todayEntry = history?.find((e) => e.entry_date === todayISODate());
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="font-display text-2xl font-semibold text-ink">Kegiatan Harian</h1>
-        <p className="text-sm text-ink-muted">Catat aktivitas PKL kamu setiap hari.</p>
+    <div className={styles.pageContainer}>
+      <div className={styles.pageHeader}>
+        <h1>Kegiatan Harian</h1>
+        <p>Catat aktivitas PKL kamu setiap hari.</p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className={styles.formGrid}>
         <LogbookForm existingContent={todayEntry?.content} existingPhotoUrl={todayEntry?.photo_url ?? undefined} />
 
         <Card>
           <CardHeader title="Riwayat Kegiatan" />
-          <div className="divide-y divide-outline max-h-[36rem] overflow-y-auto">
+          <div className={styles.historyList}>
             {history && history.length > 0 ? (
               history.map((entry) => (
-                <div key={entry.id} className="py-4 px-2">
-                  <div className="flex items-center justify-between">
-                    <p className="text-sm font-medium text-ink">{formatDate(entry.entry_date)}</p>
+                <div key={entry.id} className={styles.historyItem}>
+                  <div className={styles.historyItemHeader}>
+                    <p className={styles.historyItemDate}>{formatDate(entry.entry_date)}</p>
                     {entry.grade !== null ? (
                       <Badge tone="leaf">Nilai {entry.grade}</Badge>
                     ) : (
                       <Badge tone="neutral">Belum dinilai</Badge>
                     )}
                   </div>
-                  <p className="text-sm text-ink-muted mt-2 line-clamp-3">{entry.content}</p>
+                  <p className={styles.historyItemContent}>{entry.content}</p>
                   
                   {entry.photo_url && (
-                    <div className="mt-3">
-                      <img 
+                    <div className={styles.historyItemPhoto}>
+                      {/* Ganti <img> ke <Image> dari next/image untuk optimasi gambar */}
+                      <Image 
                         src={entry.photo_url} 
                         alt="Bukti kegiatan" 
-                        className="w-full max-h-40 object-cover rounded-skylearn-md border border-outline"
+                        fill
+                        unoptimized={true}
                       />
                     </div>
                   )}
                   
                   {entry.feedback && (
-                    <p className="text-xs text-ink-subtle mt-3 italic border-l-2 border-sky-soft pl-3">Feedback: {entry.feedback}</p>
+                    <p className={styles.historyItemFeedback}>Feedback: {entry.feedback}</p>
                   )}
                 </div>
               ))
             ) : (
-              <p className="py-8 text-center text-sm text-ink-subtle">Belum ada entri kegiatan.</p>
+              <p className={styles.emptyState}>Belum ada entri kegiatan.</p>
             )}
           </div>
         </Card>

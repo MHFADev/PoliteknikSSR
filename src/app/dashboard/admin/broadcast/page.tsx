@@ -9,6 +9,7 @@ import { Modal } from "@/components/ui/Modal";
 import { Badge } from "@/components/ui/Badge";
 import { getStudyPrograms, getAnnouncements, sendAnnouncement, deleteAnnouncement } from "@/actions/broadcast";
 import { formatDate } from "@/lib/utils";
+import styles from "@/styles/pages/dashboard/admin/Broadcast.module.css";
 
 type StudyProgram = { id: string; nama: string; kode: string };
 type Announcement = {
@@ -94,11 +95,11 @@ export default function AdminBroadcastPage() {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
+    <div className={styles.pageContainer}>
+      <div className={styles.pageHeader}>
         <div>
-          <h1 className="font-display text-2xl font-semibold text-deep">Broadcast Pengumuman</h1>
-          <p className="text-sm text-mist-dim">Kirim pengumuman ke siswa berdasarkan jurusan.</p>
+          <h1>Broadcast Pengumuman</h1>
+          <p>Kirim pengumuman ke siswa berdasarkan jurusan.</p>
         </div>
         <Button onClick={openForm}><Send className="h-4 w-4" /> Kirim Pengumuman</Button>
       </div>
@@ -107,21 +108,21 @@ export default function AdminBroadcastPage() {
         <CardHeader title="Riwayat Pengumuman" />
 
         {loading ? (
-          <div className="flex items-center justify-center py-12"><Loader2 className="h-6 w-6 animate-spin text-steel" /></div>
+          <div className={styles.loadingSpinner}><Loader2 className="h-6 w-6 animate-spin text-steel" /></div>
         ) : announcements.length === 0 ? (
-          <p className="py-8 text-center text-sm text-mist-dim">Belum ada pengumuman.</p>
+          <p className={styles.emptyState}>Belum ada pengumuman.</p>
         ) : (
-          <div className="divide-y divide-deep/6">
+          <div className={styles.announcementList}>
             {announcements.map((ann) => (
-              <div key={ann.id} className="flex items-start justify-between px-4 py-4">
-                <div className="flex items-start gap-3 min-w-0 flex-1">
-                  <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-blue-vibrant/10 text-blue-vibrant">
+              <div key={ann.id} className={styles.announcementItem}>
+                <div className={styles.announcementInner}>
+                  <div className={styles.announcementIcon}>
                     <Megaphone className="h-4 w-4" />
                   </div>
-                  <div className="min-w-0 flex-1">
-                    <p className="font-medium text-deep">{ann.title}</p>
-                    <p className="mt-0.5 text-sm text-steel line-clamp-2">{ann.content}</p>
-                    <div className="mt-1.5 flex items-center gap-2 flex-wrap">
+                  <div className={styles.announcementContent}>
+                    <p className={styles.announcementTitle}>{ann.title}</p>
+                    <p className={styles.announcementBody}>{ann.content}</p>
+                    <div className={styles.announcementMeta}>
                       {ann.broadcast_to_all ? (
                         <Badge tone="success">Semua Jurusan</Badge>
                       ) : (
@@ -134,7 +135,7 @@ export default function AdminBroadcastPage() {
                           );
                         })
                       )}
-                      <span className="text-xs text-mist-dim">{formatDate(ann.created_at)}</span>
+                      <span className={styles.announcementDate}>{formatDate(ann.created_at)}</span>
                     </div>
                   </div>
                 </div>
@@ -149,28 +150,28 @@ export default function AdminBroadcastPage() {
 
       <Modal open={modalOpen} onClose={() => { setModalOpen(false); setError(null); }} title="Kirim Pengumuman">
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="text-sm font-medium text-deep">Judul</label>
-            <input value={title} onChange={(e) => setTitle(e.target.value)} type="text" required placeholder="Pengumuman Libur PKL" className="mt-1.5 w-full rounded-xl border border-deep/10 bg-white/80 px-3 py-2.5 text-sm outline-none focus:border-ocean" />
+          <div className={styles.formGroup}>
+            <label className={styles.formLabel}>Judul</label>
+            <input value={title} onChange={(e) => setTitle(e.target.value)} type="text" required placeholder="Pengumuman Libur PKL" className={styles.formInput} />
           </div>
-          <div>
-            <label className="text-sm font-medium text-deep">Isi Pengumuman</label>
-            <textarea value={content} onChange={(e) => setContent(e.target.value)} rows={4} required placeholder="Tulis pengumuman..." className="mt-1.5 w-full rounded-xl border border-deep/10 bg-white/80 px-3 py-2.5 text-sm outline-none focus:border-ocean resize-none" />
+          <div className={styles.formGroup}>
+            <label className={styles.formLabel}>Isi Pengumuman</label>
+            <textarea value={content} onChange={(e) => setContent(e.target.value)} rows={4} required placeholder="Tulis pengumuman..." className={styles.formTextarea} />
           </div>
 
-          <div>
-            <label className="text-sm font-medium text-deep">Target Jurusan</label>
+          <div className={styles.formGroup}>
+            <label className={styles.formLabel}>Target Jurusan</label>
             <div className="mt-2 space-y-2">
-              <label className="flex items-center gap-2 cursor-pointer">
+              <label className={styles.checkboxLabel}>
                 <input type="checkbox" checked={broadcastToAll} onChange={(e) => handleBroadcastAllChange(e.target.checked)} className="rounded border-deep/20 text-blue-vibrant" />
-                <span className="text-sm font-medium text-deep">Semua Jurusan</span>
+                <span>Semua Jurusan</span>
               </label>
               {!broadcastToAll && (
-                <div className="ml-5 space-y-1.5 border-l-2 border-deep/10 pl-3">
+                <div className={styles.checkboxGroup}>
                   {programs.map((prog) => (
-                    <label key={prog.id} className="flex items-center gap-2 cursor-pointer">
+                    <label key={prog.id} className={styles.programCheckbox}>
                       <input type="checkbox" checked={selectedPrograms.includes(prog.id)} onChange={() => toggleProgram(prog.id)} className="rounded border-deep/20 text-blue-vibrant" />
-                      <span className="text-sm text-steel">{prog.nama} ({prog.kode})</span>
+                      <span>{prog.nama} ({prog.kode})</span>
                     </label>
                   ))}
                 </div>
@@ -178,9 +179,9 @@ export default function AdminBroadcastPage() {
             </div>
           </div>
 
-          {error && <p className="text-sm text-danger">{error}</p>}
+          {error && <p className={styles.formError}>{error}</p>}
 
-          <div className="flex justify-end gap-3 pt-2">
+          <div className={styles.modalActions}>
             <Button type="button" variant="ghost" onClick={() => { setModalOpen(false); setError(null); }}>Batal</Button>
             <Button type="submit" disabled={isSubmitting}>
               {isSubmitting && <Loader2 className="h-4 w-4 animate-spin" />}

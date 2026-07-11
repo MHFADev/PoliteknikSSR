@@ -1,0 +1,124 @@
+/* ============================================================
+   AddStudentModal.module.css
+   Style untuk form tambah akun siswa (modal admin)
+   ============================================================ */
+
+/* Grup wrapper tiap field form */
+.formField {
+  margin-bottom: 1rem;
+}
+
+/* Input dasar — digunakan di semua <input> */
+.inputBase {
+  margin-top: 0.375rem;
+  width: 100%;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(27, 60, 83, 0.1);
+  background: rgba(255, 255, 255, 0.8);
+  padding: 0.625rem 0.75rem;
+  font-size: 0.875rem;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.inputBase:focus {
+  border-color: #2BA8A2;
+}
+
+/* Grid 2 kolom — untuk input yang berpasangan (Email & Password) */
+.inputHalfGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+/* Grid 3 kolom — untuk NIS, Jurusan, Kelas */
+.inputThirdGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 0.75rem;
+}
+
+/* Label field */
+.label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #1B3C53;
+}
+
+/* Dropdown jurusan */
+.dropdown {
+  position: absolute;
+  z-index: 10;
+  margin-top: 0.25rem;
+  width: 100%;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(27, 60, 83, 0.1);
+  background: #fff;
+  box-shadow: 0 8px 32px rgba(36, 35, 32, 0.08);
+  max-height: 10rem;
+  overflow-y: auto;
+}
+
+/* Item dalam dropdown */
+.dropdownItem {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+  font-size: 0.875rem;
+  color: #456882;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.dropdownItem:hover {
+  background: rgba(27, 60, 83, 0.05);
+  color: #1B3C53;
+}
+
+/* Status aktif item dropdown */
+.dropdownActive {
+  background: rgba(43, 168, 162, 0.1);
+  color: #2BA8A2;
+  font-weight: 500;
+}
+
+/* State kosong di dropdown */
+.dropdownEmpty {
+  padding: 0.5rem 0.75rem;
+  font-size: 0.75rem;
+  color: rgba(69, 104, 130, 0.5);
+}
+
+/* Grup tombol aksi (Batal & Simpan) */
+.btnGroup {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  padding-top: 0.5rem;
+}
+
+/* Pesan error */
+.errorText {
+  font-size: 0.875rem;
+  color: #EF4444;
+}
+
+/* Pesan sukses */
+.successText {
+  font-size: 0.875rem;
+  color: #16A34A;
+}
+
+/* ----- Responsive ----- */
+@media (max-width: 640px) {
+  .inputHalfGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .inputThirdGrid {
+    grid-template-columns: 1fr;
+  }
+}

@@ -7,14 +7,7 @@ import {
   type AttendanceTrendPoint,
 } from "@/components/charts/AttendanceChart";
 import { Calendar } from "@/components/Calendar";
-import {
-  Users,
-  CalendarCheck,
-  FileClock,
-  GraduationCap,
-  CalendarDays,
-  Megaphone,
-} from "lucide-react";
+import { Users, CalendarCheck, FileClock, GraduationCap } from "lucide-react";
 import { formatDate } from "@/lib/utils";
 import Link from "next/link";
 
@@ -46,11 +39,11 @@ export default async function AdminOverviewPage() {
   ] = await Promise.all([
     supabase
       .from("profiles")
-      .select("id", { count: "exact", head: true }) // Hanya id untuk count
+      .select("id", { count: "exact", head: true })
       .eq("role", "siswa"),
     supabase
       .from("profiles")
-      .select("id", { count: "exact", head: true }) // Hanya id untuk count
+      .select("id", { count: "exact", head: true })
       .eq("role", "pembimbing"),
     supabase
       .from("attendance_records")
@@ -58,7 +51,7 @@ export default async function AdminOverviewPage() {
       .gte("scanned_at", `${today}T00:00:00`),
     supabase
       .from("leave_requests")
-      .select("id", { count: "exact", head: true }) // Hanya id untuk count
+      .select("id", { count: "exact", head: true })
       .eq("status", "pending"),
     supabase
       .from("attendance_records")
@@ -76,7 +69,7 @@ export default async function AdminOverviewPage() {
       .order("event_date", { ascending: true }),
     supabase
       .from("calendar_events")
-      .select("id", { count: "exact", head: true }), // Hanya id untuk count
+      .select("id", { count: "exact", head: true }),
   ]);
 
   const hadirToday =
@@ -141,7 +134,7 @@ export default async function AdminOverviewPage() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card>
+        <Card variant="flip7">
           <CardHeader
             title="Event Mendatang"
             subtitle={`${totalEvents ?? 0} total event`}
@@ -159,7 +152,9 @@ export default async function AdminOverviewPage() {
               upcomingEvents.map((ev: any) => (
                 <div key={ev.id} className="flex items-center gap-3 px-4 py-3">
                   <div
-                    className={`h-2.5 w-2.5 shrink-0 rounded-full ${ev.tipe === "libur" ? "bg-flip7-coral" : "bg-teal"}`}
+                    className={`h-2.5 w-2.5 shrink-0 rounded-full ${
+                      ev.tipe === "libur" ? "bg-coral" : "bg-ocean"
+                    }`}
                   />
                   <div className="min-w-0 flex-1">
                     <p className="text-sm font-medium text-ink truncate">
@@ -182,7 +177,7 @@ export default async function AdminOverviewPage() {
           </div>
         </Card>
 
-        <Card>
+        <Card variant="flip7">
           <CardHeader
             title="Tren Kehadiran 7 Hari Terakhir"
             subtitle="Seluruh siswa"
@@ -191,9 +186,9 @@ export default async function AdminOverviewPage() {
         </Card>
       </div>
 
-      <div className="mt-6">
+      <Card variant="flip7">
         <Calendar events={allEvents || []} />
-      </div>
+      </Card>
     </div>
   );
 }

@@ -1,3 +1,19 @@
+/*
+ * layout.tsx — Dashboard Layout Admin
+ * ==========================================
+ * Layout khusus untuk halaman dashboard admin.
+ * Menyediakan Sidebar dengan navigasi admin dan container konten utama.
+ *
+ * Alur:
+ * 1. Cek sesi login — redirect ke /login jika tidak ada
+ * 2. Cari profil user untuk mendapatkan nama (ditampilkan di sidebar)
+ * 3. Render Sidebar (role: admin) + konten halaman
+ *
+ * Proteksi:
+ * - Middleware sudah memfilter akses berdasarkan role,
+ *   namun layout juga melakukan pengecekan sesi sebagai lapisan tambahan
+ */
+
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { Sidebar } from "@/components/layout/Sidebar";

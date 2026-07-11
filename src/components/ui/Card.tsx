@@ -1,6 +1,27 @@
+/**
+ * Card — Komponen kartu konten dengan 4 varian
+ * ==============================================
+ * - skylearn: standar putih untuk tampilan profesional
+ * - flip7: aksen teal dengan bayangan kartu
+ * - flip7-highlight: aksen gold untuk highlight
+ * - flip7-boom: aksen coral dengan animasi pulse
+ *
+ * Juga mengekspor CardHeader dan LessonCard.
+ *
+ * Cara pakai:
+ *   <Card variant="flip7">
+ *     <CardHeader title="Judul" icon={<Icon />} action={<Button>Edit</Button>} />
+ *     <p>Konten kartu</p>
+ *   </Card>
+ */
+
 import { cn } from "@/lib/utils";
-import { HTMLAttributes, ReactNode } from "react";
+import { type HTMLAttributes, type ReactNode } from "react";
 import { ProgressBar } from "./ProgressBar";
+
+// ---------------------------------------------------------------------------
+// Tipe
+// ---------------------------------------------------------------------------
 
 type CardVariant = "skylearn" | "flip7" | "flip7-highlight" | "flip7-boom";
 
@@ -9,23 +30,31 @@ interface CardProps extends HTMLAttributes<HTMLDivElement> {
   children?: ReactNode;
 }
 
+// ---------------------------------------------------------------------------
+// Variant Classes
+// ---------------------------------------------------------------------------
+
+const variantClasses: Record<CardVariant, string> = {
+  skylearn:
+    "bg-white rounded-skylearn-xl border border-outline shadow-skylearn",
+  flip7:
+    "bg-white rounded-flip7-lg shadow-flip7-card border-l-4 border-[#3A5BF0]", // 👈 GANTI JADI BIRU
+  "flip7-highlight":
+    "bg-gradient-to-r from-gold-light/10 to-white rounded-flip7-lg shadow-flip7-gold-glow border-l-4 border-gold",
+  "flip7-boom":
+    "bg-gradient-to-r from-flip7-coral-light/10 to-white rounded-flip7-lg border-l-4 border-flip7-coral animate-flip7-boom-pulse",
+};
+
+// ---------------------------------------------------------------------------
+// Card
+// ---------------------------------------------------------------------------
+
 export function Card({
   variant = "skylearn",
   className,
   children,
   ...props
 }: CardProps) {
-  const variantClasses: Record<CardVariant, string> = {
-    skylearn:
-      "bg-white rounded-skylearn-xl border border-outline shadow-skylearn",
-    flip7:
-      "bg-white rounded-flip7-lg shadow-flip7-card border-l-4 border-ocean",
-    "flip7-highlight":
-      "bg-gradient-to-r from-gold-light/10 to-white rounded-flip7-lg shadow-flip7-gold-glow border-l-4 border-gold",
-    "flip7-boom":
-      "bg-gradient-to-r from-flip7-coral-light/10 to-white rounded-flip7-lg border-l-4 border-flip7-coral animate-flip7-boom-pulse",
-  };
-
   return (
     <div
       className={cn("p-5 sm:p-6", variantClasses[variant], className)}
@@ -35,6 +64,10 @@ export function Card({
     </div>
   );
 }
+
+// ---------------------------------------------------------------------------
+// CardHeader
+// ---------------------------------------------------------------------------
 
 interface CardHeaderProps {
   title?: string;
@@ -63,6 +96,10 @@ export function CardHeader({ title, subtitle, action, icon }: CardHeaderProps) {
     </div>
   );
 }
+
+// ---------------------------------------------------------------------------
+// LessonCard
+// ---------------------------------------------------------------------------
 
 interface LessonCardProps {
   title: string;

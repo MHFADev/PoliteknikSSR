@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { PendingLeaveApprovals } from "@/components/izin/LeaveApprovalModal";
+import styles from "@/styles/pages/dashboard/pembimbing/Izin.module.css";
 
 export default async function PembimbingIzinPage() {
   const supabase = createClient();
@@ -14,10 +15,10 @@ export default async function PembimbingIzinPage() {
     .order("created_at", { ascending: true });
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="font-display text-2xl font-semibold text-deep">Persetujuan Izin</h1>
-        <p className="text-sm text-mist-dim">Tinjau dan proses pengajuan izin siswa bimbinganmu.</p>
+    <div className={styles.pageContainer}>
+      <div className={styles.pageHeader}>
+        <h1>Persetujuan Izin</h1>
+        <p>Tinjau dan proses pengajuan izin siswa bimbinganmu.</p>
       </div>
 
       <PendingLeaveApprovals initialRequests={(data as any) ?? []} />

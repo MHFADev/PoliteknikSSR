@@ -1,0 +1,41 @@
+/* ============================================================
+   QRGeneratorCard.module.css
+   Style untuk tampilan QR Code presensi
+   ============================================================ */
+
+/* Area display QR */
+.qrDisplay {
+  display: flex;
+  justify-content: center;
+  padding: 1rem 0;
+}
+
+/* Gambar QR */
+.qrImage {
+  border-radius: 0.75rem;
+  border: 1px solid rgba(45, 180, 170, 0.3);
+  box-shadow: 0 4px 24px rgba(43, 168, 162, 0.15);
+}
+
+/* Placeholder saat QR belum digenerate */
+.qrPlaceholder {
+  display: flex;
+  height: 18rem;
+  width: 18rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.75rem;
+  border: 1px dashed var(--color-teal, #2BA8A2);
+  font-size: 0.875rem;
+  color: var(--color-ink-muted, #94A3B8);
+  text-align: center;
+  padding: 0 1.5rem;
+}
+
+/* Teks bantuan di bawah QR */
+.helperText {
+  margin-top: 1rem;
+  font-size: 0.75rem;
+  color: var(--color-ink-muted, #94A3B8);
+  text-align: center;
+}

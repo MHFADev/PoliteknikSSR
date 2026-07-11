@@ -1,0 +1,70 @@
+/* Loading - Halaman loading/skeleton untuk dashboard */
+.loadingContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 1rem;
+}
+
+@media (min-width: 640px) {
+  .loadingContainer {
+    padding: 2rem;
+  }
+}
+
+.skeletonTitle {
+  height: 2rem;
+  width: 12rem;
+  border-radius: 0.5rem;
+  background: rgba(15,23,42,0.1);
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.skeletonSubtitle {
+  height: 1rem;
+  width: 18rem;
+  border-radius: 0.25rem;
+  background: rgba(15,23,42,0.05);
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.skeletonGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+@media (min-width: 640px) {
+  .skeletonGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .skeletonGrid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.skeletonCard {
+  height: 6rem;
+  border-radius: 1.5rem;
+  background: rgba(15,23,42,0.05);
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.skeletonChart {
+  height: 16rem;
+  border-radius: 1.5rem;
+  background: rgba(15,23,42,0.05);
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}

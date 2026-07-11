@@ -7,6 +7,7 @@ import { formatDate, todayISODate } from "@/lib/utils";
 import { CalendarCheck, FileClock, NotebookPen, CalendarDays, Megaphone } from "lucide-react";
 import Link from "next/link";
 import { getAnnouncementsForStudent } from "@/actions/broadcast";
+import styles from "@/styles/pages/dashboard/siswa/Overview.module.css";
 
 export default async function SiswaOverviewPage() {
   const supabase = createClient();
@@ -77,28 +78,26 @@ export default async function SiswaOverviewPage() {
   const todayEntry = recentLogbook?.find((e) => e.entry_date === todayISODate());
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="font-display text-2xl font-semibold text-teal-dark">
-          HI, {profile?.full_name || "Pengguna"} 👋👋
-        </h1>
-        <p className="text-sm text-ink-muted">Pantau progres PKL kamu bulan ini.</p>
+    <div className={styles.pageContainer}>
+      <div className={styles.pageHeader}>
+        <h1>HI, {profile?.full_name || "Pengguna"} 👋👋</h1>
+        <p>Pantau progres PKL kamu bulan ini.</p>
       </div>
 
       {!todayEntry && (
-        <div className="rounded-flip7-lg bg-gold-light/30 border border-gold p-4 flex items-center gap-3 shadow-flip7-gold-glow">
+        <div className={styles.reminderBanner}>
           <NotebookPen className="h-6 w-6 text-gold-dark" />
           <div>
-            <h3 className="font-bold text-teal-dark text-lg">Jangan Lupa Isi Kegiatan Harini!</h3>
-            <p className="text-sm text-ink-muted">Catat kegiatan PKL kamu hari ini sebelum batas waktu.</p>
+            <h3>Jangan Lupa Isi Kegiatan Harini!</h3>
+            <p>Catat kegiatan PKL kamu hari ini sebelum batas waktu.</p>
           </div>
           <Link href="/dashboard/siswa/kegiatan-harian" className="ml-auto">
-            <span className="bg-gold text-teal-dark px-4 py-2 rounded-flip7-pill font-bold hover:bg-gold-light transition-colors">Isi Sekarang</span>
+            <span className={styles.reminderCta}>Isi Sekarang</span>
           </Link>
         </div>
       )}
 
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div className={styles.statGrid}>
         <StatCard label="Hadir Bulan Ini" value={hadirCount ?? 0} icon={<CalendarCheck className="h-5 w-5" />} accent="teal" />
         <StatCard label="Izin Menunggu Review" value={izinPendingCount ?? 0} icon={<FileClock className="h-5 w-5" />} accent="gold" />
         <StatCard
@@ -118,21 +117,19 @@ export default async function SiswaOverviewPage() {
               <Link href="/dashboard/siswa/pengumuman" className="text-sm text-teal hover:underline">Lihat Semua</Link>
             }
           />
-          <div className="divide-y divide-outline">
+          <div className={styles.announcementList}>
             {announcements.map((a: any) => (
-              <div key={a.id} className="px-4 py-3">
-                <h3 className="text-sm font-semibold text-ink">{a.title}</h3>
-                <p className="text-xs text-ink-muted mt-1">{a.content}</p>
-                <p className="text-[10px] text-ink-subtle mt-2">
-                  {formatDate(a.created_at)}
-                </p>
+              <div key={a.id} className={styles.announcementItem}>
+                <h3>{a.title}</h3>
+                <p>{a.content}</p>
+                <p className={styles.announcementDate}>{formatDate(a.created_at)}</p>
               </div>
             ))}
           </div>
         </Card>
       )}
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className={styles.twoColumnGrid}>
         <Card>
           <CardHeader title="Event Mendatang" action={
             <Link href="/dashboard/siswa/kalender" className="text-sm text-teal hover:underline">Lihat Kalender</Link>
@@ -141,7 +138,7 @@ export default async function SiswaOverviewPage() {
             {upcomingEvents && upcomingEvents.length > 0 ? (
               upcomingEvents.map((ev: any) => (
                 <div key={ev.id} className="flex items-center gap-3 px-4 py-3">
-                  <div className={`h-2.5 w-2.5 shrink-0 rounded-full ${ev.tipe === "libur" ? "bg-flip7-coral" : "bg-teal"}`} />
+                  <div className={ev.tipe === "libur" ? styles.eventDotLibur : styles.eventDotEvent} />
                   <div className="min-w-0 flex-1">
                     <p className="text-sm font-medium text-ink truncate">{ev.title}</p>
                     <p className="text-xs text-ink-subtle">{formatDate(ev.event_date)}</p>

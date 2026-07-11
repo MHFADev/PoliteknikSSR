@@ -4,6 +4,7 @@ import dynamic from "next/dynamic";
 import { useState, useEffect } from "react";
 import { Search, MapPin, LocateFixed } from "lucide-react";
 import { useMap, useMapEvents } from "react-leaflet";
+import styles from "@/styles/components/shared/LocationPicker.module.css";
 
 // Import komponen Leaflet secara dinamis dengan loading component
 const MapContainer = dynamic(
@@ -11,7 +12,7 @@ const MapContainer = dynamic(
   {
     ssr: false,
     loading: () => (
-      <div className="h-[400px] w-full flex items-center justify-center bg-teal-bg rounded-xl border border-outline">
+      <div className={styles.mapLoading}>
         <p className="text-ink-muted text-sm">Memuat peta...</p>
       </div>
     ),
@@ -161,26 +162,26 @@ export function LocationPicker({
   const position: [number, number] = [value.latitude, value.longitude];
 
   return (
-    <div className="space-y-3">
+    <div className={styles.wrapper}>
       {/* Search Bar */}
-      <form onSubmit={handleSearch} className="flex gap-2">
-        <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-ink-muted" />
+      <form onSubmit={handleSearch} className={styles.searchForm}>
+        <div className={styles.searchWrapper}>
+          <Search className={styles.searchIcon} />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Cari lokasi (misal: Kampus Politeknik Negeri Jakarta)"
-            className="w-full rounded-xl border border-outline bg-white px-10 py-2.5 text-sm outline-none focus:border-teal transition-colors"
+            className={styles.searchInput}
           />
         </div>
         <button
           type="submit"
           disabled={isSearching}
-          className="flex items-center gap-2 rounded-xl bg-teal px-4 py-2.5 text-sm font-medium text-white hover:bg-teal-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          className={styles.searchButton}
         >
           {isSearching ? (
-            <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+            <div className={styles.spinner} />
           ) : (
             <Search className="w-4 h-4" />
           )}
@@ -189,7 +190,7 @@ export function LocationPicker({
         <button
           type="button"
           onClick={autoLocateUser}
-          className="flex items-center gap-2 rounded-xl bg-leaf px-4 py-2.5 text-sm font-medium text-white hover:bg-leaf-dark transition-colors"
+          className={styles.locateButton}
           title="Dapatkan Lokasi Saat Ini"
         >
           <LocateFixed className="w-4 h-4" />
@@ -198,7 +199,7 @@ export function LocationPicker({
 
       {/* Map */}
       {isClient && (
-        <div className="rounded-xl border border-outline overflow-hidden relative">
+        <div className={styles.mapWrapper}>
           <MapContainer
             center={mapCenter}
             zoom={16}
@@ -245,14 +246,16 @@ export function LocationPicker({
       )}
 
       {/* Info Koordinat */}
-      <div className="flex items-center justify-between text-xs text-ink-subtle bg-teal-bg p-3 rounded-xl">
-        <div className="flex items-center gap-2">
+      <div className={styles.coordInfo}>
+        <div className={styles.coordText}>
           <MapPin className="w-3 h-3" />
           <span>
             Lat: {value.latitude.toFixed(6)}, Lng: {value.longitude.toFixed(6)}
           </span>
         </div>
-        <span>Radius: {value.radius_meters}m</span>
+        <span className={styles.coordRadius}>
+          Radius: {value.radius_meters}m
+        </span>
       </div>
     </div>
   );

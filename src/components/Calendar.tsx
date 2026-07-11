@@ -2,7 +2,9 @@
 
 import { useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { cn } from "@/lib/utils";
 import { Card } from "@/components/ui/Card";
+import styles from "@/styles/components/shared/Calendar.module.css";
 
 const MONTHS = [
   "Januari",
@@ -69,12 +71,7 @@ export function Calendar({ events = [], getDayStatus }: CalendarProps) {
 
   const calendarCells = [];
   for (let i = 0; i < firstDay; i++) {
-    calendarCells.push(
-      <div
-        key={`empty-${i}`}
-        className="min-h-[50px] sm:min-h-[70px] md:min-h-[90px]"
-      />,
-    );
+    calendarCells.push(<div key={`empty-${i}`} className={styles.emptyCell} />);
   }
   for (let day = 1; day <= daysInMonth; day++) {
     const dateStr = `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
@@ -142,32 +139,23 @@ export function Calendar({ events = [], getDayStatus }: CalendarProps) {
   }
 
   return (
-    <div className="space-y-4 w-full max-w-full overflow-hidden">
-      <Card className="p-3 sm:p-4 md:p-6">
-        <div className="mb-4 flex items-center justify-between">
-          <button
-            onClick={prevMonth}
-            className="rounded-flip7-pill p-2 text-ink-muted hover:bg-ocean-light/10 transition-colors"
-          >
-            <ChevronLeft className="h-5 w-5 sm:h-6 sm:w-6" />
+    <div className={styles.wrapper}>
+      <Card className={styles.card}>
+        <div className={styles.headerRow}>
+          <button onClick={prevMonth} className={styles.navButton}>
+            <ChevronLeft />
           </button>
-          <h3 className="font-display text-lg sm:text-xl md:text-2xl font-bold text-ocean">
+          <h3 className={styles.title}>
             {MONTHS[month]} {year}
           </h3>
-          <button
-            onClick={nextMonth}
-            className="rounded-flip7-pill p-2 text-ink-muted hover:bg-ocean-light/10 transition-colors"
-          >
-            <ChevronRight className="h-5 w-5 sm:h-6 sm:w-6" />
+          <button onClick={nextMonth} className={styles.navButton}>
+            <ChevronRight />
           </button>
         </div>
 
-        <div className="mb-2 grid grid-cols-7 gap-1 sm:gap-2">
+        <div className={styles.dayHeader}>
           {DAYS.map((d) => (
-            <div
-              key={d}
-              className="rounded-flip7-md px-1 sm:px-2 py-1.5 text-center text-[10px] sm:text-xs font-bold text-ocean bg-ocean-light/10"
-            >
+            <div key={d} className={styles.dayHeaderText}>
               {d}
             </div>
           ))}

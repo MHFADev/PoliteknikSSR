@@ -3,6 +3,7 @@ import { PendingLeaveApprovals } from "@/components/izin/LeaveApprovalModal";
 import { Card, CardHeader } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { formatDate } from "@/lib/utils";
+import styles from "@/styles/pages/dashboard/admin/Izin.module.css";
 
 const STATUS_TONE = {
   pending: "warning",
@@ -29,26 +30,26 @@ export default async function AdminIzinPage() {
   ]);
 
   return (
-    <div className="space-y-8">
-      <div>
-        <h1 className="font-display text-2xl font-semibold text-deep">Data Izin</h1>
-        <p className="text-sm text-mist-dim">Kelola seluruh pengajuan izin, sakit, dan cuti siswa.</p>
+    <div className={styles.pageContainer}>
+      <div className={styles.pageHeader}>
+        <h1>Data Izin</h1>
+        <p>Kelola seluruh pengajuan izin, sakit, dan cuti siswa.</p>
       </div>
 
       <div>
-        <h2 className="font-display text-lg font-semibold text-deep mb-3">Menunggu Review</h2>
+        <h2 className={styles.sectionTitle}>Menunggu Review</h2>
         <PendingLeaveApprovals initialRequests={(pending as any) ?? []} />
       </div>
 
       <Card>
         <CardHeader title="Seluruh Riwayat Pengajuan" />
-        <div className="divide-y divide-deep/6 max-h-[28rem] overflow-y-auto">
+        <div className={styles.historyList}>
           {allRequests && allRequests.length > 0 ? (
             allRequests.map((req: any) => (
-              <div key={req.id} className="flex items-center justify-between py-3">
-                <div>
-                  <p className="text-sm font-medium text-deep">{req.student?.full_name}</p>
-                  <p className="text-xs text-mist-dim">
+              <div key={req.id} className={styles.historyItem}>
+                <div className={styles.historyItemInfo}>
+                  <p className={styles.historyItemName}>{req.student?.full_name}</p>
+                  <p className={styles.historyItemDetail}>
                     {req.type} · {formatDate(req.start_date)} – {formatDate(req.end_date)}
                   </p>
                 </div>
@@ -56,7 +57,7 @@ export default async function AdminIzinPage() {
               </div>
             ))
           ) : (
-            <p className="py-6 text-center text-sm text-mist-dim">Belum ada data.</p>
+            <p className={styles.emptyState}>Belum ada data.</p>
           )}
         </div>
       </Card>

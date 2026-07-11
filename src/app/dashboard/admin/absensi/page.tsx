@@ -3,22 +3,67 @@
 import { useEffect, useState } from "react";
 import { Card, CardHeader } from "@/components/ui/Card";
 import { Select } from "@/components/ui/Select";
+import { Input } from "@/components/ui/Input";
+import { Button } from "@/components/ui/Button";
 import { get30DayAttendanceStats, AttendanceStats } from "@/actions/admin";
 import { Badge } from "@/components/ui/Badge";
+import { RefreshCw } from "lucide-react";
 
 export default function AdminAttendancePage() {
   const [stats, setStats] = useState<AttendanceStats[]>([]);
-  const [selectedStudent, setSelectedStudent] = useState<string>("");
+  const [allStats, setAllStats] = useState<AttendanceStats[]>([]);
+  const [filters, setFilters] = useState({
+    name: "",
+    jurusan: "",
+    kelas: "",
+  });
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function fetchData() {
-      const data = await get30DayAttendanceStats(selectedStudent || undefined);
+      setLoading(true);
+      const data = await get30DayAttendanceStats();
       setStats(data);
+      setAllStats(data);
       setLoading(false);
     }
     fetchData();
-  }, [selectedStudent]);
+  }, []);
+
+  // Apply filters client-side
+  useEffect(() => {
+    let filtered = [...allStats];
+
+    if (filters.name) {
+      filtered = filtered.filter((s) =>
+        s.fullName.toLowerCase().includes(filters.name.toLowerCase()),
+      );
+    }
+    if (filters.jurusan) {
+      filtered = filtered.filter((s) =>
+        s.jurusan?.toLowerCase().includes(filters.jurusan.toLowerCase()),
+      );
+    }
+    if (filters.kelas) {
+      filtered = filtered.filter((s) =>
+        s.kelas?.toLowerCase().includes(filters.kelas.toLowerCase()),
+      );
+    }
+
+    setStats(filtered);
+  }, [filters, allStats]);
+
+  function resetFilters() {
+    setFilters({ name: "", jurusan: "", kelas: "" });
+  }
+
+  // Get unique jurusan options from allStats
+  const uniqueJurusan = [
+    ...new Set(allStats.map((s) => s.jurusan).filter(Boolean)),
+  ];
+  const uniqueKelas = [
+    ...new Set(allStats.map((s) => s.kelas).filter(Boolean)),
+  ];
 
   return (
     <div className="space-y-6">
@@ -27,25 +72,55 @@ export default function AdminAttendancePage() {
           Rekap Absensi 30 Hari Terakhir
         </h1>
         <p className="text-sm text-ink-muted">
-          Lihat rekapitulasi kehadiran siswa
+          Lihat rekapitulasi kehadiran semua siswa atau filter sesuai kebutuhan.
         </p>
       </div>
 
       <Card variant="flip7">
         <CardHeader title="Filter Data" />
-        <div className="max-w-md">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <Input
+            label="Nama Siswa"
+            value={filters.name}
+            onChange={(e) =>
+              setFilters((f) => ({ ...f, name: e.target.value }))
+            }
+            placeholder="Cari nama siswa..."
+          />
           <Select
-            label="Pilih Siswa (Opsional)"
-            value={selectedStudent}
-            onChange={(e) => setSelectedStudent(e.target.value)}
+            label="Jurusan"
+            value={filters.jurusan}
+            onChange={(e) =>
+              setFilters((f) => ({ ...f, jurusan: e.target.value }))
+            }
           >
-            <option value="">Semua Siswa</option>
-            {stats.map((s) => (
-              <option key={s.studentId} value={s.studentId}>
-                {s.fullName}
+            <option value="">Semua Jurusan</option>
+            {uniqueJurusan.map((j) => (
+              <option key={j} value={j!}>
+                {j}
               </option>
             ))}
           </Select>
+          <Select
+            label="Kelas"
+            value={filters.kelas}
+            onChange={(e) =>
+              setFilters((f) => ({ ...f, kelas: e.target.value }))
+            }
+          >
+            <option value="">Semua Kelas</option>
+            {uniqueKelas.map((k) => (
+              <option key={k} value={k!}>
+                {k}
+              </option>
+            ))}
+          </Select>
+        </div>
+        <div className="mt-4">
+          <Button variant="outline" onClick={resetFilters}>
+            <RefreshCw className="h-4 w-4 mr-2" />
+            Reset Filter
+          </Button>
         </div>
       </Card>
 

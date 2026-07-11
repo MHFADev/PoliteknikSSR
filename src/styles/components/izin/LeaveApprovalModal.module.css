@@ -1,0 +1,161 @@
+/* ============================================================
+   LeaveApprovalModal.module.css
+   Style untuk daftar & modal review pengajuan izin
+   ============================================================ */
+
+/* State ketika tidak ada pengajuan */
+.emptyState {
+  border-radius: 0.75rem;
+  border: 1px dashed rgba(27, 60, 83, 0.15);
+  padding: 3rem 0;
+  text-align: center;
+  font-size: 0.875rem;
+  color: rgba(69, 104, 130, 0.5);
+}
+
+/* Daftar request */
+.requestList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+/* Satu item request */
+.requestItem {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(69, 104, 130, 0.3);
+  background: rgba(240, 240, 240, 0.8);
+  backdrop-filter: blur(4px);
+  padding: 1rem 1.25rem;
+  text-align: left;
+  box-shadow: 0 4px 12px rgba(36, 35, 32, 0.04);
+  cursor: pointer;
+  transition: box-shadow 0.2s ease;
+  border: none;
+  width: 100%;
+}
+
+.requestItem:hover {
+  box-shadow: 0 8px 32px rgba(36, 35, 32, 0.08);
+}
+
+/* Info teks kiri request */
+.requestInfo {
+  min-width: 0;
+  flex: 1;
+}
+
+/* Nama siswa */
+.requestName {
+  font-weight: 500;
+  color: #1B3C53;
+}
+
+/* Alasan pengajuan */
+.requestReason {
+  font-size: 0.75rem;
+  color: rgba(69, 104, 130, 0.5);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 20rem;
+}
+
+/* Meta kanan (badge + tanggal) */
+.requestMeta {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-shrink: 0;
+}
+
+/* Grup badge */
+.badgeGroup {
+  /* utility wrapper */
+}
+
+/* ----- Detail modal ----- */
+
+.detailSection {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.detailRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.detailLabel {
+  font-size: 0.875rem;
+  color: rgba(69, 104, 130, 0.5);
+}
+
+.detailValue {
+  font-size: 0.875rem;
+  color: #1B3C53;
+}
+
+/* Link bukti pendukung */
+.proofLink {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  color: #2BA8A2;
+  text-decoration: none;
+  transition: color 0.15s;
+}
+
+.proofLink:hover {
+  text-decoration: underline;
+  color: #1f8a85;
+}
+
+/* Input catatan review */
+.noteInput {
+  margin-top: 0.375rem;
+  width: 100%;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(27, 60, 83, 0.1);
+  background: rgba(255, 255, 255, 0.7);
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.noteInput:focus {
+  border-color: #2BA8A2;
+}
+
+/* Grup tombol aksi (Tolak / Setujui) */
+.actionBtns {
+  display: flex;
+  gap: 0.75rem;
+  padding-top: 0.5rem;
+}
+
+.actionBtns > * {
+  flex: 1;
+}
+
+/* ----- Responsive ----- */
+@media (max-width: 640px) {
+  .detailRow {
+    grid-template-columns: 1fr;
+  }
+
+  .requestItem {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+}

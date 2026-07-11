@@ -1,0 +1,141 @@
+/* Lokasi Admin - Halaman atur lokasi GPS untuk verifikasi login */
+.pageContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.pageHeader h1 {
+  font-family: var(--font-jakarta), sans-serif;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--color-deep, #0F172A);
+}
+
+.pageHeader p {
+  font-size: 0.875rem;
+  color: var(--color-mist-dim, #64748B);
+}
+
+.loadingSpinner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 0;
+}
+
+.emptyState {
+  padding: 2rem 0;
+  text-align: center;
+  font-size: 0.875rem;
+  color: var(--color-mist-dim, #64748B);
+}
+
+.locationList {
+  display: flex;
+  flex-direction: column;
+}
+
+.locationItem {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 1rem;
+}
+
+.locationInfo {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.locationIcon {
+  display: flex;
+  height: 2rem;
+  width: 2rem;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.5rem;
+  background: rgba(43,168,162,0.1);
+  color: #2BA8A2;
+  margin-top: 0.125rem;
+}
+
+.locationName {
+  font-weight: 500;
+  color: var(--color-deep, #0F172A);
+}
+
+.locationCoords {
+  font-size: 0.75rem;
+  color: var(--color-steel, #475569);
+  margin-top: 0.125rem;
+}
+
+.locationActions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* Modal form */
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.formLabel {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-deep, #0F172A);
+}
+
+.formInput {
+  margin-top: 0.375rem;
+  width: 100%;
+  border-radius: 12px;
+  border: 1px solid rgba(15,23,42,0.1);
+  background: rgba(255,255,255,0.8);
+  padding: 0.625rem 0.75rem;
+  font-size: 0.875rem;
+  outline: none;
+}
+
+.formInput:focus {
+  border-color: #2BA8A2;
+}
+
+.formError {
+  font-size: 0.875rem;
+  color: #F87171;
+}
+
+.locationPickerSection {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.locationPickerHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  color: var(--color-deep, #0F172A);
+}
+
+.locationPickerCoords {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: var(--color-steel, #475569);
+}
+
+.formActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  padding-top: 0.5rem;
+}
