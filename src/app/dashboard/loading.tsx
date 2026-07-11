@@ -1,16 +1,10 @@
-import styles from "@/styles/pages/dashboard/loading.module.css";
-
-export default function Loading() {
+export default function DashboardLoading() {
   return (
-    <div className={styles.loadingContainer}>
-      <div className={styles.skeletonTitle} />
-      <div className={styles.skeletonSubtitle} />
-      <div className={styles.skeletonGrid}>
-        {[...Array(4)].map((_, i) => (
-          <div key={i} className={styles.skeletonCard} />
-        ))}
+    <div className="flex min-h-screen items-center justify-center bg-mist-soft">
+      <div className="flex flex-col items-center gap-3">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-sky border-t-transparent" />
+        <p className="text-sm text-mist-dim">Memuat...</p>
       </div>
-      <div className={styles.skeletonChart} />
     </div>
   );
 }

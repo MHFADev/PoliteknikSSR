@@ -130,10 +130,14 @@ export function LeaveRequestForm() {
         </div>
 
         <div>
-          <label className="text-sm font-medium text-deep">Alasan</label>
+          <div className="flex justify-between items-center">
+            <label className="text-sm font-medium text-deep">Alasan</label>
+            <span className="text-xs text-mist-dim">{reason.length}/100</span>
+          </div>
           <textarea
             required
             minLength={10}
+            maxLength={100}
             rows={3}
             value={reason}
             onChange={(e) => setReason(e.target.value)}

@@ -109,9 +109,13 @@ export function LogbookReviewList({ initialEntries }: { initialEntries: LogbookW
               <p className={styles.gradeValue}>{grade}</p>
             </div>
             <div>
-              <label className="text-sm font-medium text-ink">Feedback</label>
+              <div className="flex justify-between items-center">
+                <label className="text-sm font-medium text-ink">Feedback</label>
+                <span className="text-xs text-mist-dim">{feedback.length}/100</span>
+              </div>
               <textarea
                 rows={3}
+                maxLength={100}
                 value={feedback}
                 onChange={(e) => setFeedback(e.target.value)}
                 placeholder="Berikan masukan untuk siswa..."

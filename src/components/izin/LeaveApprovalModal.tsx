@@ -117,9 +117,13 @@ export function PendingLeaveApprovals({ initialRequests }: { initialRequests: Le
               </a>
             )}
             <div>
-              <label className={styles.detailLabel}>Catatan (opsional)</label>
+              <div className="flex justify-between items-center">
+                <label className={styles.detailLabel}>Catatan (opsional)</label>
+                <span className="text-xs text-mist-dim">{note.length}/100</span>
+              </div>
               <textarea
                 rows={2}
+                maxLength={100}
                 value={note}
                 onChange={(e) => setNote(e.target.value)}
                 placeholder="Catatan untuk siswa..."

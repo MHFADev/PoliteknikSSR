@@ -18,11 +18,18 @@ interface StatCardProps {
     | "biru1"
     | "kuning"
     | "hijau"
-    | "ungu";
+    | "ungu"
+    | "sky"
+    | "sun"
+    | "leaf"
+    | "coral"
+    | "berry"
+    | "teal"
+    | "gold";
   hint?: string;
 }
 
-const accentClasses = {
+const accentClasses: Record<string, string> = {
   deep: "bg-deep/10 text-deep",
   ocean: "bg-ocean/20 text-deep",
   blue: "bg-blue-vibrant/15 text-blue-vibrant",
@@ -31,6 +38,13 @@ const accentClasses = {
   kuning: "bg-[#FBBF24]/15 text-[#FBBF24]",
   hijau: "bg-[#16A34A]/15 text-[#16A34A]",
   ungu: "bg-[#8B5CF6]/15 text-[#8B5CF6]",
+  sky: "bg-[#0EA5E9]/15 text-[#0EA5E9]",
+  sun: "bg-[#F59E0B]/15 text-[#F59E0B]",
+  leaf: "bg-[#22C55E]/15 text-[#22C55E]",
+  coral: "bg-[#EF4444]/15 text-[#EF4444]",
+  berry: "bg-[#EC4899]/15 text-[#EC4899]",
+  teal: "bg-[#14B8A6]/15 text-[#14B8A6]",
+  gold: "bg-[#D4AF37]/15 text-[#D4AF37]",
 };
 const accentMap: Record<string, string> = {
   sky: styles.statCardSky,

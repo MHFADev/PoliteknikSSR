@@ -13,6 +13,14 @@ const nextConfig = {
     ],
     formats: ["image/avif", "image/webp"],
   },
+  experimental: {
+    optimizePackageImports: [
+      "lucide-react",
+      "@supabase/supabase-js",
+      "date-fns",
+      "framer-motion",
+    ],
+  },
 };
 
 export default nextConfig;
