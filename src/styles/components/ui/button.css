@@ -1,0 +1,162 @@
+/* ============================================
+   BUTTON — src/styles/components/ui/button.css
+   ============================================
+   Tombol reusable dengan 10 varian (Skylearn + Flip7)
+   dan 3 ukuran (sm/md/lg).
+   ============================================ */
+
+/* --- Base: semua tombol --- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-weight: 600;
+  transition: all 0.15s ease;
+}
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* --- Ukuran --- */
+.btn\:sm {
+  min-height: 40px;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+}
+.btn\:md {
+  min-height: 56px;
+  padding: 0.75rem 1.5rem;
+  font-size: 1.125rem;
+}
+.btn\:lg {
+  min-height: 72px;
+  padding: 1rem 2rem;
+  font-size: 1.25rem;
+}
+
+/* --- Border radius --- */
+.btn\:skylearn {
+  border-radius: 16px;
+}
+.btn\:flip7 {
+  border-radius: 999px;
+}
+
+/* --- Varian Skylearn --- */
+.btn\:primary {
+  background-color: #3B82F6;
+  color: #FFFFFF;
+  box-shadow: 0 12px 32px rgba(59, 130, 246, 0.15);
+}
+.btn\:primary:hover {
+  background-color: #1D4ED8;
+}
+
+.btn\:secondary {
+  background-color: #F8FAFC;
+  color: #475569;
+  border: 1px solid #E2E8F0;
+}
+.btn\:secondary:hover {
+  background-color: #E2E8F0;
+}
+
+.btn\:outline {
+  border: 1px solid #E2E8F0;
+  color: #475569;
+}
+.btn\:outline:hover {
+  background-color: #F8FAFC;
+  border-color: #3B82F6;
+  color: #3B82F6;
+}
+
+.btn\:ghost {
+  color: #475569;
+}
+.btn\:ghost:hover {
+  background-color: #F8FAFC;
+  color: #3B82F6;
+}
+
+.btn\:danger {
+  background-color: #F87171;
+  color: #FFFFFF;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+}
+.btn\:danger:hover {
+  opacity: 0.9;
+}
+
+/* --- Varian Flip7 --- */
+.btn\:gold {
+  background-color: #FFD23F;
+  color: #1E8C86;
+  box-shadow: 0 4px 20px rgba(255, 210, 63, 0.4);
+}
+.btn\:gold:hover {
+  background-color: #FFE47A;
+}
+
+.btn\:teal {
+  background-color: #2BA8A2;
+  color: #FFFFFF;
+  box-shadow: 0 4px 20px rgba(43, 168, 162, 0.3);
+}
+.btn\:teal:hover {
+  background-color: #3CC4BD;
+}
+
+.btn\:coral {
+  background-color: #EF6C4A;
+  color: #FFFFFF;
+  box-shadow: 0 4px 20px rgba(239, 108, 74, 0.35);
+}
+.btn\:coral:hover {
+  background-color: #FF8A6A;
+}
+
+.btn\:boom {
+  background-color: #EF6C4A;
+  color: #FFFFFF;
+  animation: flip7BoomPulse 2s ease-in-out infinite;
+  box-shadow: 0 4px 20px rgba(239, 108, 74, 0.35);
+}
+
+.btn\:flip7 {
+  background: linear-gradient(to right, #FFD23F, #FFE47A, #FFD23F);
+  color: #1E8C86;
+  box-shadow: 0 4px 20px rgba(255, 210, 63, 0.4);
+}
+.btn\:flip7:hover {
+  background: linear-gradient(to right, #FFE47A, #FFD23F, #FFE47A);
+}
+
+/* --- Loading state --- */
+.btn\:loading {
+  pointer-events: none;
+}
+
+/* --- Spinner untuk loading --- */
+.btn-spinner {
+  width: 1.25rem;
+  height: 1.25rem;
+  animation: spin 1s linear infinite;
+}
+
+/* --- Animasi Flip7 Boom Pulse --- */
+@keyframes flip7BoomPulse {
+  0%, 100% {
+    box-shadow: 0 4px 20px rgba(239, 108, 74, 0.35);
+  }
+  50% {
+    box-shadow: 0 4px 32px rgba(239, 108, 74, 0.5);
+  }
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
