@@ -229,7 +229,7 @@ export function LocationPicker({
               center={position}
               radius={value.radius_meters}
               pathOptions={{
-                color: "#2BA8A2",
+                color: "#113ccc",
                 fillColor: "#2BA8A2",
                 fillOpacity: 0.15,
                 weight: 2,
