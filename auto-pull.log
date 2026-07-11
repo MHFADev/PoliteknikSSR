@@ -1,0 +1,160 @@
+﻿[2026-07-11 10:18:19] === Auto-pull dimulai ===
+[2026-07-11 10:18:19] DIBATALKAN: Ada perubahan lokal yang belum di-commit:
+[2026-07-11 10:18:19] M src/app/dashboard/loading.tsx
+ M src/app/dashboard/siswa/page.tsx
+ M src/app/globals.css
+ M src/app/login/page.tsx
+ M src/components/Calendar.tsx
+ M src/components/LocationPicker.tsx
+ M src/components/LocationVerifier.tsx
+ M src/components/StudentCalendar.tsx
+ M src/components/admin/AddStudentModal.tsx
+ M src/components/charts/AttendanceChart.tsx
+ M src/components/dashboard/StatCard.tsx
+ M src/components/izin/LeaveApprovalModal.tsx
+ M src/components/izin/LeaveRequestForm.tsx
+M  src/components/layout/Sidebar.tsx
+ M src/components/logbook/LogbookForm.tsx
+ M src/components/logbook/LogbookGradeModal.tsx
+ M src/components/qr/QRGeneratorCard.tsx
+ M src/components/qr/QRScanner.tsx
+ M src/components/ui/AnswerTile.tsx
+M  src/components/ui/Badge.tsx
+M  src/components/ui/Button.tsx
+M  src/components/ui/Card.tsx
+ M src/components/ui/Confetti.tsx
+ M src/components/ui/Input.tsx
+M  src/components/ui/Modal.tsx
+ M src/components/ui/ProgressBar.tsx
+ M src/components/ui/Select.tsx
+M  src/components/ui/Skeleton.tsx
+ M src/components/ui/StarBadge.tsx
+AM src/styles/components/dashboard/StatCard.module.css
+A  src/styles/components/layout/Sidebar.module.css
+AM src/styles/components/ui/AnswerTile.module.css
+A  src/styles/components/ui/Badge.module.css
+A  src/styles/components/ui/Button.module.css
+A  src/styles/components/ui/Card.module.css
+AM src/styles/components/ui/Confetti.module.css
+A  src/styles/components/ui/Modal.module.css
+AM src/styles/components/ui/ProgressBar.module.css
+AM src/styles/components/ui/Select.module.css
+A  src/styles/components/ui/Skeleton.module.css
+AM src/styles/components/ui/StarBadge.module.css
+D  src/styles/components/ui/button.css
+A  src/styles/pages/Login.module.css
+?? .auto-pull.lock
+?? auto-git-pull.ps1
+?? auto-pull.log
+?? run-auto-pull.bat
+?? setup-scheduled-task.bat
+?? src/styles/components/admin/
+?? src/styles/components/charts/
+?? src/styles/components/izin/
+?? src/styles/components/logbook/
+?? src/styles/components/qr/
+?? src/styles/components/shared/
+?? src/styles/components/ui/Input.module.css
+?? src/styles/pages/dashboard/
+[2026-07-11 10:18:19] Commit atau stash dulu sebelum auto-pull bisa jalan.
+[2026-07-11 10:32:01] === Auto-pull dimulai ===
+[2026-07-11 10:32:01] DIBATALKAN: Ada perubahan lokal yang belum di-commit:
+[2026-07-11 10:32:01] M src/actions/admin.ts
+ M src/actions/attendance.ts
+ M src/actions/broadcast.ts
+ M src/actions/kalender.ts
+ M src/actions/leave.ts
+ M src/actions/location.ts
+ M src/actions/logbook.ts
+ M src/actions/qr.ts
+ M src/app/api/locations/route.ts
+ M src/app/dashboard/admin/absensi/page.tsx
+ M src/app/dashboard/admin/broadcast/page.tsx
+ M src/app/dashboard/admin/export/page.tsx
+ M src/app/dashboard/admin/izin/page.tsx
+ M src/app/dashboard/admin/kalender/page.tsx
+ M src/app/dashboard/admin/kegiatan-harian/page.tsx
+ M src/app/dashboard/admin/layout.tsx
+ M src/app/dashboard/admin/lokasi/page.tsx
+ M src/app/dashboard/admin/page.tsx
+ M src/app/dashboard/admin/pengguna/page.tsx
+ M src/app/dashboard/admin/qr/page.tsx
+ M src/app/dashboard/loading.tsx
+ M src/app/dashboard/pembimbing/izin/page.tsx
+ M src/app/dashboard/pembimbing/kegiatan-harian/page.tsx
+ M src/app/dashboard/pembimbing/layout.tsx
+ M src/app/dashboard/pembimbing/page.tsx
+ M src/app/dashboard/siswa/absensi/page.tsx
+ M src/app/dashboard/siswa/izin/page.tsx
+ M src/app/dashboard/siswa/kalender/page.tsx
+ M src/app/dashboard/siswa/kegiatan-harian/page.tsx
+ M src/app/dashboard/siswa/layout.tsx
+ M src/app/dashboard/siswa/page.tsx
+ M src/app/dashboard/siswa/pengumuman/page.tsx
+ M src/app/globals.css
+ M src/app/layout.tsx
+ M src/app/login/actions.ts
+ M src/app/login/page.tsx
+ M src/app/page.tsx
+ M src/components/Calendar.tsx
+ M src/components/LocationPicker.tsx
+ M src/components/LocationVerifier.tsx
+ M src/components/StudentCalendar.tsx
+ M src/components/admin/AddStudentModal.tsx
+ M src/components/charts/AttendanceChart.tsx
+ M src/components/dashboard/StatCard.tsx
+ M src/components/izin/LeaveApprovalModal.tsx
+ M src/components/izin/LeaveRequestForm.tsx
+M  src/components/layout/Sidebar.tsx
+ M src/components/logbook/LogbookForm.tsx
+ M src/components/logbook/LogbookGradeModal.tsx
+ M src/components/qr/QRGeneratorCard.tsx
+ M src/components/qr/QRScanner.tsx
+ M src/components/ui/AnswerTile.tsx
+M  src/components/ui/Badge.tsx
+M  src/components/ui/Button.tsx
+M  src/components/ui/Card.tsx
+ M src/components/ui/Confetti.tsx
+ M src/components/ui/Input.tsx
+M  src/components/ui/Modal.tsx
+ M src/components/ui/ProgressBar.tsx
+ M src/components/ui/Select.tsx
+M  src/components/ui/Skeleton.tsx
+ M src/components/ui/StarBadge.tsx
+ M src/lib/constants/colors.ts
+ M src/lib/export-csv.ts
+ M src/lib/qr-token.ts
+ M src/lib/supabase/client.ts
+ M src/lib/supabase/middleware.ts
+ M src/lib/supabase/server.ts
+ M src/lib/utils.ts
+ M src/middleware.ts
+AM src/styles/components/dashboard/StatCard.module.css
+AM src/styles/components/layout/Sidebar.module.css
+AM src/styles/components/ui/AnswerTile.module.css
+A  src/styles/components/ui/Badge.module.css
+A  src/styles/components/ui/Button.module.css
+A  src/styles/components/ui/Card.module.css
+AM src/styles/components/ui/Confetti.module.css
+A  src/styles/components/ui/Modal.module.css
+AM src/styles/components/ui/ProgressBar.module.css
+AM src/styles/components/ui/Select.module.css
+A  src/styles/components/ui/Skeleton.module.css
+AM src/styles/components/ui/StarBadge.module.css
+D  src/styles/components/ui/button.css
+A  src/styles/pages/Login.module.css
+ M src/types/database.ts
+?? .auto-pull.lock
+?? auto-git-pull.ps1
+?? auto-pull.log
+?? run-auto-pull.bat
+?? setup-scheduled-task.bat
+?? src/styles/components/admin/
+?? src/styles/components/charts/
+?? src/styles/components/izin/
+?? src/styles/components/logbook/
+?? src/styles/components/qr/
+?? src/styles/components/shared/
+?? src/styles/components/ui/Input.module.css
+?? src/styles/pages/dashboard/
+[2026-07-11 10:32:01] Commit atau stash dulu sebelum auto-pull bisa jalan.

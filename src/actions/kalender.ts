@@ -1,8 +1,30 @@
+/*
+ * kalender.ts — Manajemen Kalender Akademik
+ * ==========================================
+ * Server actions untuk CRUD event kalender, statistik dashboard,
+ * serta data presensi per bulan untuk tampilan kalender siswa.
+ *
+ * Alur:
+ * - getEvents / getAllEvents → query event (dengan filter per siswa)
+ * - addEvent / updateEvent / deleteEvent → CRUD event (Admin)
+ * - getStudentAttendanceByMonth → data presensi + izin untuk kalender siswa
+ * - getAdminCalendarStats → statistik dashboard admin
+ * - getStudents → daftar siswa (untuk komponen autocomplete/lookup)
+ * - getUpcomingEvents → event mendatang (untuk widget sidebar)
+ */
+
 "use server";
 
 import { createClient, createAdminClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 
+/**
+ * getEvents — Ambil event kalender per bulan
+ * @param year - Tahun
+ * @param month - Bulan (1-12)
+ * @param studentId - Jika diisi, filter event milik siswa tsb + event umum (student_id is null)
+ * @returns Array event dalam rentang bulan yang diminta
+ */
 export async function getEvents(year: number, month: number, studentId?: string | null) {
   const supabase = createClient();
 
@@ -18,6 +40,7 @@ export async function getEvents(year: number, month: number, studentId?: string 
     .order("event_date", { ascending: true });
 
   if (studentId) {
+    // Tampilkan event milik siswa + event umum
     query = query.or(`student_id.eq.${studentId},student_id.is.null`);
   }
 
@@ -25,6 +48,11 @@ export async function getEvents(year: number, month: number, studentId?: string 
   return data ?? [];
 }
 
+/**
+ * getAllEvents — Ambil semua event (dengan pencarian opsional)
+ * @param search - Kata kunci pencarian (title atau nama siswa)
+ * @returns Array semua event
+ */
 export async function getAllEvents(search?: string) {
   const supabase = createClient();
 
@@ -43,6 +71,16 @@ export async function getAllEvents(search?: string) {
   return data ?? [];
 }
 
+/**
+ * addEvent — Tambah event baru (Admin only)
+ * @param title - Judul event
+ * @param description - Deskripsi event
+ * @param event_date - Tanggal event
+ * @param end_date - Tanggal selesai (opsional, untuk event multi-hari)
+ * @param tipe - "libur" atau "event"
+ * @param student_id - ID siswa (jika event spesifik untuk siswa tertentu)
+ * @returns Object { success, message }
+ */
 export async function addEvent(
   title: string,
   description: string | null,
@@ -71,6 +109,9 @@ export async function addEvent(
   return { success: true };
 }
 
+/**
+ * updateEvent — Update event yang sudah ada (Admin only)
+ */
 export async function updateEvent(
   id: string,
   title: string,
@@ -92,6 +133,9 @@ export async function updateEvent(
   return { success: true };
 }
 
+/**
+ * deleteEvent — Hapus event (Admin only)
+ */
 export async function deleteEvent(id: string) {
   const supabase = createAdminClient();
   const { error } = await supabase.from("calendar_events").delete().eq("id", id);
@@ -102,6 +146,17 @@ export async function deleteEvent(id: string) {
   return { success: true };
 }
 
+/**
+ * getStudentAttendanceByMonth — Ambil data presensi + izin siswa per bulan
+ * @param studentId - ID siswa
+ * @param year - Tahun
+ * @param month - Bulan (1-12)
+ * @returns Object { records, leaves } — data untuk ditampilkan di kalender siswa
+ *
+ * Alur:
+ * 1. Ambil semua attendance_records siswa dalam rentang bulan
+ * 2. Ambil semua leave_requests yang disetujui dalam rentang bulan
+ */
 export async function getStudentAttendanceByMonth(studentId: string, year: number, month: number) {
   const supabase = createClient();
 
@@ -127,11 +182,15 @@ export async function getStudentAttendanceByMonth(studentId: string, year: numbe
   return { records: records ?? [], leaves: leaves ?? [] };
 }
 
+/**
+ * getAdminCalendarStats — Statistik untuk dashboard admin
+ * @returns Object { totalEvents, upcomingEvents, totalSiswa }
+ * Query dilakukan paralel via Promise.all untuk efisiensi
+ */
 export async function getAdminCalendarStats() {
   const supabase = createClient();
 
   const today = new Date().toISOString().slice(0, 10);
-  const startOfMonth = `${today.slice(0, 7)}-01`;
 
   const [{ count: totalEvents }, { count: upcomingEvents }, { count: totalSiswa }] =
     await Promise.all([
@@ -150,6 +209,10 @@ export async function getAdminCalendarStats() {
   };
 }
 
+/**
+ * getStudents — Ambil daftar siswa (untuk komponen form/lookup)
+ * @returns Array profil siswa
+ */
 export async function getStudents() {
   const supabase = createClient();
   const { data } = await supabase
@@ -160,6 +223,11 @@ export async function getStudents() {
   return data ?? [];
 }
 
+/**
+ * getUpcomingEvents — Ambil event mendatang (untuk widget)
+ * @param limit - Jumlah maksimal event
+ * @returns Array event yang akan datang (terdekat)
+ */
 export async function getUpcomingEvents(limit = 5) {
   const supabase = createClient();
   const today = new Date().toISOString().slice(0, 10);

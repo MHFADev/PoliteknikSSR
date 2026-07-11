@@ -1,6 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
+import styles from "@/styles/components/ui/Input.module.css";
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string;
@@ -9,18 +10,19 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
 
 export function Input({ label, error, className, ...props }: InputProps) {
   return (
-    <div className="space-y-1.5">
+    <div className={styles.fieldGroup}>
       {label && (
-        <label className="text-sm font-medium text-ink">{label}</label>
+        <label className={styles.label}>{label}</label>
       )}
       <input
         className={cn(
-          "w-full h-12 px-4 rounded-flip7-lg bg-surface border border-outline text-ink focus:outline-none focus:border-teal focus:ring-2 focus:ring-teal/20 disabled:opacity-50 disabled:cursor-not-allowed transition-all",
+          styles.inputBase,
+          error && styles.inputError,
           className
         )}
         {...props}
       />
-      {error && <p className="text-xs text-coral">{error}</p>}
+      {error && <p className={styles.errorText}>{error}</p>}
     </div>
   );
 }

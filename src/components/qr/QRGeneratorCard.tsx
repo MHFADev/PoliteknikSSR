@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/Button";
 import { Card, CardHeader } from "@/components/ui/Card";
 import { formatDate } from "@/lib/utils";
 import type { AttendanceSession } from "@/types/database";
+import styles from "@/styles/components/qr/QRGeneratorCard.module.css";
 
 export function QRGeneratorCard({ initialSession }: { initialSession: AttendanceSession | null }) {
   const [session, setSession] = useState(initialSession);
@@ -42,7 +43,7 @@ export function QRGeneratorCard({ initialSession }: { initialSession: Attendance
         }
       />
 
-      <div className="flex justify-center">
+      <div className={styles.qrDisplay}>
         {qrImage ? (
           <motion.img
             key={session?.id}
@@ -50,16 +51,16 @@ export function QRGeneratorCard({ initialSession }: { initialSession: Attendance
             animate={{ opacity: 1, scale: 1 }}
             src={qrImage}
             alt="QR Presensi"
-            className="rounded-flip7-lg border border-teal-light shadow-flip7-teal-glow"
+            className={styles.qrImage}
           />
         ) : (
-          <div className="flex h-72 w-72 items-center justify-center rounded-flip7-lg border border-dashed border-teal text-sm text-ink-muted text-center px-6">
+          <div className={styles.qrPlaceholder}>
             Klik &quot;Generate QR&quot; untuk membuat sesi presensi hari ini
           </div>
         )}
       </div>
 
-      <p className="mt-4 text-xs text-ink-muted text-center">
+      <p className={styles.helperText}>
         Tampilkan QR ini di layar/proyektor. Siswa scan lewat menu Absensi QR di dashboard masing-masing.
       </p>
     </Card>

@@ -8,6 +8,8 @@ import { createClient } from "@/lib/supabase/client";
 import { createLeaveRequest } from "@/actions/leave";
 import { Button } from "@/components/ui/Button";
 import { Card, CardHeader } from "@/components/ui/Card";
+import { cn } from "@/lib/utils";
+import styles from "@/styles/components/izin/LeaveRequestForm.module.css";
 
 const LEAVE_TYPES = [
   { value: "izin", label: "Izin" },
@@ -87,20 +89,16 @@ export function LeaveRequestForm() {
     <Card>
       <CardHeader title="Ajukan Izin / Sakit / Cuti" subtitle="Lampirkan bukti pendukung jika ada" />
 
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit}>
         <div>
           <label className="text-sm font-medium text-deep">Jenis Pengajuan</label>
-          <div className="mt-1.5 flex gap-2">
+          <div className={styles.typeSelector}>
             {LEAVE_TYPES.map((t) => (
               <button
                 type="button"
                 key={t.value}
                 onClick={() => setType(t.value)}
-                className={`rounded-xl px-4 py-2 text-sm font-medium border transition-colors ${
-                  type === t.value
-                    ? "border-blue-vibrant bg-blue-vibrant/10 text-blue-vibrant"
-                    : "border-deep/10 text-steel hover:bg-deep/5"
-                }`}
+                className={cn(styles.typeBtn, type === t.value ? styles.typeBtnActive : styles.typeBtnInactive)}
               >
                 {t.label}
               </button>
@@ -108,7 +106,7 @@ export function LeaveRequestForm() {
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className={styles.dateGrid}>
           <div>
             <label className="text-sm font-medium text-deep">Tanggal Mulai</label>
             <input
@@ -116,7 +114,7 @@ export function LeaveRequestForm() {
               required
               value={startDate}
               onChange={(e) => setStartDate(e.target.value)}
-              className="mt-1.5 w-full rounded-xl border border-deep/10 bg-white/70 px-3 py-2 text-sm outline-none focus:border-ocean"
+              className={styles.inputBase}
             />
           </div>
           <div>
@@ -126,7 +124,7 @@ export function LeaveRequestForm() {
               required
               value={endDate}
               onChange={(e) => setEndDate(e.target.value)}
-              className="mt-1.5 w-full rounded-xl border border-deep/10 bg-white/70 px-3 py-2 text-sm outline-none focus:border-ocean"
+              className={styles.inputBase}
             />
           </div>
         </div>
@@ -140,13 +138,13 @@ export function LeaveRequestForm() {
             value={reason}
             onChange={(e) => setReason(e.target.value)}
             placeholder="Jelaskan alasan pengajuan secara singkat..."
-            className="mt-1.5 w-full rounded-xl border border-deep/10 bg-white/70 px-3 py-2 text-sm outline-none focus:border-ocean"
+            className={styles.textArea}
           />
         </div>
 
         <div>
           <label className="text-sm font-medium text-deep">Bukti Pendukung (opsional)</label>
-          <label className="mt-1.5 flex cursor-pointer items-center gap-3 rounded-xl border border-dashed border-deep/15 px-4 py-3 text-sm text-steel hover:bg-deep/5">
+          <label className={styles.fileUpload}>
             <UploadCloud className="h-4 w-4" />
             {file ? file.name : "Pilih foto surat / dokumen (JPG, PNG)"}
             <input
@@ -164,7 +162,7 @@ export function LeaveRequestForm() {
           <motion.div
             initial={{ opacity: 0, y: 6 }}
             animate={{ opacity: 1, y: 0 }}
-            className="flex items-center gap-2 rounded-xl bg-blue-vibrant/10 px-3 py-2 text-sm text-blue-vibrant"
+            className={styles.successMsg}
           >
             <CheckCircle2 className="h-4 w-4" />
             Pengajuan terkirim. Menunggu review pembimbing.

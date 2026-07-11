@@ -3,6 +3,7 @@ import { StatCard } from "@/components/dashboard/StatCard";
 import { Card, CardHeader } from "@/components/ui/Card";
 import { AttendanceChart, type AttendanceTrendPoint } from "@/components/charts/AttendanceChart";
 import { Users, CalendarCheck, FileClock } from "lucide-react";
+import styles from "@/styles/pages/dashboard/pembimbing/Overview.module.css";
 
 export default async function PembimbingOverviewPage() {
   const supabase = createClient();
@@ -42,19 +43,19 @@ export default async function PembimbingOverviewPage() {
   });
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="font-display text-2xl font-semibold text-deep">Ringkasan Bimbingan</h1>
-        <p className="text-sm text-mist-dim">Pantau kehadiran & progres siswa bimbinganmu.</p>
+    <div className={styles.pageContainer}>
+      <div className={styles.pageHeader}>
+        <h1>Ringkasan Bimbingan</h1>
+        <p>Pantau kehadiran & progres siswa bimbinganmu.</p>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div className={styles.statGrid}>
         <StatCard label="Siswa Bimbingan" value={studentCount ?? 0} icon={<Users className="h-5 w-5" />} accent="teal" />
         <StatCard label="Hadir Hari Ini" value={hadirToday} icon={<CalendarCheck className="h-5 w-5" />} accent="leaf" />
         <StatCard label="Izin Menunggu Review" value={izinPendingCount ?? 0} icon={<FileClock className="h-5 w-5" />} accent="sun" />
       </div>
 
-      <Card>
+      <Card className={styles.chartCard}>
         <CardHeader title="Tren Kehadiran 7 Hari Terakhir" />
         <AttendanceChart data={Array.from(trendMap.values())} />
       </Card>

@@ -1,0 +1,20 @@
+.badge { display: inline-flex; align-items: center; font-weight: 500; }
+.badgeSm { padding: 2px 8px; font-size: 12px; }
+.badgeMd { padding: 4px 12px; font-size: 14px; }
+.pill { border-radius: 999px; }
+
+/* Skylearn tones */
+.neutral { background: rgba(148,163,184,0.1); color: #475569; }
+.success { background: #DCFCE7; color: #16A34A; }
+.warning { background: #FEF3C7; color: #D97706; }
+.danger { background: #FEE2E2; color: #F87171; }
+.badgeSky { background: #DBEAFE; color: #1D4ED8; }
+.badgeSun { background: #FEF3C7; color: #D97706; }
+.leaf { background: #DCFCE7; color: #16A34A; }
+.berry { background: rgba(168,85,247,0.1); color: #A855F7; }
+
+/* Flip7 tones */
+.badgeTeal { background: #E8F6F5; color: #1E8C86; }
+.badgeGold { background: rgba(255,228,122,0.3); color: #E6B800; }
+.badgeCoral { background: rgba(255,138,106,0.2); color: #D45233; }
+.cream { background: #FFF8E7; color: #1E8C86; }

@@ -1,0 +1,66 @@
+/* StatCard - Komponen kartu statistik dashboard */
+.statCard {
+  position: relative;
+  overflow: hidden;
+}
+
+.statCardLabel {
+  font-size: 0.875rem;
+  color: var(--color-ink-muted, #475569);
+}
+
+.statCardValue {
+  font-family: var(--font-jakarta), sans-serif;
+  font-size: 1.875rem;
+  font-weight: 600;
+  color: var(--color-ink, #0F172A);
+  margin-top: 0.25rem;
+}
+
+.statCardIcon {
+  border-radius: 16px;
+  padding: 0.75rem;
+}
+
+.statCardHint {
+  font-size: 0.75rem;
+  color: var(--color-ink-subtle, #94A3B8);
+  margin-top: 0.25rem;
+}
+
+.statCardAccent {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 0.25rem;
+  width: 100%;
+  opacity: 0.7;
+}
+
+.statCardContent {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+/* Warna aksen untuk icon dan accent bar */
+.statCardSky .statCardIcon { background: #DBEAFE; color: #3B82F6; }
+.statCardSky .statCardAccent { background: #3B82F6; }
+
+.statCardSun .statCardIcon { background: #FEF3C7; color: #FBBF24; }
+.statCardSun .statCardAccent { background: #FBBF24; }
+
+.statCardLeaf .statCardIcon { background: #DCFCE7; color: #22C55E; }
+.statCardLeaf .statCardAccent { background: #22C55E; }
+
+.statCardCoral .statCardIcon { background: #FEE2E2; color: #F87171; }
+.statCardCoral .statCardAccent { background: #F87171; }
+
+.statCardBerry .statCardIcon { background: rgba(168,85,247,0.1); color: #A855F7; }
+.statCardBerry .statCardAccent { background: #A855F7; }
+
+.statCardTeal .statCardIcon { background: #E8F6F5; color: #1E8C86; }
+.statCardTeal .statCardAccent { background: #1E8C86; }
+
+.statCardGold .statCardIcon { background: rgba(255,210,63,0.3); color: #B8860B; }
+.statCardGold .statCardAccent { background: #FFD23F; }

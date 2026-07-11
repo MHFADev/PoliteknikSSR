@@ -4,6 +4,7 @@ import { Card } from "@/components/ui/Card";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 import type { ReactNode } from "react";
+import styles from "@/styles/components/dashboard/StatCard.module.css";
 
 interface StatCardProps {
   label: string;
@@ -13,38 +14,37 @@ interface StatCardProps {
   hint?: string;
 }
 
-const accentClasses: Record<string, string> = {
-  sky: "bg-sky-soft text-sky-deep",
-  sun: "bg-sun-soft text-sun-deep",
-  leaf: "bg-leaf-soft text-leaf-deep",
-  coral: "bg-coral-soft text-coral",
-  berry: "bg-berry/10 text-berry",
-  teal: "bg-teal-bg text-teal-dark",
-  gold: "bg-gold-light/30 text-gold-dark",
+const accentMap: Record<string, string> = {
+  sky: styles.statCardSky,
+  sun: styles.statCardSun,
+  leaf: styles.statCardLeaf,
+  coral: styles.statCardCoral,
+  berry: styles.statCardBerry,
+  teal: styles.statCardTeal,
+  gold: styles.statCardGold,
 };
 
 export function StatCard({ label, value, icon, accent = "sky", hint }: StatCardProps) {
   return (
-    <Card className="relative overflow-hidden">
-      <div className="flex items-start justify-between">
+    <Card className={cn(styles.statCard, accentMap[accent])}>
+      <div className={styles.statCardContent}>
         <div>
-          <p className="text-sm text-ink-muted">{label}</p>
+          <p className={styles.statCardLabel}>{label}</p>
           <motion.p
             key={String(value)}
             initial={{ opacity: 0, y: 6 }}
             animate={{ opacity: 1, y: 0 }}
-            className="font-display text-3xl font-semibold text-ink mt-1"
+            className={styles.statCardValue}
           >
             {value}
           </motion.p>
-          {hint && <p className="text-xs text-ink-subtle mt-1">{hint}</p>}
+          {hint && <p className={styles.statCardHint}>{hint}</p>}
         </div>
-        <div className={cn("rounded-skylearn-lg p-3", accentClasses[accent])}>
+        <div className={styles.statCardIcon}>
           {icon}
         </div>
       </div>
-      {/* garis aksen tipis di bawah */}
-      <div className={cn("absolute bottom-0 left-0 h-1 w-full opacity-70", accentClasses[accent])} />
+      <div className={styles.statCardAccent} />
     </Card>
   );
 }

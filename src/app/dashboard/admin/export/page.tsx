@@ -6,6 +6,7 @@ import { createClient } from "@/lib/supabase/client";
 import { exportToCSV } from "@/lib/export-csv";
 import { Button } from "@/components/ui/Button";
 import { Card, CardHeader } from "@/components/ui/Card";
+import styles from "@/styles/pages/dashboard/admin/Export.module.css";
 
 export default function AdminExportPage() {
   const [loadingKey, setLoadingKey] = useState<string | null>(null);
@@ -105,15 +106,15 @@ export default function AdminExportPage() {
   ];
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="font-display text-2xl font-semibold text-deep">Ekspor Data</h1>
-        <p className="text-sm text-mist-dim">Unduh data dalam format CSV untuk keperluan rekap & laporan.</p>
+    <div className={styles.pageContainer}>
+      <div className={styles.pageHeader}>
+        <h1>Ekspor Data</h1>
+        <p>Unduh data dalam format CSV untuk keperluan rekap & laporan.</p>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div className={styles.exportGrid}>
         {exports.map((item) => (
-          <Card key={item.key} className="flex flex-col items-start gap-3">
+          <Card key={item.key} className={styles.exportCard}>
             <CardHeader title={item.label} />
             <Button isLoading={loadingKey === item.key} onClick={item.action}>
               <Download className="h-4 w-4" /> Unduh CSV

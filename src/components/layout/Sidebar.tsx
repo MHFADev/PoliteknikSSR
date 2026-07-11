@@ -1,3 +1,14 @@
+/**
+ * Sidebar — Navigasi samping berbasis role
+ * ==========================================
+ * Menampilkan menu navigasi yang berbeda untuk setiap role (siswa/pembimbing/admin).
+ * Di desktop: sidebar tetap di samping kiri (256px).
+ * Di mobile: drawer yang bisa dibuka/tutup dengan hamburger button.
+ *
+ * Cara pakai:
+ *   <Sidebar role="admin" fullName="Budi Santoso" />
+ */
+
 "use client";
 
 import Link from "next/link";
@@ -7,57 +18,63 @@ import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { createClient } from "@/lib/supabase/client";
 import {
-  LayoutDashboard,
-  QrCode,
-  FileText,
-  NotebookPen,
-  Users,
-  Download,
-  MapPin,
-  CalendarDays,
-  Megaphone,
-  LogOut,
-  Menu,
-  X,
+  LayoutDashboard, QrCode, FileText, NotebookPen,
+  Users, Download, MapPin, CalendarDays, Megaphone,
+  LogOut, Menu, X,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import styles from "@/styles/components/layout/Sidebar.module.css";
+
+// ---------------------------------------------------------------------------
+// Data navigasi per role
+// ---------------------------------------------------------------------------
 
 type NavItem = { href: string; label: string; icon: typeof LayoutDashboard };
 
-const NAV_BY_ROLE: Record<"siswa" | "pembimbing" | "admin", NavItem[]> = {
+const NAV: Record<string, NavItem[]> = {
   siswa: [
-    { href: "/dashboard/siswa", label: "Dashboard", icon: LayoutDashboard },
-    { href: "/dashboard/siswa/absensi", label: "Absensi QR", icon: QrCode },
-    { href: "/dashboard/siswa/izin", label: "Pengajuan Izin", icon: FileText },
+    { href: "/dashboard/siswa",             label: "Dashboard",          icon: LayoutDashboard },
+    { href: "/dashboard/siswa/absensi",      label: "Absensi QR",         icon: QrCode },
+    { href: "/dashboard/siswa/izin",         label: "Pengajuan Izin",     icon: FileText },
     { href: "/dashboard/siswa/kegiatan-harian", label: "Kegiatan Harian", icon: NotebookPen },
-    { href: "/dashboard/siswa/kalender", label: "Kalender", icon: CalendarDays },
-    { href: "/dashboard/siswa/pengumuman", label: "Pengumuman", icon: Megaphone },
+    { href: "/dashboard/siswa/kalender",     label: "Kalender",           icon: CalendarDays },
+    { href: "/dashboard/siswa/pengumuman",   label: "Pengumuman",         icon: Megaphone },
   ],
   pembimbing: [
-    { href: "/dashboard/pembimbing", label: "Dashboard", icon: LayoutDashboard },
-    { href: "/dashboard/pembimbing/izin", label: "Persetujuan Izin", icon: FileText },
+    { href: "/dashboard/pembimbing",             label: "Dashboard",           icon: LayoutDashboard },
+    { href: "/dashboard/pembimbing/izin",        label: "Persetujuan Izin",    icon: FileText },
     { href: "/dashboard/pembimbing/kegiatan-harian", label: "Penilaian Kegiatan", icon: NotebookPen },
   ],
   admin: [
-    { href: "/dashboard/admin", label: "Dashboard", icon: LayoutDashboard },
-    { href: "/dashboard/admin/absensi", label: "Rekap Absensi", icon: FileText },
-    { href: "/dashboard/admin/pengguna", label: "Kelola Pengguna", icon: Users },
-    { href: "/dashboard/admin/qr", label: "Generate QR", icon: QrCode },
-    { href: "/dashboard/admin/izin", label: "Data Izin", icon: FileText },
-    { href: "/dashboard/admin/kegiatan-harian", label: "Data Kegiatan", icon: NotebookPen },
-    { href: "/dashboard/admin/kalender", label: "Kalender PKL", icon: CalendarDays },
-    { href: "/dashboard/admin/broadcast", label: "Broadcast", icon: Megaphone },
-    { href: "/dashboard/admin/export", label: "Ekspor Data", icon: Download },
-    { href: "/dashboard/admin/lokasi", label: "Lokasi GPS", icon: MapPin },
+    { href: "/dashboard/admin",            label: "Dashboard",        icon: LayoutDashboard },
+    { href: "/dashboard/admin/absensi",     label: "Rekap Absensi",    icon: FileText },
+    { href: "/dashboard/admin/pengguna",    label: "Kelola Pengguna",  icon: Users },
+    { href: "/dashboard/admin/qr",          label: "Generate QR",      icon: QrCode },
+    { href: "/dashboard/admin/izin",        label: "Data Izin",        icon: FileText },
+    { href: "/dashboard/admin/kegiatan-harian", label: "Data Kegiatan",icon: NotebookPen },
+    { href: "/dashboard/admin/kalender",    label: "Kalender PKL",     icon: CalendarDays },
+    { href: "/dashboard/admin/broadcast",   label: "Broadcast",        icon: Megaphone },
+    { href: "/dashboard/admin/export",      label: "Ekspor Data",      icon: Download },
+    { href: "/dashboard/admin/lokasi",      label: "Lokasi GPS",       icon: MapPin },
   ],
 };
 
-export function Sidebar({ role, fullName }: { role: "siswa" | "pembimbing" | "admin"; fullName: string }) {
+// ---------------------------------------------------------------------------
+// Komponen
+// ---------------------------------------------------------------------------
+
+interface SidebarProps {
+  role: "siswa" | "pembimbing" | "admin";
+  fullName: string;
+}
+
+export function Sidebar({ role, fullName }: SidebarProps) {
   const pathname = usePathname();
   const router = useRouter();
   const [open, setOpen] = useState(false);
-  const items = NAV_BY_ROLE[role];
+  const items = NAV[role];
 
+  /** Logout: hapus session Supabase lalu redirect ke halaman login */
   async function handleLogout() {
     const supabase = createClient();
     await supabase.auth.signOut();
@@ -65,62 +82,52 @@ export function Sidebar({ role, fullName }: { role: "siswa" | "pembimbing" | "ad
     router.refresh();
   }
 
+  /** Konten sidebar yang sama untuk desktop dan mobile */
   const sidebarContent = (
-    <div className="flex h-full flex-col justify-between px-4 py-6 overflow-y-auto">
-      <div className="flex-1">
-        <div className="mb-8 px-2 flex items-center justify-between">
+    <div className={styles.content}>
+      {/* Bagian atas: logo + navigasi */}
+      <div>
+        <div className={styles.logo}>
           <Image src="/logo.png" alt="Politeknik SSR" width={140} height={40} className="h-auto w-auto" priority />
-          <button
-            onClick={() => setOpen(false)}
-            className="lg:hidden p-2 rounded-lg hover:bg-surface"
-            aria-label="Tutup menu"
-          >
-            <X className="h-5 w-5 text-ink-muted" />
-          </button>
         </div>
-        <nav className="space-y-1">
+        <nav className={styles.nav}>
           {items.map((item) => {
             const active = pathname === item.href;
             const Icon = item.icon;
             return (
-              <Link key={item.href} href={item.href} onClick={() => setOpen(false)} className="relative block">
+              <Link key={item.href} href={item.href} onClick={() => setOpen(false)} className={styles.link}>
+                {/* Indikator halaman aktif dengan animasi layout */}
                 {active && (
                   <motion.div
                     layoutId="sidebar-active"
-                    className="absolute inset-0 rounded-skylearn-lg bg-sky-soft"
+                    className={styles.activeBg}
                     transition={{ type: "spring", stiffness: 400, damping: 32 }}
                   />
                 )}
-                <span
-                  className={cn(
-                    "relative flex items-center gap-3 rounded-skylearn-lg px-3 py-3 text-sm font-medium transition-colors min-h-[50px]",
-                    active ? "text-sky-deep" : "text-ink-muted hover:text-ink hover:bg-surface"
-                  )}
-                >
-                  <Icon className="h-6 w-6 flex-shrink-0" />
-                  <span className="truncate">{item.label}</span>
+                <span className={cn(styles.linkText, active ? styles.linkActive : styles.linkInactive)}>
+                  <Icon className="h-5 w-5" />
+                  {item.label}
                 </span>
               </Link>
             );
           })}
         </nav>
       </div>
-      <div className="space-y-3 px-2 pt-4 border-t border-outline mt-4">
-        <div className="flex items-center gap-3">
-          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-sky-soft text-sky-deep text-lg font-bold border-2 border-white shadow-skylearn flex-shrink-0">
+
+      {/* Bagian bawah: info user + tombol logout */}
+      <div className={styles.userSection}>
+        <div className={styles.userInfo}>
+          <div className={styles.avatar}>
             {fullName.charAt(0).toUpperCase()}
           </div>
           <div className="min-w-0">
-            <p className="truncate text-ink font-semibold">{fullName}</p>
-            <p className="text-xs text-ink-subtle capitalize">{role}</p>
+            <p className={styles.userName}>{fullName}</p>
+            <p className={styles.userRole}>{role}</p>
           </div>
         </div>
-        <button
-          onClick={handleLogout}
-          className="flex w-full items-center gap-3 rounded-skylearn-lg px-3 py-3 text-sm font-medium text-ink-muted hover:bg-surface hover:text-coral transition-colors min-h-[50px]"
-        >
-          <LogOut className="h-6 w-6 flex-shrink-0" />
-          <span>Keluar</span>
+        <button onClick={handleLogout} className={styles.logoutBtn}>
+          <LogOut className="h-5 w-5" />
+          Keluar
         </button>
       </div>
     </div>
@@ -128,25 +135,26 @@ export function Sidebar({ role, fullName }: { role: "siswa" | "pembimbing" | "ad
 
   return (
     <>
+      {/* Tombol hamburger untuk mobile */}
       <button
         onClick={() => setOpen(!open)}
-        className="fixed left-4 top-4 z-50 flex h-14 w-14 items-center justify-center rounded-skylearn-lg bg-white shadow-skylearn border border-outline text-ink lg:hidden"
+        className={styles.hamburger}
         aria-label={open ? "Tutup menu" : "Buka menu"}
       >
-        {open ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+        {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
       </button>
 
-      <aside className="hidden h-screen w-64 shrink-0 border-r border-outline bg-white lg:flex lg:flex-col">
-        {sidebarContent}
-      </aside>
+      {/* Sidebar desktop — selalu terlihat di layar lebar */}
+      <aside className={styles.desktop}>{sidebarContent}</aside>
 
+      {/* Sidebar mobile — drawer yang muncul dari kiri */}
       <AnimatePresence>
         {open && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-40 bg-ink/40 backdrop-blur-sm lg:hidden"
+            className={styles.mobileOverlay}
             onClick={() => setOpen(false)}
           >
             <motion.aside
@@ -154,7 +162,7 @@ export function Sidebar({ role, fullName }: { role: "siswa" | "pembimbing" | "ad
               animate={{ x: 0 }}
               exit={{ x: "-100%" }}
               transition={{ type: "spring", damping: 28, stiffness: 300 }}
-              className="h-full w-full max-w-xs border-r border-outline bg-white"
+              className={styles.mobileDrawer}
               onClick={(e) => e.stopPropagation()}
             >
               {sidebarContent}

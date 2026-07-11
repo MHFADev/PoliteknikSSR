@@ -1,0 +1,501 @@
+/* Kalender Admin - Halaman atur event & libur PKL */
+.pageContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+@media (min-width: 640px) {
+  .pageContainer {
+    gap: 1.5rem;
+  }
+}
+
+.pageHeaderRow {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+@media (min-width: 640px) {
+  .pageHeaderRow {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+.pageHeader h1 {
+  font-family: var(--font-jakarta), sans-serif;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--color-deep, #0F172A);
+}
+
+@media (min-width: 640px) {
+  .pageHeader h1 {
+    font-size: 1.5rem;
+  }
+}
+
+.pageHeader p {
+  font-size: 0.75rem;
+  color: var(--color-mist-dim, #64748B);
+}
+
+@media (min-width: 640px) {
+  .pageHeader p {
+    font-size: 0.875rem;
+  }
+}
+
+.addBtn {
+  width: 100%;
+}
+
+@media (min-width: 640px) {
+  .addBtn {
+    width: auto;
+  }
+}
+
+.statGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.75rem;
+}
+
+@media (min-width: 640px) {
+  .statGrid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+  }
+}
+
+.calendarNav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.calendarNavTitle {
+  font-family: var(--font-jakarta), sans-serif;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--color-deep, #0F172A);
+}
+
+.dayHeaders {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.125rem;
+  margin-bottom: 0.5rem;
+}
+
+@media (min-width: 640px) {
+  .dayHeaders {
+    gap: 0.25rem;
+  }
+}
+
+.dayHeader {
+  padding: 0.25rem;
+  text-align: center;
+  font-size: 0.625rem;
+  font-weight: 600;
+  color: var(--color-steel, #475569);
+  border-radius: 0.25rem;
+}
+
+@media (min-width: 640px) {
+  .dayHeader {
+    font-size: 0.75rem;
+    padding: 0.375rem 0.5rem;
+    border-radius: 0.5rem;
+  }
+}
+
+.calendarGrid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.25rem;
+}
+
+.calendarCell {
+  min-height: 60px;
+  border-radius: 0.5rem;
+  border: 1px solid rgba(15,23,42,0.06);
+  padding: 0.25rem;
+  background: #FFFFFF;
+  transition: border-color 0.15s;
+}
+
+.calendarCell:hover {
+  border-color: rgba(15,23,42,0.2);
+}
+
+@media (min-width: 640px) {
+  .calendarCell {
+    min-height: 100px;
+    border-radius: 0.75rem;
+    padding: 0.375rem;
+  }
+}
+
+.calendarCellToday {
+  background: rgba(59,130,246,0.05);
+  border-color: rgba(59,130,246,0.3);
+}
+
+.calendarDayNumber {
+  display: flex;
+  height: 1.25rem;
+  width: 1.25rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  font-size: 0.625rem;
+  font-weight: 500;
+  margin-bottom: 0.125rem;
+}
+
+@media (min-width: 640px) {
+  .calendarDayNumber {
+    height: 1.5rem;
+    width: 1.5rem;
+    font-size: 0.75rem;
+  }
+}
+
+.calendarDayToday {
+  background: #3B82F6;
+  color: #FFFFFF;
+}
+
+.calendarDayNormal {
+  color: var(--color-deep, #0F172A);
+}
+
+.calendarEvents {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+}
+
+.calendarEventItem {
+  position: relative;
+  cursor: pointer;
+  border-radius: 0.25rem;
+  padding: 0.125rem 0.25rem;
+  font-size: 0.5625rem;
+  font-weight: 500;
+  line-height: 1.2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (min-width: 640px) {
+  .calendarEventItem {
+    font-size: 0.6875rem;
+    padding: 0.125rem 0.375rem;
+  }
+}
+
+.calendarEventItem:hover .eventActions {
+  display: flex;
+}
+
+.eventActions {
+  position: absolute;
+  right: 0.125rem;
+  top: 0.125rem;
+  display: none;
+  gap: 0.125rem;
+}
+
+.eventActionBtn {
+  border-radius: 0.25rem;
+  padding: 0.125rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.eventActionBtn:hover {
+  background: rgba(0,0,0,0.1);
+}
+
+.eventMoreText {
+  font-size: 0.5rem;
+  color: var(--color-steel, #475569);
+}
+
+@media (min-width: 640px) {
+  .eventMoreText {
+    font-size: 0.625rem;
+  }
+}
+
+.loadingSpinner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 0;
+}
+
+.legendContainer {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-size: 0.875rem;
+  color: var(--color-steel, #475569);
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+}
+
+.legendDot {
+  height: 0.75rem;
+  width: 0.75rem;
+  border-radius: 9999px;
+}
+
+.eventListCard {
+  margin-top: 1.5rem;
+}
+
+.searchWrapper {
+  position: relative;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 1rem;
+  width: 1rem;
+  color: var(--color-mist-dim, #64748B);
+}
+
+.searchInput {
+  border-radius: 12px;
+  border: 1px solid rgba(15,23,42,0.1);
+  background: rgba(255,255,255,0.8);
+  padding: 0.5rem 0.75rem 0.5rem 2.25rem;
+  font-size: 0.875rem;
+  outline: none;
+  width: 16rem;
+}
+
+.searchInput:focus {
+  border-color: #2BA8A2;
+}
+
+.eventList {
+  display: flex;
+  flex-direction: column;
+}
+
+.eventListItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+}
+
+.eventListItem:hover {
+  background: rgba(15,23,42,0.05);
+}
+
+.eventListInfo {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
+.eventListDot {
+  height: 0.625rem;
+  width: 0.625rem;
+  border-radius: 9999px;
+  flex-shrink: 0;
+}
+
+.eventListTitle {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-deep, #0F172A);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.eventListMeta {
+  font-size: 0.75rem;
+  color: var(--color-mist-dim, #64748B);
+}
+
+.eventListActions {
+  display: flex;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.eventListActionBtn {
+  border-radius: 0.5rem;
+  padding: 0.375rem;
+  color: var(--color-steel, #475569);
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.eventListActionBtn:hover {
+  background: rgba(15,23,42,0.05);
+}
+
+/* Modal form */
+.formGrid2Col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+.formField {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.formLabel {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-deep, #0F172A);
+}
+
+.formInput {
+  margin-top: 0.375rem;
+  width: 100%;
+  border-radius: 12px;
+  border: 1px solid rgba(15,23,42,0.1);
+  background: rgba(255,255,255,0.8);
+  padding: 0.625rem 0.75rem;
+  font-size: 0.875rem;
+  outline: none;
+}
+
+.formInput:focus {
+  border-color: #2BA8A2;
+}
+
+.formTextarea {
+  margin-top: 0.375rem;
+  width: 100%;
+  border-radius: 12px;
+  border: 1px solid rgba(15,23,42,0.1);
+  background: rgba(255,255,255,0.8);
+  padding: 0.625rem 0.75rem;
+  font-size: 0.875rem;
+  outline: none;
+  resize: none;
+}
+
+.formTextarea:focus {
+  border-color: #2BA8A2;
+}
+
+.formSelect {
+  margin-top: 0.375rem;
+  width: 100%;
+  border-radius: 12px;
+  border: 1px solid rgba(15,23,42,0.1);
+  background: rgba(255,255,255,0.8);
+  padding: 0.625rem 0.75rem;
+  font-size: 0.875rem;
+  outline: none;
+}
+
+.formSelect:focus {
+  border-color: #2BA8A2;
+}
+
+.studentPickerInput {
+  margin-top: 0.375rem;
+  width: 100%;
+  border-radius: 12px;
+  border: 1px solid rgba(15,23,42,0.1);
+  background: rgba(255,255,255,0.8);
+  padding: 0.625rem 0.75rem;
+  font-size: 0.875rem;
+  outline: none;
+}
+
+.studentPickerInput:focus {
+  border-color: #2BA8A2;
+}
+
+.studentPickerDropdown {
+  position: absolute;
+  z-index: 10;
+  margin-top: 0.25rem;
+  width: 100%;
+  border-radius: 12px;
+  border: 1px solid rgba(15,23,42,0.1);
+  background: #FFFFFF;
+  box-shadow: 0 4px 20px rgba(15,23,42,0.08);
+  max-height: 12rem;
+  overflow-y: auto;
+}
+
+.studentPickerOption {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+  font-size: 0.875rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.studentPickerOption:hover {
+  background: rgba(15,23,42,0.05);
+}
+
+.studentPickerOptionActive {
+  background: rgba(59,130,246,0.1);
+  font-weight: 500;
+}
+
+.studentPickerName {
+  color: var(--color-deep, #0F172A);
+}
+
+.studentPickerMeta {
+  margin-left: 0.5rem;
+  font-size: 0.75rem;
+  color: var(--color-mist-dim, #64748B);
+}
+
+.studentPickerEmpty {
+  padding: 0.5rem 0.75rem;
+  font-size: 0.75rem;
+  color: var(--color-mist-dim, #64748B);
+}
+
+.formError {
+  font-size: 0.875rem;
+  color: #F87171;
+}
+
+.formActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  padding-top: 0.5rem;
+}

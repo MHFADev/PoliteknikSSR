@@ -1,9 +1,30 @@
+/*
+ * admin.ts — Fungsi Admin (Server Actions)
+ * ==========================================
+ * Berisi operasi CRUD yang hanya bisa dilakukan oleh role Admin:
+ * - Statistik presensi 30 hari
+ * - Manajemen akun siswa (tambah siswa baru)
+ * - Manajemen program studi
+ *
+ * Alur:
+ * - Seluruh fungsi menggunakan `createAdminClient()` (service role) karena
+ *   butuh bypass RLS untuk operasi administratif.
+ * - `get30DayAttendanceStats` mengambil data presensi + izin 30 hari terakhir
+ *   lalu menghitung statistik per siswa.
+ * - `addStudent` membuat akun via Admin API, kemudian update profil, lalu
+ *   generate QR token permanen siswa.
+ * - `ensureStudyProgram` mencari/membuat program studi baru.
+ */
+
 "use server";
 
 import { createAdminClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 import { generatePermanentStudentToken } from "@/lib/qr-token";
 
+/**
+ * AttendanceStats — Tipe data untuk statistik presensi 30 hari per siswa
+ */
 export interface AttendanceStats {
   studentId: string;
   fullName: string;
@@ -17,6 +38,20 @@ export interface AttendanceStats {
   total: number;
 }
 
+/**
+ * get30DayAttendanceStats — Ambil statistik presensi 30 hari terakhir
+ * @param filters.studentId - Filter spesifik per ID siswa
+ * @param filters.name - Filter berdasarkan nama (ilike)
+ * @param filters.jurusan - Filter berdasarkan jurusan
+ * @param filters.kelas - Filter berdasarkan kelas
+ * @returns Array AttendanceStats[] berisi rekap per siswa
+ *
+ * Alur:
+ * 1. Hitung tanggal 30 hari lalu sebagai batas awal
+ * 2. Query semua profil siswa (dengan filter opsional)
+ * 3. Ambil record presensi + pengajuan izin dalam rentang waktu
+ * 4. Hitung hadir, telat, izin, sakit, alfa per siswa
+ */
 export async function get30DayAttendanceStats(
   filters?: { studentId?: string; name?: string; jurusan?: string; kelas?: string }
 ): Promise<AttendanceStats[]> {
@@ -26,7 +61,7 @@ export async function get30DayAttendanceStats(
   thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
   const startDate = thirtyDaysAgo.toISOString().slice(0, 10);
   
-  // Get all students (with filters)
+  // --- Ambil semua siswa (dengan filter opsional) ---
   let studentsQuery = supabase
     .from("profiles")
     .select(`
@@ -52,7 +87,7 @@ export async function get30DayAttendanceStats(
   
   if (studentsError || !students) return [];
   
-  // Get all attendance records and leave requests from the last 30 days
+  // --- Ambil semua data presensi & izin 30 hari terakhir (paralel) ---
   const [{ data: records }, { data: leaves }] = await Promise.all([
     supabase
       .from("attendance_records")
@@ -61,14 +96,13 @@ export async function get30DayAttendanceStats(
     supabase
       .from("leave_requests")
       .select("student_id, type, start_date, end_date")
-      // .eq("status", "approved") - commented out to avoid type error, assume we filter approved manually
       .gte("end_date", startDate)
   ]);
   
-  // Calculate stats for each student
+  // --- Hitung statistik untuk setiap siswa ---
   const stats: AttendanceStats[] = (students as any[])
     .filter((student: any) => {
-      // Filter by jurusan if needed (client-side, since it's a relation)
+      // Filter jurusan dilakukan client-side karena relasi
       if (filters?.jurusan) {
         const studentJurusan = student.study_programs?.nama;
         if (!studentJurusan?.toLowerCase().includes(filters.jurusan.toLowerCase())) {
@@ -78,12 +112,12 @@ export async function get30DayAttendanceStats(
       return true;
     })
     .map((student: any) => {
-    // Attendance records
+    // --- Hitung hadir & telat dari attendance_records ---
     const studentRecords = (records as any[])?.filter(r => r.student_id === student.id) || [];
     const hadir = studentRecords.filter(r => r.status === "hadir").length;
     const telat = studentRecords.filter(r => r.status === "telat").length;
     
-    // Leave requests - count days (simplified)
+    // --- Hitung izin & sakit dari leave_requests (hitung jumlah hari) ---
     const studentLeaves = (leaves as any[])?.filter(l => l.student_id === student.id) || [];
     let izin = 0;
     let sakit = 0;
@@ -92,7 +126,7 @@ export async function get30DayAttendanceStats(
       const start = new Date(leave.start_date);
       const end = new Date(leave.end_date);
       let days = Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1;
-      // Limit to last 30 days
+      // Batasi agar tidak melebihi 30 hari
       const startLimit = new Date(startDate);
       if (start < startLimit) {
         days = Math.ceil((end.getTime() - startLimit.getTime()) / (1000 * 60 * 60 * 24)) + 1;
@@ -101,7 +135,8 @@ export async function get30DayAttendanceStats(
       if (leave.type === "sakit") sakit += days;
     });
     
-    // Only count alfa if there are actually some recorded days (hadir/telat/izin/sakit)
+    // --- Hitung alfa: sisa hari yang tidak tercatat ---
+    // Alfa hanya dihitung jika ada record (untuk menghindari false positive)
     const hasAnyRecords = (hadir + telat + izin + sakit) > 0;
     const endDate = new Date();
     let totalDays = Math.ceil((endDate.getTime() - new Date(startDate).getTime()) / (1000 * 60 * 60 * 24));
@@ -135,6 +170,23 @@ interface AddStudentArgs {
   jurusanId?: string;
 }
 
+/**
+ * addStudent — Buat akun siswa baru (hanya Admin)
+ * @param fullName - Nama lengkap siswa
+ * @param email - Email untuk login
+ * @param password - Password akun
+ * @param identityNumber - NIS/NIM (opsional)
+ * @param instansi - Instansi (opsional)
+ * @param kelas - Kelas (opsional)
+ * @param jurusanId - ID program studi (opsional)
+ * @returns Object sukses dengan studentId + permanentToken, atau pesan error
+ *
+ * Alur:
+ * 1. Buat user via Supabase Admin API (email_confirm: true)
+ * 2. Update profil siswa dengan data tambahan
+ * 3. Generate QR token permanen untuk presensi QR
+ * 4. Revalidate path pengguna admin
+ */
 export async function addStudent({
   fullName,
   email,
@@ -162,7 +214,7 @@ export async function addStudent({
 
   const studentId = authUser!.id;
 
-  // Update the profile with additional info (since handle_new_user might miss some fields)
+  // --- Update profil dengan data tambahan (mengisi field yang mungkin terlewat oleh handle_new_user) ---
   const { error: profileError } = await supabase
     .from("profiles")
     .update({
@@ -177,6 +229,7 @@ export async function addStudent({
     return { success: false, message: "Gagal menyimpan data siswa: " + profileError.message };
   }
 
+  // --- Generate token QR permanen untuk presensi ---
   const permanentToken = await generatePermanentStudentToken(studentId, process.env.QR_SIGNING_SECRET!);
 
   revalidatePath("/dashboard/admin/pengguna");
@@ -184,6 +237,16 @@ export async function addStudent({
   return { success: true, studentId, permanentToken };
 }
 
+/**
+ * ensureStudyProgram — Cari atau buat program studi baru
+ * @param nama - Nama program studi
+ * @returns ID program studi (baru atau existing), atau null + error message
+ *
+ * Alur:
+ * 1. Cek apakah program studi sudah ada (case-insensitive)
+ * 2. Jika sudah ada, kembalikan ID-nya
+ * 3. Jika belum, buat baru dengan kode otomatis dari nama
+ */
 export async function ensureStudyProgram(
   nama: string
 ): Promise<{ id: string | null; error?: string }> {
@@ -191,6 +254,7 @@ export async function ensureStudyProgram(
   const trimmed = nama.trim();
   if (!trimmed) return { id: null };
 
+  // --- Cari program studi yang sudah ada ---
   const { data: existing } = await supabase
     .from("study_programs")
     .select("id")
@@ -199,6 +263,7 @@ export async function ensureStudyProgram(
 
   if (existing) return { id: existing.id };
 
+  // --- Generate kode otomatis dari nama (uppercase, tanpa karakter spesial) ---
   const kode = trimmed
     .toUpperCase()
     .replace(/[^A-Z0-9]/g, "-")
@@ -206,6 +271,7 @@ export async function ensureStudyProgram(
     .replace(/^-|-$/g, "")
     .slice(0, 10);
 
+  // --- Buat program studi baru ---
   const { data, error } = await supabase
     .from("study_programs")
     .insert({ nama: trimmed, kode })

@@ -1,0 +1,117 @@
+/* Absensi Admin - Halaman rekap absensi 30 hari */
+.pageContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.pageHeader h1 {
+  font-family: var(--font-jakarta), sans-serif;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--color-ink, #0F172A);
+}
+
+.pageHeader p {
+  font-size: 0.875rem;
+  color: var(--color-ink-muted, #475569);
+}
+
+.filterGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+@media (min-width: 768px) {
+  .filterGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.tableCard {
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  font-size: 0.875rem;
+}
+
+.table th {
+  text-align: left;
+  padding: 0.75rem 1rem;
+  font-weight: 600;
+  border-bottom: 1px solid var(--color-outline, #E2E8F0);
+}
+
+.table td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--color-outline, #E2E8F0);
+}
+
+.tableRow {
+  border-bottom: 1px solid var(--color-outline, #E2E8F0);
+}
+
+.tableRow:hover {
+  background: var(--color-surface, #F8FAFC);
+}
+
+.tableEmptyCell {
+  text-align: center;
+  padding: 2.5rem 0;
+  color: var(--color-ink-muted, #475569);
+}
+
+.tableHeaderHadir {
+  text-align: center;
+  padding: 0.75rem 1rem;
+  font-weight: 600;
+  color: #22C55E;
+  border-bottom: 1px solid var(--color-outline, #E2E8F0);
+}
+
+.tableHeaderTelat {
+  text-align: center;
+  padding: 0.75rem 1rem;
+  font-weight: 600;
+  color: #FBBF24;
+  border-bottom: 1px solid var(--color-outline, #E2E8F0);
+}
+
+.tableHeaderIzin {
+  text-align: center;
+  padding: 0.75rem 1rem;
+  font-weight: 600;
+  color: #3B82F6;
+  border-bottom: 1px solid var(--color-outline, #E2E8F0);
+}
+
+.tableHeaderSakit {
+  text-align: center;
+  padding: 0.75rem 1rem;
+  font-weight: 600;
+  color: #A855F7;
+  border-bottom: 1px solid var(--color-outline, #E2E8F0);
+}
+
+.tableHeaderAlfa {
+  text-align: center;
+  padding: 0.75rem 1rem;
+  font-weight: 600;
+  color: #F87171;
+  border-bottom: 1px solid var(--color-outline, #E2E8F0);
+}
+
+.tableHeaderTotal {
+  text-align: center;
+  padding: 0.75rem 1rem;
+  font-weight: 600;
+  color: var(--color-ink, #0F172A);
+  border-bottom: 1px solid var(--color-outline, #E2E8F0);
+}
+
+.tableCellCenter {
+  text-align: center;
+}

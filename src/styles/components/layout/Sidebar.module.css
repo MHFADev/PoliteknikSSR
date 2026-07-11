@@ -1,0 +1,173 @@
+/*
+ * Sidebar.module.css — Gaya untuk navigasi sidebar
+ * =================================================
+ * Sidebar kiri tetap (256px) di desktop, drawer overlay di mobile.
+ * Navigasi dapat di-scroll jika item terlalu banyak.
+ * Bagian user (avatar + logout) tetap menempel di底部.
+ */
+
+/* ─── Desktop Sidebar ──────────────────────────── */
+/* Muncul sebagai flex column di layar ≥1024px, tersembunyi di mobile */
+.desktop {
+  display: none;
+  height: 100dvh; /* Gunakan dvh agar tidak terpotong oleh browser chrome mobile */
+  width: 256px;
+  flex-shrink: 0;
+  border-right: 1px solid #E2E8F0;
+  background: #FFF;
+}
+@media (min-width: 1024px) {
+  .desktop { display: flex; flex-direction: column; }
+}
+
+/* Compact mode: kurangi padding saat viewport pendek */
+@media (max-height: 700px) {
+  .content { padding: 12px 12px; }
+  .logo { margin-bottom: 12px; }
+  .linkText { padding: 6px 10px; font-size: 13px; }
+  .avatar { width: 32px; height: 32px; font-size: 14px; }
+  .userName { font-size: 13px; }
+  .logoutBtn { padding: 6px 10px; }
+  .userSection { padding: 10px 6px 0; gap: 8px; }
+}
+
+/* Extra compact untuk viewport sangat pendek */
+@media (max-height: 500px) {
+  .content { padding: 8px 8px; }
+  .logo { margin-bottom: 8px; }
+  .nav { gap: 2px; }
+  .linkText { padding: 4px 8px; font-size: 12px; gap: 8px; }
+  .userSection { padding: 6px 4px 0; gap: 4px; }
+  .avatar { width: 28px; height: 28px; font-size: 12px; }
+  .userInfo { gap: 8px; }
+}
+
+/* ─── Mobile Drawer Overlay ────────────────────── */
+/* Latar belakang gelap saat drawer terbuka */
+.mobileOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  background: rgba(15,23,42,0.4);
+  backdrop-filter: blur(4px);
+}
+@media (min-width: 1024px) {
+  .mobileOverlay { display: none; }
+}
+
+/* Panel geser dari kiri untuk mobile */
+.mobileDrawer {
+  height: 100dvh;
+  width: 288px;
+  border-right: 1px solid #E2E8F0;
+  background: #FFF;
+}
+
+/* ─── Konten Sidebar ───────────────────────────── */
+/* Flex column: logo di atas → nav scrollable → user di bawah */
+.content {
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  padding: 24px 16px;
+  overflow: hidden; /* Cegah overflow keluar */
+}
+
+/* Logo tetap di atas */
+.logo {
+  flex-shrink: 0;
+  margin-bottom: 24px;
+  padding: 0 8px;
+}
+.logo img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Navigasi: scroll otomatis jika item terlalu banyak */
+.nav {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-height: 0; /* Penting untuk flex child overflow */
+  scrollbar-width: thin;
+  scrollbar-color: #CBD5E1 transparent;
+}
+.nav::-webkit-scrollbar { width: 4px; }
+.nav::-webkit-scrollbar-track { background: transparent; }
+.nav::-webkit-scrollbar-thumb { background-color: #CBD5E1; border-radius: 8px; }
+.link { position: relative; display: block; }
+.activeBg { position: absolute; inset: 0; border-radius: 16px; background: #DBEAFE; }
+.linkText { position: relative; display: flex; align-items: center; gap: 12px; border-radius: 16px; padding: 10px 12px; font-size: 14px; font-weight: 500; transition: color 150ms, background 150ms; }
+.linkActive { color: #1D4ED8; }
+.linkInactive { color: #475569; }
+.linkInactive:hover { color: #0F172A; background: #F8FAFC; }
+
+/* ─── User Section (bawah) ─────────────────────── */
+/* Didorong ke bawah dengan margin-top: auto */
+.userSection {
+  flex-shrink: 0;
+  margin-top: auto;
+  padding-top: 16px;
+  border-top: 1px solid #E2E8F0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px 8px 0;
+}
+
+/* Avatar dan nama user */
+.userInfo { display: flex; align-items: center; gap: 12px; min-width: 0; }
+
+/* Lingkaran avatar dengan inisial */
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 9999px;
+  background: #DBEAFE;
+  color: #1D4ED8;
+  font-size: 16px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border: 2px solid #FFF;
+  box-shadow: 0 8px 24px rgba(15,23,42,0.06);
+}
+
+/* Nama user — terpotong dengan ellipsis jika terlalu panjang */
+.userName {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: #0F172A;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.userRole {
+  font-size: 12px;
+  color: #94A3B8;
+  text-transform: capitalize;
+}
+
+/* Tombol logout — lebar penuh, hover berubah jadi merah */
+.logoutBtn {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: 12px;
+  border-radius: 16px;
+  padding: 10px 12px;
+  font-size: 14px;
+  color: #475569;
+  transition: background 150ms, color 150ms;
+  flex-shrink: 0;
+}
+.logoutBtn:hover { background: #F8FAFC; color: #F87171; }
+
+.hamburger { position: fixed; left: 16px; top: 16px; z-index: 50; width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; border-radius: 16px; background: #FFF; box-shadow: 0 8px 24px rgba(15,23,42,0.06); border: 1px solid #E2E8F0; color: #0F172A; }
+@media (min-width: 1024px) { .hamburger { display: none; } }

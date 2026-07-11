@@ -1,0 +1,49 @@
+/* Pengguna Admin - Halaman kelola pengguna sistem */
+.pageContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.pageHeader h1 {
+  font-family: var(--font-jakarta), sans-serif;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--color-deep, #0F172A);
+}
+
+.pageHeader p {
+  font-size: 0.875rem;
+  color: var(--color-mist-dim, #64748B);
+}
+
+.tableWrapper {
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  font-size: 0.875rem;
+}
+
+.table th {
+  text-align: left;
+  padding: 0.75rem 1rem;
+  font-weight: 500;
+  color: var(--color-mist-dim, #64748B);
+}
+
+.table td {
+  padding: 0.75rem 1rem;
+  color: var(--color-deep, #0F172A);
+}
+
+.tableCellMuted {
+  color: var(--color-steel, #475569);
+}
+
+.emptyState {
+  padding: 2rem 0;
+  text-align: center;
+  color: var(--color-mist-dim, #64748B);
+}

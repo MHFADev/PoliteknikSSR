@@ -1,0 +1,54 @@
+/* ProgressBar - Komponen progress bar untuk berbagai keperluan */
+.progressWrapper {
+  width: 100%;
+}
+
+.progressHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.375rem;
+}
+
+.progressLabel {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-ink-muted, #475569);
+}
+
+.progressTrack {
+  width: 100%;
+  border-radius: 9999px;
+  overflow: hidden;
+}
+
+.progressTrackSm {
+  height: 0.375rem;
+}
+
+.progressTrackMd {
+  height: 0.5rem;
+}
+
+.progressTrackLg {
+  height: 0.75rem;
+}
+
+.progressFill {
+  height: 100%;
+  border-radius: 9999px;
+}
+
+/* Warna fill */
+.progressFillSky { background: #3B82F6; }
+.progressFillLeaf { background: #22C55E; }
+.progressFillSun { background: #FBBF24; }
+.progressFillTeal { background: #2BA8A2; }
+.progressFillGold { background: #FFD23F; }
+
+/* Warna track */
+.progressTrackSky { background: #DBEAFE; }
+.progressTrackLeaf { background: #DCFCE7; }
+.progressTrackSun { background: #FEF3C7; }
+.progressTrackTeal { background: #E8F6F5; }
+.progressTrackGold { background: rgba(255,228,122,0.3); }

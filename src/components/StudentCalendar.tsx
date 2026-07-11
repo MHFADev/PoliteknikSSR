@@ -1,6 +1,7 @@
 "use client";
 
 import { Calendar } from "./Calendar";
+import styles from "@/styles/components/shared/StudentCalendar.module.css";
 
 interface StudentCalendarProps {
   events: any[];
@@ -34,5 +35,9 @@ export default function StudentCalendar({ events, records, leaves }: StudentCale
     return null;
   }
 
-  return <Calendar events={events} getDayStatus={getDayStatus} />;
+  return (
+    <div className={styles.wrapper}>
+      <Calendar events={events} getDayStatus={getDayStatus} />
+    </div>
+  );
 }

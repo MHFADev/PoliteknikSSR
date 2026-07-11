@@ -8,6 +8,8 @@ import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
 import { reviewLeaveRequest } from "@/actions/leave";
 import { formatDate } from "@/lib/utils";
+import { cn } from "@/lib/utils";
+import styles from "@/styles/components/izin/LeaveApprovalModal.module.css";
 
 interface LeaveRequestWithStudent {
   id: string;
@@ -47,14 +49,14 @@ export function PendingLeaveApprovals({ initialRequests }: { initialRequests: Le
 
   if (requests.length === 0) {
     return (
-      <div className="rounded-xl border border-dashed border-deep/15 py-12 text-center text-sm text-mist-dim">
+      <div className={styles.emptyState}>
         Tidak ada pengajuan izin yang menunggu review 🎉
       </div>
     );
   }
 
   return (
-    <div className="space-y-3">
+    <div className={styles.requestList}>
       {requests.map((req) => (
         <motion.button
           key={req.id}
@@ -63,13 +65,13 @@ export function PendingLeaveApprovals({ initialRequests }: { initialRequests: Le
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, x: -20 }}
           onClick={() => setActive(req)}
-          className="flex w-full items-center justify-between gap-4 rounded-xl border border-steel/30 bg-mist-soft/80 backdrop-blur px-5 py-4 text-left shadow-glass hover:shadow-glass-lg transition-shadow"
+          className={styles.requestItem}
         >
-          <div className="min-w-0">
-            <p className="font-medium text-deep">{req.student.full_name}</p>
-            <p className="text-xs text-mist-dim truncate max-w-md">{req.reason}</p>
+          <div className={styles.requestInfo}>
+            <p className={styles.requestName}>{req.student.full_name}</p>
+            <p className={styles.requestReason}>{req.reason}</p>
           </div>
-          <div className="flex items-center gap-3 shrink-0">
+          <div className={styles.requestMeta}>
             <Badge tone="warning">{req.type}</Badge>
             <span className="text-xs text-mist-dim">{formatDate(req.start_date)}</span>
           </div>
@@ -78,62 +80,61 @@ export function PendingLeaveApprovals({ initialRequests }: { initialRequests: Le
 
       <Modal open={!!active} onClose={() => setActive(null)} title="Detail Pengajuan Izin">
         {active && (
-          <div className="space-y-4">
+          <div className={styles.detailSection}>
             <div>
-              <p className="text-sm text-mist-dim">Siswa</p>
-              <p className="font-medium text-deep">
+              <p className={styles.detailLabel}>Siswa</p>
+              <p className={styles.detailValue}>
                 {active.student.full_name}{" "}
                 {active.student.identity_number && (
                   <span className="text-mist-dim font-normal">· {active.student.identity_number}</span>
                 )}
               </p>
             </div>
-            <div className="grid grid-cols-2 gap-4">
+            <div className={styles.detailRow}>
               <div>
-                <p className="text-sm text-mist-dim">Tanggal</p>
-                <p className="text-sm text-deep">
+                <p className={styles.detailLabel}>Tanggal</p>
+                <p className={styles.detailValue}>
                   {formatDate(active.start_date)} – {formatDate(active.end_date)}
                 </p>
               </div>
               <div>
-                <p className="text-sm text-mist-dim">Jenis</p>
+                <p className={styles.detailLabel}>Jenis</p>
                 <Badge tone="warning">{active.type}</Badge>
               </div>
             </div>
             <div>
-              <p className="text-sm text-mist-dim">Alasan</p>
-              <p className="text-sm text-deep">{active.reason}</p>
+              <p className={styles.detailLabel}>Alasan</p>
+              <p className={styles.detailValue}>{active.reason}</p>
             </div>
             {active.proof_url && (
               <a
                 href={active.proof_url}
                 target="_blank"
                 rel="noreferrer"
-                className="flex items-center gap-2 text-sm text-blue-vibrant hover:underline"
+                className={styles.proofLink}
               >
                 <FileText className="h-4 w-4" /> Lihat bukti pendukung
               </a>
             )}
             <div>
-              <label className="text-sm font-medium text-deep">Catatan (opsional)</label>
+              <label className={styles.detailLabel}>Catatan (opsional)</label>
               <textarea
                 rows={2}
                 value={note}
                 onChange={(e) => setNote(e.target.value)}
                 placeholder="Catatan untuk siswa..."
-                className="mt-1.5 w-full rounded-xl border border-deep/10 bg-white/70 px-3 py-2 text-sm outline-none focus:border-ocean"
+                className={styles.noteInput}
               />
             </div>
-            <div className="flex gap-3 pt-2">
+            <div className={styles.actionBtns}>
               <Button
                 variant="danger"
-                className="flex-1"
                 isLoading={isSubmitting}
                 onClick={() => handleDecision("ditolak")}
               >
                 <X className="h-4 w-4" /> Tolak
               </Button>
-              <Button className="flex-1" isLoading={isSubmitting} onClick={() => handleDecision("disetujui")}>
+              <Button isLoading={isSubmitting} onClick={() => handleDecision("disetujui")}>
                 <Check className="h-4 w-4" /> Setujui
               </Button>
             </div>

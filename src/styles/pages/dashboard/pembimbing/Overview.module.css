@@ -1,0 +1,34 @@
+/* Overview Pembimbing - Halaman utama dashboard pembimbing */
+.pageContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.pageHeader h1 {
+  font-family: var(--font-jakarta), sans-serif;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--color-deep, #0F172A);
+}
+
+.pageHeader p {
+  font-size: 0.875rem;
+  color: var(--color-mist-dim, #64748B);
+}
+
+.statGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+@media (min-width: 640px) {
+  .statGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.chartCard {
+  margin-top: 1rem;
+}

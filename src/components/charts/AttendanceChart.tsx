@@ -9,6 +9,7 @@ import {
   ResponsiveContainer,
   CartesianGrid,
 } from "recharts";
+import styles from "@/styles/components/charts/AttendanceChart.module.css";
 
 export interface AttendanceTrendPoint {
   date: string; // label pendek, misal "12 Jul"
@@ -19,10 +20,10 @@ export interface AttendanceTrendPoint {
 function CustomTooltip({ active, payload, label }: any) {
   if (!active || !payload?.length) return null;
   return (
-    <div className="rounded-lg border border-white/60 bg-white/90 backdrop-blur px-3 py-2 shadow-glass text-xs">
-      <p className="font-medium text-deep mb-1">{label}</p>
+    <div className={styles.tooltip}>
+      <p className={styles.tooltipTitle}>{label}</p>
       {payload.map((p: any) => (
-        <p key={p.dataKey} style={{ color: p.color }}>
+        <p key={p.dataKey} className={styles.tooltipItem} style={{ color: p.color }}>
           {p.dataKey === "hadir" ? "Hadir" : "Telat"}: {p.value}
         </p>
       ))}
@@ -32,7 +33,7 @@ function CustomTooltip({ active, payload, label }: any) {
 
 export function AttendanceChart({ data }: { data: AttendanceTrendPoint[] }) {
   return (
-    <div className="h-64 w-full">
+    <div className={styles.chartWrapper}>
       <ResponsiveContainer width="100%" height="100%">
         <AreaChart data={data} margin={{ top: 8, right: 8, left: -16, bottom: 0 }}>
           <defs>

@@ -2,6 +2,7 @@
 
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
+import styles from "@/styles/components/ui/ProgressBar.module.css";
 
 interface ProgressBarProps {
   value: number;
@@ -22,49 +23,49 @@ export function ProgressBar({
 }: ProgressBarProps) {
   const percentage = Math.min(100, Math.max(0, (value / max) * 100));
 
-  const colorClasses: Record<string, string> = {
-    sky: "bg-sky",
-    leaf: "bg-leaf",
-    sun: "bg-sun",
-    teal: "bg-teal",
-    gold: "bg-gold",
+  const fillClasses: Record<string, string> = {
+    sky: styles.progressFillSky,
+    leaf: styles.progressFillLeaf,
+    sun: styles.progressFillSun,
+    teal: styles.progressFillTeal,
+    gold: styles.progressFillGold,
   };
 
-  const trackClasses: Record<string, string> = {
-    sky: "bg-sky-soft",
-    leaf: "bg-leaf-soft",
-    sun: "bg-sun-soft",
-    teal: "bg-teal-bg",
-    gold: "bg-gold-light/30",
+  const trackColorClasses: Record<string, string> = {
+    sky: styles.progressTrackSky,
+    leaf: styles.progressTrackLeaf,
+    sun: styles.progressTrackSun,
+    teal: styles.progressTrackTeal,
+    gold: styles.progressTrackGold,
   };
 
-  const sizeClasses = {
-    sm: "h-1.5",
-    md: "h-2",
-    lg: "h-3",
+  const sizeClasses: Record<string, string> = {
+    sm: styles.progressTrackSm,
+    md: styles.progressTrackMd,
+    lg: styles.progressTrackLg,
   };
 
   return (
-    <div className={cn("w-full", className)}>
-      <div className="flex items-center justify-between mb-1.5">
+    <div className={cn(styles.progressWrapper, className)}>
+      <div className={styles.progressHeader}>
         {showLabel && (
-          <span className="text-sm font-semibold text-ink-muted">
+          <span className={styles.progressLabel}>
             {Math.round(percentage)}%
           </span>
         )}
       </div>
       <div
         className={cn(
-          "w-full rounded-full overflow-hidden",
+          styles.progressTrack,
           sizeClasses[size],
-          trackClasses[color]
+          trackColorClasses[color]
         )}
       >
         <motion.div
           initial={{ width: 0 }}
           animate={{ width: `${percentage}%` }}
           transition={{ duration: 0.8, ease: "easeOut" }}
-          className={cn("h-full rounded-full", colorClasses[color])}
+          className={cn(styles.progressFill, fillClasses[color])}
         />
       </div>
     </div>

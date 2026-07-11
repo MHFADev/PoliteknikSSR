@@ -3,6 +3,7 @@
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 import { Check, X } from "lucide-react";
+import styles from "@/styles/components/ui/AnswerTile.module.css";
 
 type AnswerState = "idle" | "correct" | "incorrect";
 
@@ -24,15 +25,15 @@ export function AnswerTile({
   className,
 }: AnswerTileProps) {
   const stateClasses: Record<AnswerState, string> = {
-    idle: "bg-surface border-outline hover:border-sky hover:shadow-skylearn-sky",
-    correct: "bg-leaf-soft border-leaf shadow-skylearn",
-    incorrect: "bg-coral-soft border-coral",
+    idle: styles.answerTileIdle,
+    correct: styles.answerTileCorrect,
+    incorrect: styles.answerTileIncorrect,
   };
 
-  const iconColors: Record<AnswerState, string> = {
+  const iconColorClasses: Record<AnswerState, string> = {
     idle: "",
-    correct: "text-leaf",
-    incorrect: "text-coral",
+    correct: styles.answerTileIconCorrect,
+    incorrect: styles.answerTileIconIncorrect,
   };
 
   const Icon = state === "correct" ? Check : state === "incorrect" ? X : null;
@@ -44,24 +45,24 @@ export function AnswerTile({
       onClick={!disabled ? onClick : undefined}
       disabled={disabled}
       className={cn(
-        "w-full min-h-[96px] p-5 rounded-skylearn-lg border-2 text-left flex items-start justify-between gap-4 transition-all",
+        styles.answerTile,
         stateClasses[state],
-        selected && state === "idle" && "border-sky bg-sky-soft/30",
-        disabled && "cursor-not-allowed opacity-60",
+        selected && state === "idle" && styles.answerTileSelected,
+        disabled && styles.answerTileDisabled,
         className
       )}
       animate={state === "incorrect" ? { x: [-4, 4, -4, 4, 0] } : {}}
       transition={state === "incorrect" ? { duration: 0.4 } : {}}
     >
-      <div className="flex-1">
+      <div className={styles.answerTileContent}>
         {typeof children === "string" ? (
-          <p className="text-ink font-medium text-lg">{children}</p>
+          <p className={styles.answerTileText}>{children}</p>
         ) : (
           children
         )}
       </div>
       {Icon && state !== "idle" && (
-        <div className={cn("shrink-0 mt-0.5", iconColors[state])}>
+        <div className={cn(styles.answerTileIcon, iconColorClasses[state])}>
           <Icon className="w-6 h-6" />
         </div>
       )}

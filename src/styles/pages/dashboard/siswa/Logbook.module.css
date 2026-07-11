@@ -1,0 +1,91 @@
+/* Logbook Siswa - Halaman kegiatan harian PKL */
+.pageContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.pageHeader h1 {
+  font-family: var(--font-jakarta), sans-serif;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--color-ink, #0F172A);
+}
+
+.pageHeader p {
+  font-size: 0.875rem;
+  color: var(--color-ink-muted, #475569);
+}
+
+.formGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+@media (min-width: 1024px) {
+  .formGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.historyList {
+  display: flex;
+  flex-direction: column;
+  max-height: 36rem;
+  overflow-y: auto;
+}
+
+.historyItem {
+  padding: 1rem 0.5rem;
+}
+
+.historyItemHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.historyItemDate {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-ink, #0F172A);
+}
+
+.historyItemContent {
+  font-size: 0.875rem;
+  color: var(--color-ink-muted, #475569);
+  margin-top: 0.5rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.historyItemPhoto {
+  margin-top: 0.75rem;
+}
+
+.historyItemPhoto img {
+  width: 100%;
+  max-height: 10rem;
+  object-fit: cover;
+  border-radius: 12px;
+  border: 1px solid var(--color-outline, #E2E8F0);
+}
+
+.historyItemFeedback {
+  font-size: 0.75rem;
+  color: var(--color-ink-subtle, #94A3B8);
+  margin-top: 0.75rem;
+  font-style: italic;
+  border-left: 2px solid #DBEAFE;
+  padding-left: 0.75rem;
+}
+
+.emptyState {
+  padding: 2rem 0;
+  text-align: center;
+  font-size: 0.875rem;
+  color: var(--color-ink-subtle, #94A3B8);
+}

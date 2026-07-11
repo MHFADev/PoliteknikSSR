@@ -1,0 +1,18 @@
+/* Confetti - Komponen animasi confetti untuk perayaan */
+.confettiContainer {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 50;
+  overflow: hidden;
+}
+
+.confettiPiece {
+  position: absolute;
+  top: -10px;
+  border-radius: 9999px;
+}
+
+.confettiPieceSquare {
+  border-radius: 0;
+}

@@ -1,0 +1,63 @@
+/* Izin Admin - Halaman kelola pengajuan izin siswa */
+.pageContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.pageHeader h1 {
+  font-family: var(--font-jakarta), sans-serif;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--color-deep, #0F172A);
+}
+
+.pageHeader p {
+  font-size: 0.875rem;
+  color: var(--color-mist-dim, #64748B);
+}
+
+.sectionTitle {
+  font-family: var(--font-jakarta), sans-serif;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--color-deep, #0F172A);
+  margin-bottom: 0.75rem;
+}
+
+.historyList {
+  display: flex;
+  flex-direction: column;
+  max-height: 28rem;
+  overflow-y: auto;
+}
+
+.historyItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 0;
+}
+
+.historyItemInfo {
+  display: flex;
+  flex-direction: column;
+}
+
+.historyItemName {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-deep, #0F172A);
+}
+
+.historyItemDetail {
+  font-size: 0.75rem;
+  color: var(--color-mist-dim, #64748B);
+}
+
+.emptyState {
+  padding: 1.5rem 0;
+  text-align: center;
+  font-size: 0.875rem;
+  color: var(--color-mist-dim, #64748B);
+}

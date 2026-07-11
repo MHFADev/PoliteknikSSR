@@ -1,0 +1,237 @@
+/* Kalender Siswa - Halaman kalender PKL dengan status absensi */
+.pageContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+@media (min-width: 640px) {
+  .pageContainer {
+    gap: 1.5rem;
+  }
+}
+
+.pageHeader h1 {
+  font-family: var(--font-jakarta), sans-serif;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--color-deep, #0F172A);
+}
+
+@media (min-width: 640px) {
+  .pageHeader h1 {
+    font-size: 1.5rem;
+  }
+}
+
+.pageHeader p {
+  font-size: 0.75rem;
+  color: var(--color-mist-dim, #64748B);
+}
+
+@media (min-width: 640px) {
+  .pageHeader p {
+    font-size: 0.875rem;
+  }
+}
+
+.statGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+}
+
+@media (min-width: 640px) {
+  .statGrid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+  }
+}
+
+.calendarNav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.calendarNavTitle {
+  font-family: var(--font-jakarta), sans-serif;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--color-deep, #0F172A);
+}
+
+.calendarNavBtn {
+  border-radius: 12px;
+  padding: 0.5rem 0.75rem;
+  color: var(--color-steel, #475569);
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.calendarNavBtn:hover {
+  background: rgba(15,23,42,0.05);
+}
+
+.dayHeaders {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.125rem;
+  margin-bottom: 0.5rem;
+}
+
+@media (min-width: 640px) {
+  .dayHeaders {
+    gap: 0.25rem;
+  }
+}
+
+.dayHeader {
+  padding: 0.25rem 0.25rem;
+  text-align: center;
+  font-size: 0.625rem;
+  font-weight: 600;
+  color: var(--color-steel, #475569);
+  border-radius: 0.25rem;
+}
+
+@media (min-width: 640px) {
+  .dayHeader {
+    font-size: 0.75rem;
+    padding: 0.375rem 0.5rem;
+    border-radius: 0.5rem;
+  }
+}
+
+.calendarGrid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.25rem;
+}
+
+.calendarCell {
+  min-height: 50px;
+  border-radius: 0.5rem;
+  border: 1px solid;
+  padding: 0.25rem;
+  transition: all 0.15s;
+}
+
+@media (min-width: 640px) {
+  .calendarCell {
+    min-height: 80px;
+    border-radius: 0.75rem;
+    padding: 0.375rem;
+  }
+}
+
+.calendarCellToday {
+  border-color: rgba(59,130,246,0.3);
+  background: rgba(59,130,246,0.05);
+}
+
+.calendarCellPast {
+  border-color: rgba(239,68,68,0.5);
+  background: rgba(239,68,68,0.08);
+}
+
+.calendarCellDefault {
+  border-color: rgba(15,23,42,0.06);
+  background: #FFFFFF;
+}
+
+.calendarDayNumber {
+  display: flex;
+  height: 1.25rem;
+  width: 1.25rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  font-size: 0.625rem;
+  font-weight: 500;
+  margin-bottom: 0.125rem;
+}
+
+@media (min-width: 640px) {
+  .calendarDayNumber {
+    height: 1.5rem;
+    width: 1.5rem;
+    font-size: 0.75rem;
+  }
+}
+
+.calendarDayToday {
+  background: #3B82F6;
+  color: #FFFFFF;
+}
+
+.calendarDayNormal {
+  color: var(--color-deep, #0F172A);
+}
+
+.calendarStatus {
+  display: flex;
+  align-items: center;
+  gap: 0.125rem;
+}
+
+@media (min-width: 640px) {
+  .calendarStatus {
+    gap: 0.25rem;
+  }
+}
+
+.calendarStatusDot {
+  height: 0.375rem;
+  width: 0.375rem;
+  border-radius: 9999px;
+}
+
+@media (min-width: 640px) {
+  .calendarStatusDot {
+    height: 0.5rem;
+    width: 0.5rem;
+  }
+}
+
+.calendarStatusLabel {
+  font-size: 0.5rem;
+  font-weight: 500;
+  color: var(--color-deep, #0F172A);
+}
+
+@media (min-width: 640px) {
+  .calendarStatusLabel {
+    font-size: 0.625rem;
+  }
+}
+
+.loadingSpinner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 0;
+}
+
+.legendContainer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+  font-size: 0.875rem;
+  color: var(--color-steel, #475569);
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+}
+
+.legendDot {
+  height: 0.75rem;
+  width: 0.75rem;
+  border-radius: 9999px;
+}

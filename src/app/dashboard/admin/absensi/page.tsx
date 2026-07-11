@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/Button";
 import { get30DayAttendanceStats, AttendanceStats } from "@/actions/admin";
 import { Badge } from "@/components/ui/Badge";
 import { RefreshCw } from "lucide-react";
+import styles from "@/styles/pages/dashboard/admin/Absensi.module.css";
 
 export default function AdminAttendancePage() {
   const [stats, setStats] = useState<AttendanceStats[]>([]);
@@ -62,15 +63,15 @@ export default function AdminAttendancePage() {
   const uniqueKelas = [...new Set(allStats.map(s => s.kelas).filter(Boolean))];
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="font-display text-2xl font-semibold text-ink">Rekap Absensi 30 Hari Terakhir</h1>
-        <p className="text-sm text-ink-muted">Lihat rekapitulasi kehadiran semua siswa atau filter sesuai kebutuhan.</p>
+    <div className={styles.pageContainer}>
+      <div className={styles.pageHeader}>
+        <h1>Rekap Absensi 30 Hari Terakhir</h1>
+        <p>Lihat rekapitulasi kehadiran semua siswa atau filter sesuai kebutuhan.</p>
       </div>
 
       <Card variant="flip7">
         <CardHeader title="Filter Data" />
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className={styles.filterGrid}>
           <Input
             label="Nama Siswa"
             value={filters.name}
@@ -112,56 +113,56 @@ export default function AdminAttendancePage() {
 
       <Card variant="flip7">
         <CardHeader title="Tabel Absensi" />
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
+        <div className={styles.tableCard}>
+          <table className={styles.table}>
             <thead>
-              <tr className="border-b border-outline">
-                <th className="text-left py-3 px-4 font-semibold text-ink">Nama Siswa</th>
-                <th className="text-left py-3 px-4 font-semibold text-ink">Kelas</th>
-                <th className="text-left py-3 px-4 font-semibold text-ink">Jurusan</th>
-                <th className="text-center py-3 px-4 font-semibold text-leaf">Hadir</th>
-                <th className="text-center py-3 px-4 font-semibold text-sun">Telat</th>
-                <th className="text-center py-3 px-4 font-semibold text-sky">Izin</th>
-                <th className="text-center py-3 px-4 font-semibold text-berry">Sakit</th>
-                <th className="text-center py-3 px-4 font-semibold text-coral">Alfa</th>
-                <th className="text-center py-3 px-4 font-semibold text-ink">Total Hari</th>
+              <tr>
+                <th>Nama Siswa</th>
+                <th>Kelas</th>
+                <th>Jurusan</th>
+                <th className="text-center">Hadir</th>
+                <th className="text-center">Telat</th>
+                <th className="text-center">Izin</th>
+                <th className="text-center">Sakit</th>
+                <th className="text-center">Alfa</th>
+                <th className="text-center">Total Hari</th>
               </tr>
             </thead>
             <tbody>
               {loading ? (
                 <tr>
-                  <td colSpan={9} className="text-center py-10 text-ink-muted">
+                  <td colSpan={9} className={styles.tableEmptyCell}>
                     Memuat data...
                   </td>
                 </tr>
               ) : stats.length === 0 ? (
                 <tr>
-                  <td colSpan={9} className="text-center py-10 text-ink-muted">
+                  <td colSpan={9} className={styles.tableEmptyCell}>
                     Tidak ada data absensi
                   </td>
                 </tr>
               ) : (
                 stats.map((student) => (
-                  <tr key={student.studentId} className="border-b border-outline hover:bg-surface/50">
-                    <td className="py-3 px-4 text-ink">{student.fullName}</td>
-                    <td className="py-3 px-4 text-ink-muted">{student.kelas || "-"}</td>
-                    <td className="py-3 px-4 text-ink-muted">{student.jurusan || "-"}</td>
-                    <td className="py-3 px-4 text-center">
+                  <tr key={student.studentId} className={styles.tableRow}>
+                    <td className="text-ink">{student.fullName}</td>
+                    <td className="text-ink-muted">{student.kelas || "-"}</td>
+                    <td className="text-ink-muted">{student.jurusan || "-"}</td>
+                    <td className={styles.tableCellCenter}>
                       <Badge tone="leaf">{student.hadir}</Badge>
                     </td>
-                    <td className="py-3 px-4 text-center">
+                    <td className={styles.tableCellCenter}>
                       <Badge tone="sun">{student.telat}</Badge>
                     </td>
-                    <td className="py-3 px-4 text-center">
+                    <td className={styles.tableCellCenter}>
                       <Badge tone="sky">{student.izin}</Badge>
                     </td>
-                    <td className="py-3 px-4 text-center">
+                    <td className={styles.tableCellCenter}>
                       <Badge tone="berry">{student.sakit}</Badge>
                     </td>
-                    <td className="py-3 px-4 text-center">
+                    <td className={styles.tableCellCenter}>
                       <Badge tone="coral">{student.alfa}</Badge>
                     </td>
-                    <td className="py-3 px-4 text-center text-ink font-semibold">{student.total}</td>
+                    <td className="text-center text-ink font-semibold">{student.total}</td>
                   </tr>
                 ))
               )}

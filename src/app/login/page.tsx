@@ -1,14 +1,15 @@
 "use client";
 
-import { cn } from "@/lib/utils"; // Fungsi merge Tailwind classes
+import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { motion } from "framer-motion"; // Animasi halus
+import { motion } from "framer-motion";
 import { Loader2, MapPin, Eye, EyeOff } from "lucide-react";
-import { signInWithPassword } from "./actions"; // Server action auth
-import { checkLoginLocation, hasLocationsConfigured } from "@/actions/location"; // Server actions lokasi
-import { Button } from "@/components/ui/Button"; // Komponen tombol utama
+import { signInWithPassword } from "./actions";
+import { checkLoginLocation, hasLocationsConfigured } from "@/actions/location";
+import { Button } from "@/components/ui/Button";
+import styles from "@/styles/pages/Login.module.css";
 
 // Wrapper untuk Geolocation API supaya bisa dipakai dengan async/await
 function getCurrentPosition(): Promise<GeolocationPosition> {
@@ -93,38 +94,34 @@ export default function LoginPage() {
   // Render tampilan login dengan Skylearn design
   return (
     // Latar belakang putih + gradient sky-soft di pojok
-    <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-white px-4">
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-sky-soft/80 via-white to-sky-soft/40" />
+    <main className={styles.main}>
+      <div className={styles.bgGradient} />
 
-      {/* Kartu login dengan animasi masuk (spring easing) */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.24, ease: [0.34, 1.56, 0.64, 1] }} // Spring easing
-        className="relative w-full max-w-sm rounded-skylearn-xl border border-outline bg-white p-8 shadow-skylearn"
+        transition={{ duration: 0.24, ease: [0.34, 1.56, 0.64, 1] }}
+        className={styles.card}
       >
-        {/* Header: Logo & judul */}
-        <div className="mb-8 flex flex-col items-center text-center">
+        <div className={styles.header}>
           <Image
             src="/logo.png"
             alt="Politeknik SSR"
             width={160}
             height={48}
-            className="mb-5"
+            className={styles.logo}
             priority
           />
-          <h1 className="font-display text-2xl font-bold text-ink">Selamat Datang Di</h1>
-          <h1 className="font-display text-2xl font-bold text-ink">Sistem Absensi Politeknik SSR</h1>
-          <p className="mt-2 text-base text-ink-muted">
+          <h1 className={styles.title}>Selamat Datang Di</h1>
+          <h1 className={styles.title}>Sistem Absensi Politeknik SSR</h1>
+          <p className={styles.subtitle}>
             {gpsStep ? "Memverifikasi lokasi Anda..." : "Silakan masuk menggunakan akun yang sudah terdaftar"}
           </p>
         </div>
 
-        {/* Form login */}
-        <form onSubmit={handleSubmit} className="space-y-5">
-          {/* Input username */}
-          <div>
-            <label className="text-base font-semibold text-ink">Username</label>
+        <form onSubmit={handleSubmit} className={styles.form}>
+          <div className={styles.field}>
+            <label className={styles.label}>Username</label>
             <input
               type="text"
               required
@@ -133,16 +130,16 @@ export default function LoginPage() {
               placeholder="nama@sekolah.ac.id"
               disabled={gpsStep}
               className={cn(
-                "mt-1.5 w-full rounded-skylearn-md border bg-white px-4 py-3 text-lg outline-none transition-shadow duration-200 focus:border-sky focus:ring-4 focus:ring-sky-soft disabled:opacity-50",
-                error ? "border-coral bg-coral-soft/30" : "border-outline",
+                styles.input,
+                error ? styles.inputError : styles.inputNormal,
+                gpsStep && styles.inputDisabled,
               )}
             />
           </div>
 
-          {/* Input password dengan toggle show/hide */}
-          <div>
-            <label className="text-base font-semibold text-ink">Kata Sandi</label>
-            <div className="relative mt-1.5">
+          <div className={styles.field}>
+            <label className={styles.label}>Kata Sandi</label>
+            <div className={styles.inputWrapper}>
               <input
                 type={showPassword ? "text" : "password"}
                 required
@@ -151,49 +148,48 @@ export default function LoginPage() {
                 placeholder="••••••••"
                 disabled={gpsStep}
                 className={cn(
-                  "w-full rounded-skylearn-md border bg-white px-4 py-3 pr-12 text-lg outline-none transition-shadow duration-200 focus:border-sky focus:ring-4 focus:ring-sky-soft disabled:opacity-50",
-                  error ? "border-coral bg-coral-soft/30" : "border-outline",
+                  styles.input,
+                  styles.inputPassword,
+                  error ? styles.inputError : styles.inputNormal,
+                  gpsStep && styles.inputDisabled,
                 )}
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
                 disabled={gpsStep}
-                className="absolute inset-y-0 right-0 flex items-center pr-4 text-ink-subtle hover:text-ink transition-colors disabled:opacity-50"
+                className={styles.toggleBtn}
               >
                 {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
               </button>
             </div>
           </div>
 
-          {/* Pesan error (jika ada) */}
           {error && (
             <motion.p
               initial={{ opacity: 0, x: -4 }}
               animate={{ opacity: 1, x: 0 }}
-              className="flex items-center gap-2 rounded-skylearn-md bg-coral-soft px-4 py-3 text-base text-coral"
+              className={styles.errorBox}
             >
               <span className="text-lg">!</span>
               {error}
             </motion.p>
           )}
 
-          {/* Pesan info GPS */}
           {gpsStep && (
-            <p className="flex items-center gap-2 text-sm text-ink-muted">
-              <MapPin className="h-4 w-4 shrink-0 text-sky" />
+            <p className={styles.gpsInfo}>
+              <MapPin className={styles.gpsIcon} />
               Browser akan meminta izin lokasi. Izinkan untuk verifikasi area kampus.
             </p>
           )}
 
-          {/* Tombol submit */}
           <Button type="submit" className="w-full" disabled={isSubmitting}>
             {isSubmitting && <Loader2 className="h-5 w-5 animate-spin" />}
             {gpsStep ? "Memverifikasi Lokasi..." : "Login"}
           </Button>
         </form>
 
-        <p className="mt-8 text-center text-sm text-ink-subtle">
+        <p className={styles.footer}>
           Hubungi Admin Sekolah Jika Belum Memiliki Akses.
         </p>
       </motion.div>

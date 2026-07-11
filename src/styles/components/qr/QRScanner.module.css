@@ -1,0 +1,185 @@
+/* ============================================================
+   QRScanner.module.css
+   Style untuk komponen scanner QR presensi
+   ============================================================ */
+
+/* Pembungkus utama scanner */
+.scannerWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+/* Area viewport kamera */
+.viewport {
+  position: relative;
+  height: 18rem;
+  width: 18rem;
+  overflow: hidden;
+  border-radius: 0.75rem;
+  border: 1px solid var(--color-outline, #D1D5DB);
+  background: var(--color-surface, #fff);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+}
+
+/* Bingkai viewfinder */
+.viewfinder {
+  pointer-events: none;
+  position: absolute;
+  inset: 1.5rem;
+  border-radius: 0.75rem;
+  border: 2px solid #2BA8A2;
+}
+
+/* Sudut-sudut viewfinder */
+.viewfinderCorner {
+  position: absolute;
+  height: 1.5rem;
+  width: 1.5rem;
+  border-color: #2BA8A2;
+}
+
+.viewfinderCorner:nth-child(1) {
+  top: -2px;
+  left: -2px;
+  border-left: 4px solid;
+  border-top: 4px solid;
+  border-top-left-radius: 0.5rem;
+}
+.viewfinderCorner:nth-child(2) {
+  top: -2px;
+  right: -2px;
+  border-right: 4px solid;
+  border-top: 4px solid;
+  border-top-right-radius: 0.5rem;
+}
+.viewfinderCorner:nth-child(3) {
+  bottom: -2px;
+  left: -2px;
+  border-left: 4px solid;
+  border-bottom: 4px solid;
+  border-bottom-left-radius: 0.5rem;
+}
+.viewfinderCorner:nth-child(4) {
+  bottom: -2px;
+  right: -2px;
+  border-right: 4px solid;
+  border-bottom: 4px solid;
+  border-bottom-right-radius: 0.5rem;
+}
+
+/* Garis animasi scan */
+.scanLine {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 2px;
+  background: #2BA8A2;
+  animation: scanMove 2s ease-in-out infinite;
+}
+
+@keyframes scanMove {
+  0%, 100% { top: 0; }
+  50% { top: 100%; }
+}
+
+/* Overlay status (idle / processing / success / error) */
+.overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  background: rgba(255, 255, 255, 0.95);
+  color: var(--color-ink, #0F172A);
+  padding: 0 1.5rem;
+  text-align: center;
+}
+
+/* Konten di dalam overlay */
+.overlayContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Ikon overlay */
+.overlayIcon {
+  width: 2.25rem;
+  height: 2.25rem;
+  color: var(--color-ink-muted, #94A3B8);
+}
+
+/* Teks overlay */
+.overlayText {
+  font-size: 0.875rem;
+  color: var(--color-ink-muted, #94A3B8);
+}
+
+/* Spinner processing */
+.spinner {
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 9999px;
+  border: 2px solid var(--color-outline, #D1D5DB);
+  border-top-color: #2BA8A2;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Ikon sukses */
+.successIcon {
+  width: 3rem;
+  height: 3rem;
+  color: #22C55E;
+}
+
+/* Lingkaran animasi pulse untuk success */
+.successRing {
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  background: rgba(34, 197, 94, 0.2);
+  animation: pulseRing 1.5s ease-in-out infinite;
+}
+
+@keyframes pulseRing {
+  0% { transform: scale(0.8); opacity: 0.6; }
+  100% { transform: scale(1.8); opacity: 0; }
+}
+
+/* Ikon error */
+.errorIcon {
+  width: 3rem;
+  height: 3rem;
+  color: #EF4444;
+}
+
+/* Grup tombol aksi */
+.btnGroup {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+/* Tombol toggle kamera depan/belakang */
+.cameraToggle {
+  /* styling dasar via Button component */
+}
+
+/* ----- Responsive ----- */
+@media (max-width: 480px) {
+  .viewport {
+    height: 16rem;
+    width: 16rem;
+  }
+}

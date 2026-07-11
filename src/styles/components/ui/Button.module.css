@@ -1,0 +1,70 @@
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 150ms ease;
+}
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Ukuran */
+.btnSm { min-height: 40px; padding: 8px 16px; font-size: 14px; }
+.btnMd { min-height: 56px; padding: 12px 24px; font-size: 18px; }
+.btnLg { min-height: 72px; padding: 16px 32px; font-size: 20px; }
+
+/* Radius */
+.radiusSkylearn { border-radius: 16px; }
+.radiusFlip7 { border-radius: 999px; }
+
+/* Skylearn Variants */
+.btnPrimary { background: #3B82F6; color: #FFF; box-shadow: 0 12px 32px rgba(59,130,246,0.15); }
+.btnPrimary:hover { background: #1D4ED8; }
+
+.btnSecondary { background: #F8FAFC; color: #475569; border: 1px solid #E2E8F0; }
+.btnSecondary:hover { background: #E2E8F0; }
+
+.btnOutline { border: 1px solid #E2E8F0; color: #475569; }
+.btnOutline:hover { background: #F8FAFC; border-color: #3B82F6; color: #3B82F6; }
+
+.btnGhost { color: #475569; }
+.btnGhost:hover { background: #F8FAFC; color: #3B82F6; }
+
+.btnDanger { background: #F87171; color: #FFF; box-shadow: 0 8px 24px rgba(15,23,42,0.06); }
+.btnDanger:hover { opacity: 0.9; }
+
+/* Flip7 Variants */
+.btnGold { background: #FFD23F; color: #1E8C86; box-shadow: 0 4px 20px rgba(255,210,63,0.4); }
+.btnGold:hover { background: #FFE47A; }
+
+.btnTeal { background: #2BA8A2; color: #FFF; box-shadow: 0 4px 20px rgba(43,168,162,0.3); }
+.btnTeal:hover { background: #3CC4BD; }
+
+.btnCoral { background: #EF6C4A; color: #FFF; box-shadow: 0 4px 20px rgba(239,108,74,0.35); }
+.btnCoral:hover { background: #FF8A6A; }
+
+.btnBoom {
+  background: #EF6C4A; color: #FFF;
+  box-shadow: 0 4px 20px rgba(239,108,74,0.35);
+  animation: pulseBoom 2s ease-in-out infinite;
+}
+.btnFlip7 {
+  background: linear-gradient(to right, #FFD23F, #FFE47A, #FFD23F);
+  color: #1E8C86;
+  box-shadow: 0 4px 20px rgba(255,210,63,0.4);
+}
+.btnFlip7:hover {
+  background: linear-gradient(to right, #FFE47A, #FFD23F, #FFE47A);
+}
+
+/* State loading */
+.isLoading { pointer-events: none; }
+
+.fontSemi { font-weight: 600; }
+
+@keyframes pulseBoom {
+  0%, 100% { box-shadow: 0 4px 20px rgba(239,108,74,0.35); }
+  50% { box-shadow: 0 4px 32px rgba(239,108,74,0.5); }
+}

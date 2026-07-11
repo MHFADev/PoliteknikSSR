@@ -1,7 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { cn } from "@/lib/utils";
 import { MapPin, AlertCircle, CheckCircle2, Loader2 } from "lucide-react";
+import styles from "@/styles/components/shared/LocationVerifier.module.css";
 
 type VerifierProps = {
   onVerified?: () => void;
@@ -23,8 +25,8 @@ export function LocationVerifier({ onVerified }: VerifierProps) {
     return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   };
 
-  // Fungsi verifikasi lokasi
-  const verifyLocation = async () => {
+  // Fungsi verifikasi lokasi — dibungkus useCallback agar stabil sebagai dependency useEffect
+  const verifyLocation = useCallback(async () => {
     try {
       setStatus('checking');
       setMessage('Memeriksa lokasi...');
@@ -101,9 +103,12 @@ export function LocationVerifier({ onVerified }: VerifierProps) {
         setMessage(`Terjadi kesalahan: ${error.message}`);
       }
     }
-  };
+  }, [onVerified]);
 
-  // Jalankan verifikasi otomatis saat komponen dimount
+  /*
+   * Jalankan verifikasi otomatis saat komponen dimount.
+   * useCallback menjaga referensi verifyLocation tetap stabil.
+   */
   useEffect(() => {
     if (!navigator.geolocation) {
       setStatus('error');
@@ -111,43 +116,49 @@ export function LocationVerifier({ onVerified }: VerifierProps) {
       return;
     }
     verifyLocation();
-  }, []);
+  }, [verifyLocation]);
 
   return (
-    <div className="space-y-4">
-      <div className={`p-4 rounded-xl border flex items-center gap-3 ${
-        status === 'success' ? 'bg-green-50 border-green-200' :
-        status === 'error' ? 'bg-red-50 border-red-200' :
-        'bg-gray-50 border-gray-200'
-      }`}>
+    <div className={styles.wrapper}>
+      <div className={cn(
+        styles.statusCard,
+        status === 'success' && styles.statusSuccess,
+        status === 'error' && styles.statusError,
+        (status === 'loading' || status === 'checking') && styles.statusLoading
+      )}>
         {status === 'loading' || status === 'checking' ? (
-          <Loader2 className={`w-6 h-6 animate-spin ${status === 'checking' ? 'text-blue-600' : 'text-gray-500'}`} />
+          <Loader2 className={cn(
+            styles.iconLoading,
+            status === 'checking' ? styles.iconLoadingChecking : styles.iconLoadingIdle
+          )} />
         ) : status === 'success' ? (
-          <CheckCircle2 className="w-6 h-6 text-green-600" />
+          <CheckCircle2 className={styles.iconSuccess} />
         ) : (
-          <AlertCircle className="w-6 h-6 text-red-600" />
+          <AlertCircle className={styles.iconError} />
         )}
 
-        <div className="flex-1">
-          <h4 className={`text-sm font-medium ${
-            status === 'success' ? 'text-green-800' :
-            status === 'error' ? 'text-red-800' :
-            'text-gray-800'
-          }`}>
+        <div className={styles.contentArea}>
+          <h4 className={cn(
+            styles.title,
+            status === 'success' && styles.titleSuccess,
+            status === 'error' && styles.titleError,
+            (status === 'loading' || status === 'checking') && styles.titleLoading
+          )}>
             {status === 'loading' ? 'Memulai verifikasi lokasi...' :
              status === 'checking' ? 'Memeriksa lokasi Anda...' :
              status === 'success' ? 'Lokasi Terverifikasi' :
              'Verifikasi Lokasi Gagal'}
           </h4>
           {message && (
-            <p className={`text-xs mt-1 ${
-              status === 'success' ? 'text-green-600' :
-              status === 'error' ? 'text-red-600' :
-              'text-gray-500'
-            }`}>
+            <p className={cn(
+              styles.message,
+              status === 'success' && styles.messageSuccess,
+              status === 'error' && styles.messageError,
+              (status === 'loading' || status === 'checking') && styles.messageLoading
+            )}>
               {message}
               {distance !== null && status !== 'success' && (
-                <span className="ml-1">(jarak: {Math.round(distance)}m)</span>
+                <span className={styles.distance}>(jarak: {Math.round(distance)}m)</span>
               )}
             </p>
           )}
@@ -157,7 +168,7 @@ export function LocationVerifier({ onVerified }: VerifierProps) {
       {status === 'error' && (
         <button
           onClick={verifyLocation}
-          className="w-full flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-4 py-3 text-sm font-medium text-white hover:bg-blue-700 transition-colors"
+          className={styles.retryButton}
         >
           <MapPin className="w-4 h-4" />
           Coba Lagi Verifikasi Lokasi

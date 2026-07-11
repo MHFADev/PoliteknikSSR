@@ -3,6 +3,7 @@
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 import { Star } from "lucide-react";
+import styles from "@/styles/components/ui/StarBadge.module.css";
 
 interface StarBadgeProps {
   size?: "sm" | "md" | "lg" | "xl";
@@ -13,17 +14,17 @@ interface StarBadgeProps {
   children?: React.ReactNode;
 }
 
-const sizeClasses = {
-  sm: "w-8 h-8 text-lg",
-  md: "w-12 h-12 text-2xl",
-  lg: "w-16 h-16 text-3xl",
-  xl: "w-20 h-20 text-4xl",
+const sizeClasses: Record<string, string> = {
+  sm: styles.starBadgeSm,
+  md: styles.starBadgeMd,
+  lg: styles.starBadgeLg,
+  xl: styles.starBadgeXl,
 };
 
-const colorClasses = {
-  sun: "bg-sun text-white",
-  gold: "bg-gold text-teal-dark",
-  leaf: "bg-leaf text-white",
+const colorClasses: Record<string, string> = {
+  sun: styles.starBadgeSun,
+  gold: styles.starBadgeGold,
+  leaf: styles.starBadgeLeaf,
 };
 
 export function StarBadge({
@@ -45,14 +46,13 @@ export function StarBadge({
         duration: 0.6,
       }}
       className={cn(
-        "relative flex items-center justify-center rounded-full",
+        styles.starBadge,
         sizeClasses[size],
-        earned ? colorClasses[color] : "bg-outline text-ink-subtle",
-        earned && animated && "shadow-skylearn-sun",
+        earned ? colorClasses[color] : styles.starBadgeUnearned,
         className
       )}
     >
-      <Star className="w-1/2 h-1/2 fill-current" />
+      <Star className={styles.starBadgeStar} />
       {children}
     </motion.div>
   );
@@ -74,7 +74,7 @@ export function StarRating({
   const stars = Array.from({ length: maxRating }, (_, i) => i + 1);
 
   return (
-    <div className="flex items-center gap-2">
+    <div className={styles.starRating}>
       {stars.map((star, index) => (
         <motion.div
           key={star}
@@ -86,8 +86,8 @@ export function StarRating({
             className={cn(
               size === "sm" ? "w-5 h-5" : size === "lg" ? "w-8 h-8" : "w-6 h-6",
               index < rating
-                ? "fill-sun text-sun drop-shadow-sm"
-                : "text-outline"
+                ? styles.starRatingStarEarned
+                : styles.starRatingStarUnearned
             )}
           />
         </motion.div>

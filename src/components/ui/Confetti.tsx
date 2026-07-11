@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
+import styles from "@/styles/components/ui/Confetti.module.css";
 
 const CONFETTI_COLORS = [
   "#3B82F6", // sky
@@ -34,9 +35,9 @@ function ConfettiPiece({ index, total }: ConfettiPieceProps) {
   const duration = 3 + Math.random() * 2;
   const delay = Math.random() * 0.5;
 
-  const shapeStyles: Record<ConfettiShape, string> = {
-    circle: "rounded-full",
-    square: "rounded-sm",
+  const shapeClasses: Record<ConfettiShape, string> = {
+    circle: "",
+    square: styles.confettiPieceSquare,
     triangle: "clip-triangle",
   };
 
@@ -55,8 +56,8 @@ function ConfettiPiece({ index, total }: ConfettiPieceProps) {
         ease: "easeOut",
       }}
       className={cn(
-        "absolute",
-        shapeStyles[shape]
+        styles.confettiPiece,
+        shapeClasses[shape]
       )}
       style={{
         left: `${left}%`,
@@ -97,7 +98,7 @@ export function Confetti({
   if (!visible) return null;
 
   return (
-    <div className="fixed inset-0 pointer-events-none z-50 overflow-hidden">
+    <div className={styles.confettiContainer}>
       {Array.from({ length: count }, (_, i) => (
         <ConfettiPiece key={i} index={i} total={count} />
       ))}

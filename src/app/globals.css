@@ -1,9 +1,23 @@
+/*
+ * globals.css — Gaya Global Aplikasi
+ * =============================================
+ * File ini adalah titik masuk utama untuk styling.
+ * - Mengimpor Tailwind CSS (base, components, utilities)
+ * - Mendefinisikan style global (html, body, focus, scrollbar)
+ * - Berisi aturan aksesibilitas (reduced-motion)
+ * - Berisi utility class kustom untuk komponen
+ *
+ * Design System:
+ * - Skylearn: gaya profesional dengan warna biru/abu-abu
+ * - Flip7: gaya playful dengan warna teal/emas/koral
+ */
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer components {
-  // Input error styling: coral border + background
+  /* Input error styling: coral border + background */
   .input-error {
     @apply border-coral/60 bg-coral-soft/30 focus:border-coral;
   }
@@ -20,14 +34,14 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-// Focus ring styling: sky color dengan outline offset
+/* Focus ring styling: sky color dengan outline offset */
 :focus-visible {
   outline: 2px solid #3B82F6;
   outline-offset: 2px;
   border-radius: 8px;
 }
 
-// Reduced motion support: animasi harus di-disable untuk aksesibilitas
+/* Reduced motion support: animasi harus di-disable untuk aksesibilitas */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
@@ -54,7 +68,7 @@ body {
   }
 }
 
-// Pastikan input tidak zoom di mobile (iOS Safari)
+/* Pastikan input tidak zoom di mobile (iOS Safari) */
 @media (max-width: 640px) {
   input, select, textarea {
     font-size: 16px !important;
