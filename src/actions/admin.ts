@@ -281,3 +281,111 @@ export async function ensureStudyProgram(
   if (error) return { id: null, error: error.message };
   return { id: data.id };
 }
+
+/**
+ * getPendingUsers — Ambil daftar user yang belum disetujui (approved !== true)
+ * =============================================================================
+ * Mengembalikan user dari Auth API yang belum memiliki metadata approved: true,
+ * digabungkan dengan data profil dari tabel `profiles`.
+ *
+ * Alur:
+ * 1. Ambil semua user via Supabase Admin API (listUsers)
+ * 2. Filter user dengan user_metadata.approved !== true (null/undefined termasuk)
+ * 3. Ambil profil dari tabel profiles untuk user yang belum disetujui
+ * 4. Gabungkan data auth + profil, kembalikan array terformat
+ *
+ * @returns Array { id, email, fullName, role, createdAt }
+ */
+export async function getPendingUsers(): Promise<
+  { id: string; email: string; fullName: string; role: string; createdAt: string }[]
+> {
+  const supabase = createAdminClient();
+
+  // --- Ambil semua user dari Auth API ---
+  const { data, error } = await supabase.auth.admin.listUsers();
+
+  if (error || !data?.users) return [];
+
+  // --- Filter user yang belum disetujui (approved !== true) ---
+  const pendingIds = data.users
+    .filter((u) => u.user_metadata?.approved !== true)
+    .map((u) => u.id);
+
+  if (pendingIds.length === 0) return [];
+
+  // --- Ambil profil untuk user yang belum disetujui ---
+  const { data: profiles } = await supabase
+    .from("profiles")
+    .select("id, full_name, role, created_at")
+    .in("id", pendingIds);
+
+  // --- Gabungkan data auth dengan profil ---
+  return pendingIds.map((id) => {
+    const authUser = data.users.find((u) => u.id === id);
+    const profile = (profiles || []).find((p) => p.id === id);
+    return {
+      id,
+      email: authUser?.email || "",
+      fullName:
+        profile?.full_name || authUser?.user_metadata?.full_name || "—",
+      role: profile?.role || authUser?.user_metadata?.role || "siswa",
+      createdAt:
+        profile?.created_at ||
+        authUser?.created_at ||
+        new Date().toISOString(),
+    };
+  });
+}
+
+/**
+ * approveUser — Setujui pendaftaran user
+ * =========================================
+ * Mengupdate metadata user Auth menjadi { approved: true } sehingga user
+ * yang bersangkutan dapat login dan mengakses aplikasi.
+ *
+ * @param userId - ID user (UUID) yang akan disetujui
+ * @returns { success: true } jika berhasil, atau { success: false, message } jika gagal
+ */
+export async function approveUser(
+  userId: string
+): Promise<{ success: true } | { success: false; message: string }> {
+  const supabase = createAdminClient();
+
+  const { error } = await supabase.auth.admin.updateUserById(userId, {
+    user_metadata: { approved: true },
+  });
+
+  if (error) {
+    return { success: false, message: "Gagal menyetujui user: " + error.message };
+  }
+
+  revalidatePath("/dashboard/admin/pengguna");
+
+  return { success: true };
+}
+
+/**
+ * rejectUser — Tolak pendaftaran user (hapus akun)
+ * ==================================================
+ * Menghapus user dari Auth API secara soft-delete (bukan permanen).
+ * User yang dihapus tidak bisa login lagi, tetapi data tetap ada di database
+ * untuk audit trail.
+ *
+ * @param userId - ID user (UUID) yang akan ditolak
+ * @returns { success: true } jika berhasil, atau { success: false, message } jika gagal
+ */
+export async function rejectUser(
+  userId: string
+): Promise<{ success: true } | { success: false; message: string }> {
+  const supabase = createAdminClient();
+
+  const { error } = await supabase.auth.admin.deleteUser(userId, true);
+
+  if (error) {
+    return { success: false, message: "Gagal menolak user: " + error.message };
+  }
+
+  revalidatePath("/dashboard/admin/pengguna");
+
+  return { success: true };
+}

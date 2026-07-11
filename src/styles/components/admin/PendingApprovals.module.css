@@ -1,0 +1,103 @@
+/* ============================================================
+   PendingApprovals.module.css
+   Style untuk daftar user yang menunggu persetujuan admin
+   ============================================================ */
+
+/* Container utama daftar pending user */
+.section {
+  padding: 0.5rem 1rem 1rem;
+}
+
+/* Setiap baris pending user */
+.item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.875rem 0;
+  border-bottom: 1px solid rgba(27, 60, 83, 0.08);
+  gap: 1rem;
+}
+
+/* Hapus border bawah item terakhir */
+.item:last-child {
+  border-bottom: none;
+}
+
+/* Area informasi user (kiri) */
+.itemInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  min-width: 0;
+}
+
+/* Nama lengkap user */
+.itemName {
+  font-weight: 600;
+  font-size: 0.9375rem;
+  color: var(--color-deep, #0F172A);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Alamat email user */
+.itemEmail {
+  font-size: 0.8125rem;
+  color: var(--color-mist-dim, #64748B);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Meta info: role badge + tanggal daftar */
+.itemMeta {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
+}
+
+/* Tanggal pendaftaran */
+.itemDate {
+  font-size: 0.75rem;
+  color: var(--color-steel, #475569);
+}
+
+/* Grup tombol aksi (kanan) */
+.itemActions {
+  display: flex;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+/* Empty state — tidak ada pendaftaran */
+.empty {
+  padding: 2rem 1rem;
+  text-align: center;
+  color: var(--color-mist-dim, #64748B);
+  font-size: 0.875rem;
+}
+
+/* Pesan error global */
+.error {
+  padding: 0.5rem 1rem;
+  margin: 0 0 0.5rem;
+  font-size: 0.8125rem;
+  color: #EF4444;
+  background: rgba(239, 68, 68, 0.05);
+  border-radius: 0.5rem;
+}
+
+/* ----- Responsive: stack vertikal di layar kecil ----- */
+@media (max-width: 640px) {
+  .item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .itemActions {
+    margin-top: 0.5rem;
+    width: 100%;
+  }
+}

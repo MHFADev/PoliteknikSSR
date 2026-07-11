@@ -380,6 +380,11 @@ insert into storage.buckets (id, name, public)
 values ('leave-proofs', 'leave-proofs', true)
 on conflict (id) do nothing;
 
+-- Bucket untuk upload foto logbook kegiatan harian siswa
+insert into storage.buckets (id, name, public)
+values ('logbook_photos', 'logbook_photos', true)
+on conflict (id) do nothing;
+
 -- Policy storage: siswa hanya boleh upload ke folder dengan prefix uid miliknya
 drop policy if exists "storage: siswa upload bukti izin sendiri" on storage.objects;
 create policy "storage: siswa upload bukti izin sendiri"
