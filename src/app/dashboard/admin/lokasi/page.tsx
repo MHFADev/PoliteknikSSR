@@ -15,7 +15,7 @@ type Location = {
   nama: string;
   latitude: number;
   longitude: number;
-  radius_meters: number;
+  radiusMeters: number;
 };
 
 export default function AdminLokasiPage() {
@@ -61,7 +61,7 @@ export default function AdminLokasiPage() {
     setTempLocation({
       latitude: loc.latitude,
       longitude: loc.longitude,
-      radius_meters: loc.radius_meters,
+      radius_meters: loc.radiusMeters,
     });
     setModalOpen(true);
   }
@@ -153,7 +153,7 @@ export default function AdminLokasiPage() {
                   <div>
                     <p className={styles.locationName}>{loc.nama}</p>
                     <p className={styles.locationCoords}>
-                      {loc.latitude.toFixed(6)}, {loc.longitude.toFixed(6)} &mdash; Radius {loc.radius_meters}m
+                      {loc.latitude.toFixed(6)}, {loc.longitude.toFixed(6)} &mdash; Radius {loc.radiusMeters}m
                     </p>
                   </div>
                 </div>

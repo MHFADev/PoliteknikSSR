@@ -7,158 +7,20 @@
  * - Manajemen program studi
  *
  * Alur:
- * - Seluruh fungsi menggunakan `createAdminClient()` (service role) karena
- *   butuh bypass RLS untuk operasi administratif.
- * - `get30DayAttendanceStats` mengambil data presensi + izin 30 hari terakhir
- *   lalu menghitung statistik per siswa.
- * - `addStudent` membuat akun via Admin API, kemudian update profil, lalu
- *   generate QR token permanen siswa.
- * - `ensureStudyProgram` mencari/membuat program studi baru.
+ * - Seluruh fungsi menggunakan Repository Layer (bukan Supabase langsung)
+ * - Repository akan memilih client yang sesuai (admin untuk operasi RLS bypass)
+ * - `get30DayAttendanceStats` delegasi ke `Repositories.users().getAttendanceStats()`
+ * - `addStudent` delegasi ke `Repositories.users().createUser()`
+ * - `ensureStudyProgram` delegasi ke `Repositories.studyProgram().ensure()`
  */
 
 "use server";
 
-import { createAdminClient } from "@/lib/supabase/server";
+import { Repositories } from "@/lib/repositories";
+import type { AttendanceStats } from "@/lib/repositories";
+export type { AttendanceStats };
 import { revalidatePath } from "next/cache";
 import { generatePermanentStudentToken } from "@/lib/qr-token";
-
-/**
- * AttendanceStats — Tipe data untuk statistik presensi 30 hari per siswa
- */
-export interface AttendanceStats {
-  studentId: string;
-  fullName: string;
-  kelas: string | null;
-  jurusan: string | null;
-  hadir: number;
-  telat: number;
-  izin: number;
-  sakit: number;
-  alfa: number;
-  total: number;
-}
-
-/**
- * get30DayAttendanceStats — Ambil statistik presensi 30 hari terakhir
- * @param filters.studentId - Filter spesifik per ID siswa
- * @param filters.name - Filter berdasarkan nama (ilike)
- * @param filters.jurusan - Filter berdasarkan jurusan
- * @param filters.kelas - Filter berdasarkan kelas
- * @returns Array AttendanceStats[] berisi rekap per siswa
- *
- * Alur:
- * 1. Hitung tanggal 30 hari lalu sebagai batas awal
- * 2. Query semua profil siswa (dengan filter opsional)
- * 3. Ambil record presensi + pengajuan izin dalam rentang waktu
- * 4. Hitung hadir, telat, izin, sakit, alfa per siswa
- */
-export async function get30DayAttendanceStats(
-  filters?: { studentId?: string; name?: string; jurusan?: string; kelas?: string }
-): Promise<AttendanceStats[]> {
-  const supabase = createAdminClient();
-  
-  const thirtyDaysAgo = new Date();
-  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-  const startDate = thirtyDaysAgo.toISOString().slice(0, 10);
-  
-  // --- Ambil semua siswa (dengan filter opsional) ---
-  let studentsQuery = supabase
-    .from("profiles")
-    .select(`
-      id,
-      full_name,
-      kelas,
-      jurusan_id,
-      study_programs ( nama )
-    `)
-    .eq("role", "siswa");
-    
-  if (filters?.studentId) {
-    studentsQuery = studentsQuery.eq("id", filters.studentId);
-  }
-  if (filters?.name) {
-    studentsQuery = studentsQuery.ilike("full_name", `%${filters.name}%`);
-  }
-  if (filters?.kelas) {
-    studentsQuery = studentsQuery.ilike("kelas", `%${filters.kelas}%`);
-  }
-  
-  const { data: students, error: studentsError } = await studentsQuery;
-  
-  if (studentsError || !students) return [];
-  
-  // --- Ambil semua data presensi & izin 30 hari terakhir (paralel) ---
-  const [{ data: records }, { data: leaves }] = await Promise.all([
-    supabase
-      .from("attendance_records")
-      .select("student_id, status, scanned_at")
-      .gte("scanned_at", `${startDate}T00:00:00`),
-    supabase
-      .from("leave_requests")
-      .select("student_id, type, start_date, end_date")
-      .gte("end_date", startDate)
-  ]);
-  
-  // --- Hitung statistik untuk setiap siswa ---
-  const stats: AttendanceStats[] = (students as any[])
-    .filter((student: any) => {
-      // Filter jurusan dilakukan client-side karena relasi
-      if (filters?.jurusan) {
-        const studentJurusan = student.study_programs?.nama;
-        if (!studentJurusan?.toLowerCase().includes(filters.jurusan.toLowerCase())) {
-          return false;
-        }
-      }
-      return true;
-    })
-    .map((student: any) => {
-    // --- Hitung hadir & telat dari attendance_records ---
-    const studentRecords = (records as any[])?.filter(r => r.student_id === student.id) || [];
-    const hadir = studentRecords.filter(r => r.status === "hadir").length;
-    const telat = studentRecords.filter(r => r.status === "telat").length;
-    
-    // --- Hitung izin & sakit dari leave_requests (hitung jumlah hari) ---
-    const studentLeaves = (leaves as any[])?.filter(l => l.student_id === student.id) || [];
-    let izin = 0;
-    let sakit = 0;
-    
-    studentLeaves.forEach(leave => {
-      const start = new Date(leave.start_date);
-      const end = new Date(leave.end_date);
-      let days = Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1;
-      // Batasi agar tidak melebihi 30 hari
-      const startLimit = new Date(startDate);
-      if (start < startLimit) {
-        days = Math.ceil((end.getTime() - startLimit.getTime()) / (1000 * 60 * 60 * 24)) + 1;
-      }
-      if (leave.type === "izin") izin += days;
-      if (leave.type === "sakit") sakit += days;
-    });
-    
-    // --- Hitung alfa: sisa hari yang tidak tercatat ---
-    // Alfa hanya dihitung jika ada record (untuk menghindari false positive)
-    const hasAnyRecords = (hadir + telat + izin + sakit) > 0;
-    const endDate = new Date();
-    let totalDays = Math.ceil((endDate.getTime() - new Date(startDate).getTime()) / (1000 * 60 * 60 * 24));
-    totalDays = Math.max(totalDays, 1);
-    const alfa = hasAnyRecords ? Math.max(0, totalDays - (hadir + telat + izin + sakit)) : 0;
-    
-    return {
-      studentId: student.id,
-      fullName: student.full_name,
-      kelas: student.kelas,
-      jurusan: student.study_programs?.nama || null,
-      hadir,
-      telat,
-      izin,
-      sakit,
-      alfa,
-      total: totalDays
-    };
-  });
-  
-  return stats;
-}
 
 interface AddStudentArgs {
   fullName: string;
@@ -168,6 +30,20 @@ interface AddStudentArgs {
   instansi?: string;
   kelas?: string;
   jurusanId?: string;
+}
+
+/**
+ * get30DayAttendanceStats — Ambil statistik presensi 30 hari terakhir
+ * @param filters.studentId - Filter spesifik per ID siswa
+ * @param filters.name - Filter berdasarkan nama (ilike)
+ * @param filters.jurusan - Filter berdasarkan jurusan
+ * @param filters.kelas - Filter berdasarkan kelas
+ * @returns Array AttendanceStats[] berisi rekap per siswa
+ */
+export async function get30DayAttendanceStats(
+  filters?: { studentId?: string; name?: string; jurusan?: string; kelas?: string }
+): Promise<AttendanceStats[]> {
+  return Repositories.users().getAttendanceStats(filters ?? {});
 }
 
 /**
@@ -182,10 +58,9 @@ interface AddStudentArgs {
  * @returns Object sukses dengan studentId + permanentToken, atau pesan error
  *
  * Alur:
- * 1. Buat user via Supabase Admin API (email_confirm: true)
- * 2. Update profil siswa dengan data tambahan
- * 3. Generate QR token permanen untuk presensi QR
- * 4. Revalidate path pengguna admin
+ * 1. Buat user via repository (menggunakan Admin API internal)
+ * 2. Generate QR token permanen untuk presensi QR
+ * 3. Revalidate path pengguna admin
  */
 export async function addStudent({
   fullName,
@@ -196,167 +71,61 @@ export async function addStudent({
   kelas,
   jurusanId,
 }: AddStudentArgs): Promise<{ success: true; studentId: string; permanentToken: string } | { success: false; message: string }> {
-  const supabase = createAdminClient();
-
-  const { data: { user: authUser }, error: authError } = await supabase.auth.admin.createUser({
+  const result = await Repositories.users().createUser({
     email,
     password,
-    email_confirm: true,
-    user_metadata: {
-      full_name: fullName,
-      role: "siswa",
-    },
+    fullName,
+    role: "siswa",
+    identityNumber,
+    instansi,
+    kelas,
+    jurusanId,
   });
 
-  if (authError) {
-    return { success: false, message: "Gagal membuat akun: " + authError.message };
+  if (result.error) {
+    return { success: false, message: result.error };
   }
 
-  const studentId = authUser!.id;
-
-  // --- Update profil dengan data tambahan (mengisi field yang mungkin terlewat oleh handle_new_user) ---
-  const { error: profileError } = await supabase
-    .from("profiles")
-    .update({
-      identity_number: identityNumber || null,
-      instansi: instansi || null,
-      kelas: kelas || null,
-      jurusan_id: jurusanId || null,
-    })
-    .eq("id", studentId);
-
-  if (profileError) {
-    return { success: false, message: "Gagal menyimpan data siswa: " + profileError.message };
-  }
-
-  // --- Generate token QR permanen untuk presensi ---
-  const permanentToken = await generatePermanentStudentToken(studentId, process.env.QR_SIGNING_SECRET!);
+  const permanentToken = await generatePermanentStudentToken(result.userId, process.env.QR_SIGNING_SECRET!);
 
   revalidatePath("/dashboard/admin/pengguna");
 
-  return { success: true, studentId, permanentToken };
+  return { success: true, studentId: result.userId, permanentToken };
 }
 
 /**
  * ensureStudyProgram — Cari atau buat program studi baru
  * @param nama - Nama program studi
  * @returns ID program studi (baru atau existing), atau null + error message
- *
- * Alur:
- * 1. Cek apakah program studi sudah ada (case-insensitive)
- * 2. Jika sudah ada, kembalikan ID-nya
- * 3. Jika belum, buat baru dengan kode otomatis dari nama
  */
 export async function ensureStudyProgram(
   nama: string
 ): Promise<{ id: string | null; error?: string }> {
-  const supabase = createAdminClient();
-  const trimmed = nama.trim();
-  if (!trimmed) return { id: null };
-
-  // --- Cari program studi yang sudah ada ---
-  const { data: existing } = await supabase
-    .from("study_programs")
-    .select("id")
-    .ilike("nama", trimmed)
-    .maybeSingle();
-
-  if (existing) return { id: existing.id };
-
-  // --- Generate kode otomatis dari nama (uppercase, tanpa karakter spesial) ---
-  const kode = trimmed
-    .toUpperCase()
-    .replace(/[^A-Z0-9]/g, "-")
-    .replace(/-+/g, "-")
-    .replace(/^-|-$/g, "")
-    .slice(0, 10);
-
-  // --- Buat program studi baru ---
-  const { data, error } = await supabase
-    .from("study_programs")
-    .insert({ nama: trimmed, kode })
-    .select("id")
-    .single();
-
-  if (error) return { id: null, error: error.message };
-  return { id: data.id };
+  const result = await Repositories.studyProgram().ensure(nama);
+  return { id: result.id ?? null, error: result.error };
 }
 
 /**
  * getPendingUsers — Ambil daftar user yang belum disetujui (approved !== true)
- * =============================================================================
- * Mengembalikan user dari Auth API yang belum memiliki metadata approved: true,
- * digabungkan dengan data profil dari tabel `profiles`.
- *
- * Alur:
- * 1. Ambil semua user via Supabase Admin API (listUsers)
- * 2. Filter user dengan user_metadata.approved !== true (null/undefined termasuk)
- * 3. Ambil profil dari tabel profiles untuk user yang belum disetujui
- * 4. Gabungkan data auth + profil, kembalikan array terformat
- *
  * @returns Array { id, email, fullName, role, createdAt }
  */
 export async function getPendingUsers(): Promise<
   { id: string; email: string; fullName: string; role: string; createdAt: string }[]
 > {
-  const supabase = createAdminClient();
-
-  // --- Ambil semua user dari Auth API ---
-  const { data, error } = await supabase.auth.admin.listUsers();
-
-  if (error || !data?.users) return [];
-
-  // --- Filter user yang belum disetujui (approved !== true) ---
-  const pendingIds = data.users
-    .filter((u) => u.user_metadata?.approved !== true)
-    .map((u) => u.id);
-
-  if (pendingIds.length === 0) return [];
-
-  // --- Ambil profil untuk user yang belum disetujui ---
-  const { data: profiles } = await supabase
-    .from("profiles")
-    .select("id, full_name, role, created_at")
-    .in("id", pendingIds);
-
-  // --- Gabungkan data auth dengan profil ---
-  return pendingIds.map((id) => {
-    const authUser = data.users.find((u) => u.id === id);
-    const profile = (profiles || []).find((p) => p.id === id);
-    return {
-      id,
-      email: authUser?.email || "",
-      fullName:
-        profile?.full_name || authUser?.user_metadata?.full_name || "—",
-      role: profile?.role || authUser?.user_metadata?.role || "siswa",
-      createdAt:
-        profile?.created_at ||
-        authUser?.created_at ||
-        new Date().toISOString(),
-    };
-  });
+  return Repositories.users().getPendingUsers();
 }
 
 /**
  * approveUser — Setujui pendaftaran user
- * =========================================
- * Mengupdate metadata user Auth menjadi { approved: true } sehingga user
- * yang bersangkutan dapat login dan mengakses aplikasi.
- *
  * @param userId - ID user (UUID) yang akan disetujui
- * @returns { success: true } jika berhasil, atau { success: false, message } jika gagal
+ * @returns { success: true } jika berhasil, atau { success: false; message } jika gagal
  */
 export async function approveUser(
   userId: string
 ): Promise<{ success: true } | { success: false; message: string }> {
-  const supabase = createAdminClient();
-
-  const { error } = await supabase.auth.admin.updateUserById(userId, {
-    user_metadata: { approved: true },
-  });
-
-  if (error) {
-    return { success: false, message: "Gagal menyetujui user: " + error.message };
+  const result = await Repositories.users().approveUser(userId);
+  if (result.error) {
+    return { success: false, message: result.error };
   }
 
   revalidatePath("/dashboard/admin/pengguna");
@@ -366,23 +135,15 @@ export async function approveUser(
 
 /**
  * rejectUser — Tolak pendaftaran user (hapus akun)
- * ==================================================
- * Menghapus user dari Auth API secara soft-delete (bukan permanen).
- * User yang dihapus tidak bisa login lagi, tetapi data tetap ada di database
- * untuk audit trail.
- *
  * @param userId - ID user (UUID) yang akan ditolak
- * @returns { success: true } jika berhasil, atau { success: false, message } jika gagal
+ * @returns { success: true } jika berhasil, atau { success: false; message } jika gagal
  */
 export async function rejectUser(
   userId: string
 ): Promise<{ success: true } | { success: false; message: string }> {
-  const supabase = createAdminClient();
-
-  const { error } = await supabase.auth.admin.deleteUser(userId, true);
-
-  if (error) {
-    return { success: false, message: "Gagal menolak user: " + error.message };
+  const result = await Repositories.users().rejectUser(userId);
+  if (result.error) {
+    return { success: false, message: result.error };
   }
 
   revalidatePath("/dashboard/admin/pengguna");

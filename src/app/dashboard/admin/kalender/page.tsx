@@ -8,6 +8,8 @@ import { Modal } from "@/components/ui/Modal";
 import { Badge } from "@/components/ui/Badge";
 import { StatCard } from "@/components/dashboard/StatCard";
 import { getAllEvents, addEvent, updateEvent, deleteEvent, getAdminCalendarStats, getStudents } from "@/actions/kalender";
+import type { CalendarEvent, User } from "@/lib/repositories";
+import { createClient } from "@/lib/supabase/client";
 import { formatDate } from "@/lib/utils";
 import styles from "@/styles/pages/dashboard/admin/Kalender.module.css";
 
@@ -19,26 +21,6 @@ const EVENT_COLORS = {
 const MONTHS = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
 const DAYS = ["Min", "Sen", "Sel", "Rab", "Kam", "Jum", "Sab"];
 
-type CalendarEvent = {
-  id: string;
-  title: string;
-  description: string | null;
-  event_date: string;
-  end_date: string | null;
-  tipe: "libur" | "event";
-  student_id: string | null;
-  profiles: { full_name: string; identity_number: string } | null;
-};
-
-type Student = {
-  id: string;
-  full_name: string;
-  identity_number: string | null;
-  kelas: string | null;
-  jurusan_id: string | null;
-  study_programs: { nama: string } | null;
-};
-
 export default function AdminKalenderPage() {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [events, setEvents] = useState<CalendarEvent[]>([]);
@@ -49,7 +31,7 @@ export default function AdminKalenderPage() {
   const [error, setError] = useState<string | null>(null);
   const [search, setSearch] = useState("");
   const [stats, setStats] = useState({ totalEvents: 0, upcomingEvents: 0, totalSiswa: 0 });
-  const [students, setStudents] = useState<Student[]>([]);
+  const [students, setStudents] = useState<User[]>([]);
   const [selectedStudent, setSelectedStudent] = useState<string>("");
   const [showStudentPicker, setShowStudentPicker] = useState(false);
   const [studentSearch, setStudentSearch] = useState("");
@@ -57,21 +39,35 @@ export default function AdminKalenderPage() {
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
 
-  function loadData() {
-    setLoading(true);
+  function loadData(silent = false) {
+    if (!silent) setLoading(true);
     Promise.all([
       getAllEvents(search || undefined),
       getAdminCalendarStats(),
       getStudents(),
     ]).then(([evts, st, stds]) => {
-      setEvents(evts as CalendarEvent[]);
+      setEvents(evts as unknown as CalendarEvent[]);
       setStats(st);
-      setStudents(stds as Student[]);
-      setLoading(false);
+      setStudents(stds as unknown as User[]);
+      if (!silent) setLoading(false);
     });
   }
 
   useEffect(() => { loadData(); }, [search]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Realtime: perbarui data otomatis saat admin lain menambah/edit/menghapus event
+  useEffect(() => {
+    const supabase = createClient();
+    const channel = supabase
+      .channel("calendar-changes-admin")
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "calendar_events" },
+        () => loadData(true)
+      )
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   function prevMonth() { setCurrentDate(new Date(year, month - 1)); }
   function nextMonth() { setCurrentDate(new Date(year, month + 1)); }
@@ -81,15 +77,15 @@ export default function AdminKalenderPage() {
   const todayStr = new Date().toISOString().slice(0, 10);
 
   const monthEvents = events.filter((ev) => {
-    const d = ev.event_date.slice(0, 7);
+    const d = ev.eventDate.slice(0, 7);
     const target = `${year}-${String(month + 1).padStart(2, "0")}`;
     return d === target;
   });
 
   const eventMap = new Map<string, CalendarEvent[]>();
   monthEvents.forEach((ev) => {
-    if (!eventMap.has(ev.event_date)) eventMap.set(ev.event_date, []);
-    eventMap.get(ev.event_date)!.push(ev);
+    if (!eventMap.has(ev.eventDate)) eventMap.set(ev.eventDate, []);
+    eventMap.get(ev.eventDate)!.push(ev);
   });
 
   function getEventsForDate(dateStr: string) {
@@ -105,15 +101,15 @@ export default function AdminKalenderPage() {
 
   function openEdit(ev: CalendarEvent) {
     setEditing(ev);
-    setSelectedStudent(ev.student_id ?? "");
+    setSelectedStudent(ev.studentId ?? "");
     setError(null);
     setModalOpen(true);
   }
 
   const filteredStudents = students.filter((s) =>
-    s.full_name.toLowerCase().includes(studentSearch.toLowerCase()) ||
-    s.identity_number?.toLowerCase().includes(studentSearch.toLowerCase()) ||
-    s.study_programs?.nama?.toLowerCase().includes(studentSearch.toLowerCase())
+    s.fullName.toLowerCase().includes(studentSearch.toLowerCase()) ||
+    s.identityNumber?.toLowerCase().includes(studentSearch.toLowerCase()) ||
+    s.studyProgramName?.toLowerCase().includes(studentSearch.toLowerCase())
   );
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -261,9 +257,9 @@ export default function AdminKalenderPage() {
                   <div className="min-w-0">
                     <p className={styles.eventListTitle}>{ev.title}</p>
                     <p className={styles.eventListMeta}>
-                      {formatDate(ev.event_date)}
-                      {ev.end_date && ` — ${formatDate(ev.end_date)}`}
-                      {ev.profiles && ` · ${ev.profiles.full_name}`}
+                      {formatDate(ev.eventDate)}
+                      {ev.endDate && ` — ${formatDate(ev.endDate)}`}
+                      {ev.creatorName && ` · ${ev.creatorName}`}
                     </p>
                   </div>
                 </div>
@@ -290,11 +286,11 @@ export default function AdminKalenderPage() {
           <div className={styles.formGrid2Col}>
             <div className={styles.formField}>
               <label className={styles.formLabel}>Tanggal Mulai</label>
-              <input name="event_date" type="date" required defaultValue={editing?.event_date ?? ""} className={styles.formInput} />
+              <input name="event_date" type="date" required defaultValue={editing?.eventDate ?? ""} className={styles.formInput} />
             </div>
             <div className={styles.formField}>
               <label className={styles.formLabel}>Tanggal Selesai (opsional)</label>
-              <input name="end_date" type="date" defaultValue={editing?.end_date ?? ""} className={styles.formInput} />
+              <input name="end_date" type="date" defaultValue={editing?.endDate ?? ""} className={styles.formInput} />
             </div>
           </div>
           <div className={styles.formField}>
@@ -308,7 +304,7 @@ export default function AdminKalenderPage() {
             <label className={styles.formLabel}>Siswa (opsional — kosongkan jika untuk semua)</label>
             <div className="relative">
               <input
-                value={showStudentPicker ? studentSearch : (editing ? students.find(s => s.id === editing?.student_id)?.full_name || "Semua Siswa" : selectedStudent ? students.find(s => s.id === selectedStudent)?.full_name || "Semua Siswa" : "Semua Siswa")}
+                value={showStudentPicker ? studentSearch : (editing ? students.find(s => s.id === editing?.studentId)?.fullName || "Semua Siswa" : selectedStudent ? students.find(s => s.id === selectedStudent)?.fullName || "Semua Siswa" : "Semua Siswa")}
                 onChange={(e) => { setShowStudentPicker(true); setStudentSearch(e.target.value); }}
                 onFocus={() => setShowStudentPicker(true)}
                 placeholder="Cari siswa..."
@@ -330,8 +326,8 @@ export default function AdminKalenderPage() {
                       onClick={() => { setSelectedStudent(s.id); setShowStudentPicker(false); setStudentSearch(""); }}
                       className={`${styles.studentPickerOption} ${selectedStudent === s.id ? styles.studentPickerOptionActive : ''}`}
                     >
-                      <span className={styles.studentPickerName}>{s.full_name}</span>
-                      <span className={styles.studentPickerMeta}>{s.study_programs?.nama || "-"}</span>
+                      <span className={styles.studentPickerName}>{s.fullName}</span>
+                      <span className={styles.studentPickerMeta}>{s.studyProgramName || "-"}</span>
                     </button>
                   ))}
                   {filteredStudents.length === 0 && (

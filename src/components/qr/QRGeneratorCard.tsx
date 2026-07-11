@@ -8,7 +8,7 @@ import { generateTodaySession } from "@/actions/qr";
 import { Button } from "@/components/ui/Button";
 import { Card, CardHeader } from "@/components/ui/Card";
 import { formatDate } from "@/lib/utils";
-import type { AttendanceSession } from "@/types/database";
+import type { AttendanceSession } from "@/lib/repositories";
 import styles from "@/styles/components/qr/QRGeneratorCard.module.css";
 
 export function QRGeneratorCard({ initialSession }: { initialSession: AttendanceSession | null }) {
@@ -34,7 +34,7 @@ export function QRGeneratorCard({ initialSession }: { initialSession: Attendance
     <Card variant="flip7">
       <CardHeader
         title="QR Presensi Hari Ini"
-        subtitle={session ? `Berlaku sampai ${formatDate(session.expires_at, true)}` : "Belum ada sesi untuk hari ini"}
+        subtitle={session ? `Berlaku sampai ${formatDate(session.expiresAt ?? "", true)}` : "Belum ada sesi untuk hari ini"}
         action={
           <Button variant="gold" isLoading={isPending} onClick={handleGenerate}>
             <RefreshCw className="h-4 w-4" />

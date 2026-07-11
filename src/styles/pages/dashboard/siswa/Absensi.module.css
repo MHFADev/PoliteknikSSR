@@ -22,3 +22,39 @@
   justify-content: center;
   padding: 2rem 0;
 }
+
+/* ============================================
+ * Responsive Mobile — Perbaikan untuk HP & Tablet
+ * ============================================ */
+
+@media (max-width: 768px) {
+  .pageContainer {
+    gap: 0.75rem;
+  }
+
+  .pageHeader h1 {
+    font-size: 1.125rem;
+  }
+
+  .pageHeader p {
+    font-size: 0.75rem;
+  }
+
+  .scannerCard {
+    padding: 1rem 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .pageContainer {
+    gap: 0.5rem;
+  }
+
+  .pageHeader h1 {
+    font-size: 1rem;
+  }
+
+  .scannerCard {
+    padding: 0.5rem 0;
+  }
+}

@@ -13,8 +13,8 @@ type Announcement = {
   id: string;
   title: string;
   content: string;
-  broadcast_to_all: boolean;
-  created_at: string;
+  broadcastToAll: boolean;
+  createdAt: string;
 };
 
 export default function SiswaPengumumanPage() {
@@ -28,7 +28,7 @@ export default function SiswaPengumumanPage() {
       if (!user) return;
       supabase.from("profiles").select("jurusan_id").eq("id", user.id).single().then(({ data: profile }) => {
         getAnnouncementsForStudent(user.id, profile?.jurusan_id ?? null).then((data) => {
-          setAnnouncements(data as Announcement[]);
+          setAnnouncements(data as unknown as Announcement[]);
           setLoading(false);
         });
       });
@@ -57,10 +57,10 @@ export default function SiswaPengumumanPage() {
                 <div className={styles.announcementContent}>
                   <div className={styles.announcementTitleRow}>
                     <h3 className={styles.announcementTitle}>{ann.title}</h3>
-                    {ann.broadcast_to_all && <Badge tone="success">Semua Jurusan</Badge>}
+                    {ann.broadcastToAll && <Badge tone="success">Semua Jurusan</Badge>}
                   </div>
                   <p className={styles.announcementBody}>{ann.content}</p>
-                  <p className={styles.announcementDate}>{formatDate(ann.created_at)}</p>
+                  <p className={styles.announcementDate}>{formatDate(ann.createdAt)}</p>
                 </div>
               </div>
             </Card>

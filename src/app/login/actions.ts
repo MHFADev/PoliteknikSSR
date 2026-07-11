@@ -5,11 +5,10 @@
  *
  * Alur:
  * - Terima email + password dari form login
- * - Panggil supabase.auth.signInWithPassword
- * - Jika error → return pesan error
- * - Jika sukses, cek status approved user:
- *   - Jika user_metadata.approved === false → tolak login (akun belum disetujui admin)
- *   - Jika user_metadata.approved === true atau undefined (legacy) → izinkan login
+ * - Panggil Repositories.users().signIn() yang menangani:
+ *   - Autentikasi via Supabase Auth
+ *   - Cek status approved user
+ *   - Blokir jika akun belum disetujui admin
  * - Jika sukses → return success (middleware akan redirect ke dashboard)
  *
  * Keamanan:
@@ -20,7 +19,7 @@
 
 "use server";
 
-import { createClient } from "@/lib/supabase/server";
+import { Repositories } from "@/lib/repositories";
 
 /**
  * signInWithPassword — Login dengan email dan password
@@ -29,22 +28,7 @@ import { createClient } from "@/lib/supabase/server";
  * @returns Object { success } atau { error }
  */
 export async function signInWithPassword(email: string, password: string) {
-  const supabase = createClient();
-  const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-
-  if (error) {
-    // Pesan error generik untuk mencegah user enumeration
-    return { error: "Email atau kata sandi salah." };
-  }
-
-  // Cek status approved user — blokir jika admin belum menyetujui akun
-  // - user_metadata.approved === false → akun baru yang belum disetujui admin
-  // - user_metadata.approved === true atau undefined → legacy user, izinkan login
-  if (data.user?.user_metadata?.approved === false) {
-    // Langsung logout karena akun belum disetujui
-    await supabase.auth.signOut();
-    return { error: "Akun Anda belum disetujui oleh admin. Silakan tunggu persetujuan." };
-  }
-
+  const result = await Repositories.users().signIn(email, password);
+  if (result.error) return { error: result.error };
   return { success: true };
 }

@@ -16,9 +16,9 @@ type Announcement = {
   id: string;
   title: string;
   content: string;
-  broadcast_to_all: boolean;
-  created_at: string;
-  announcement_recipients: { study_program_id: string; study_programs?: { nama: string; kode: string } }[];
+  broadcastToAll: boolean;
+  createdAt: string;
+  recipients: string[];
 };
 
 export default function AdminBroadcastPage() {
@@ -36,8 +36,8 @@ export default function AdminBroadcastPage() {
   function loadData() {
     setLoading(true);
     Promise.all([getStudyPrograms(), getAnnouncements()]).then(([progs, anns]) => {
-      setPrograms(progs as StudyProgram[]);
-      setAnnouncements(anns as Announcement[]);
+      setPrograms(progs as unknown as StudyProgram[]);
+      setAnnouncements(anns as unknown as Announcement[]);
       setLoading(false);
     });
   }
@@ -123,19 +123,19 @@ export default function AdminBroadcastPage() {
                     <p className={styles.announcementTitle}>{ann.title}</p>
                     <p className={styles.announcementBody}>{ann.content}</p>
                     <div className={styles.announcementMeta}>
-                      {ann.broadcast_to_all ? (
+                      {ann.broadcastToAll ? (
                         <Badge tone="success">Semua Jurusan</Badge>
                       ) : (
-                        ann.announcement_recipients?.map((r) => {
-                          const prog = programs.find((p) => p.id === r.study_program_id);
+                        ann.recipients?.map((spId) => {
+                          const prog = programs.find((p) => p.id === spId);
                           return (
-                            <Badge key={r.study_program_id} tone="neutral">
-                              {prog?.nama ?? r.study_program_id}
+                            <Badge key={spId} tone="neutral">
+                              {prog?.nama ?? spId}
                             </Badge>
                           );
                         })
                       )}
-                      <span className={styles.announcementDate}>{formatDate(ann.created_at)}</span>
+                      <span className={styles.announcementDate}>{formatDate(ann.createdAt)}</span>
                     </div>
                   </div>
                 </div>

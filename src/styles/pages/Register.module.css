@@ -106,8 +106,129 @@
  * Responsive Design
  * ============================================ */
 
+@media (max-width: 768px) {
+  .main {
+    padding: 16px 12px;
+  }
+
+  .form {
+    gap: 16px;
+  }
+
+  .label {
+    font-size: 14px;
+  }
+
+  .input {
+    font-size: 16px;
+    padding: 10px 14px;
+  }
+
+  .submitBtn {
+    margin-top: 0;
+  }
+
+  .footer {
+    margin-top: 16px;
+    padding-top: 16px;
+  }
+
+  .footerText {
+    font-size: 14px;
+  }
+
+  .successSection {
+    padding: 16px 4px;
+  }
+
+  .successTitle {
+    font-size: 20px;
+  }
+
+  .successDesc {
+    font-size: 14px;
+    max-width: 100%;
+  }
+
+  .roleName {
+    font-size: 14px;
+  }
+
+  .roleDesc {
+    font-size: 12px;
+  }
+}
+
 @media (max-width: 480px) {
+  .main {
+    padding: 12px 8px;
+  }
+
   .roleGroup { grid-template-columns: 1fr; }
-  .roleOption { padding: 16px; }
-  .input { font-size: 16px; padding: 10px 14px; }
+  .roleOption { padding: 14px; gap: 6px; border-radius: 12px; }
+  .roleIcon { width: 28px; height: 28px; }
+  .roleName { font-size: 14px; }
+  .roleDesc { font-size: 12px; }
+  .input { font-size: 16px; padding: 10px 12px; border-radius: 10px; }
+
+  .label {
+    font-size: 13px;
+  }
+
+  .form {
+    gap: 14px;
+    padding: 0 2px;
+  }
+
+  .fieldError {
+    font-size: 12px;
+  }
+
+  .emailWarning {
+    font-size: 12px;
+  }
+
+  .errorBox {
+    font-size: 14px;
+    padding: 10px 12px;
+    border-radius: 10px;
+  }
+
+  .submitBtn {
+    margin-top: 0;
+  }
+
+  .footer {
+    margin-top: 12px;
+    padding-top: 14px;
+  }
+
+  .footerText {
+    font-size: 13px;
+  }
+
+  .successSection {
+    padding: 12px 2px;
+  }
+
+  .successTitle {
+    font-size: 18px;
+    margin-bottom: 8px;
+  }
+
+  .successDesc {
+    font-size: 13px;
+    margin-bottom: 20px;
+  }
+
+  .successIconWrapper {
+    width: 56px;
+    height: 56px;
+    margin-bottom: 16px;
+  }
+
+  .successIcon {
+    width: 28px;
+    height: 28px;
+  }
 }

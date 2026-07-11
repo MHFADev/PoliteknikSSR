@@ -38,7 +38,8 @@ export default async function AdminLayout({
   return (
     <div className="flex min-h-screen bg-white">
       <Sidebar role="admin" fullName={profile?.full_name ?? "Admin"} />
-      <main className="flex-1 overflow-y-auto p-4 pt-16 sm:p-6 sm:pt-6 lg:p-8 bg-mist-soft">
+<<<<<<< HEAD
+      <main className="flex-1 overflow-x-hidden overflow-y-auto p-4 pt-16 sm:p-6 sm:pt-6 lg:p-8 bg-mist-soft max-w-full">
         {children}
       </main>
     </div>

@@ -22,3 +22,116 @@
 .gpsInfo { display: flex; align-items: center; gap: 8px; font-size: 14px; color: #475569; }
 .gpsIcon { width: 16px; height: 16px; flex-shrink: 0; color: #3B82F6; }
 .footer { margin-top: 32px; text-align: center; font-size: 14px; color: #94A3B8; }
+
+/* ============================================
+ * Responsive Mobile — Perbaikan untuk HP & Tablet
+ * ============================================ */
+
+@media (max-width: 768px) {
+  .main {
+    padding: 0 12px;
+  }
+
+  .card {
+    padding: 24px;
+    border-radius: 16px;
+  }
+
+  .header {
+    margin-bottom: 24px;
+  }
+
+  .title {
+    font-size: 20px;
+  }
+
+  .subtitle {
+    font-size: 14px;
+  }
+
+  .form {
+    gap: 16px;
+  }
+
+  .label {
+    font-size: 14px;
+  }
+
+  .input {
+    font-size: 16px;
+    padding: 10px 14px;
+  }
+
+  .errorBox {
+    font-size: 14px;
+    padding: 10px 14px;
+  }
+
+  .footer {
+    margin-top: 24px;
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 480px) {
+  .main {
+    padding: 0 8px;
+  }
+
+  .card {
+    padding: 20px 16px;
+    border-radius: 12px;
+    max-width: 100%;
+  }
+
+  .header {
+    margin-bottom: 20px;
+  }
+
+  .logo {
+    max-width: 120px;
+    height: auto;
+  }
+
+  .title {
+    font-size: 18px;
+  }
+
+  .subtitle {
+    font-size: 13px;
+    margin-top: 4px;
+  }
+
+  .form {
+    gap: 14px;
+  }
+
+  .label {
+    font-size: 13px;
+  }
+
+  .input {
+    font-size: 16px;
+    padding: 10px 12px;
+    border-radius: 10px;
+  }
+
+  .toggleBtn {
+    padding-right: 12px;
+  }
+
+  .errorBox {
+    font-size: 13px;
+    padding: 8px 12px;
+    border-radius: 10px;
+  }
+
+  .gpsInfo {
+    font-size: 13px;
+  }
+
+  .footer {
+    margin-top: 20px;
+    font-size: 12px;
+  }
+}

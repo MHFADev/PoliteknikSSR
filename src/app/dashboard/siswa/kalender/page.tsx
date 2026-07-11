@@ -11,20 +11,20 @@ import styles from "@/styles/pages/dashboard/siswa/Kalender.module.css";
 const MONTHS = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
 const DAYS = ["Min", "Sen", "Sel", "Rab", "Kam", "Jum", "Sab"];
 
-type CalendarEvent = { id: string; title: string; description: string | null; event_date: string; end_date: string | null; tipe: "libur" | "event"; student_id: string | null };
-type AttendanceRecord = { scanned_at: string; status: string };
-type LeaveRequest = { start_date: string; end_date: string; type: string; status: string };
+type CalendarEvent = { id: string; title: string; description: string | null; eventDate: string; endDate: string | null; tipe: "libur" | "event"; studentId: string | null };
+type AttendanceRecord = { scannedAt: string; status: string };
+type LeaveRequest = { startDate: string; endDate: string; type: string; status: string };
 
 function getDayStatus(dayStr: string, records: AttendanceRecord[], leaves: LeaveRequest[], events: CalendarEvent[]): { label: string; color: string; dot: string } | null {
-  if (events.some((e) => e.event_date === dayStr && e.tipe === "libur")) {
+  if (events.some((e) => e.eventDate === dayStr && e.tipe === "libur")) {
     return { label: "Libur PKL", color: "bg-flip7-coral-light/20 border-flip7-coral", dot: "bg-flip7-coral" };
   }
-  const leave = leaves.find((l) => dayStr >= l.start_date && dayStr <= l.end_date);
+  const leave = leaves.find((l) => dayStr >= l.startDate && dayStr <= l.endDate);
   if (leave) {
     if (leave.type === "sakit") return { label: "Sakit", color: "bg-coral-soft border-coral", dot: "bg-coral" };
     if (leave.type === "izin") return { label: "Izin", color: "bg-sun-soft border-sun", dot: "bg-sun" };
   }
-  const record = records.find((r) => r.scanned_at.slice(0, 10) === dayStr);
+  const record = records.find((r) => r.scannedAt.slice(0, 10) === dayStr);
   if (record) return { label: "Masuk", color: "bg-leaf-soft border-leaf", dot: "bg-leaf" };
   return null;
 }
@@ -34,15 +34,18 @@ export default function SiswaKalenderPage() {
   const [events, setEvents] = useState<CalendarEvent[]>([]);
   const [records, setRecords] = useState<AttendanceRecord[]>([]);
   const [leaves, setLeaves] = useState<LeaveRequest[]>([]);
+  const [studentSince, setStudentSince] = useState<string | null>(null); // Tanggal siswa mulai terdaftar
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState({ hadir: 0, sakit: 0, izin: 0, alfa: 0, total: 0 });
 
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
   const todayStr = new Date().toISOString().slice(0, 10);
+  // Tanggal join siswa — dipakai untuk tidak menampilkan Alfa sebelum siswa terdaftar
+  const joinDate = studentSince ? new Date(studentSince).toISOString().slice(0, 10) : null;
 
-  function loadData() {
-    setLoading(true);
+  function loadData(silent = false) {
+    if (!silent) setLoading(true);
     const supabase = createClient();
 
     supabase.auth.getUser().then(({ data: { user } }) => {
@@ -52,9 +55,15 @@ export default function SiswaKalenderPage() {
         getEvents(year, month + 1, user.id),
         getStudentAttendanceByMonth(user.id, year, month + 1),
       ]).then(([evts, data]) => {
-        setEvents(evts as CalendarEvent[]);
-        setRecords(data.records);
-        setLeaves(data.leaves);
+        setEvents(evts as unknown as CalendarEvent[]);
+        setRecords(data.records as unknown as AttendanceRecord[]);
+        setLeaves(data.leaves as unknown as LeaveRequest[]);
+        // Simpan tanggal pendaftaran siswa untuk filter tanggal sebelum daftar
+        setStudentSince(data.studentSince || null);
+
+        const joinDate = data.studentSince
+          ? new Date(data.studentSince).toISOString().slice(0, 10)
+          : null;
 
         const daysInMonth = new Date(year, month + 1, 0).getDate();
         let hadir = 0, sakit = 0, izin = 0, alfa = 0;
@@ -62,7 +71,9 @@ export default function SiswaKalenderPage() {
         for (let day = 1; day <= daysInMonth; day++) {
           const dateStr = `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
           if (dateStr > todayStr) break;
-          const status = getDayStatus(dateStr, data.records, data.leaves, evts as CalendarEvent[]);
+          // Lewati tanggal sebelum siswa terdaftar — bukan tanggung jawab mereka
+          if (joinDate && dateStr < joinDate) continue;
+          const status = getDayStatus(dateStr, data.records, data.leaves, evts as unknown as CalendarEvent[]);
           if (!status) alfa++;
           else if (status.label === "Masuk" || status.label === "Libur PKL") hadir++;
           else if (status.label === "Sakit") sakit++;
@@ -70,12 +81,26 @@ export default function SiswaKalenderPage() {
         }
 
         setStats({ hadir, sakit, izin, alfa, total: hadir + sakit + izin + alfa });
-        setLoading(false);
+        if (!silent) setLoading(false);
       });
     });
   }
 
   useEffect(() => { loadData(); }, [currentDate]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Realtime: perbarui kalender secara otomatis saat admin menambah/edit/menghapus event
+  useEffect(() => {
+    const supabase = createClient();
+    const channel = supabase
+      .channel("calendar-changes-siswa")
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "calendar_events" },
+        () => loadData(true)
+      )
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   function prevMonth() { setCurrentDate(new Date(year, month - 1)); }
   function nextMonth() { setCurrentDate(new Date(year, month + 1)); }
@@ -91,8 +116,10 @@ export default function SiswaKalenderPage() {
     const dateStr = `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
     const isToday = dateStr === todayStr;
     const status = getDayStatus(dateStr, records, leaves, events);
-    const isLibur = events.some((e) => e.event_date === dateStr && e.tipe === "libur");
+    const isLibur = events.some((e) => e.eventDate === dateStr && e.tipe === "libur");
     const isPast = dateStr < todayStr;
+    // Cek apakah tanggal sebelum siswa terdaftar — untuk tampilkan "—" bukan "Alfa"
+    const isBeforeJoin = joinDate ? dateStr < joinDate : false;
 
     let cellClass = styles.calendarCellDefault;
     if (status?.color) {
@@ -117,10 +144,16 @@ export default function SiswaKalenderPage() {
             <span className={styles.calendarStatusLabel}>{status.label}</span>
           </div>
         )}
-        {isPast && !status && !isLibur && (
+        {isPast && !status && !isLibur && !isBeforeJoin && (
           <div className={styles.calendarStatus}>
             <span className={styles.calendarStatusDot} style={{ background: '#EF4444' }} />
             <span className={styles.calendarStatusLabel}>Alfa</span>
+          </div>
+        )}
+        {isPast && !status && !isLibur && isBeforeJoin && (
+          <div className={styles.calendarStatus}>
+            <span className={styles.calendarStatusDot} style={{ background: '#9CA3AF' }} />
+            <span className={styles.calendarStatusLabel}>—</span>
           </div>
         )}
       </div>

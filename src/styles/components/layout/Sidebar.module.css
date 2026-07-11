@@ -169,5 +169,85 @@
 }
 .logoutBtn:hover { background: #F8FAFC; color: #F87171; }
 
-.hamburger { position: fixed; left: 16px; top: 16px; z-index: 50; width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; border-radius: 16px; background: #FFF; box-shadow: 0 8px 24px rgba(15,23,42,0.06); border: 1px solid #E2E8F0; color: #0F172A; }
+.hamburger { position: fixed; left: 16px; top: 16px; z-index: 50; width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; border-radius: 16px; background: #FFF; box-shadow: 0 8px 24px rgba(15,23,42,0.06); border: 1px solid #E2E8F0; color: #0F172A; cursor: pointer; transition: background 150ms; }
+.hamburger:hover { background: #F1F5F9; }
 @media (min-width: 1024px) { .hamburger { display: none; } }
+
+/* ============================================
+ * Responsive Mobile — Perbaikan tambahan untuk HP
+ * ============================================ */
+
+@media (max-width: 480px) {
+  .desktop {
+    width: 100%;
+  }
+
+  .mobileDrawer {
+    width: 100%;
+    max-width: 280px;
+  }
+
+  .content {
+    padding: 16px 12px;
+  }
+
+  .logo {
+    margin-bottom: 16px;
+  }
+
+  .logo img {
+    max-width: 120px;
+  }
+
+  .linkText {
+    padding: 8px 10px;
+    font-size: 13px;
+    gap: 10px;
+    border-radius: 12px;
+  }
+
+  .nav {
+    gap: 2px;
+  }
+
+  .userSection {
+    padding: 12px 6px 0;
+    gap: 8px;
+  }
+
+  .userInfo {
+    gap: 8px;
+  }
+
+  .avatar {
+    width: 32px;
+    height: 32px;
+    font-size: 14px;
+  }
+
+  .userName {
+    font-size: 13px;
+  }
+
+  .userRole {
+    font-size: 11px;
+  }
+
+  .logoutBtn {
+    padding: 8px 10px;
+    font-size: 13px;
+    border-radius: 12px;
+  }
+
+  .hamburger {
+    left: 12px;
+    top: 12px;
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+  }
+
+  .mobileOverlay {
+    backdrop-filter: blur(2px);
+  }
+}
