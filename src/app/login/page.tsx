@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import Link from "next/link";
 import { motion } from "framer-motion";
 import { Loader2, MapPin, Eye, EyeOff } from "lucide-react";
 import { signInWithPassword } from "./actions";
@@ -188,6 +189,14 @@ export default function LoginPage() {
             {gpsStep ? "Memverifikasi Lokasi..." : "Login"}
           </Button>
         </form>
+
+        {/* Tautan ke halaman registrasi untuk user yang belum punya akun */}
+        <p className="mt-4 text-center text-sm">
+          Belum punya akun?{' '}
+          <Link href="/register" className="font-semibold text-sky hover:text-sky-deep underline">
+            Daftar di sini
+          </Link>
+        </p>
 
         <p className={styles.footer}>
           Hubungi Admin Sekolah Jika Belum Memiliki Akses.

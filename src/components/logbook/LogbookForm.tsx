@@ -78,14 +78,20 @@ export function LogbookForm({ existingContent, existingPhotoUrl }: { existingCon
         const fileName = `${Date.now()}.${fileExt}`;
         const filePath = `logbook_photos/${fileName}`;
 
+        /*
+         * Upload ke bucket logbook_photos.
+         * Bucket ini harus dibuat di Supabase dashboard (Storage > Create bucket > logbook_photos, public).
+         * Untuk menghindari error "Bucket not found", pastikan bucket sudah ada.
+         */
+        const BUCKET_NAME = "logbook_photos";
         const { error: uploadError } = await supabase.storage
-          .from("attachments")
+          .from(BUCKET_NAME)
           .upload(filePath, photo, { upsert: true, contentType: "image/jpeg" });
 
         if (uploadError) throw new Error("Gagal mengupload foto: " + uploadError.message);
 
-        // Get public URL
-        const { data } = supabase.storage.from("attachments").getPublicUrl(filePath);
+        // Ambil public URL hasil upload
+        const { data } = supabase.storage.from(BUCKET_NAME).getPublicUrl(filePath);
         photoUrl = data.publicUrl;
       }
 

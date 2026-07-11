@@ -2,6 +2,8 @@ import { createClient } from "@/lib/supabase/server";
 import { Card, CardHeader } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { AddStudentModal } from "@/components/admin/AddStudentModal";
+import { PendingApprovals } from "@/components/admin/PendingApprovals";
+import { getPendingUsers } from "@/actions/admin";
 import styles from "@/styles/pages/dashboard/admin/Pengguna.module.css";
 
 export default async function AdminUsersPage() {
@@ -12,12 +14,19 @@ export default async function AdminUsersPage() {
     .select("id, full_name, identity_number, kelas, instansi, role, created_at, jurusan_id, study_programs!left(nama)")
     .order("created_at", { ascending: false });
 
+  const pendingUsers = await getPendingUsers();
+
   return (
     <div className={styles.pageContainer}>
       <div className={styles.pageHeader}>
         <h1>Kelola Pengguna</h1>
         <p>Lihat dan kelola semua pengguna (siswa, pembimbing, dan admin).</p>
       </div>
+
+      <Card>
+        <CardHeader title="Registrasi Menunggu Persetujuan" />
+        <PendingApprovals pendingUsers={pendingUsers} />
+      </Card>
 
       <Card>
         <CardHeader title="Daftar Pengguna" action={<AddStudentModal />} />
