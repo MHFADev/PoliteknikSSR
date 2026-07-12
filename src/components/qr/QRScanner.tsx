@@ -42,6 +42,13 @@ export function QRScanner() {
       if (permissionStatus.state === "denied") {
         return false;
       }
+      permissionStatus.onchange = () => {
+        if (permissionStatus.state === "denied") {
+          setState("error");
+          setMessage("Izin kamera dicabut saat scanning. Silakan izinkan kamera dan coba lagi.");
+          stopScanner();
+        }
+      };
       return true;
     } catch {
       return true; // If permissions API not supported, proceed anyway

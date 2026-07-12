@@ -31,6 +31,18 @@ export function LocationVerifier({ onVerified }: VerifierProps) {
       setStatus('checking');
       setMessage('Memeriksa lokasi...');
 
+      // 0. Cek izin lokasi terlebih dahulu
+      try {
+        const permission = await navigator.permissions.query({ name: "geolocation" });
+        if (permission.state === "denied") {
+          setStatus('error');
+          setMessage('Izin lokasi ditolak. Harap aktifkan izin lokasi di pengaturan browser Anda.');
+          return;
+        }
+      } catch {
+        // Permissions API tidak didukung, lanjutkan
+      }
+
       // 1. Dapatkan izin lokasi dan koordinat siswa
       const position = await new Promise<GeolocationPosition>((resolve, reject) => {
         navigator.geolocation.getCurrentPosition(

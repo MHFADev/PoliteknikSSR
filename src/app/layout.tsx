@@ -2,13 +2,7 @@
  * layout.tsx — Root Layout Aplikasi
  * ==========================================
  * Layout utama Next.js yang membungkus seluruh halaman.
- * Mengatur font global (Inter, Jakarta, Josefin) dan
- * menyediakan Leaflet CSS CDN untuk peta di halaman lokasi.
- *
- * Alur:
- * - Import dan konfigurasi font Google (variable CSS)
- * - Metadata global (title, description, favicon)
- * - Inject Leaflet CSS di <head> (CDN)
+ * Mengatur font global (Inter, Jakarta, Josefin).
  */
 
 import type { Metadata } from "next";
@@ -54,13 +48,6 @@ export default function RootLayout({
       className={`${inter.variable} ${jakarta.variable} ${josefin.variable}`}
     >
       <head>
-        {/* Leaflet CSS CDN */}
-        <link
-          rel="stylesheet"
-          href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
-          crossOrigin=""
-        />
       </head>
       <body className="font-sans antialiased">{children}</body>
     </html>

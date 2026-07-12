@@ -23,6 +23,16 @@ function getCurrentPosition(): Promise<GeolocationPosition> {
   });
 }
 
+async function checkGeolocationPermission(): Promise<boolean> {
+  try {
+    const permission = await navigator.permissions.query({ name: "geolocation" });
+    if (permission.state === "denied") return false;
+    return true;
+  } catch {
+    return true;
+  }
+}
+
 // Komponen halaman login utama
 export default function LoginPage() {
   const router = useRouter();
@@ -67,6 +77,16 @@ export default function LoginPage() {
 
     // 3. Minta izin lokasi untuk verifikasi geofence
     setGpsStep(true);
+
+    // Cek izin lokasi terlebih dahulu
+    const hasLocationPermission = await checkGeolocationPermission();
+    if (!hasLocationPermission) {
+      setError("Izin lokasi ditolak. Harap aktifkan izin lokasi di pengaturan browser Anda.");
+      setIsSubmitting(false);
+      setGpsStep(false);
+      return;
+    }
+
     try {
       const position = await getCurrentPosition();
       const { latitude, longitude } = position.coords;
@@ -78,10 +98,16 @@ export default function LoginPage() {
         setGpsStep(false);
         return;
       }
-    } catch {
-      setError(
-        "Akses lokasi dibutuhkan untuk login. Izinkan akses lokasi di browser Anda.",
-      );
+    } catch (error: any) {
+      const errMsg =
+        error?.code === 1
+          ? "Izin lokasi ditolak. Harap izinkan akses lokasi di browser Anda."
+          : error?.code === 2
+            ? "Tidak dapat menemukan lokasi. Pastikan GPS aktif."
+            : error?.code === 3
+              ? "Waktu pencarian lokasi habis. Coba lagi."
+              : "Akses lokasi dibutuhkan untuk login. Izinkan akses lokasi di browser Anda.";
+      setError(errMsg);
       setIsSubmitting(false);
       setGpsStep(false);
       return;
