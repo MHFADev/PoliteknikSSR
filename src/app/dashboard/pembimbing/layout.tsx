@@ -1,22 +1,7 @@
-/*
- * layout.tsx — Dashboard Layout Pembimbing
- * ==========================================
- * Layout khusus untuk halaman dashboard pembimbing.
- * Menyediakan Sidebar dengan navigasi pembimbing dan container konten utama.
- *
- * Alur:
- * 1. Cek sesi login — redirect ke /login jika tidak ada
- * 2. Cari profil user untuk mendapatkan nama (ditampilkan di sidebar)
- * 3. Render Sidebar (role: pembimbing) + konten halaman
- *
- * Proteksi:
- * - Middleware sudah memfilter akses berdasarkan role,
- *   namun layout juga melakukan pengecekan sesi sebagai lapisan tambahan
- */
-
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { Sidebar } from "@/components/layout/Sidebar";
+import { MobileNav } from "@/components/layout/MobileNav";
 
 export default async function PembimbingLayout({ children }: { children: React.ReactNode }) {
   const supabase = createClient();
@@ -34,7 +19,8 @@ export default async function PembimbingLayout({ children }: { children: React.R
   return (
     <div className="flex min-h-screen bg-white">
       <Sidebar role="pembimbing" fullName={profile?.full_name ?? "Pembimbing"} />
-      <main className="flex-1 overflow-x-hidden overflow-y-auto p-4 pt-16 sm:p-6 sm:pt-6 lg:p-8 bg-mist-soft max-w-full">{children}</main>
+      <MobileNav role="pembimbing" fullName={profile?.full_name ?? "Pembimbing"} />
+      <main className="flex-1 overflow-x-hidden overflow-y-auto p-4 pt-16 sm:p-6 sm:pt-6 lg:p-8 bg-mist-soft max-w-full pb-[72px] lg:pb-8">{children}</main>
     </div>
   );
 }
