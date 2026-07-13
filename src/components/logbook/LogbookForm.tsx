@@ -113,9 +113,14 @@ export function LogbookForm({ existingContent, existingPhotoUrl }: { existingCon
     <Card>
       <CardHeader title="Kegiatan Hari Ini" subtitle={formatDate(today)} />
       <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="flex justify-between items-center">
+          <label className="text-sm font-medium text-ink">Deskripsi Kegiatan</label>
+          <span className="text-xs text-mist-dim">{content.length}/100</span>
+        </div>
         <textarea
           required
           minLength={20}
+          maxLength={100}
           rows={6}
           value={content}
           onChange={(e) => setContent(e.target.value)}

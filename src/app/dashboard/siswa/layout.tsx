@@ -1,22 +1,7 @@
-/*
- * layout.tsx — Dashboard Layout Siswa
- * ==========================================
- * Layout khusus untuk halaman dashboard siswa.
- * Menyediakan Sidebar dengan navigasi siswa dan container konten utama.
- *
- * Alur:
- * 1. Cek sesi login — redirect ke /login jika tidak ada
- * 2. Cari profil user untuk mendapatkan nama (ditampilkan di sidebar)
- * 3. Render Sidebar (role: siswa) + konten halaman
- *
- * Proteksi:
- * - Middleware sudah memfilter akses berdasarkan role,
- *   namun layout juga melakukan pengecekan sesi sebagai lapisan tambahan
- */
-
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { Sidebar } from "@/components/layout/Sidebar";
+import { MobileNav } from "@/components/layout/MobileNav";
 
 export default async function SiswaLayout({ children }: { children: React.ReactNode }) {
   const supabase = createClient();
@@ -34,7 +19,8 @@ export default async function SiswaLayout({ children }: { children: React.ReactN
   return (
     <div className="flex min-h-screen bg-white">
       <Sidebar role="siswa" fullName={profile?.full_name ?? "Siswa"} />
-      <main className="flex-1 overflow-x-hidden overflow-y-auto p-4 pt-16 sm:p-6 sm:pt-6 lg:p-8 bg-mist-soft max-w-full">{children}</main>
+      <MobileNav role="siswa" fullName={profile?.full_name ?? "Siswa"} />
+      <main className="flex-1 overflow-x-hidden overflow-y-auto p-4 pt-16 sm:p-6 sm:pt-6 lg:p-8 bg-mist-soft max-w-full pb-[72px] lg:pb-8">{children}</main>
     </div>
   );
 }

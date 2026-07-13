@@ -1,26 +1,19 @@
-/*
- * Sidebar.module.css — Gaya untuk navigasi sidebar
- * =================================================
- * Sidebar kiri tetap (256px) di desktop, drawer overlay di mobile.
- * Navigasi dapat di-scroll jika item terlalu banyak.
- * Bagian user (avatar + logout) tetap menempel di底部.
- */
+/* Sidebar.module.css — Desktop sidebar only */
 
-/* ─── Desktop Sidebar ──────────────────────────── */
-/* Muncul sebagai flex column di layar ≥1024px, tersembunyi di mobile */
+/* Desktop Sidebar */
 .desktop {
-  display: none;
-  height: 100dvh; /* Gunakan dvh agar tidak terpotong oleh browser chrome mobile */
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
   width: 256px;
   flex-shrink: 0;
   border-right: 1px solid #E2E8F0;
   background: #FFF;
 }
-@media (min-width: 1024px) {
-  .desktop { display: flex; flex-direction: column; }
+@media (max-width: 1023px) {
+  .desktop { display: none; }
 }
 
-/* Compact mode: kurangi padding saat viewport pendek */
 @media (max-height: 700px) {
   .content { padding: 12px 12px; }
   .logo { margin-bottom: 12px; }
@@ -31,7 +24,6 @@
   .userSection { padding: 10px 6px 0; gap: 8px; }
 }
 
-/* Extra compact untuk viewport sangat pendek */
 @media (max-height: 500px) {
   .content { padding: 8px 8px; }
   .logo { margin-bottom: 8px; }
@@ -42,38 +34,15 @@
   .userInfo { gap: 8px; }
 }
 
-/* ─── Mobile Drawer Overlay ────────────────────── */
-/* Latar belakang gelap saat drawer terbuka */
-.mobileOverlay {
-  position: fixed;
-  inset: 0;
-  z-index: 40;
-  background: rgba(15,23,42,0.4);
-  backdrop-filter: blur(4px);
-}
-@media (min-width: 1024px) {
-  .mobileOverlay { display: none; }
-}
-
-/* Panel geser dari kiri untuk mobile */
-.mobileDrawer {
-  height: 100dvh;
-  width: 288px;
-  border-right: 1px solid #E2E8F0;
-  background: #FFF;
-}
-
-/* ─── Konten Sidebar ───────────────────────────── */
-/* Flex column: logo di atas → nav scrollable → user di bawah */
+/* Content */
 .content {
   display: flex;
   height: 100%;
   flex-direction: column;
   padding: 24px 16px;
-  overflow: hidden; /* Cegah overflow keluar */
+  overflow: hidden;
 }
 
-/* Logo tetap di atas */
 .logo {
   flex-shrink: 0;
   margin-bottom: 24px;
@@ -84,14 +53,13 @@
   height: auto;
 }
 
-/* Navigasi: scroll otomatis jika item terlalu banyak */
 .nav {
   flex: 1;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
   gap: 4px;
-  min-height: 0; /* Penting untuk flex child overflow */
+  min-height: 0;
   scrollbar-width: thin;
   scrollbar-color: #CBD5E1 transparent;
 }
@@ -105,8 +73,7 @@
 .linkInactive { color: #475569; }
 .linkInactive:hover { color: #0F172A; background: #F8FAFC; }
 
-/* ─── User Section (bawah) ─────────────────────── */
-/* Didorong ke bawah dengan margin-top: auto */
+/* User Section */
 .userSection {
   flex-shrink: 0;
   margin-top: auto;
@@ -118,10 +85,8 @@
   padding: 16px 8px 0;
 }
 
-/* Avatar dan nama user */
 .userInfo { display: flex; align-items: center; gap: 12px; min-width: 0; }
 
-/* Lingkaran avatar dengan inisial */
 .avatar {
   width: 40px;
   height: 40px;
@@ -138,7 +103,6 @@
   box-shadow: 0 8px 24px rgba(15,23,42,0.06);
 }
 
-/* Nama user — terpotong dengan ellipsis jika terlalu panjang */
 .userName {
   overflow: hidden;
   text-overflow: ellipsis;
@@ -154,7 +118,6 @@
   text-transform: capitalize;
 }
 
-/* Tombol logout — lebar penuh, hover berubah jadi merah */
 .logoutBtn {
   display: flex;
   width: 100%;
@@ -168,86 +131,3 @@
   flex-shrink: 0;
 }
 .logoutBtn:hover { background: #F8FAFC; color: #F87171; }
-
-.hamburger { position: fixed; left: 16px; top: 16px; z-index: 50; width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; border-radius: 16px; background: #FFF; box-shadow: 0 8px 24px rgba(15,23,42,0.06); border: 1px solid #E2E8F0; color: #0F172A; cursor: pointer; transition: background 150ms; }
-.hamburger:hover { background: #F1F5F9; }
-@media (min-width: 1024px) { .hamburger { display: none; } }
-
-/* ============================================
- * Responsive Mobile — Perbaikan tambahan untuk HP
- * ============================================ */
-
-@media (max-width: 480px) {
-  .desktop {
-    width: 100%;
-  }
-
-  .mobileDrawer {
-    width: 100%;
-    max-width: 280px;
-  }
-
-  .content {
-    padding: 16px 12px;
-  }
-
-  .logo {
-    margin-bottom: 16px;
-  }
-
-  .logo img {
-    max-width: 120px;
-  }
-
-  .linkText {
-    padding: 8px 10px;
-    font-size: 13px;
-    gap: 10px;
-    border-radius: 12px;
-  }
-
-  .nav {
-    gap: 2px;
-  }
-
-  .userSection {
-    padding: 12px 6px 0;
-    gap: 8px;
-  }
-
-  .userInfo {
-    gap: 8px;
-  }
-
-  .avatar {
-    width: 32px;
-    height: 32px;
-    font-size: 14px;
-  }
-
-  .userName {
-    font-size: 13px;
-  }
-
-  .userRole {
-    font-size: 11px;
-  }
-
-  .logoutBtn {
-    padding: 8px 10px;
-    font-size: 13px;
-    border-radius: 12px;
-  }
-
-  .hamburger {
-    left: 12px;
-    top: 12px;
-    width: 42px;
-    height: 42px;
-    border-radius: 12px;
-  }
-
-  .mobileOverlay {
-    backdrop-filter: blur(2px);
-  }
-}

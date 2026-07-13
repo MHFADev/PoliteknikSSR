@@ -1,136 +1,90 @@
-/* ============================================ */
-/* CSS Module untuk Komponen LocationPicker     */
-/* File: LocationPicker.module.css              */
-/* Picker peta untuk memilih lokasi geografis   */
-/* ============================================ */
-
-/* ===== WRAPPER UTAMA ===== */
-/* Membungkus seluruh komponen (search bar + map + info) */
-/* Menggantikan className="space-y-3" */
+/* CSS Module untuk Komponen LocationPicker */
 .wrapper {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem; /* space-y-3 */
+  gap: 0.75rem;
 }
 
-/* ===== FORM PENCARIAN ===== */
-/* Baris form pencarian lokasi */
-/* Menggantikan className="flex gap-2" */
-.searchForm {
+.coordInputs {
   display: flex;
-  gap: 0.5rem; /* gap-2 */
+  gap: 0.5rem;
+  align-items: flex-end;
 }
 
-/* ===== WRAPPER INPUT SEARCH ===== */
-/* Relative wrapper untuk menampung icon search di dalam input */
-/* className="relative flex-1" */
-.searchWrapper {
-  position: relative;
+.coordField {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
   flex: 1;
 }
 
-/* ===== ICON SEARCH ===== */
-/* Icon pencarian di posisi absolute di dalam input */
-/* className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-ink-muted" */
-.searchIcon {
-  position: absolute;
-  left: 0.75rem; /* left-3 */
-  top: 50%;
-  transform: translateY(-50%);
-  width: 1rem;   /* w-4 */
-  height: 1rem;  /* h-4 */
-  color: var(--color-ink-muted, #6b7280);
-  pointer-events: none; /* agar klik tembus ke input */
+.coordLabel {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--color-steel, #475569);
 }
 
-/* ===== INPUT PENCARIAN ===== */
-/* Field text untuk mencari lokasi */
-/* className="w-full rounded-xl border border-outline bg-white px-10 py-2.5
-   text-sm outline-none focus:border-teal transition-colors" */
-.searchInput {
+.coordInput {
   width: 100%;
-  border-radius: 0.75rem;      /* rounded-xl */
+  border-radius: 0.75rem;
   border: 1px solid var(--color-outline, #d1d5db);
   background-color: #ffffff;
-  padding: 0.625rem 2.5rem;    /* px-10 (40px) py-2.5 */
-  font-size: 0.875rem;         /* text-sm */
-  line-height: 1.25rem;
+  padding: 0.625rem 0.75rem;
+  font-size: 0.875rem;
   outline: none;
   transition: border-color 0.15s ease-in-out;
   box-sizing: border-box;
 }
 
-/* Fokus state: border berubah teal */
-.searchInput:focus {
+.coordInput:focus {
   border-color: var(--color-teal, #2BA8A2);
 }
 
-/* Placeholder styling */
-.searchInput::placeholder {
-  color: var(--color-ink-muted, #6b7280);
-}
-
-/* ===== TOMBOL SEARCH ===== */
-/* Tombol submit untuk mencari */
-/* className="flex items-center gap-2 rounded-xl bg-teal px-4 py-2.5
-   text-sm font-medium text-white hover:bg-teal-dark transition-colors
-   disabled:opacity-50 disabled:cursor-not-allowed" */
-.searchButton {
+.locateButton {
   display: flex;
   align-items: center;
-  gap: 0.5rem;                 /* gap-2 */
-  border-radius: 0.75rem;      /* rounded-xl */
-  background-color: var(--color-teal, #2BA8A2);
-  padding: 0.625rem 1rem;      /* px-4 py-2.5 */
-  font-size: 0.875rem;         /* text-sm */
-  line-height: 1.25rem;
-  font-weight: 500;            /* font-medium */
+  gap: 0.5rem;
+  border-radius: 0.75rem;
+  background-color: var(--color-leaf, #27ae60);
+  padding: 0.625rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
   color: #ffffff;
   border: none;
   cursor: pointer;
   white-space: nowrap;
   transition: background-color 0.15s ease-in-out;
-}
-
-.searchButton:hover {
-  background-color: var(--color-teal-dark, #1e7a75);
-}
-
-.searchButton:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-/* ===== TOMBOL AUTO-LOKASI ===== */
-/* Tombol untuk mendeteksi lokasi pengguna saat ini */
-/* className="flex items-center gap-2 rounded-xl bg-leaf px-4 py-2.5
-   text-sm font-medium text-white hover:bg-leaf-dark transition-colors" */
-.locateButton {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;                 /* gap-2 */
-  border-radius: 0.75rem;      /* rounded-xl */
-  background-color: var(--color-leaf, #27ae60);
-  padding: 0.625rem 1rem;      /* px-4 py-2.5 */
-  font-size: 0.875rem;         /* text-sm */
-  line-height: 1.25rem;
-  font-weight: 500;            /* font-medium */
-  color: #ffffff;
-  border: none;
-  cursor: pointer;
-  transition: background-color 0.15s ease-in-out;
+  height: fit-content;
 }
 
 .locateButton:hover {
   background-color: var(--color-leaf-dark, #1e8449);
 }
 
-/* ===== SPINNER ===== */
-/* Animasi spinner kecil untuk loading */
-/* className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" */
+.coordInfo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: var(--color-ink-subtle, #9ca3af);
+  background-color: var(--color-teal-bg, #e6f7f6);
+  padding: 0.75rem;
+  border-radius: 0.75rem;
+}
+
+.coordText {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.coordRadius {
+  white-space: nowrap;
+}
+
 .spinner {
-  width: 1rem;    /* w-4 */
-  height: 1rem;   /* h-4 */
+  width: 1rem;
+  height: 1rem;
   border: 2px solid #ffffff;
   border-top-color: transparent;
   border-radius: 9999px;
@@ -143,66 +97,6 @@
   }
 }
 
-/* ===== WRAPPER MAP ===== */
-/* Container luar map dengan border dan overflow hidden */
-/* className="rounded-xl border border-outline overflow-hidden relative" */
-.mapWrapper {
-  border-radius: 0.75rem;      /* rounded-xl */
-  border: 1px solid var(--color-outline, #d1d5db);
-  overflow: hidden;
-  position: relative;
-}
-
-/* ===== MAP CONTAINER ===== */
-/* MapContainer dari Leaflet — tinggi dan lebar diatur inline dari props */
-.mapContainer {
-  /* Tinggi (height) diatur inline dari prop height */
-  /* Lebar 100% */
-  width: 100%;
-}
-
-/* State SSR loading untuk peta */
-/* className="h-[400px] w-full flex items-center justify-center
-   bg-teal-bg rounded-xl border border-outline" */
 .mapLoading {
-  height: 400px;
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: var(--color-teal-bg, #e6f7f6);
-  border-radius: 0.75rem;
-  border: 1px solid var(--color-outline, #d1d5db);
-}
-
-/* ===== INFO KOORDINAT ===== */
-/* Bar informasi koordinat di bawah map */
-/* className="flex items-center justify-between text-xs text-ink-subtle
-   bg-teal-bg p-3 rounded-xl" */
-.coordInfo {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  font-size: 0.75rem;         /* text-xs */
-  line-height: 1rem;
-  color: var(--color-ink-subtle, #9ca3af);
-  background-color: var(--color-teal-bg, #e6f7f6);
-  padding: 0.75rem;           /* p-3 */
-  border-radius: 0.75rem;     /* rounded-xl */
-}
-
-/* ===== TEKS KOORDINAT ===== */
-/* Bagian kiri: icon MapPin + teks lat/lng */
-/* className="flex items-center gap-2" */
-.coordText {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem; /* gap-2 */
-}
-
-/* ===== TAMPILAN RADIUS ===== */
-/* Bagian kanan: teks radius */
-.coordRadius {
-  /* Tidak ada kelas Tailwind spesifik selain dari induk */
-  white-space: nowrap;
+  display: none;
 }

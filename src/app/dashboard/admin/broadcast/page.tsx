@@ -155,8 +155,11 @@ export default function AdminBroadcastPage() {
             <input value={title} onChange={(e) => setTitle(e.target.value)} type="text" required placeholder="Pengumuman Libur PKL" className={styles.formInput} />
           </div>
           <div className={styles.formGroup}>
-            <label className={styles.formLabel}>Isi Pengumuman</label>
-            <textarea value={content} onChange={(e) => setContent(e.target.value)} rows={4} required placeholder="Tulis pengumuman..." className={styles.formTextarea} />
+            <div className="flex justify-between items-center">
+              <label className={styles.formLabel}>Isi Pengumuman</label>
+              <span className="text-xs text-mist-dim">{content.length}/100</span>
+            </div>
+            <textarea value={content} onChange={(e) => setContent(e.target.value)} maxLength={100} rows={4} required placeholder="Tulis pengumuman..." className={styles.formTextarea} />
           </div>
 
           <div className={styles.formGroup}>

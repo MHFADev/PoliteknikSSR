@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Loader2, Plus, MapPin, Trash2, Edit, Map } from "lucide-react";
+import { Loader2, Plus, MapPin, Trash2, Edit } from "lucide-react";
 import { Card, CardHeader } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Modal } from "@/components/ui/Modal";
@@ -45,7 +45,6 @@ export default function AdminLokasiPage() {
   function openAdd() {
     setEditing(null);
     setError(null);
-    // Default ke lokasi pertama jika ada, atau default Jakarta dengan radius 50m
     const defaultLoc = locations[0] ?? { latitude: -6.2088, longitude: 106.8456, radius_meters: 50 };
     setTempLocation({
       latitude: defaultLoc.latitude,
@@ -189,20 +188,36 @@ export default function AdminLokasiPage() {
             />
           </div>
 
-          <div className={styles.locationPickerSection}>
-            <div className={styles.locationPickerHeader}>
-              <Map className="h-4 w-4" />
-              <label className="font-medium">Pilih Lokasi di Peta</label>
-            </div>
-            <LocationPicker
-              value={tempLocation}
-              onChange={(newLoc) => setTempLocation(newLoc)}
+          <div className={styles.formGroup}>
+            <label className={styles.formLabel}>Latitude</label>
+            <input
+              type="number"
+              step="any"
+              required
+              value={tempLocation.latitude}
+              onChange={(e) => setTempLocation({ ...tempLocation, latitude: parseFloat(e.target.value) || 0 })}
+              placeholder="-6.2088"
+              className={styles.formInput}
             />
-            <div className={styles.locationPickerCoords}>
-              <span>Koordinat: {tempLocation.latitude.toFixed(6)}, {tempLocation.longitude.toFixed(6)}</span>
-              <span>Radius: {tempLocation.radius_meters}m</span>
-            </div>
           </div>
+
+          <div className={styles.formGroup}>
+            <label className={styles.formLabel}>Longitude</label>
+            <input
+              type="number"
+              step="any"
+              required
+              value={tempLocation.longitude}
+              onChange={(e) => setTempLocation({ ...tempLocation, longitude: parseFloat(e.target.value) || 0 })}
+              placeholder="106.8456"
+              className={styles.formInput}
+            />
+          </div>
+
+          <LocationPicker
+            value={tempLocation}
+            onChange={(newLoc) => setTempLocation(newLoc)}
+          />
 
           <div className={styles.formGroup}>
             <label className={styles.formLabel}>Radius (meter)</label>
