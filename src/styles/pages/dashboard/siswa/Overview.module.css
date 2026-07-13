@@ -9,7 +9,7 @@
   font-family: var(--font-jakarta), sans-serif;
   font-size: 1.5rem;
   font-weight: 600;
-  color: var(--color-teal-dark, #1E8C86);
+  color: var(--color-teal-dark, #1e8c86);
 }
 
 .pageHeader p {
@@ -19,24 +19,23 @@
 
 .reminderBanner {
   border-radius: 16px;
-  background: rgba(255,210,63,0.3);
-  border: 1px solid #FFD23F;
+  background: #293681;
+  border: 1px solid #4274d9;
   padding: 1rem;
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  box-shadow: 0 0 20px rgba(255,210,63,0.15);
+  box-shadow: 0 0 20px #95ccdd;
 }
 
 .reminderBanner h3 {
   font-weight: 700;
-  color: var(--color-teal-dark, #1E8C86);
-  font-size: 1.125rem;
+  color: #95ccdd;
 }
 
 .reminderBanner p {
   font-size: 0.875rem;
-  color: var(--color-ink-muted, #475569);
+  color: #f6f4f1;
 }
 
 .reminderBanner a {
@@ -44,8 +43,8 @@
 }
 
 .reminderCta {
-  background: #FFD23F;
-  color: var(--color-teal-dark, #1E8C86);
+  background: #95ccdd;
+  color: #293681;
   padding: 0.5rem 1rem;
   border-radius: 9999px;
   font-weight: 700;
@@ -53,7 +52,7 @@
 }
 
 .reminderCta:hover {
-  background: #FFE47A;
+  background: #f6f4f1;
 }
 
 .statGrid {
@@ -84,7 +83,7 @@
   width: 0.625rem;
   height: 0.625rem;
   border-radius: 9999px;
-  background: #F87171;
+  background: #f87171;
   flex-shrink: 0;
 }
 
@@ -92,7 +91,7 @@
   width: 0.625rem;
   height: 0.625rem;
   border-radius: 9999px;
-  background: #2BA8A2;
+  background: #2ba8a2;
   flex-shrink: 0;
 }
 
@@ -108,7 +107,7 @@
 .announcementItem h3 {
   font-size: 0.875rem;
   font-weight: 600;
-  color: var(--color-ink, #0F172A);
+  color: var(--color-ink, #0f172a);
 }
 
 .announcementItem p {
@@ -119,7 +118,7 @@
 
 .announcementDate {
   font-size: 0.625rem;
-  color: var(--color-ink-subtle, #94A3B8);
+  color: var(--color-ink-subtle, #94a3b8);
   margin-top: 0.5rem;
 }
 
