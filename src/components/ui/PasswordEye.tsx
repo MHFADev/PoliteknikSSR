@@ -24,7 +24,7 @@ export function PasswordEye({ show, className = "" }: PasswordEyeProps) {
     width: "clamp(18px, 4.5vw, 22px)",
     height: "clamp(18px, 4.5vw, 22px)",
     flexShrink: 0,
-    display: "block",
+    pointerEvents: "none",
   };
 
   const common = {

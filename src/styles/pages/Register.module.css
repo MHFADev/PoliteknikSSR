@@ -255,7 +255,7 @@
   position: absolute;
   inset-y: 0;
   right: 0;
-  width: clamp(44px,10vw,60px);
+  width: clamp(48px,12vw,60px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -266,7 +266,6 @@
   border: none;
   cursor: pointer;
   min-height: 44px;
-  min-width: 44px;
 }
 .toggleBtn:hover { color: #5e9ed6; transform: scale(1.05); }
 .toggleBtn:disabled { opacity: 0.5; cursor: not-allowed; }
