@@ -51,6 +51,9 @@ export default function RootLayout({
       className={`${inter.variable} ${jakarta.variable} ${josefin.variable}`}
     >
       <head>
+        <link rel="icon" href="/favicon.ico" sizes="any" />
+        <link rel="shortcut icon" href="/favicon.ico" />
+        <link rel="apple-touch-icon" href="/favicon.jpg" />
       </head>
       <body className="font-sans antialiased">{children}</body>
     </html>
