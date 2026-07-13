@@ -29,7 +29,7 @@
   font-family: var(--font-jakarta), sans-serif;
   font-size: 1.25rem;
   font-weight: 600;
-  color: var(--color-deep, #0F172A);
+  color: var(--color-deep, #0f172a);
 }
 
 @media (min-width: 640px) {
@@ -40,7 +40,7 @@
 
 .pageHeader p {
   font-size: 0.75rem;
-  color: var(--color-mist-dim, #64748B);
+  color: var(--color-mist-dim, #64748b);
 }
 
 @media (min-width: 640px) {
@@ -83,7 +83,7 @@
   font-family: var(--font-jakarta), sans-serif;
   font-size: 1.125rem;
   font-weight: 600;
-  color: var(--color-deep, #0F172A);
+  color: var(--color-deep, #004cff);
 }
 
 .dayHeaders {
@@ -125,14 +125,14 @@
 .calendarCell {
   min-height: 60px;
   border-radius: 0.5rem;
-  border: 1px solid rgba(15,23,42,0.06);
+  border: 1px solid rgba(15, 23, 42, 0.06);
   padding: 0.25rem;
-  background: #FFFFFF;
+  background: #ffffff;
   transition: border-color 0.15s;
 }
 
 .calendarCell:hover {
-  border-color: rgba(15,23,42,0.2);
+  border-color: rgba(15, 23, 42, 0.2);
 }
 
 @media (min-width: 640px) {
@@ -144,8 +144,8 @@
 }
 
 .calendarCellToday {
-  background: rgba(59,130,246,0.05);
-  border-color: rgba(59,130,246,0.3);
+  background: rgba(59, 130, 246, 0.05);
+  border-color: rgba(59, 130, 246, 0.3);
 }
 
 .calendarDayNumber {
@@ -169,12 +169,12 @@
 }
 
 .calendarDayToday {
-  background: #3B82F6;
-  color: #FFFFFF;
+  background: #3b82f6;
+  color: #ffffff;
 }
 
 .calendarDayNormal {
-  color: var(--color-deep, #0F172A);
+  color: var(--color-deep, #0f172a);
 }
 
 .calendarEvents {
@@ -224,7 +224,7 @@
 }
 
 .eventActionBtn:hover {
-  background: rgba(0,0,0,0.1);
+  background: rgba(0, 0, 0, 0.1);
 }
 
 .eventMoreText {
@@ -280,13 +280,13 @@
   transform: translateY(-50%);
   height: 1rem;
   width: 1rem;
-  color: var(--color-mist-dim, #64748B);
+  color: var(--color-mist-dim, #64748b);
 }
 
 .searchInput {
   border-radius: 12px;
-  border: 1px solid rgba(15,23,42,0.1);
-  background: rgba(255,255,255,0.8);
+  border: 1px solid rgba(15, 23, 42, 0.1);
+  background: rgba(255, 255, 255, 0.8);
   padding: 0.5rem 0.75rem 0.5rem 2.25rem;
   font-size: 0.875rem;
   outline: none;
@@ -294,7 +294,7 @@
 }
 
 .searchInput:focus {
-  border-color: #2BA8A2;
+  border-color: #2ba8a2;
 }
 
 .eventList {
@@ -310,7 +310,7 @@
 }
 
 .eventListItem:hover {
-  background: rgba(15,23,42,0.05);
+  background: rgba(15, 23, 42, 0.05);
 }
 
 .eventListInfo {
@@ -330,7 +330,7 @@
 .eventListTitle {
   font-size: 0.875rem;
   font-weight: 500;
-  color: var(--color-deep, #0F172A);
+  color: var(--color-deep, #0f172a);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -338,7 +338,7 @@
 
 .eventListMeta {
   font-size: 0.75rem;
-  color: var(--color-mist-dim, #64748B);
+  color: var(--color-mist-dim, #64748b);
 }
 
 .eventListActions {
@@ -357,7 +357,7 @@
 }
 
 .eventListActionBtn:hover {
-  background: rgba(15,23,42,0.05);
+  background: rgba(15, 23, 42, 0.05);
 }
 
 /* Modal form */
@@ -376,30 +376,30 @@
 .formLabel {
   font-size: 0.875rem;
   font-weight: 500;
-  color: var(--color-deep, #0F172A);
+  color: var(--color-deep, #0f172a);
 }
 
 .formInput {
   margin-top: 0.375rem;
   width: 100%;
   border-radius: 12px;
-  border: 1px solid rgba(15,23,42,0.1);
-  background: rgba(255,255,255,0.8);
+  border: 1px solid rgba(15, 23, 42, 0.1);
+  background: rgba(255, 255, 255, 0.8);
   padding: 0.625rem 0.75rem;
   font-size: 0.875rem;
   outline: none;
 }
 
 .formInput:focus {
-  border-color: #2BA8A2;
+  border-color: #2ba8a2;
 }
 
 .formTextarea {
   margin-top: 0.375rem;
   width: 100%;
   border-radius: 12px;
-  border: 1px solid rgba(15,23,42,0.1);
-  background: rgba(255,255,255,0.8);
+  border: 1px solid rgba(15, 23, 42, 0.1);
+  background: rgba(255, 255, 255, 0.8);
   padding: 0.625rem 0.75rem;
   font-size: 0.875rem;
   outline: none;
@@ -407,37 +407,37 @@
 }
 
 .formTextarea:focus {
-  border-color: #2BA8A2;
+  border-color: #2ba8a2;
 }
 
 .formSelect {
   margin-top: 0.375rem;
   width: 100%;
   border-radius: 12px;
-  border: 1px solid rgba(15,23,42,0.1);
-  background: rgba(255,255,255,0.8);
+  border: 1px solid rgba(15, 23, 42, 0.1);
+  background: rgba(255, 255, 255, 0.8);
   padding: 0.625rem 0.75rem;
   font-size: 0.875rem;
   outline: none;
 }
 
 .formSelect:focus {
-  border-color: #2BA8A2;
+  border-color: #2ba8a2;
 }
 
 .studentPickerInput {
   margin-top: 0.375rem;
   width: 100%;
   border-radius: 12px;
-  border: 1px solid rgba(15,23,42,0.1);
-  background: rgba(255,255,255,0.8);
+  border: 1px solid rgba(15, 23, 42, 0.1);
+  background: rgba(255, 255, 255, 0.8);
   padding: 0.625rem 0.75rem;
   font-size: 0.875rem;
   outline: none;
 }
 
 .studentPickerInput:focus {
-  border-color: #2BA8A2;
+  border-color: #2ba8a2;
 }
 
 .studentPickerDropdown {
@@ -446,9 +446,9 @@
   margin-top: 0.25rem;
   width: 100%;
   border-radius: 12px;
-  border: 1px solid rgba(15,23,42,0.1);
-  background: #FFFFFF;
-  box-shadow: 0 4px 20px rgba(15,23,42,0.08);
+  border: 1px solid rgba(15, 23, 42, 0.1);
+  background: #ffffff;
+  box-shadow: 0 4px 20px rgba(15, 23, 42, 0.08);
   max-height: 12rem;
   overflow-y: auto;
 }
@@ -464,33 +464,33 @@
 }
 
 .studentPickerOption:hover {
-  background: rgba(15,23,42,0.05);
+  background: rgba(15, 23, 42, 0.05);
 }
 
 .studentPickerOptionActive {
-  background: rgba(59,130,246,0.1);
+  background: rgba(59, 130, 246, 0.1);
   font-weight: 500;
 }
 
 .studentPickerName {
-  color: var(--color-deep, #0F172A);
+  color: var(--color-deep, #0f172a);
 }
 
 .studentPickerMeta {
   margin-left: 0.5rem;
   font-size: 0.75rem;
-  color: var(--color-mist-dim, #64748B);
+  color: var(--color-mist-dim, #64748b);
 }
 
 .studentPickerEmpty {
   padding: 0.5rem 0.75rem;
   font-size: 0.75rem;
-  color: var(--color-mist-dim, #64748B);
+  color: var(--color-mist-dim, #64748b);
 }
 
 .formError {
   font-size: 0.875rem;
-  color: #F87171;
+  color: #f87171;
 }
 
 .formActions {

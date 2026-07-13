@@ -4,7 +4,13 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { Loader2, GraduationCap, UserCog, CheckCircle, ShieldCheck } from "lucide-react";
+import {
+  Loader2,
+  GraduationCap,
+  UserCog,
+  CheckCircle,
+  ShieldCheck,
+} from "lucide-react";
 import { register, getStudyPrograms } from "./actions";
 import { validateEmail } from "@/lib/email-validation";
 import { PasswordEye } from "@/components/ui/PasswordEye";
@@ -69,7 +75,8 @@ export default function RegisterPage() {
       errors.email = "Email wajib diisi.";
     } else {
       const emailResult = validateEmail(email);
-      if (!emailResult.valid) errors.email = emailResult.error ?? "Email tidak valid.";
+      if (!emailResult.valid)
+        errors.email = emailResult.error ?? "Email tidak valid.";
     }
     if (!identityNumber.trim()) {
       errors.identityNumber = "Nomor Induk (NISN/NIP) wajib diisi.";
@@ -115,7 +122,7 @@ export default function RegisterPage() {
         role === "siswa" ? kelas.trim() : undefined,
         identityNumber.trim(),
         role === "siswa" ? instansi.trim() : undefined,
-        role === "siswa" ? jurusanId : undefined
+        role === "siswa" ? jurusanId : undefined,
       );
       if (result.error) {
         setError(result.error);
@@ -146,7 +153,8 @@ export default function RegisterPage() {
               </div>
               <h2 className={styles.successTitle}>Pendaftaran Berhasil!</h2>
               <p className={styles.successDesc}>
-                Akun Anda telah terdaftar. Silakan tunggu persetujuan dari admin sebelum dapat masuk ke sistem.
+                Akun Anda telah terdaftar. Silakan tunggu persetujuan dari admin
+                sebelum dapat masuk ke sistem.
               </p>
               <Link href="/login" style={{ textDecoration: "none" }}>
                 <button type="button" className={styles.submitBtn}>
@@ -163,34 +171,59 @@ export default function RegisterPage() {
   const formContent = (
     <div className={styles.formContainer}>
       <div className={styles.formHeader}>
-        <Image src="/logo.png" alt="Politeknik SSR" width={180} height={54} className={styles.formLogo} priority />
+        <Image
+          src="/logo.png"
+          alt="Politeknik SSR"
+          width={180}
+          height={54}
+          className={styles.formLogo}
+          priority
+        />
         <h1 className={styles.formTitle}>Buat Akun Baru</h1>
-        <p className={styles.formSubtitle}>Daftar untuk mengakses Sistem Absensi PKL Politeknik SSR</p>
+        <p className={styles.formSubtitle}>
+          Daftar untuk mengakses Sistem Absensi PKL Politeknik SSR
+        </p>
       </div>
 
       <form onSubmit={handleSubmit} className={styles.form}>
         <div className={styles.field}>
-          <label className={styles.label} htmlFor="fullName">Nama Lengkap</label>
+          <label className={styles.label} htmlFor="fullName">
+            Nama Lengkap
+          </label>
           <input
-            id="fullName" type="text" required value={fullName}
+            id="fullName"
+            type="text"
+            required
+            value={fullName}
             onChange={(e) => setFullName(e.target.value)}
             placeholder="Masukkan nama lengkap Anda"
             className={`${styles.input} ${fieldErrors.fullName ? styles.inputError : styles.inputNormal}`}
           />
-          {fieldErrors.fullName && <span className={styles.fieldError}>{fieldErrors.fullName}</span>}
+          {fieldErrors.fullName && (
+            <span className={styles.fieldError}>{fieldErrors.fullName}</span>
+          )}
         </div>
 
         <div className={styles.fieldRow}>
           <div className={styles.field}>
-            <label className={styles.label} htmlFor="email">Email</label>
+            <label className={styles.label} htmlFor="email">
+              Email
+            </label>
             <input
-              id="email" type="email" required value={email}
+              id="email"
+              type="email"
+              required
+              value={email}
               onChange={(e) => handleEmailChange(e.target.value)}
               placeholder="nama@gmail.com"
               className={`${styles.input} ${fieldErrors.email ? styles.inputError : styles.inputNormal}`}
             />
-            {emailWarning && <span className={styles.emailWarning}>{emailWarning}</span>}
-            {fieldErrors.email && !emailWarning && <span className={styles.fieldError}>{fieldErrors.email}</span>}
+            {emailWarning && (
+              <span className={styles.emailWarning}>{emailWarning}</span>
+            )}
+            {fieldErrors.email && !emailWarning && (
+              <span className={styles.fieldError}>{fieldErrors.email}</span>
+            )}
           </div>
 
           <div className={styles.field}>
@@ -198,12 +231,23 @@ export default function RegisterPage() {
               {role === "siswa" ? "NISN" : "NIP / NIDN"}
             </label>
             <input
-              id="identityNumber" type="text" required value={identityNumber}
+              id="identityNumber"
+              type="text"
+              required
+              value={identityNumber}
               onChange={(e) => setIdentityNumber(e.target.value)}
-              placeholder={role === "siswa" ? "Nomor Induk Siswa Nasional" : "Nomor Induk Pegawai"}
+              placeholder={
+                role === "siswa"
+                  ? "Nomor Induk Siswa Nasional"
+                  : "Nomor Induk Pegawai"
+              }
               className={`${styles.input} ${fieldErrors.identityNumber ? styles.inputError : styles.inputNormal}`}
             />
-            {fieldErrors.identityNumber && <span className={styles.fieldError}>{fieldErrors.identityNumber}</span>}
+            {fieldErrors.identityNumber && (
+              <span className={styles.fieldError}>
+                {fieldErrors.identityNumber}
+              </span>
+            )}
           </div>
         </div>
 
@@ -215,18 +259,28 @@ export default function RegisterPage() {
             className={styles.fieldRow}
           >
             <div className={styles.field}>
-              <label className={styles.label} htmlFor="kelas">Kelas</label>
+              <label className={styles.label} htmlFor="kelas">
+                Kelas
+              </label>
               <input
-                id="kelas" type="text" inputMode="numeric" required value={kelas}
+                id="kelas"
+                type="text"
+                inputMode="numeric"
+                required
+                value={kelas}
                 onChange={(e) => setKelas(e.target.value.replace(/\D/g, ""))}
                 placeholder="Contoh: 10"
                 className={`${styles.input} ${fieldErrors.kelas ? styles.inputError : styles.inputNormal}`}
               />
-              {fieldErrors.kelas && <span className={styles.fieldError}>{fieldErrors.kelas}</span>}
+              {fieldErrors.kelas && (
+                <span className={styles.fieldError}>{fieldErrors.kelas}</span>
+              )}
             </div>
 
             <div className={styles.field}>
-              <label className={styles.label} htmlFor="jurusanId">Program Studi</label>
+              <label className={styles.label} htmlFor="jurusanId">
+                Program Studi
+              </label>
               <select
                 id="jurusanId"
                 required
@@ -234,12 +288,20 @@ export default function RegisterPage() {
                 onChange={(e) => setJurusanId(e.target.value)}
                 className={`${styles.select} ${fieldErrors.jurusanId ? styles.selectError : ""} ${!jurusanId ? styles.selectPlaceholder : ""}`}
               >
-                <option value="" disabled>Pilih jurusan</option>
+                <option value="" disabled>
+                  Pilih jurusan
+                </option>
                 {studyPrograms.map((sp) => (
-                  <option key={sp.id} value={sp.id}>{sp.nama}</option>
+                  <option key={sp.id} value={sp.id}>
+                    {sp.nama}
+                  </option>
                 ))}
               </select>
-              {fieldErrors.jurusanId && <span className={styles.fieldError}>{fieldErrors.jurusanId}</span>}
+              {fieldErrors.jurusanId && (
+                <span className={styles.fieldError}>
+                  {fieldErrors.jurusanId}
+                </span>
+              )}
             </div>
           </motion.div>
         )}
@@ -251,62 +313,111 @@ export default function RegisterPage() {
             transition={{ duration: 0.2 }}
             className={styles.field}
           >
-            <label className={styles.label} htmlFor="instansi">Instansi / Tempat PKL</label>
+            <label className={styles.label} htmlFor="instansi">
+              Instansi / Tempat PKL
+            </label>
             <input
-              id="instansi" type="text" required value={instansi}
+              id="instansi"
+              type="text"
+              required
+              value={instansi}
               onChange={(e) => setInstansi(e.target.value)}
               placeholder="Nama perusahaan / instansi tempat PKL"
               className={`${styles.input} ${fieldErrors.instansi ? styles.inputError : styles.inputNormal}`}
             />
-            {fieldErrors.instansi && <span className={styles.fieldError}>{fieldErrors.instansi}</span>}
+            {fieldErrors.instansi && (
+              <span className={styles.fieldError}>{fieldErrors.instansi}</span>
+            )}
           </motion.div>
         )}
 
         <div className={styles.fieldRow}>
           <div className={styles.field}>
-            <label className={styles.label} htmlFor="password">Kata Sandi</label>
+            <label className={styles.label} htmlFor="password">
+              Kata Sandi
+            </label>
             <div className={styles.inputWrapper}>
               <input
-                id="password" type={showPassword ? "text" : "password"} required value={password}
+                id="password"
+                type={showPassword ? "text" : "password"}
+                required
+                value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Min. 6 karakter"
                 className={`${styles.input} ${styles.inputPassword} ${fieldErrors.password ? styles.inputError : styles.inputNormal}`}
               />
-              <button type="button" onClick={() => setShowPassword(!showPassword)} className={styles.toggleBtn}>
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className={styles.toggleBtn}
+              >
                 <PasswordEye show={showPassword} />
               </button>
             </div>
-            {fieldErrors.password && <span className={styles.fieldError}>{fieldErrors.password}</span>}
+            {fieldErrors.password && (
+              <span className={styles.fieldError}>{fieldErrors.password}</span>
+            )}
           </div>
 
           <div className={styles.field}>
-            <label className={styles.label} htmlFor="confirmPassword">Konfirmasi</label>
+            <label className={styles.label} htmlFor="confirmPassword">
+              Konfirmasi
+            </label>
             <div className={styles.inputWrapper}>
               <input
-                id="confirmPassword" type={showConfirmPassword ? "text" : "password"} required value={confirmPassword}
+                id="confirmPassword"
+                type={showConfirmPassword ? "text" : "password"}
+                required
+                value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 placeholder="Ulangi sandi"
                 className={`${styles.input} ${styles.inputPassword} ${fieldErrors.confirmPassword ? styles.inputError : styles.inputNormal}`}
               />
-              <button type="button" onClick={() => setShowConfirmPassword(!showConfirmPassword)} className={styles.toggleBtn}>
+              <button
+                type="button"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                className={styles.toggleBtn}
+              >
                 <PasswordEye show={showConfirmPassword} />
               </button>
             </div>
-            {fieldErrors.confirmPassword && <span className={styles.fieldError}>{fieldErrors.confirmPassword}</span>}
+            {fieldErrors.confirmPassword && (
+              <span className={styles.fieldError}>
+                {fieldErrors.confirmPassword}
+              </span>
+            )}
           </div>
         </div>
 
         <div className={styles.field}>
           <label className={styles.label}>Saya mendaftar sebagai</label>
           <div className={styles.roleGroup}>
-            <label className={`${styles.roleOption} ${role === "siswa" ? styles.roleOptionActive : ""}`}>
-              <input type="radio" name="role" value="siswa" checked={role === "siswa"} onChange={() => handleRoleChange("siswa")} className={styles.roleInput} />
+            <label
+              className={`${styles.roleOption} ${role === "siswa" ? styles.roleOptionActive : ""}`}
+            >
+              <input
+                type="radio"
+                name="role"
+                value="siswa"
+                checked={role === "siswa"}
+                onChange={() => handleRoleChange("siswa")}
+                className={styles.roleInput}
+              />
               <GraduationCap className={styles.roleIcon} />
               <span className={styles.roleName}>Siswa</span>
               <span className={styles.roleDesc}>Peserta PKL</span>
             </label>
-            <label className={`${styles.roleOption} ${role === "pembimbing" ? styles.roleOptionActive : ""}`}>
-              <input type="radio" name="role" value="pembimbing" checked={role === "pembimbing"} onChange={() => handleRoleChange("pembimbing")} className={styles.roleInput} />
+            <label
+              className={`${styles.roleOption} ${role === "pembimbing" ? styles.roleOptionActive : ""}`}
+            >
+              <input
+                type="radio"
+                name="role"
+                value="pembimbing"
+                checked={role === "pembimbing"}
+                onChange={() => handleRoleChange("pembimbing")}
+                className={styles.roleInput}
+              />
               <UserCog className={styles.roleIcon} />
               <span className={styles.roleName}>Pembimbing</span>
               <span className={styles.roleDesc}>Guru / Pembimbing PKL</span>
@@ -315,7 +426,11 @@ export default function RegisterPage() {
         </div>
 
         {error && (
-          <motion.p initial={{ opacity: 0, x: -4 }} animate={{ opacity: 1, x: 0 }} className={styles.errorBox}>
+          <motion.p
+            initial={{ opacity: 0, x: -4 }}
+            animate={{ opacity: 1, x: 0 }}
+            className={styles.errorBox}
+          >
             <span className="text-lg">!</span>
             {error}
           </motion.p>
@@ -330,7 +445,9 @@ export default function RegisterPage() {
       <div className={styles.footer}>
         <p className={styles.footerText}>
           Sudah punya akun?{" "}
-          <Link href="/login" className={styles.footerLink}>Masuk di sini</Link>
+          <Link href="/login" className={styles.footerLink}>
+            Masuk di sini
+          </Link>
         </p>
       </div>
     </div>
@@ -343,14 +460,19 @@ export default function RegisterPage() {
         <div className={styles.heroBlob} aria-hidden="true" />
         <div className={styles.heroFade} aria-hidden="true" />
         <div className={styles.heroContent}>
-          <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.1 }}>
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+          >
             <div className={styles.heroBadge}>
               <GraduationCap className="w-5 h-5" />
               <span>Politeknik SSR</span>
             </div>
             <h2 className={styles.heroTitle}>Bergabunglah dengan Kami</h2>
             <p className={styles.heroDesc}>
-              Daftar sebagai siswa atau pembimbing untuk mulai menggunakan Sistem Informasi Absensi PKL.
+              Daftar sebagai siswa atau pembimbing untuk mulai menggunakan
+              Sistem Informasi Absensi PKL.
             </p>
             <div className={styles.heroFeatures}>
               <div className={styles.heroFeature}>

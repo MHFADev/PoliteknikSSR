@@ -15,7 +15,7 @@
   font-family: var(--font-jakarta), sans-serif;
   font-size: 1.25rem;
   font-weight: 600;
-  color: var(--color-deep, #0F172A);
+  color: var(--color-deep, #0f172a);
 }
 
 @media (min-width: 640px) {
@@ -26,7 +26,7 @@
 
 .pageHeader p {
   font-size: 0.75rem;
-  color: var(--color-mist-dim, #64748B);
+  color: var(--color-mist-dim, #64748b);
 }
 
 @media (min-width: 640px) {
@@ -59,7 +59,7 @@
   font-family: var(--font-jakarta), sans-serif;
   font-size: 1.125rem;
   font-weight: 600;
-  color: var(--color-deep, #0F172A);
+  color: var(--color-deep, #2a130f);
 }
 
 .calendarNavBtn {
@@ -72,7 +72,7 @@
 }
 
 .calendarNavBtn:hover {
-  background: rgba(15,23,42,0.05);
+  background: rgba(15, 23, 42, 0.05);
 }
 
 .dayHeaders {
@@ -128,18 +128,18 @@
 }
 
 .calendarCellToday {
-  border-color: rgba(59,130,246,0.3);
-  background: rgba(59,130,246,0.05);
+  border-color: rgba(59, 130, 246, 0.3);
+  background: rgba(59, 130, 246, 0.05);
 }
 
 .calendarCellPast {
-  border-color: rgba(239,68,68,0.5);
-  background: rgba(239,68,68,0.08);
+  border-color: rgba(239, 68, 68, 0.5);
+  background: rgba(239, 68, 68, 0.08);
 }
 
 .calendarCellDefault {
-  border-color: rgba(15,23,42,0.06);
-  background: #FFFFFF;
+  border-color: rgba(15, 23, 42, 0.06);
+  background: #ffffff;
 }
 
 .calendarDayNumber {
@@ -163,12 +163,12 @@
 }
 
 .calendarDayToday {
-  background: #3B82F6;
-  color: #FFFFFF;
+  background: #3b82f6;
+  color: #ffffff;
 }
 
 .calendarDayNormal {
-  color: var(--color-deep, #0F172A);
+  color: var(--color-deep, #0f172a);
 }
 
 .calendarStatus {
@@ -199,7 +199,7 @@
 .calendarStatusLabel {
   font-size: 0.5rem;
   font-weight: 500;
-  color: var(--color-deep, #0F172A);
+  color: var(--color-deep, #0f172a);
 }
 
 @media (min-width: 640px) {

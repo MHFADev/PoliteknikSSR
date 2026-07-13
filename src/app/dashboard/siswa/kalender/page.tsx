@@ -1,31 +1,87 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { ChevronLeft, ChevronRight, Loader2, CalendarCheck, FileClock, NotebookPen, AlertCircle } from "lucide-react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  Loader2,
+  CalendarCheck,
+  FileClock,
+  NotebookPen,
+  AlertCircle,
+} from "lucide-react";
 import { Card, CardHeader } from "@/components/ui/Card";
 import { StatCard } from "@/components/dashboard/StatCard";
 import { createClient } from "@/lib/supabase/client";
 import { getEvents, getStudentAttendanceByMonth } from "@/actions/kalender";
 import styles from "@/styles/pages/dashboard/siswa/Kalender.module.css";
 
-const MONTHS = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+const MONTHS = [
+  "Januari",
+  "Februari",
+  "Maret",
+  "April",
+  "Mei",
+  "Juni",
+  "Juli",
+  "Agustus",
+  "September",
+  "Oktober",
+  "November",
+  "Desember",
+];
 const DAYS = ["Min", "Sen", "Sel", "Rab", "Kam", "Jum", "Sab"];
 
-type CalendarEvent = { id: string; title: string; description: string | null; eventDate: string; endDate: string | null; tipe: "libur" | "event"; studentId: string | null };
+type CalendarEvent = {
+  id: string;
+  title: string;
+  description: string | null;
+  eventDate: string;
+  endDate: string | null;
+  tipe: "libur" | "event";
+  studentId: string | null;
+};
 type AttendanceRecord = { scannedAt: string; status: string };
-type LeaveRequest = { startDate: string; endDate: string; type: string; status: string };
+type LeaveRequest = {
+  startDate: string;
+  endDate: string;
+  type: string;
+  status: string;
+};
 
-function getDayStatus(dayStr: string, records: AttendanceRecord[], leaves: LeaveRequest[], events: CalendarEvent[]): { label: string; color: string; dot: string } | null {
+function getDayStatus(
+  dayStr: string,
+  records: AttendanceRecord[],
+  leaves: LeaveRequest[],
+  events: CalendarEvent[],
+): { label: string; color: string; dot: string } | null {
   if (events.some((e) => e.eventDate === dayStr && e.tipe === "libur")) {
-    return { label: "Libur PKL", color: "bg-flip7-coral-light/20 border-flip7-coral", dot: "bg-flip7-coral" };
+    return {
+      label: "Libur PKL",
+      color: "bg-flip7-coral-light/20 border-flip7-coral",
+      dot: "bg-flip7-coral",
+    };
   }
-  const leave = leaves.find((l) => dayStr >= l.startDate && dayStr <= l.endDate);
+  const leave = leaves.find(
+    (l) => dayStr >= l.startDate && dayStr <= l.endDate,
+  );
   if (leave) {
-    if (leave.type === "sakit") return { label: "Sakit", color: "bg-coral-soft border-coral", dot: "bg-coral" };
-    if (leave.type === "izin") return { label: "Izin", color: "bg-sun-soft border-sun", dot: "bg-sun" };
+    if (leave.type === "sakit")
+      return {
+        label: "Sakit",
+        color: "bg-coral-soft border-coral",
+        dot: "bg-coral",
+      };
+    if (leave.type === "izin")
+      return { label: "Izin", color: "bg-sun-soft border-sun", dot: "bg-sun" };
   }
   const record = records.find((r) => r.scannedAt.slice(0, 10) === dayStr);
-  if (record) return { label: "Masuk", color: "bg-leaf-soft border-leaf", dot: "bg-leaf" };
+  if (record)
+    return {
+      label: "Masuk",
+      color: "bg-leaf-soft border-leaf",
+      dot: "bg-leaf",
+    };
   return null;
 }
 
@@ -36,13 +92,21 @@ export default function SiswaKalenderPage() {
   const [leaves, setLeaves] = useState<LeaveRequest[]>([]);
   const [studentSince, setStudentSince] = useState<string | null>(null); // Tanggal siswa mulai terdaftar
   const [loading, setLoading] = useState(true);
-  const [stats, setStats] = useState({ hadir: 0, sakit: 0, izin: 0, alfa: 0, total: 0 });
+  const [stats, setStats] = useState({
+    hadir: 0,
+    sakit: 0,
+    izin: 0,
+    alfa: 0,
+    total: 0,
+  });
 
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
   const todayStr = new Date().toISOString().slice(0, 10);
   // Tanggal join siswa — dipakai untuk tidak menampilkan Alfa sebelum siswa terdaftar
-  const joinDate = studentSince ? new Date(studentSince).toISOString().slice(0, 10) : null;
+  const joinDate = studentSince
+    ? new Date(studentSince).toISOString().slice(0, 10)
+    : null;
 
   function loadData(silent = false) {
     if (!silent) setLoading(true);
@@ -66,27 +130,44 @@ export default function SiswaKalenderPage() {
           : null;
 
         const daysInMonth = new Date(year, month + 1, 0).getDate();
-        let hadir = 0, sakit = 0, izin = 0, alfa = 0;
+        let hadir = 0,
+          sakit = 0,
+          izin = 0,
+          alfa = 0;
 
         for (let day = 1; day <= daysInMonth; day++) {
           const dateStr = `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
           if (dateStr > todayStr) break;
           // Lewati tanggal sebelum siswa terdaftar — bukan tanggung jawab mereka
           if (joinDate && dateStr < joinDate) continue;
-          const status = getDayStatus(dateStr, data.records, data.leaves, evts as unknown as CalendarEvent[]);
+          const status = getDayStatus(
+            dateStr,
+            data.records,
+            data.leaves,
+            evts as unknown as CalendarEvent[],
+          );
           if (!status) alfa++;
-          else if (status.label === "Masuk" || status.label === "Libur PKL") hadir++;
+          else if (status.label === "Masuk" || status.label === "Libur PKL")
+            hadir++;
           else if (status.label === "Sakit") sakit++;
           else if (status.label === "Izin") izin++;
         }
 
-        setStats({ hadir, sakit, izin, alfa, total: hadir + sakit + izin + alfa });
+        setStats({
+          hadir,
+          sakit,
+          izin,
+          alfa,
+          total: hadir + sakit + izin + alfa,
+        });
         if (!silent) setLoading(false);
       });
     });
   }
 
-  useEffect(() => { loadData(); }, [currentDate]); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    loadData();
+  }, [currentDate]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Realtime: perbarui kalender secara otomatis saat admin menambah/edit/menghapus event
   useEffect(() => {
@@ -96,27 +177,40 @@ export default function SiswaKalenderPage() {
       .on(
         "postgres_changes",
         { event: "*", schema: "public", table: "calendar_events" },
-        () => loadData(true)
+        () => loadData(true),
       )
       .subscribe();
-    return () => { supabase.removeChannel(channel); };
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  function prevMonth() { setCurrentDate(new Date(year, month - 1)); }
-  function nextMonth() { setCurrentDate(new Date(year, month + 1)); }
+  function prevMonth() {
+    setCurrentDate(new Date(year, month - 1));
+  }
+  function nextMonth() {
+    setCurrentDate(new Date(year, month + 1));
+  }
 
   const firstDay = new Date(year, month, 1).getDay();
   const daysInMonth = new Date(year, month + 1, 0).getDate();
 
   const calendarCells = [];
   for (let i = 0; i < firstDay; i++) {
-    calendarCells.push(<div key={`empty-${i}`} className={styles.calendarCell + ' ' + styles.calendarCellDefault} />);
+    calendarCells.push(
+      <div
+        key={`empty-${i}`}
+        className={styles.calendarCell + " " + styles.calendarCellDefault}
+      />,
+    );
   }
   for (let day = 1; day <= daysInMonth; day++) {
     const dateStr = `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
     const isToday = dateStr === todayStr;
     const status = getDayStatus(dateStr, records, leaves, events);
-    const isLibur = events.some((e) => e.eventDate === dateStr && e.tipe === "libur");
+    const isLibur = events.some(
+      (e) => e.eventDate === dateStr && e.tipe === "libur",
+    );
     const isPast = dateStr < todayStr;
     // Cek apakah tanggal sebelum siswa terdaftar — untuk tampilkan "—" bukan "Alfa"
     const isBeforeJoin = joinDate ? dateStr < joinDate : false;
@@ -131,11 +225,10 @@ export default function SiswaKalenderPage() {
     }
 
     calendarCells.push(
-      <div
-        key={day}
-        className={`${styles.calendarCell} ${cellClass}`}
-      >
-        <div className={`${styles.calendarDayNumber} ${isToday ? styles.calendarDayToday : styles.calendarDayNormal}`}>
+      <div key={day} className={`${styles.calendarCell} ${cellClass}`}>
+        <div
+          className={`${styles.calendarDayNumber} ${isToday ? styles.calendarDayToday : styles.calendarDayNormal}`}
+        >
           {day}
         </div>
         {status && (
@@ -146,17 +239,23 @@ export default function SiswaKalenderPage() {
         )}
         {isPast && !status && !isLibur && !isBeforeJoin && (
           <div className={styles.calendarStatus}>
-            <span className={styles.calendarStatusDot} style={{ background: '#EF4444' }} />
+            <span
+              className={styles.calendarStatusDot}
+              style={{ background: "#EF4444" }}
+            />
             <span className={styles.calendarStatusLabel}>Alfa</span>
           </div>
         )}
         {isPast && !status && !isLibur && isBeforeJoin && (
           <div className={styles.calendarStatus}>
-            <span className={styles.calendarStatusDot} style={{ background: '#9CA3AF' }} />
+            <span
+              className={styles.calendarStatusDot}
+              style={{ background: "#9CA3AF" }}
+            />
             <span className={styles.calendarStatusLabel}>—</span>
           </div>
         )}
-      </div>
+      </div>,
     );
   }
 
@@ -168,39 +267,105 @@ export default function SiswaKalenderPage() {
       </div>
 
       <div className={styles.statGrid}>
-        <StatCard label="Hadir" value={stats.hadir} icon={<CalendarCheck className="h-5 w-5" />} accent="leaf" />
-        <StatCard label="Sakit" value={stats.sakit} icon={<AlertCircle className="h-5 w-5" />} accent="coral" />
-        <StatCard label="Izin" value={stats.izin} icon={<FileClock className="h-5 w-5" />} accent="sun" />
-        <StatCard label="Alfa" value={stats.alfa} icon={<NotebookPen className="h-5 w-5" />} accent="berry" />
+        <StatCard
+          label="Hadir"
+          value={stats.hadir}
+          icon={<CalendarCheck className="h-5 w-5" />}
+          accent="leaf"
+        />
+        <StatCard
+          label="Sakit"
+          value={stats.sakit}
+          icon={<AlertCircle className="h-5 w-5" />}
+          accent="coral"
+        />
+        <StatCard
+          label="Izin"
+          value={stats.izin}
+          icon={<FileClock className="h-5 w-5" />}
+          accent="sun"
+        />
+        <StatCard
+          label="Alfa"
+          value={stats.alfa}
+          icon={<NotebookPen className="h-5 w-5" />}
+          accent="berry"
+        />
       </div>
 
       <Card>
         <div className={styles.calendarNav}>
-          <button onClick={prevMonth} className={styles.calendarNavBtn}><ChevronLeft className="h-5 w-5" /></button>
-          <h3 className={styles.calendarNavTitle}>{MONTHS[month]} {year}</h3>
-          <button onClick={nextMonth} className={styles.calendarNavBtn}><ChevronRight className="h-5 w-5" /></button>
+          <button onClick={prevMonth} className={styles.calendarNavBtn}>
+            <ChevronLeft className="h-5 w-5" />
+          </button>
+          <h3 className={styles.calendarNavTitle}>
+            {MONTHS[month]} {year}
+          </h3>
+          <button onClick={nextMonth} className={styles.calendarNavBtn}>
+            <ChevronRight className="h-5 w-5" />
+          </button>
         </div>
 
         <div className={styles.dayHeaders}>
           {DAYS.map((d) => (
-            <div key={d} className={styles.dayHeader}>{d}</div>
+            <div key={d} className={styles.dayHeader}>
+              {d}
+            </div>
           ))}
         </div>
 
         {loading ? (
-          <div className={styles.loadingSpinner}><Loader2 className="h-6 w-6 animate-spin text-steel" /></div>
+          <div className={styles.loadingSpinner}>
+            <Loader2 className="h-6 w-6 animate-spin text-steel" />
+          </div>
         ) : (
           <div className={styles.calendarGrid}>{calendarCells}</div>
         )}
       </Card>
 
       <div className={styles.legendContainer}>
-        <span className={styles.legendItem}><span className={styles.legendDot} style={{ background: '#22C55E' }} /> Masuk</span>
-        <span className={styles.legendItem}><span className={styles.legendDot} style={{ background: '#FBBF24' }} /> Izin</span>
-        <span className={styles.legendItem}><span className={styles.legendDot} style={{ background: '#F97316' }} /> Sakit</span>
-        <span className={styles.legendItem}><span className={styles.legendDot} style={{ background: '#EF4444' }} /> Alfa</span>
-        <span className={styles.legendItem}><span className={styles.legendDot} style={{ background: '#22C55E' }} /> Libur PKL</span>
-        <span className={styles.legendItem}><span className={styles.legendDot} style={{ background: '#3B82F6' }} /> Event</span>
+        <span className={styles.legendItem}>
+          <span
+            className={styles.legendDot}
+            style={{ background: "#22C55E" }}
+          />{" "}
+          Masuk
+        </span>
+        <span className={styles.legendItem}>
+          <span
+            className={styles.legendDot}
+            style={{ background: "#FBBF24" }}
+          />{" "}
+          Izin
+        </span>
+        <span className={styles.legendItem}>
+          <span
+            className={styles.legendDot}
+            style={{ background: "#F97316" }}
+          />{" "}
+          Sakit
+        </span>
+        <span className={styles.legendItem}>
+          <span
+            className={styles.legendDot}
+            style={{ background: "#EF4444" }}
+          />{" "}
+          Alfa
+        </span>
+        <span className={styles.legendItem}>
+          <span
+            className={styles.legendDot}
+            style={{ background: "#22C55E" }}
+          />{" "}
+          Libur PKL
+        </span>
+        <span className={styles.legendItem}>
+          <span
+            className={styles.legendDot}
+            style={{ background: "#3B82F6" }}
+          />{" "}
+          Event
+        </span>
       </div>
     </div>
   );

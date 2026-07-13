@@ -110,7 +110,7 @@ export default async function SiswaOverviewPage() {
           label="Hadir Bulan Ini"
           value={hadirCount ?? 0}
           icon={<CalendarCheck className="h-5 w-5" />}
-          accent="teal"
+          accent="sky"
         />
         <StatCard
           label="Izin Menunggu Review"
@@ -122,7 +122,7 @@ export default async function SiswaOverviewPage() {
           label="Kegiatan Hari Ini"
           value={todayEntry ? "Sudah diisi" : "Belum diisi"}
           icon={<NotebookPen className="h-5 w-5" />}
-          accent={todayEntry ? "leaf" : "sun"}
+          accent={todayEntry ? "leaf" : "coral"}
         />
       </div>
 
@@ -134,7 +134,7 @@ export default async function SiswaOverviewPage() {
             action={
               <Link
                 href="/dashboard/siswa/pengumuman"
-                className="text-sm text-teal hover:underline"
+                className="text-sm text-sky hover:underline"
               >
                 Lihat Semua
               </Link>
@@ -161,7 +161,7 @@ export default async function SiswaOverviewPage() {
             action={
               <Link
                 href="/dashboard/siswa/kalender"
-                className="text-sm text-teal hover:underline"
+                className="text-sm text-sky hover:underline"
               >
                 Lihat Kalender
               </Link>
