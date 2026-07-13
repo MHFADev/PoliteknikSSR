@@ -20,13 +20,24 @@
   flex-direction: column;
   justify-content: center;
   color: #ffffff;
-  background-color: #1a3a5c;
+  background-color: #0d2137;
   background-image:
-    radial-gradient(circle at 15% 18%, rgba(94,158,214,0.55), transparent 42%),
-    radial-gradient(circle at 85% 12%, rgba(122,180,224,0.45), transparent 44%),
-    radial-gradient(circle at 78% 82%, rgba(42,90,122,0.65), transparent 46%),
-    radial-gradient(circle at 28% 92%, rgba(94,158,214,0.35), transparent 42%),
-    linear-gradient(135deg, #1a3a5c 0%, #2a5a7a 58%, #16314f 100%);
+    radial-gradient(ellipse 80% 60% at 20% 10%, rgba(99,179,237,0.38) 0%, transparent 55%),
+    radial-gradient(ellipse 60% 50% at 82% 8%,  rgba(129,197,240,0.28) 0%, transparent 50%),
+    radial-gradient(ellipse 70% 55% at 75% 88%, rgba(30,80,115,0.70)   0%, transparent 55%),
+    radial-gradient(ellipse 55% 45% at 18% 90%, rgba(99,179,237,0.22)  0%, transparent 50%),
+    radial-gradient(ellipse 90% 40% at 50% 50%, rgba(26,80,130,0.35)   0%, transparent 65%),
+    linear-gradient(
+      158deg,
+      #0d2137   0%,
+      #122d4a  14%,
+      #183d62  28%,
+      #1e5080  42%,
+      #1a4a7a  56%,
+      #163c66  70%,
+      #102e52  84%,
+      #0a1f38 100%
+    );
   min-height: clamp(190px, 30vh, 250px);
   padding: clamp(20px, 5vw, 32px);
 }
@@ -35,22 +46,41 @@
   position: absolute;
   inset: 0;
   z-index: 0;
-  background-image: radial-gradient(rgba(255,255,255,0.09) 1px, transparent 1.4px);
+  background-image: radial-gradient(rgba(255,255,255,0.07) 1px, transparent 1.4px);
   background-size: 22px 22px;
-  opacity: 0.9;
+  opacity: 0.85;
   pointer-events: none;
+}
+
+/* Subtle noise texture overlay */
+.heroOverlay::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(45deg, rgba(255,255,255,0.03) 25%, transparent 25%),
+    linear-gradient(-45deg, rgba(255,255,255,0.03) 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, rgba(255,255,255,0.02) 75%),
+    linear-gradient(-45deg, transparent 75%, rgba(255,255,255,0.02) 75%);
+  background-size: 4px 4px;
+  opacity: 1;
 }
 
 .heroBlob {
   position: absolute;
   z-index: 0;
-  width: 220px;
-  height: 220px;
-  right: -70px;
-  bottom: -90px;
+  width: 280px;
+  height: 280px;
+  right: -80px;
+  bottom: -100px;
   border-radius: 42% 58% 63% 37% / 45% 38% 62% 55%;
-  background: linear-gradient(135deg, rgba(94,158,214,0.55), rgba(122,180,224,0.25));
-  filter: blur(8px);
+  background: linear-gradient(
+    135deg,
+    rgba(99,179,237,0.45)  0%,
+    rgba(129,197,240,0.20) 50%,
+    rgba(26,80,130,0.30)  100%
+  );
+  filter: blur(10px);
   pointer-events: none;
   animation: heroFloat 9s ease-in-out infinite;
 }
@@ -61,25 +91,26 @@
   position: absolute;
   z-index: 0;
   border-radius: 50%;
-  filter: blur(36px);
+  filter: blur(40px);
   pointer-events: none;
 }
 .heroSection::before {
-  width: 160px; height: 160px;
-  background: rgba(122,180,224,0.45);
-  top: -40px; left: -30px;
+  width: 180px; height: 180px;
+  background: radial-gradient(circle, rgba(129,197,240,0.40) 0%, rgba(99,179,237,0.15) 70%, transparent 100%);
+  top: -50px; left: -40px;
   animation: heroFloat 11s ease-in-out infinite reverse;
 }
 .heroSection::after {
-  width: 120px; height: 120px;
-  background: rgba(94,158,214,0.4);
-  top: 40%; right: 12%;
+  width: 130px; height: 130px;
+  background: radial-gradient(circle, rgba(99,179,237,0.35) 0%, rgba(26,80,130,0.15) 70%, transparent 100%);
+  top: 42%; right: 10%;
   animation: heroFloat 8s ease-in-out infinite;
 }
 
 @keyframes heroFloat {
   0%,100% { transform: translateY(0) translateX(0); }
-  50% { transform: translateY(-14px) translateX(8px); }
+  33%      { transform: translateY(-10px) translateX(6px); }
+  66%      { transform: translateY(-18px) translateX(-4px); }
 }
 @media (prefers-reduced-motion: reduce) {
   .heroBlob, .heroSection::before, .heroSection::after { animation: none; }
@@ -93,22 +124,30 @@
   gap: 10px;
 }
 
+/* Fade from hero color to page bg — mobile: bottom fade, desktop: right fade */
 .heroFade {
   position: absolute;
   z-index: 1;
   pointer-events: none;
   left: 0; right: 0; bottom: 0;
-  height: 90px;
-  background: linear-gradient(to bottom, rgba(42,90,122,0) 0%, rgba(94,158,214,0.12) 45%, #eef2f7 100%);
+  height: 100px;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(14,35,58,0.08) 35%,
+    rgba(20,50,82,0.18) 60%,
+    #eef2f7 100%
+  );
 }
 
 .heroBadge {
   display: inline-flex; align-items: center; gap: 8px;
   padding: 7px 14px; border-radius: 100px;
-  background: rgba(255,255,255,0.12);
-  border: 1px solid rgba(255,255,255,0.2);
-  font-size: 13px; font-weight: 700; color: #dcefff;
-  backdrop-filter: blur(6px); width: fit-content;
+  background: rgba(255,255,255,0.10);
+  border: 1px solid rgba(255,255,255,0.18);
+  font-size: 13px; font-weight: 700; color: #cce8ff;
+  backdrop-filter: blur(8px); width: fit-content;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.15);
 }
 
 .heroTitle {
@@ -117,14 +156,14 @@
   font-weight: 800; color: #ffffff;
   line-height: 1.15; margin: 0;
   letter-spacing: -0.02em;
-  text-shadow: 0 2px 12px rgba(0,0,0,0.25);
+  text-shadow: 0 2px 16px rgba(0,0,0,0.30);
 }
 
 .heroDesc {
   font-size: 14px; line-height: 1.6;
-  color: rgba(255,255,255,0.82);
+  color: rgba(255,255,255,0.80);
   max-width: 30ch;
-  text-shadow: 0 1px 8px rgba(0,0,0,0.2);
+  text-shadow: 0 1px 8px rgba(0,0,0,0.20);
 }
 
 .heroFeatures {
@@ -133,14 +172,14 @@
 
 .heroFeature {
   display: flex; align-items: center; gap: 10px;
-  font-size: 14px; color: rgba(255,255,255,0.9); font-weight: 600;
+  font-size: 14px; color: rgba(255,255,255,0.88); font-weight: 600;
 }
-.heroFeature svg { color: #7ab4e0; flex-shrink: 0; width: 20px; height: 20px; }
+.heroFeature svg { color: #90cdf4; flex-shrink: 0; width: 20px; height: 20px; }
 
 @media (max-width: 1023px) {
   .heroBadge, .heroDesc, .heroFeatures { display: none; }
   .heroContent { align-items: center; text-align: center; gap: 4px; }
-  .heroTitle { text-shadow: 0 2px 10px rgba(0,0,0,0.3); }
+  .heroTitle { text-shadow: 0 2px 12px rgba(0,0,0,0.35); }
 }
 
 /* ─── Form Section ────────────────────────── */
@@ -350,10 +389,18 @@
     min-height: 100vh; min-height: 100dvh;
     padding: 64px; justify-content: center;
   }
+  /* Desktop: gradasi kanan yang blend ke putih form panel */
   .heroFade {
     left: auto; right: 0; top: 0; bottom: 0;
-    width: clamp(90px,12vw,180px); height: auto;
-    background: linear-gradient(to right, rgba(42,90,122,0) 0%, rgba(94,158,214,0.2) 55%, #eef2f7 100%);
+    width: clamp(100px,14vw,200px); height: auto;
+    background: linear-gradient(
+      to right,
+      transparent                          0%,
+      rgba(18,45,74,0.04)                 25%,
+      rgba(30,80,130,0.12)                55%,
+      rgba(200,220,240,0.55)              80%,
+      #eef2f7                            100%
+    );
   }
   .heroContent { max-width: 480px; gap: 18px; }
   .heroBadge { font-size: 14px; padding: 9px 18px; }

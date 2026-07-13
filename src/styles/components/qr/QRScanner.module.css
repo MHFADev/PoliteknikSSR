@@ -121,6 +121,26 @@
   color: var(--color-ink-muted, #94A3B8);
 }
 
+/* Teks petunjuk kecil di bawah teks utama overlay */
+.overlayHint {
+  font-size: 0.75rem;
+  color: #64748b;
+  max-width: 200px;
+  text-align: center;
+  line-height: 1.4;
+}
+
+/* Ikon izin kamera (ShieldCheck) — warna biru */
+.permissionIcon {
+  color: #3b82f6 !important;
+  animation: pulsePermission 1.8s ease-in-out infinite;
+}
+
+@keyframes pulsePermission {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.7; transform: scale(1.08); }
+}
+
 /* Spinner processing */
 .spinner {
   width: 2.25rem;

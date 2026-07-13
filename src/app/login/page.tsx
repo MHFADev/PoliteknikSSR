@@ -16,19 +16,18 @@ function getCurrentPosition(): Promise<GeolocationPosition> {
   return new Promise((resolve, reject) => {
     navigator.geolocation.getCurrentPosition(resolve, reject, {
       enableHighAccuracy: true,
-      timeout: 10000,
+      timeout: 15000,
       maximumAge: 0,
     });
   });
 }
 
-async function checkGeolocationPermission(): Promise<boolean> {
+function getLocationPermissionState(): Promise<"granted" | "denied" | "prompt" | "unsupported"> {
   try {
-    const permission = await navigator.permissions.query({ name: "geolocation" });
-    if (permission.state === "denied") return false;
-    return true;
+    const result = navigator.permissions.query({ name: "geolocation" });
+    return result.then((s) => s.state as "granted" | "denied" | "prompt").catch(() => "unsupported" as const);
   } catch {
-    return true;
+    return Promise.resolve("unsupported" as const);
   }
 }
 
@@ -62,14 +61,16 @@ export default function LoginPage() {
 
     setGpsStep(true);
 
-    const hasLocationPermission = await checkGeolocationPermission();
-    if (!hasLocationPermission) {
-      setError("Izin lokasi ditolak. Harap aktifkan izin lokasi di pengaturan browser Anda.");
+    // Cek apakah lokasi sudah pernah ditolak (browser remember decision)
+    const locState = await getLocationPermissionState();
+    if (locState === "denied") {
+      setError("Izin lokasi ditolak permanen. Buka pengaturan browser > izinkan akses lokasi, lalu reload.");
       setIsSubmitting(false);
       setGpsStep(false);
       return;
     }
 
+    // getCurrentPosition akan trigger browser prompt (jika belum pernah di-allow/deny)
     try {
       const position = await getCurrentPosition();
       const { latitude, longitude } = position.coords;
@@ -81,14 +82,22 @@ export default function LoginPage() {
         return;
       }
     } catch (error: any) {
-      const errMsg =
-        error?.code === 1
-          ? "Izin lokasi ditolak. Harap izinkan akses lokasi di browser Anda."
-          : error?.code === 2
-            ? "Tidak dapat menemukan lokasi. Pastikan GPS aktif."
-            : error?.code === 3
-              ? "Waktu pencarian lokasi habis. Coba lagi."
-              : "Akses lokasi dibutuhkan untuk login. Izinkan akses lokasi di browser Anda.";
+      const code = error?.code;
+      let errMsg: string;
+
+      if (code === 1) {
+        errMsg =
+          locState === "denied"
+            ? "Izin lokasi ditolak permanen. Buka pengaturan browser > izinkan akses lokasi, lalu reload."
+            : "Izin lokasi ditolak. Izinkan akses lokasi di browser Anda, lalu coba lagi.";
+      } else if (code === 2) {
+        errMsg = "Tidak dapat menemukan lokasi. Pastikan GPS dan koneksi internet aktif.";
+      } else if (code === 3) {
+        errMsg = "Waktu pencarian lokasi habis. Pastikan GPS aktif, lalu coba lagi.";
+      } else {
+        errMsg = "Gagal mendapatkan lokasi. Izinkan akses lokasi di pengaturan browser.";
+      }
+
       setError(errMsg);
       setIsSubmitting(false);
       setGpsStep(false);

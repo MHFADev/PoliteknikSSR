@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Html5Qrcode } from "html5-qrcode";
 import { motion, AnimatePresence } from "framer-motion";
-import { CheckCircle2, XCircle, CameraOff, Camera, RefreshCw } from "lucide-react";
+import { CheckCircle2, XCircle, CameraOff, Camera, RefreshCw, Smartphone, ShieldCheck } from "lucide-react";
 import { submitAttendance } from "@/actions/attendance";
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
@@ -11,17 +11,37 @@ import styles from "@/styles/components/qr/QRScanner.module.css";
 
 const SCANNER_ELEMENT_ID = "qr-reader-viewport";
 
-type ScanState = "idle" | "scanning" | "processing" | "success" | "error";
+type ScanState = "idle" | "requesting" | "scanning" | "processing" | "success" | "error";
 
+/**
+ * QRScanner — Komponen scan QR presensi.
+ *
+ * Alur izin kamera yang benar (mobile + desktop):
+ * 1. User tap tombol "Mulai Scan QR" (user gesture — wajib untuk getUserMedia)
+ * 2. Kita panggil navigator.mediaDevices.getUserMedia({ video: true }) untuk
+ *    MEMICU PROMPT izin kamera di browser (termasuk mobile Chrome/Safari).
+ * 3. Setelah izin diberikan, stream di-stop dan kita hand off ke html5-qrcode
+ *    yang akan membuka kamera ulang dengan config optimal.
+ * 4. Jika izin ditolak, tampilkan panduan yang jelas per platform.
+ *
+ * Di mobile (Android Chrome, iOS Safari ≥ 14.3):
+ * - WAJIB HTTPS atau localhost untuk akses kamera.
+ * - Prompt izin HARUS dipicu dari user gesture (tap).
+ * - iOS tidak punya Permissions API, jadi kita tidak pakai permission.query().
+ */
 export function QRScanner() {
   const scannerRef = useRef<Html5Qrcode | null>(null);
   const [state, setState] = useState<ScanState>("idle");
   const [message, setMessage] = useState<string>("");
   const [useFrontCamera, setUseFrontCamera] = useState(false);
+  const [isIOS, setIsIOS] = useState(false);
 
   useEffect(() => {
+    // Deteksi iOS untuk panduan izin spesifik
+    const ua = navigator.userAgent;
+    setIsIOS(/iPhone|iPad|iPod/i.test(ua));
+
     return () => {
-      // Pastikan kamera dilepas saat komponen unmount
       stopScanner();
     };
   }, []);
@@ -32,43 +52,90 @@ export function QRScanner() {
         await scannerRef.current.stop();
       }
     } catch {
-      // Ignore errors when stopping
+      // ignore
     }
   }
 
-  async function checkCameraPermission() {
+  /**
+   * Minta izin kamera secara eksplisit via getUserMedia sebelum memulai scanner.
+   * Ini memastikan prompt izin kamera muncul di browser mobile (Android & iOS).
+   */
+  async function requestCameraPermission(): Promise<boolean> {
     try {
-      const permissionStatus = await navigator.permissions.query({ name: "camera" as PermissionName });
-      if (permissionStatus.state === "denied") {
-        return false;
-      }
-      permissionStatus.onchange = () => {
-        if (permissionStatus.state === "denied") {
-          setState("error");
-          setMessage("Izin kamera dicabut saat scanning. Silakan izinkan kamera dan coba lagi.");
-          stopScanner();
-        }
+      const constraints: MediaStreamConstraints = {
+        video: useFrontCamera
+          ? { facingMode: "user" }
+          : { facingMode: { ideal: "environment" } },
+        audio: false,
       };
+
+      // Trigger browser permission prompt
+      const stream = await navigator.mediaDevices.getUserMedia(constraints);
+
+      // Immediately stop stream — html5-qrcode akan buka ulang
+      stream.getTracks().forEach((track) => track.stop());
+
       return true;
-    } catch {
-      return true; // If permissions API not supported, proceed anyway
+    } catch (error: any) {
+      handleCameraError(error);
+      return false;
+    }
+  }
+
+  function handleCameraError(error: any) {
+    setState("error");
+    const name = error?.name || "";
+    const message_text = error?.message || "";
+
+    if (
+      name === "NotAllowedError" ||
+      name === "PermissionDeniedError" ||
+      name === "SecurityError" ||
+      message_text.includes("Permission denied")
+    ) {
+      if (isIOS) {
+        setMessage(
+          "Izin kamera ditolak. Di iOS Safari: buka Pengaturan → Safari → Kamera → pilih "Izinkan", lalu kembali ke aplikasi dan coba lagi."
+        );
+      } else {
+        setMessage(
+          "Izin kamera ditolak. Tap ikon kamera/kunci di address bar browser, pilih "Izinkan", lalu refresh dan coba lagi."
+        );
+      }
+    } else if (name === "NotFoundError" || name === "DevicesNotFoundError") {
+      setMessage("Kamera tidak ditemukan di perangkat ini.");
+    } else if (name === "NotReadableError" || name === "TrackStartError") {
+      setMessage("Kamera sedang dipakai aplikasi lain. Tutup aplikasi kamera lain, lalu coba lagi.");
+    } else if (name === "OverconstrainedError" || name === "ConstraintNotSatisfiedError") {
+      // Fallback: coba tanpa constraint facingMode
+      setMessage("Kamera belakang tidak tersedia. Coba ganti ke kamera depan.");
+    } else if (
+      name === "AbortError" ||
+      name === "NotSupportedError" ||
+      message_text.includes("HTTPS")
+    ) {
+      setMessage(
+        "Akses kamera memerlukan koneksi HTTPS. Pastikan aplikasi dibuka via https:// bukan http://."
+      );
+    } else {
+      setMessage(
+        `Gagal mengakses kamera: ${name || "Unknown error"}. Pastikan aplikasi berjalan di HTTPS dan izin kamera telah diberikan.`
+      );
     }
   }
 
   async function startScanning() {
-    setState("scanning");
-    setMessage("Meminta izin kamera...");
+    setState("requesting");
+    setMessage("Meminta izin akses kamera...");
 
-    // Check permissions first
-    const hasPermission = await checkCameraPermission();
-    if (!hasPermission) {
-      setState("error");
-      setMessage("Izin kamera ditolak. Silakan aktifkan izin kamera di pengaturan browser Anda.");
-      return;
-    }
+    // 1. Minta izin kamera (penting untuk mobile!)
+    const permitted = await requestCameraPermission();
+    if (!permitted) return;
+
+    setState("scanning");
+    setMessage("Mengakses kamera...");
 
     try {
-      // Cleanup any existing scanner first
       await stopScanner();
 
       const scanner = new Html5Qrcode(SCANNER_ELEMENT_ID);
@@ -76,12 +143,10 @@ export function QRScanner() {
 
       const facingMode = useFrontCamera ? "user" : "environment";
 
-      setMessage("Menampilkan kamera...");
       await scanner.start(
         { facingMode },
         { fps: 10, qrbox: { width: 240, height: 240 }, aspectRatio: 1 },
         async (decodedText) => {
-          // Hentikan kamera segera setelah dapat 1 hasil supaya tidak submit berkali-kali
           await stopScanner();
           setState("processing");
           setMessage("Memproses presensi...");
@@ -96,17 +161,14 @@ export function QRScanner() {
           }
         },
         (errorMessage) => {
-          // Ignore scan errors, just continue scanning
           console.debug("QR Scan error:", errorMessage);
         }
       );
 
-      // If we got here, camera is running successfully
       setMessage("Silakan scan QR code!");
-    } catch (error) {
+    } catch (error: any) {
       console.error("Camera error:", error);
-      setState("error");
-      setMessage("Tidak bisa mengakses kamera. Pastikan Anda menggunakan HTTPS (untuk produksi) atau localhost (untuk development).");
+      handleCameraError(error);
     }
   }
 
@@ -118,7 +180,6 @@ export function QRScanner() {
   function toggleCamera() {
     setUseFrontCamera(!useFrontCamera);
     if (state === "scanning") {
-      // Restart scanner with new camera
       stopScanner().then(startScanning);
     }
   }
@@ -139,7 +200,7 @@ export function QRScanner() {
         )}
 
         <AnimatePresence>
-          {(state === "idle" || state === "processing" || state === "success" || state === "error") && (
+          {(state === "idle" || state === "requesting" || state === "processing" || state === "success" || state === "error") && (
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -150,6 +211,17 @@ export function QRScanner() {
                 <div className={styles.overlayContent}>
                   <CameraOff className={styles.overlayIcon} />
                   <p className={styles.overlayText}>Kamera belum aktif</p>
+                </div>
+              )}
+              {state === "requesting" && (
+                <div className={styles.overlayContent}>
+                  <ShieldCheck className={`${styles.overlayIcon} ${styles.permissionIcon}`} />
+                  <p className={styles.overlayText}>Menunggu izin kamera...</p>
+                  <p className={styles.overlayHint}>
+                    {isIOS
+                      ? "Tap "Allow" pada dialog izin Safari"
+                      : "Tap "Izinkan" pada dialog izin browser"}
+                  </p>
                 </div>
               )}
               {state === "processing" && (
@@ -177,7 +249,7 @@ export function QRScanner() {
                   className={styles.overlayContent}
                 >
                   <XCircle className={styles.errorIcon} />
-                  <p className="text-sm font-medium text-ink text-center">{message}</p>
+                  <p className="text-sm font-medium text-ink text-center max-w-[280px]">{message}</p>
                 </motion.div>
               )}
             </motion.div>
@@ -194,7 +266,7 @@ export function QRScanner() {
           {state === "error" && (
             <Button variant="outline" onClick={toggleCamera} className={styles.cameraToggle}>
               <RefreshCw className="h-4 w-4 mr-2" />
-              Switch Kamera
+              Ganti Kamera
             </Button>
           )}
         </div>
@@ -203,7 +275,7 @@ export function QRScanner() {
       {state === "scanning" && (
         <Button variant="outline" onClick={toggleCamera} className={styles.cameraToggle}>
           <RefreshCw className="h-4 w-4 mr-2" />
-          Switch Kamera
+          Ganti Kamera
         </Button>
       )}
 

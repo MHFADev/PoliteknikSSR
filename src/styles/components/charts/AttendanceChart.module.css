@@ -1,34 +1,89 @@
 /* ============================================================
    AttendanceChart.module.css
-   Style untuk grafik tren kehadiran (AreaChart Recharts)
+   Style untuk grafik kehadiran (BarChart Recharts) — 4 kategori
    ============================================================ */
 
 /* Pembungkus chart — tinggi & lebar penuh */
 .chartWrapper {
-  height: 16rem;
+  height: 18rem;
   width: 100%;
+  padding: 0 0.5rem;
 }
 
-/* Container tooltip kustom */
+/* ─── Tooltip ─────────────────────────────── */
 .tooltip {
-  border-radius: 0.5rem;
-  border: 1px solid rgba(255, 255, 255, 0.6);
-  background: rgba(255, 255, 255, 0.9);
-  backdrop-filter: blur(4px);
-  padding: 0.5rem 0.75rem;
-  box-shadow: 0 8px 32px rgba(36, 35, 32, 0.08);
+  border-radius: 0.625rem;
+  border: 1px solid rgba(203, 213, 225, 0.8);
+  background: rgba(255, 255, 255, 0.97);
+  backdrop-filter: blur(8px);
+  padding: 0.625rem 0.875rem;
+  box-shadow: 0 8px 32px rgba(15, 23, 42, 0.10), 0 2px 8px rgba(15, 23, 42, 0.06);
   font-size: 0.75rem;
+  min-width: 140px;
 }
 
-/* Judul di dalam tooltip (tanggal) */
 .tooltipTitle {
-  font-weight: 500;
+  font-weight: 700;
   color: #1B3C53;
-  margin-bottom: 0.25rem;
+  margin-bottom: 0.375rem;
+  font-size: 0.8125rem;
+  border-bottom: 1px solid rgba(203,213,225,0.5);
+  padding-bottom: 0.25rem;
 }
 
-/* Baris item tooltip (Hadir / Telat) */
-.tooltipItem {
-  /* Warna diatur inline via style prop berdasarkan dataKey */
-  line-height: 1.4;
+.tooltipRow {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  margin-top: 0.25rem;
+  line-height: 1.5;
+}
+
+.tooltipDot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.tooltipLabel {
+  color: #475569;
+  flex: 1;
+}
+
+.tooltipValue {
+  font-weight: 700;
+  min-width: 20px;
+  text-align: right;
+}
+
+/* ─── Legend ─────────────────────────────── */
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.625rem 1.25rem;
+  padding: 0 0.5rem;
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-size: 0.75rem;
+  color: #475569;
+}
+
+.legendDot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+
+.legendLabel {
+  font-weight: 500;
+  white-space: nowrap;
 }

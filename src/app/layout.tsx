@@ -33,10 +33,11 @@ export const metadata: Metadata = {
     "Dashboard manajemen PKL siswa, pembimbing, dan admin — Politeknik SSR",
   icons: {
     icon: [
+      { url: "/favicon.png", type: "image/png", sizes: "any" },
       { url: "/favicon.ico", sizes: "any" },
-      { url: "/favicon.jpg", type: "image/jpeg" },
     ],
-    shortcut: "/favicon.ico",
+    shortcut: "/favicon.png",
+    apple: "/favicon.png",
   },
 };
 
@@ -51,9 +52,9 @@ export default function RootLayout({
       className={`${inter.variable} ${jakarta.variable} ${josefin.variable}`}
     >
       <head>
-        <link rel="icon" href="/favicon.ico" sizes="any" />
-        <link rel="shortcut icon" href="/favicon.ico" />
-        <link rel="apple-touch-icon" href="/favicon.jpg" />
+        <link rel="icon" href="/favicon.png" type="image/png" sizes="any" />
+        <link rel="shortcut icon" href="/favicon.png" type="image/png" />
+        <link rel="apple-touch-icon" href="/favicon.png" />
       </head>
       <body className="font-sans antialiased">{children}</body>
     </html>

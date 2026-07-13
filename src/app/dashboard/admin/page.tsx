@@ -7,7 +7,7 @@ import {
   type AttendanceTrendPoint,
 } from "@/components/charts/AttendanceChart";
 import { Calendar } from "@/components/Calendar";
-import { Users, CalendarCheck, FileClock, GraduationCap } from "lucide-react";
+import { Users, CalendarCheck, FileClock, GraduationCap, AlertCircle } from "lucide-react";
 import { formatDate } from "@/lib/utils";
 import Link from "next/link";
 
@@ -26,6 +26,7 @@ export default async function AdminOverviewPage() {
   const today = new Date().toISOString().slice(0, 10);
   const sevenDaysAgo = new Date();
   sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 6);
+  const sevenDaysAgoStr = sevenDaysAgo.toISOString().slice(0, 10);
 
   const [
     { count: siswaCount },
@@ -36,6 +37,8 @@ export default async function AdminOverviewPage() {
     { data: upcomingEvents },
     { data: allEvents },
     { count: totalEvents },
+    { data: weekLeaves },
+    { count: alfaCount },
   ] = await Promise.all([
     supabase
       .from("profiles")
@@ -70,29 +73,74 @@ export default async function AdminOverviewPage() {
     supabase
       .from("calendar_events")
       .select("id", { count: "exact", head: true }),
+    // Ambil izin/sakit/cuti 7 hari terakhir (yang disetujui maupun pending)
+    supabase
+      .from("leave_requests")
+      .select("type, start_date, end_date, status")
+      .gte("start_date", sevenDaysAgoStr)
+      .lte("start_date", today),
+    // Alfa (siswa yang tidak hadir dan tidak ada izin) — proxy: count siswa aktif
+    // dikurangi yang hadir/telat hari ini (estimasi kasar untuk stat card)
+    supabase
+      .from("profiles")
+      .select("id", { count: "exact", head: true })
+      .eq("role", "siswa"),
   ]);
 
   const hadirToday =
     todayRecords?.filter((r) => r.status === "hadir").length ?? 0;
+  const telatToday =
+    todayRecords?.filter((r) => r.status === "telat").length ?? 0;
 
+  // Hitung alfa hari ini: siswa yang tidak scan sama sekali
+  const absToday = (siswaCount ?? 0) - hadirToday - telatToday;
+  const alfaToday = absToday > 0 ? absToday : 0;
+
+  // ─── Build Trend Map (7 hari) ───────────────────────────────────────────
   const trendMap = new Map<string, AttendanceTrendPoint>();
   for (let i = 6; i >= 0; i--) {
     const d = new Date();
     d.setDate(d.getDate() - i);
+    const dateKey = d.toISOString().slice(0, 10);
     const label = new Intl.DateTimeFormat("id-ID", {
       day: "2-digit",
       month: "short",
     }).format(d);
-    trendMap.set(d.toISOString().slice(0, 10), {
+    trendMap.set(dateKey, {
       date: label,
       hadir: 0,
       telat: 0,
+      izin: 0,
+      alfa: 0,
     });
   }
+
+  // Isi hadir & telat dari attendance_records
   weekRecords?.forEach((r) => {
     const key = r.scanned_at.slice(0, 10);
     const point = trendMap.get(key);
-    if (point) point[r.status as "hadir" | "telat"] += 1;
+    if (point) {
+      if (r.status === "hadir") point.hadir += 1;
+      else if (r.status === "telat") point.telat += 1;
+    }
+  });
+
+  // Isi izin dari leave_requests (expand range per hari)
+  weekLeaves?.forEach((leave) => {
+    const start = new Date(leave.start_date);
+    const end = new Date(leave.end_date);
+    for (const d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
+      const key = d.toISOString().slice(0, 10);
+      const point = trendMap.get(key);
+      if (point) point.izin += 1;
+    }
+  });
+
+  // Hitung alfa per hari: siswa - hadir - telat - izin (floor 0)
+  trendMap.forEach((point) => {
+    const accounted = point.hadir + point.telat + point.izin;
+    const raw = (siswaCount ?? 0) - accounted;
+    point.alfa = raw > 0 ? raw : 0;
   });
 
   return (
@@ -106,18 +154,12 @@ export default async function AdminOverviewPage() {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard
           label="Total Siswa"
           value={siswaCount ?? 0}
           icon={<GraduationCap className="h-5 w-5" />}
           accent="biru1"
-        />
-        <StatCard
-          label="Total Pembimbing"
-          value={pembimbingCount ?? 0}
-          icon={<Users className="h-5 w-5" />}
-          accent="kuning"
         />
         <StatCard
           label="Hadir Hari Ini"
@@ -129,6 +171,12 @@ export default async function AdminOverviewPage() {
           label="Izin Menunggu"
           value={izinPendingCount ?? 0}
           icon={<FileClock className="h-5 w-5" />}
+          accent="kuning"
+        />
+        <StatCard
+          label="Alfa Hari Ini"
+          value={alfaToday}
+          icon={<AlertCircle className="h-5 w-5" />}
           accent="ungu"
         />
       </div>
@@ -180,7 +228,7 @@ export default async function AdminOverviewPage() {
         <Card variant="flip7">
           <CardHeader
             title="Tren Kehadiran 7 Hari Terakhir"
-            subtitle="Seluruh siswa"
+            subtitle="Hadir · Telat · Izin · Alfa"
           />
           <AttendanceChart data={Array.from(trendMap.values())} />
         </Card>

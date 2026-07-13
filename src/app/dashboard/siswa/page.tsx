@@ -80,7 +80,7 @@ export default async function SiswaOverviewPage() {
   return (
     <div className={styles.pageContainer}>
       <div className={styles.pageHeader}>
-        <h1>HI, {profile?.full_name || "Pengguna"} 👋👋</h1>
+        <h1>HI, {profile?.full_name || "Pengguna"} 👋</h1>
         <p>Pantau progres PKL kamu bulan ini.</p>
       </div>
 
@@ -110,9 +110,9 @@ export default async function SiswaOverviewPage() {
 
       {announcements && announcements.length > 0 && (
         <Card>
-          <CardHeader 
-            title="Pengumuman Terbaru" 
-            icon={<Megaphone className="h-5 w-5" />} 
+          <CardHeader
+            title="Pengumuman Terbaru"
+            icon={<Megaphone className="h-5 w-5" />}
             action={
               <Link href="/dashboard/siswa/pengumuman" className="text-sm text-teal hover:underline">Lihat Semua</Link>
             }
@@ -177,9 +177,9 @@ export default async function SiswaOverviewPage() {
       </div>
 
       <div className="mt-6">
-        <StudentCalendar 
-          events={allEvents || []} 
-          records={attendanceRecords || []} 
+        <StudentCalendar
+          events={allEvents || []}
+          records={attendanceRecords || []}
           leaves={leaves || []}
         />
       </div>
