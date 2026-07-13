@@ -209,22 +209,43 @@ export class SupabaseUserRepository implements IUserRepository {
    * @returns userId jika berhasil, atau pesan error
    */
   async signUp(input: CreateUserInput): Promise<{ userId?: string; error?: string }> {
-    const { email, password, fullName, role } = input;
+    const { email, password, fullName, role, kelas, identityNumber, instansi, jurusanId } = input;
     const supabase = this.getClient();
+
+    const metadata: Record<string, any> = {
+      full_name: fullName,
+      role,
+    };
+    if (kelas) metadata.kelas = kelas;
 
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
-        data: {
-          full_name: fullName,
-          role,
-        },
+        data: metadata,
       },
     });
 
     if (error) return { error: error.message };
     if (!data.user) return { error: "Gagal membuat akun." };
+
+    // Trigger handle_new_user sudah membuat baris profil (full_name, role, kelas).
+    // Lengkapi dengan field tambahan via admin client (bypass RLS).
+    if (identityNumber || instansi || jurusanId) {
+      const admin = this.getAdminClient();
+      const { error: profileError } = await admin
+        .from("profiles")
+        .update({
+          identity_number: identityNumber || null,
+          instansi: instansi || null,
+          jurusan_id: jurusanId || null,
+        })
+        .eq("id", data.user.id);
+
+      if (profileError) {
+        console.error("signUp: gagal menyimpan data profil tambahan:", profileError.message);
+      }
+    }
 
     return { userId: data.user.id };
   }

@@ -5,10 +5,11 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Loader2, MapPin, Eye, EyeOff, GraduationCap, ShieldCheck } from "lucide-react";
+import { Loader2, MapPin, GraduationCap, ShieldCheck } from "lucide-react";
 import { signInWithPassword } from "./actions";
 import { checkLoginLocation, hasLocationsConfigured } from "@/actions/location";
 import { Button } from "@/components/ui/Button";
+import { PasswordEye } from "@/components/ui/PasswordEye";
 import styles from "@/styles/pages/Login.module.css";
 
 function getCurrentPosition(): Promise<GeolocationPosition> {
@@ -135,7 +136,7 @@ export default function LoginPage() {
               className={`${styles.input} ${styles.inputPassword} ${error ? styles.inputError : styles.inputNormal} ${gpsStep ? styles.inputDisabled : ""}`}
             />
             <button type="button" onClick={() => setShowPassword(!showPassword)} disabled={gpsStep} className={styles.toggleBtn}>
-              {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+              <PasswordEye show={showPassword} />
             </button>
           </div>
         </div>
