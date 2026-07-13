@@ -62,6 +62,10 @@ export function QRScanner() {
    */
   async function requestCameraPermission(): Promise<boolean> {
     try {
+      if (typeof window === "undefined" || !navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        throw { name: "InsecureContextError", message: "Browser memblokir kamera di HTTP non-localhost" };
+      }
+
       const constraints: MediaStreamConstraints = {
         video: useFrontCamera
           ? { facingMode: "user" }
@@ -87,7 +91,11 @@ export function QRScanner() {
     const name = error?.name || "";
     const message_text = error?.message || "";
 
-    if (
+    if (name === "InsecureContextError") {
+      setMessage(
+        "Akses kamera diblokir (HTTP). Browser hanya mengizinkan kamera di HTTPS atau localhost. Untuk testing via IP lokal (HP), silakan gunakan HTTPS atau atur flag browser chrome://flags/#unsafely-treat-insecure-origin-as-secure."
+      );
+    } else if (
       name === "NotAllowedError" ||
       name === "PermissionDeniedError" ||
       name === "SecurityError" ||
@@ -115,11 +123,11 @@ export function QRScanner() {
       message_text.includes("HTTPS")
     ) {
       setMessage(
-        "Akses kamera memerlukan koneksi HTTPS. Pastikan aplikasi dibuka via https:// bukan http://."
+        "Akses kamera memerlukan koneksi HTTPS. Pastikan aplikasi dibuka via https:// atau http://localhost:3000."
       );
     } else {
       setMessage(
-        `Gagal mengakses kamera: ${name || "Unknown error"}. Pastikan aplikasi berjalan di HTTPS dan izin kamera telah diberikan.`
+        `Gagal mengakses kamera: ${name || "Unknown error"}. Pastikan aplikasi berjalan di HTTPS/localhost dan izin kamera telah diberikan.`
       );
     }
   }

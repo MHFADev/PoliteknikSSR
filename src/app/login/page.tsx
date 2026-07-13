@@ -14,6 +14,13 @@ import styles from "@/styles/pages/Login.module.css";
 
 function getCurrentPosition(): Promise<GeolocationPosition> {
   return new Promise((resolve, reject) => {
+    if (typeof window === "undefined" || !navigator.geolocation) {
+      reject({
+        code: 1,
+        message: "Geolocation tidak didukung atau diblokir karena koneksi HTTP tidak aman."
+      });
+      return;
+    }
     navigator.geolocation.getCurrentPosition(resolve, reject, {
       enableHighAccuracy: true,
       timeout: 15000,
@@ -24,6 +31,9 @@ function getCurrentPosition(): Promise<GeolocationPosition> {
 
 function getLocationPermissionState(): Promise<"granted" | "denied" | "prompt" | "unsupported"> {
   try {
+    if (typeof window === "undefined" || !navigator.permissions || !navigator.permissions.query) {
+      return Promise.resolve("unsupported" as const);
+    }
     const result = navigator.permissions.query({ name: "geolocation" });
     return result.then((s) => s.state as "granted" | "denied" | "prompt").catch(() => "unsupported" as const);
   } catch {
@@ -87,16 +97,17 @@ export default function LoginPage() {
 
       if (code === 1) {
         const currentLocState = await getLocationPermissionState();
-        errMsg =
-          currentLocState === "denied"
-            ? "Izin lokasi ditolak permanen. Buka pengaturan browser > izinkan akses lokasi, lalu reload."
-            : "Izin lokasi ditolak. Izinkan akses lokasi di browser Anda, lalu coba lagi.";
+        if (currentLocState === "denied") {
+          errMsg = "Izin lokasi ditolak permanen. Buka pengaturan browser > izinkan akses lokasi, lalu reload.";
+        } else {
+          errMsg = "Izin lokasi ditolak atau diblokir browser (HTTP). Jika Anda mengakses via IP local (bukan localhost), browser memblokir sensor lokasi. Silakan gunakan HTTPS atau akses via http://localhost:3000.";
+        }
       } else if (code === 2) {
         errMsg = "Tidak dapat menemukan lokasi. Pastikan GPS dan koneksi internet aktif.";
       } else if (code === 3) {
         errMsg = "Waktu pencarian lokasi habis. Pastikan GPS aktif, lalu coba lagi.";
       } else {
-        errMsg = "Gagal mendapatkan lokasi. Izinkan akses lokasi di pengaturan browser.";
+        errMsg = "Gagal mendapatkan lokasi. Pastikan menggunakan HTTPS atau localhost, lalu izinkan akses lokasi.";
       }
 
       setError(errMsg);
