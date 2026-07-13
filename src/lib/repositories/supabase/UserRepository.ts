@@ -444,6 +444,8 @@ export class SupabaseUserRepository implements IUserRepository {
         full_name,
         kelas,
         jurusan_id,
+        approved,
+        created_at,
         study_programs ( nama )
       `)
       .eq("role", "siswa");
@@ -501,10 +503,14 @@ export class SupabaseUserRepository implements IUserRepository {
           if (leave.type === "sakit") sakit += dayCount;
         });
 
+        // Gunakan created_at siswa sebagai batas awal alpha terbaru
+        const studentCreated = student.created_at ? new Date(student.created_at) : new Date(start);
+        const effectiveStart = studentCreated > new Date(start) ? studentCreated : new Date(start);
+
         // Hitung alfa: sisa hari tanpa presensi dan tanpa izin
         const hasAnyRecords = (hadir + telat + izin + sakit) > 0;
         const endDate = new Date();
-        let totalDays = Math.ceil((endDate.getTime() - new Date(start).getTime()) / (1000 * 60 * 60 * 24));
+        let totalDays = Math.ceil((endDate.getTime() - effectiveStart.getTime()) / (1000 * 60 * 60 * 24));
         totalDays = Math.max(totalDays, 1);
         const alfa = hasAnyRecords ? Math.max(0, totalDays - (hadir + telat + izin + sakit)) : 0;
 

@@ -84,7 +84,8 @@ export default async function AdminOverviewPage() {
     supabase
       .from("profiles")
       .select("id", { count: "exact", head: true })
-      .eq("role", "siswa"),
+      .eq("role", "siswa")
+      .eq("approved", true),
   ]);
 
   const hadirToday =

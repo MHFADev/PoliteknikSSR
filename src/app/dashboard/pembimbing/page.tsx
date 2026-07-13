@@ -24,11 +24,11 @@ export default async function PembimbingOverviewPage() {
     { data: weekLeaves },
   ] = await Promise.all([
     supabase.from("student_mentors").select("*", { count: "exact", head: true }).eq("mentor_id", user!.id),
-    supabase.from("attendance_records").select("status, scanned_at").gte("scanned_at", `${today}T00:00:00`),
+    supabase.from("attendance_records").select("status, scanned_at, student_id").gte("scanned_at", `${today}T00:00:00`),
     supabase.from("leave_requests").select("*", { count: "exact", head: true }).eq("status", "pending"),
     supabase
       .from("attendance_records")
-      .select("status, scanned_at")
+      .select("status, scanned_at, student_id")
       .gte("scanned_at", sevenDaysAgo.toISOString()),
     // Izin 7 hari terakhir
     supabase
@@ -38,8 +38,19 @@ export default async function PembimbingOverviewPage() {
       .lte("start_date", today),
   ]);
 
-  const hadirToday = todayRecords?.filter((r) => r.status === "hadir").length ?? 0;
-  const telatToday = todayRecords?.filter((r) => r.status === "telat").length ?? 0;
+  // Ambil ID siswa bimbingan untuk filter presensi
+  const { data: mentorStudents } = await supabase
+    .from("student_mentors")
+    .select("student_id")
+    .eq("mentor_id", user!.id);
+  const mentorStudentIds = new Set(mentorStudents?.map((s) => s.student_id) ?? []);
+
+  // Filter records hanya untuk siswa bimbingan
+  const myTodayRecords = todayRecords?.filter((r) => mentorStudentIds.has(r.student_id)) ?? [];
+  const myWeekRecords = weekRecords?.filter((r) => mentorStudentIds.has(r.student_id)) ?? [];
+
+  const hadirToday = myTodayRecords.filter((r) => r.status === "hadir").length;
+  const telatToday = myTodayRecords.filter((r) => r.status === "telat").length;
   const alfaToday = Math.max(0, (studentCount ?? 0) - hadirToday - telatToday);
 
   // Agregasi 7 hari terakhir untuk chart tren kehadiran
@@ -51,7 +62,7 @@ export default async function PembimbingOverviewPage() {
     trendMap.set(d.toISOString().slice(0, 10), { date: label, hadir: 0, telat: 0, izin: 0, alfa: 0 });
   }
 
-  weekRecords?.forEach((r) => {
+  myWeekRecords?.forEach((r) => {
     const key = r.scanned_at.slice(0, 10);
     const point = trendMap.get(key);
     if (point) {
