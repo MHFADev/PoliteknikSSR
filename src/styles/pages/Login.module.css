@@ -407,7 +407,7 @@
 
 .toggleBtn {
   position: absolute;
-  inset-block-start: 15%;
+  inset-block-start: 13%;
   right: 0;
   width: clamp(48px, 12vw, 60px);
   display: flex;
