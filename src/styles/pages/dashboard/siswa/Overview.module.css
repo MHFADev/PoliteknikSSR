@@ -9,12 +9,12 @@
   font-family: var(--font-jakarta), sans-serif;
   font-size: 1.5rem;
   font-weight: 600;
-  color: var(--color-teal-dark, #1e8c86);
+  color: #293681;
 }
 
 .pageHeader p {
   font-size: 0.875rem;
-  color: var(--color-ink-muted, #475569);
+  color: #0f172a;
 }
 
 .reminderBanner {
