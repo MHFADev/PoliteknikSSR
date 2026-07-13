@@ -95,11 +95,11 @@ export function QRScanner() {
     ) {
       if (isIOS) {
         setMessage(
-          "Izin kamera ditolak. Di iOS Safari: buka Pengaturan → Safari → Kamera → pilih "Izinkan", lalu kembali ke aplikasi dan coba lagi."
+          "Izin kamera ditolak. Di iOS Safari: buka Pengaturan > Safari > Kamera > pilih Izinkan, lalu kembali ke aplikasi dan coba lagi."
         );
       } else {
         setMessage(
-          "Izin kamera ditolak. Tap ikon kamera/kunci di address bar browser, pilih "Izinkan", lalu refresh dan coba lagi."
+          "Izin kamera ditolak. Tap ikon kamera di address bar browser, pilih Izinkan, lalu refresh dan coba lagi."
         );
       }
     } else if (name === "NotFoundError" || name === "DevicesNotFoundError") {
@@ -219,8 +219,8 @@ export function QRScanner() {
                   <p className={styles.overlayText}>Menunggu izin kamera...</p>
                   <p className={styles.overlayHint}>
                     {isIOS
-                      ? "Tap "Allow" pada dialog izin Safari"
-                      : "Tap "Izinkan" pada dialog izin browser"}
+                      ? "Tap Allow pada dialog izin Safari"
+                      : "Tap Izinkan pada dialog izin browser"}
                   </p>
                 </div>
               )}

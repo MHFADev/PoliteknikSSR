@@ -86,8 +86,9 @@ export default function LoginPage() {
       let errMsg: string;
 
       if (code === 1) {
+        const currentLocState = await getLocationPermissionState();
         errMsg =
-          locState === "denied"
+          currentLocState === "denied"
             ? "Izin lokasi ditolak permanen. Buka pengaturan browser > izinkan akses lokasi, lalu reload."
             : "Izin lokasi ditolak. Izinkan akses lokasi di browser Anda, lalu coba lagi.";
       } else if (code === 2) {
