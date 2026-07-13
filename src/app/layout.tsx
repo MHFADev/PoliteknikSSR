@@ -32,8 +32,11 @@ export const metadata: Metadata = {
   description:
     "Dashboard manajemen PKL siswa, pembimbing, dan admin — Politeknik SSR",
   icons: {
-    icon: "/favicon.jpg",
-    shortcut: "/favicon.jpg",
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/favicon.jpg", type: "image/jpeg" },
+    ],
+    shortcut: "/favicon.ico",
   },
 };
 
