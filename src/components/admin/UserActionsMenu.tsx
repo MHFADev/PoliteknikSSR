@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useTransition, useRef, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { MoreVertical, Trash2, Ban, CheckCircle, Shield, AlertTriangle } from "lucide-react";
 import { deleteUser, blockUser, unblockUser, updateUserRole } from "@/actions/admin";
@@ -16,7 +16,32 @@ export function UserActionsMenu({ userId, userName, currentRole, isApproved }: U
   const [open, setOpen] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [isPending, startTransition] = useTransition();
+  const [position, setPosition] = useState<"bottom" | "top">("bottom");
+  const btnRef = useRef<HTMLButtonElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
+
+  const updatePosition = useCallback(() => {
+    if (!btnRef.current) return;
+    const rect = btnRef.current.getBoundingClientRect();
+    const spaceBelow = window.innerHeight - rect.bottom;
+    setPosition(spaceBelow < 280 ? "top" : "bottom");
+  }, []);
+
+  useEffect(() => {
+    if (open) updatePosition();
+  }, [open, updatePosition]);
+
+  useEffect(() => {
+    if (!open) return;
+    function handle(e: MouseEvent) {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node) && !btnRef.current?.contains(e.target as Node)) {
+        setOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handle);
+    return () => document.removeEventListener("mousedown", handle);
+  }, [open]);
 
   function doAction(action: () => Promise<any>) {
     startTransition(async () => {
@@ -27,6 +52,10 @@ export function UserActionsMenu({ userId, userName, currentRole, isApproved }: U
       setTimeout(() => window.location.reload(), 300);
     });
   }
+
+  const menuPos = position === "top"
+    ? "bottom-full mb-1"
+    : "top-full mt-1";
 
   return (
     <>
@@ -64,10 +93,11 @@ export function UserActionsMenu({ userId, userName, currentRole, isApproved }: U
         </div>
       )}
 
-      <div className="relative">
+      <div className="relative" ref={menuRef}>
         <button
+          ref={btnRef}
           onClick={() => setOpen(!open)}
-          className="p-1.5 rounded-lg hover:bg-gray-200 transition-colors"
+          className="p-1.5 rounded-lg hover:bg-gray-100 active:bg-gray-200 transition-colors"
           disabled={isPending}
           aria-label="Aksi pengguna"
         >
@@ -77,13 +107,15 @@ export function UserActionsMenu({ userId, userName, currentRole, isApproved }: U
         {open && (
           <>
             <div className="fixed inset-0 z-40" onClick={() => { setOpen(false); setConfirmDelete(false); }} />
-            <div className="absolute right-0 top-full mt-1 z-50 w-48 bg-white rounded-xl border border-gray-200 shadow-lg py-1 overflow-hidden">
+            <div
+              className={`absolute right-0 ${menuPos} z-50 w-48 bg-white rounded-xl border border-gray-200 shadow-xl py-1.5 overflow-hidden animate-in fade-in zoom-in-95 duration-150`}
+            >
               <div className="px-3 py-1.5 text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Role</div>
               {["siswa", "pembimbing", "admin"].filter((r) => r !== currentRole).map((role) => (
                 <button
                   key={role}
                   onClick={() => doAction(() => updateUserRole(userId, role as any))}
-                  className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2 transition-colors"
+                  className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-700 flex items-center gap-2.5 transition-colors"
                   disabled={isPending}
                 >
                   <Shield className="h-3.5 w-3.5 text-gray-400" />
@@ -95,7 +127,7 @@ export function UserActionsMenu({ userId, userName, currentRole, isApproved }: U
 
               <button
                 onClick={() => doAction(() => (isApproved ? blockUser(userId) : unblockUser(userId)))}
-                className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2 transition-colors"
+                className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-amber-50 hover:text-amber-700 flex items-center gap-2.5 transition-colors"
                 disabled={isPending}
               >
                 {isApproved ? (
@@ -115,7 +147,7 @@ export function UserActionsMenu({ userId, userName, currentRole, isApproved }: U
 
               <button
                 onClick={() => { setConfirmDelete(true); setOpen(false); }}
-                className="w-full text-left px-3 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center gap-2 transition-colors"
+                className="w-full text-left px-3 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center gap-2.5 transition-colors"
               >
                 <Trash2 className="h-3.5 w-3.5" />
                 Hapus Akun
