@@ -1,7 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import { Download, FileSpreadsheet, FileText, CalendarCheck, BookOpen, ClipboardList, BarChart3 } from "lucide-react";
+import {
+  Download,
+  FileSpreadsheet,
+  FileText,
+  CalendarCheck,
+  BookOpen,
+  ClipboardList,
+  BarChart3,
+} from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import {
   exportToCSV,
@@ -25,7 +33,9 @@ export default function AdminExportPage() {
     d.setMonth(d.getMonth() - 1);
     return d.toISOString().slice(0, 10);
   });
-  const [dateTo, setDateTo] = useState(() => new Date().toISOString().slice(0, 10));
+  const [dateTo, setDateTo] = useState(() =>
+    new Date().toISOString().slice(0, 10),
+  );
 
   function triggerExport<T extends Record<string, unknown>>(
     rows: T[],
@@ -36,7 +46,7 @@ export default function AdminExportPage() {
       sheetName?: string;
       csvFilename: string;
       xlsxFilename: string;
-    }
+    },
   ) {
     if (format === "xlsx") {
       exportToExcel(rows, options, options.xlsxFilename);
@@ -52,7 +62,9 @@ export default function AdminExportPage() {
 
     let query = supabase
       .from("attendance_records")
-      .select("scanned_at, status, student:profiles!attendance_records_student_id_fkey(full_name, identity_number, kelas, study_programs!profiles_jurusan_id_fkey(nama))")
+      .select(
+        "scanned_at, status, student:profiles!attendance_records_student_id_fkey(full_name, identity_number, kelas, study_programs!profiles_jurusan_id_fkey(nama))",
+      )
       .gte("scanned_at", `${dateFrom}T00:00:00`)
       .lte("scanned_at", `${dateTo}T23:59:59`)
       .order("scanned_at", { ascending: false });
@@ -69,12 +81,22 @@ export default function AdminExportPage() {
     }));
 
     const cols: ExportColumn<(typeof rows)[0]>[] = [
-      { key: "tanggal", label: "Tanggal & Waktu", width: 22, format: (_, r) => formatDateTimeID(r.tanggal) },
+      {
+        key: "tanggal",
+        label: "Tanggal & Waktu",
+        width: 22,
+        format: (_, r) => formatDateTimeID(r.tanggal),
+      },
       { key: "nama", label: "Nama Siswa", width: 24 },
       { key: "nis", label: "NIS", width: 16 },
       { key: "kelas", label: "Kelas", width: 12 },
       { key: "jurusan", label: "Program Studi", width: 20 },
-      { key: "status", label: "Status", width: 14, format: (_, r) => formatStatus(r.status) },
+      {
+        key: "status",
+        label: "Status",
+        width: 14,
+        format: (_, r) => formatStatus(r.status),
+      },
     ];
 
     triggerExport(rows, {
@@ -95,7 +117,9 @@ export default function AdminExportPage() {
 
     const { data } = await supabase
       .from("leave_requests")
-      .select("created_at, type, status, start_date, end_date, reason, student:profiles!leave_requests_student_id_fkey(full_name, identity_number, kelas)")
+      .select(
+        "created_at, type, status, start_date, end_date, reason, student:profiles!leave_requests_student_id_fkey(full_name, identity_number, kelas)",
+      )
       .gte("created_at", `${dateFrom}T00:00:00`)
       .lte("created_at", `${dateTo}T23:59:59`)
       .order("created_at", { ascending: false });
@@ -113,14 +137,39 @@ export default function AdminExportPage() {
     }));
 
     const cols: ExportColumn<(typeof rows)[0]>[] = [
-      { key: "diajukan", label: "Tanggal Pengajuan", width: 20, format: (_, r) => formatDateID(r.diajukan) },
+      {
+        key: "diajukan",
+        label: "Tanggal Pengajuan",
+        width: 20,
+        format: (_, r) => formatDateID(r.diajukan),
+      },
       { key: "nama", label: "Nama Siswa", width: 24 },
       { key: "nis", label: "NIS", width: 16 },
       { key: "kelas", label: "Kelas", width: 12 },
-      { key: "jenis", label: "Jenis", width: 12, format: (_, r) => formatStatus(r.jenis) },
-      { key: "mulai", label: "Tanggal Mulai", width: 16, format: (_, r) => formatDateID(r.mulai) },
-      { key: "selesai", label: "Tanggal Selesai", width: 16, format: (_, r) => formatDateID(r.selesai) },
-      { key: "status", label: "Status", width: 14, format: (_, r) => formatStatus(r.status) },
+      {
+        key: "jenis",
+        label: "Jenis",
+        width: 12,
+        format: (_, r) => formatStatus(r.jenis),
+      },
+      {
+        key: "mulai",
+        label: "Tanggal Mulai",
+        width: 16,
+        format: (_, r) => formatDateID(r.mulai),
+      },
+      {
+        key: "selesai",
+        label: "Tanggal Selesai",
+        width: 16,
+        format: (_, r) => formatDateID(r.selesai),
+      },
+      {
+        key: "status",
+        label: "Status",
+        width: 14,
+        format: (_, r) => formatStatus(r.status),
+      },
       { key: "alasan", label: "Alasan", width: 36 },
     ];
 
@@ -142,7 +191,9 @@ export default function AdminExportPage() {
 
     const { data } = await supabase
       .from("logbook_entries")
-      .select("entry_date, content, grade, feedback, student:profiles!logbook_entries_student_id_fkey(full_name, identity_number, kelas)")
+      .select(
+        "entry_date, content, grade, feedback, student:profiles!logbook_entries_student_id_fkey(full_name, identity_number, kelas)",
+      )
       .gte("entry_date", dateFrom)
       .lte("entry_date", dateTo)
       .order("entry_date", { ascending: false });
@@ -158,7 +209,12 @@ export default function AdminExportPage() {
     }));
 
     const cols: ExportColumn<(typeof rows)[0]>[] = [
-      { key: "tanggal", label: "Tanggal", width: 16, format: (_, r) => formatDateID(r.tanggal) },
+      {
+        key: "tanggal",
+        label: "Tanggal",
+        width: 16,
+        format: (_, r) => formatDateID(r.tanggal),
+      },
       { key: "nama", label: "Nama Siswa", width: 24 },
       { key: "nis", label: "NIS", width: 16 },
       { key: "kelas", label: "Kelas", width: 12 },
@@ -212,7 +268,10 @@ export default function AdminExportPage() {
         <div className={styles.headerTop}>
           <div>
             <h1>Ekspor Data</h1>
-            <p>Unduh data kehadiran, izin, dan logbook dalam format CSV atau Excel.</p>
+            <p>
+              Unduh data kehadiran, izin, dan logbook dalam format CSV atau
+              Excel
+            </p>
           </div>
           <div className={styles.headerBadge}>
             <BarChart3 className="h-4 w-4" />
@@ -269,9 +328,14 @@ export default function AdminExportPage() {
       {/* ── Export Cards ── */}
       <div className={styles.exportGrid}>
         {exports.map((item) => (
-          <Card key={item.key} className={`${styles.exportCard} ${styles[`accent-${item.accent}`]}`}>
+          <Card
+            key={item.key}
+            className={`${styles.exportCard} ${styles[`accent-${item.accent}`]}`}
+          >
             <div className={styles.cardHeader}>
-              <div className={`${styles.cardIconWrapper} ${styles[`iconBg-${item.accent}`]}`}>
+              <div
+                className={`${styles.cardIconWrapper} ${styles[`iconBg-${item.accent}`]}`}
+              >
                 {item.icon}
               </div>
               <div className={styles.cardInfo}>
@@ -294,8 +358,9 @@ export default function AdminExportPage() {
       {/* ── Footer Note ── */}
       <div className={styles.footerNote}>
         <p>
-          Format Excel (.xlsx) menyertakan header berwarna, auto-filter, dan freeze pane.
-          Format CSV kompatibel dengan aplikasi spreadsheet lainnya.
+          Format Excel (.xlsx) menyertakan header berwarna, auto-filter, dan
+          freeze pane. Format CSV kompatibel dengan aplikasi spreadsheet
+          lainnya.
         </p>
       </div>
     </div>

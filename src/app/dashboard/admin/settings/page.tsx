@@ -15,9 +15,11 @@ export default function AdminSettingsPage() {
   return (
     <div style={{ padding: "1.5rem" }}>
       <div style={{ marginBottom: "1.5rem" }}>
-        <h1 style={{ fontSize: "1.5rem", fontWeight: 700, color: "#1E293B" }}>Pengaturan</h1>
+        <h1 style={{ fontSize: "1.5rem", fontWeight: 700, color: "#1E293B" }}>
+          Pengaturan
+        </h1>
         <p style={{ fontSize: "0.875rem", color: "#94A3B8" }}>
-          Sesuaikan pengalaman aplikasi sesuai preferensi kamu.
+          Sesuaikan pengalaman aplikasi sesuai preferensi kamu
         </p>
       </div>
       <SettingsForm role="admin" />

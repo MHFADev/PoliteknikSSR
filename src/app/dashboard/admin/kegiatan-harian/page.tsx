@@ -8,7 +8,7 @@ export default async function AdminLogbookPage() {
   const { data } = await supabase
     .from("logbook_entries")
     .select(
-      "id, entry_date, content, grade, feedback, photo_url, student:profiles!logbook_entries_student_id_fkey(full_name, avatar_url)"
+      "id, entry_date, content, grade, feedback, photo_url, student:profiles!logbook_entries_student_id_fkey(full_name, avatar_url)",
     )
     .order("entry_date", { ascending: false })
     .limit(100);
@@ -17,7 +17,7 @@ export default async function AdminLogbookPage() {
     <div className={styles.pageContainer}>
       <div className={styles.pageHeader}>
         <h1>Data Kegiatan</h1>
-        <p>Pantau seluruh entri kegiatan siswa. Admin juga dapat menilai langsung.</p>
+        <p>Pantau seluruh kegiatan siswa. Admin juga dapat menilai langsung</p>
       </div>
 
       <LogbookReviewList initialEntries={(data as any) ?? []} />

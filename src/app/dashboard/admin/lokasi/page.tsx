@@ -6,7 +6,12 @@ import { Loader2, Plus, MapPin, Trash2, Edit } from "lucide-react";
 import { Card, CardHeader } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Modal } from "@/components/ui/Modal";
-import { getLocations, addLocation, updateLocation, deleteLocation } from "@/actions/location";
+import {
+  getLocations,
+  addLocation,
+  updateLocation,
+  deleteLocation,
+} from "@/actions/location";
 import { LocationPicker } from "@/components/LocationPicker";
 import styles from "@/styles/pages/dashboard/admin/Lokasi.module.css";
 
@@ -45,7 +50,11 @@ export default function AdminLokasiPage() {
   function openAdd() {
     setEditing(null);
     setError(null);
-    const defaultLoc = locations[0] ?? { latitude: -6.2088, longitude: 106.8456, radius_meters: 50 };
+    const defaultLoc = locations[0] ?? {
+      latitude: -6.2088,
+      longitude: 106.8456,
+      radius_meters: 50,
+    };
     setTempLocation({
       latitude: defaultLoc.latitude,
       longitude: defaultLoc.longitude,
@@ -87,14 +96,14 @@ export default function AdminLokasiPage() {
         nama,
         tempLocation.latitude,
         tempLocation.longitude,
-        radius_meters
+        radius_meters,
       );
     } else {
       result = await addLocation(
         nama,
         tempLocation.latitude,
         tempLocation.longitude,
-        radius_meters
+        radius_meters,
       );
     }
 
@@ -120,7 +129,10 @@ export default function AdminLokasiPage() {
     <div className={styles.pageContainer}>
       <div className={styles.pageHeader}>
         <h1>Lokasi GPS</h1>
-        <p>Atur lokasi yang diizinkan untuk verifikasi GPS saat login. Siswa hanya bisa login jika berada dalam radius lokasi ini.</p>
+        <p>
+          Atur lokasi yang diizinkan untuk verifikasi GPS saat login. Siswa
+          hanya bisa login jika berada dalam radius lokasi ini
+        </p>
       </div>
 
       <Card>
@@ -140,7 +152,10 @@ export default function AdminLokasiPage() {
             <Loader2 className="h-6 w-6 animate-spin text-steel" />
           </div>
         ) : locations.length === 0 ? (
-          <p className={styles.emptyState}>Belum ada lokasi. Tambahkan lokasi untuk mengaktifkan verifikasi GPS.</p>
+          <p className={styles.emptyState}>
+            Belum ada lokasi. Tambahkan lokasi untuk mengaktifkan verifikasi
+            GPS.
+          </p>
         ) : (
           <div className={styles.locationList}>
             {locations.map((loc) => (
@@ -152,7 +167,8 @@ export default function AdminLokasiPage() {
                   <div>
                     <p className={styles.locationName}>{loc.nama}</p>
                     <p className={styles.locationCoords}>
-                      {loc.latitude.toFixed(6)}, {loc.longitude.toFixed(6)} &mdash; Radius {loc.radiusMeters}m
+                      {loc.latitude.toFixed(6)}, {loc.longitude.toFixed(6)}{" "}
+                      &mdash; Radius {loc.radiusMeters}m
                     </p>
                   </div>
                 </div>
@@ -172,7 +188,11 @@ export default function AdminLokasiPage() {
 
       <Modal
         open={modalOpen}
-        onClose={() => { setModalOpen(false); setEditing(null); setError(null); }}
+        onClose={() => {
+          setModalOpen(false);
+          setEditing(null);
+          setError(null);
+        }}
         title={editing ? "Edit Lokasi" : "Tambah Lokasi"}
       >
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -195,7 +215,12 @@ export default function AdminLokasiPage() {
               step="any"
               required
               value={tempLocation.latitude}
-              onChange={(e) => setTempLocation({ ...tempLocation, latitude: parseFloat(e.target.value) || 0 })}
+              onChange={(e) =>
+                setTempLocation({
+                  ...tempLocation,
+                  latitude: parseFloat(e.target.value) || 0,
+                })
+              }
               placeholder="-6.2088"
               className={styles.formInput}
             />
@@ -208,7 +233,12 @@ export default function AdminLokasiPage() {
               step="any"
               required
               value={tempLocation.longitude}
-              onChange={(e) => setTempLocation({ ...tempLocation, longitude: parseFloat(e.target.value) || 0 })}
+              onChange={(e) =>
+                setTempLocation({
+                  ...tempLocation,
+                  longitude: parseFloat(e.target.value) || 0,
+                })
+              }
               placeholder="106.8456"
               className={styles.formInput}
             />
@@ -227,7 +257,12 @@ export default function AdminLokasiPage() {
               required
               min={1}
               value={tempLocation.radius_meters}
-              onChange={(e) => setTempLocation({ ...tempLocation, radius_meters: parseFloat(e.target.value) || 100 })}
+              onChange={(e) =>
+                setTempLocation({
+                  ...tempLocation,
+                  radius_meters: parseFloat(e.target.value) || 100,
+                })
+              }
               placeholder="100"
               className={styles.formInput}
             />
@@ -236,7 +271,15 @@ export default function AdminLokasiPage() {
           {error && <p className={styles.formError}>{error}</p>}
 
           <div className={styles.formActions}>
-            <Button type="button" variant="ghost" onClick={() => { setModalOpen(false); setEditing(null); setError(null); }}>
+            <Button
+              type="button"
+              variant="ghost"
+              onClick={() => {
+                setModalOpen(false);
+                setEditing(null);
+                setError(null);
+              }}
+            >
               Batal
             </Button>
             <Button type="submit" disabled={isSubmitting}>

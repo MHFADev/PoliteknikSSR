@@ -72,7 +72,7 @@ export default function AdminAttendancePage() {
           Rekap Absensi 30 Hari Terakhir
         </h1>
         <p className="text-sm text-ink-muted">
-          Lihat rekapitulasi kehadiran semua siswa atau filter sesuai kebutuhan.
+          Lihat rekapitulasi kehadiran semua siswa atau filter sesuai kebutuhan
         </p>
       </div>
 
@@ -179,13 +179,21 @@ export default function AdminAttendancePage() {
                     className="border-b border-outline hover:bg-surface/50"
                   >
                     <td className="py-3 px-4 text-ink">
-                      <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "0.75rem",
+                        }}
+                      >
                         <div
                           style={{
                             width: "32px",
                             height: "32px",
                             borderRadius: "9999px",
-                            background: student.avatarUrl ? "transparent" : "#DBEAFE",
+                            background: student.avatarUrl
+                              ? "transparent"
+                              : "#DBEAFE",
                             color: "#1D4ED8",
                             fontSize: "0.75rem",
                             fontWeight: 700,
@@ -200,7 +208,11 @@ export default function AdminAttendancePage() {
                             <img
                               src={student.avatarUrl}
                               alt={student.fullName}
-                              style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                              style={{
+                                width: "100%",
+                                height: "100%",
+                                objectFit: "cover",
+                              }}
                             />
                           ) : (
                             student.fullName?.charAt(0).toUpperCase() || "?"

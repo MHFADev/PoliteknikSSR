@@ -35,7 +35,7 @@ export default async function AdminIzinPage() {
     <div className={styles.pageContainer}>
       <div className={styles.pageHeader}>
         <h1>Data Izin</h1>
-        <p>Kelola seluruh pengajuan izin, sakit, dan cuti siswa.</p>
+        <p>Kelola seluruh pengajuan izin, sakit, dan cuti siswa</p>
       </div>
 
       <div>

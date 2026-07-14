@@ -277,7 +277,7 @@ export default function AdminKalenderPage() {
       <div className={styles.pageHeaderRow}>
         <div className={styles.pageHeader}>
           <h1>Kalender PKL</h1>
-          <p>Atur event & libur untuk siswa PKL.</p>
+          <p>Atur event & libur untuk siswa PKL</p>
         </div>
         <Button onClick={openAdd} className={styles.addBtn}>
           <Plus className="h-4 w-4" /> Tambah Event

@@ -7,7 +7,12 @@ import { Card, CardHeader } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Modal } from "@/components/ui/Modal";
 import { Badge } from "@/components/ui/Badge";
-import { getStudyPrograms, getAnnouncements, sendAnnouncement, deleteAnnouncement } from "@/actions/broadcast";
+import {
+  getStudyPrograms,
+  getAnnouncements,
+  sendAnnouncement,
+  deleteAnnouncement,
+} from "@/actions/broadcast";
 import { formatDate } from "@/lib/utils";
 import styles from "@/styles/pages/dashboard/admin/Broadcast.module.css";
 
@@ -35,18 +40,22 @@ export default function AdminBroadcastPage() {
 
   function loadData() {
     setLoading(true);
-    Promise.all([getStudyPrograms(), getAnnouncements()]).then(([progs, anns]) => {
-      setPrograms(progs as unknown as StudyProgram[]);
-      setAnnouncements(anns as unknown as Announcement[]);
-      setLoading(false);
-    });
+    Promise.all([getStudyPrograms(), getAnnouncements()]).then(
+      ([progs, anns]) => {
+        setPrograms(progs as unknown as StudyProgram[]);
+        setAnnouncements(anns as unknown as Announcement[]);
+        setLoading(false);
+      },
+    );
   }
 
-  useEffect(() => { loadData(); }, []);
+  useEffect(() => {
+    loadData();
+  }, []);
 
   function toggleProgram(id: string) {
     setSelectedPrograms((prev) =>
-      prev.includes(id) ? prev.filter((p) => p !== id) : [...prev, id]
+      prev.includes(id) ? prev.filter((p) => p !== id) : [...prev, id],
     );
   }
 
@@ -76,7 +85,12 @@ export default function AdminBroadcastPage() {
     }
 
     setIsSubmitting(true);
-    const result = await sendAnnouncement(title, content, broadcastToAll, selectedPrograms);
+    const result = await sendAnnouncement(
+      title,
+      content,
+      broadcastToAll,
+      selectedPrograms,
+    );
     setIsSubmitting(false);
 
     if (!result.success) {
@@ -99,18 +113,22 @@ export default function AdminBroadcastPage() {
       <div className={styles.pageHeader}>
         <div>
           <h1>Broadcast Pengumuman</h1>
-          <p>Kirim pengumuman ke siswa berdasarkan jurusan.</p>
+          <p>Kirim pengumuman ke siswa berdasarkan jurusan</p>
         </div>
-        <Button onClick={openForm}><Send className="h-4 w-4" /> Kirim Pengumuman</Button>
+        <Button onClick={openForm}>
+          <Send className="h-4 w-4" /> Kirim Pengumuman
+        </Button>
       </div>
 
       <Card>
         <CardHeader title="Riwayat Pengumuman" />
 
         {loading ? (
-          <div className={styles.loadingSpinner}><Loader2 className="h-6 w-6 animate-spin text-steel" /></div>
+          <div className={styles.loadingSpinner}>
+            <Loader2 className="h-6 w-6 animate-spin text-steel" />
+          </div>
         ) : announcements.length === 0 ? (
-          <p className={styles.emptyState}>Belum ada pengumuman.</p>
+          <p className={styles.emptyState}>Belum ada pengumuman</p>
         ) : (
           <div className={styles.announcementList}>
             {announcements.map((ann) => (
@@ -135,7 +153,9 @@ export default function AdminBroadcastPage() {
                           );
                         })
                       )}
-                      <span className={styles.announcementDate}>{formatDate(ann.createdAt)}</span>
+                      <span className={styles.announcementDate}>
+                        {formatDate(ann.createdAt)}
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -148,33 +168,69 @@ export default function AdminBroadcastPage() {
         )}
       </Card>
 
-      <Modal open={modalOpen} onClose={() => { setModalOpen(false); setError(null); }} title="Kirim Pengumuman">
+      <Modal
+        open={modalOpen}
+        onClose={() => {
+          setModalOpen(false);
+          setError(null);
+        }}
+        title="Kirim Pengumuman"
+      >
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className={styles.formGroup}>
             <label className={styles.formLabel}>Judul</label>
-            <input value={title} onChange={(e) => setTitle(e.target.value)} type="text" required placeholder="Pengumuman Libur PKL" className={styles.formInput} />
+            <input
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              type="text"
+              required
+              placeholder="Pengumuman Libur PKL"
+              className={styles.formInput}
+            />
           </div>
           <div className={styles.formGroup}>
             <div className="flex justify-between items-center">
               <label className={styles.formLabel}>Isi Pengumuman</label>
-              <span className="text-xs text-mist-dim">{content.length}/100</span>
+              <span className="text-xs text-mist-dim">
+                {content.length}/100
+              </span>
             </div>
-            <textarea value={content} onChange={(e) => setContent(e.target.value)} maxLength={100} rows={4} required placeholder="Tulis pengumuman..." className={styles.formTextarea} />
+            <textarea
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
+              maxLength={100}
+              rows={4}
+              required
+              placeholder="Tulis pengumuman..."
+              className={styles.formTextarea}
+            />
           </div>
 
           <div className={styles.formGroup}>
             <label className={styles.formLabel}>Target Jurusan</label>
             <div className="mt-2 space-y-2">
               <label className={styles.checkboxLabel}>
-                <input type="checkbox" checked={broadcastToAll} onChange={(e) => handleBroadcastAllChange(e.target.checked)} className="rounded border-deep/20 text-blue-vibrant" />
+                <input
+                  type="checkbox"
+                  checked={broadcastToAll}
+                  onChange={(e) => handleBroadcastAllChange(e.target.checked)}
+                  className="rounded border-deep/20 text-blue-vibrant"
+                />
                 <span>Semua Jurusan</span>
               </label>
               {!broadcastToAll && (
                 <div className={styles.checkboxGroup}>
                   {programs.map((prog) => (
                     <label key={prog.id} className={styles.programCheckbox}>
-                      <input type="checkbox" checked={selectedPrograms.includes(prog.id)} onChange={() => toggleProgram(prog.id)} className="rounded border-deep/20 text-blue-vibrant" />
-                      <span>{prog.nama} ({prog.kode})</span>
+                      <input
+                        type="checkbox"
+                        checked={selectedPrograms.includes(prog.id)}
+                        onChange={() => toggleProgram(prog.id)}
+                        className="rounded border-deep/20 text-blue-vibrant"
+                      />
+                      <span>
+                        {prog.nama} ({prog.kode})
+                      </span>
                     </label>
                   ))}
                 </div>
@@ -185,7 +241,16 @@ export default function AdminBroadcastPage() {
           {error && <p className={styles.formError}>{error}</p>}
 
           <div className={styles.modalActions}>
-            <Button type="button" variant="ghost" onClick={() => { setModalOpen(false); setError(null); }}>Batal</Button>
+            <Button
+              type="button"
+              variant="ghost"
+              onClick={() => {
+                setModalOpen(false);
+                setError(null);
+              }}
+            >
+              Batal
+            </Button>
             <Button type="submit" disabled={isSubmitting}>
               {isSubmitting && <Loader2 className="h-4 w-4 animate-spin" />}
               <Send className="h-4 w-4" /> Kirim

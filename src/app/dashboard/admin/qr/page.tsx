@@ -9,7 +9,7 @@ export default async function AdminQRPage() {
     <div className={styles.pageContainer}>
       <div className={styles.pageHeader}>
         <h1>Generate QR Presensi</h1>
-        <p>Buat QR harian untuk absensi siswa.</p>
+        <p>Buat QR harian untuk absensi siswa</p>
       </div>
 
       <div className={styles.qrCentered}>

@@ -14,9 +14,11 @@ export default function AdminProfilePage() {
   return (
     <div style={{ padding: "1.5rem" }}>
       <div style={{ marginBottom: "1.5rem" }}>
-        <h1 style={{ fontSize: "1.5rem", fontWeight: 700, color: "#1E293B" }}>Profil Saya</h1>
+        <h1 style={{ fontSize: "1.5rem", fontWeight: 700, color: "#1E293B" }}>
+          Profil Saya
+        </h1>
         <p style={{ fontSize: "0.875rem", color: "#94A3B8" }}>
-          Kelola data diri dan password akun kamu.
+          Kelola data diri dan password akun kamu
         </p>
       </div>
       <ProfileForm />
