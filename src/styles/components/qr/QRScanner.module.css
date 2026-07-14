@@ -18,7 +18,7 @@
   width: 18rem;
   overflow: hidden;
   border-radius: 0.75rem;
-  border: 1px solid var(--color-outline, #D1D5DB);
+  border: 1px solid var(--color-outline, #d1d5db);
   background: var(--color-surface, #fff);
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
 }
@@ -29,7 +29,7 @@
   position: absolute;
   inset: 1.5rem;
   border-radius: 0.75rem;
-  border: 2px solid #2BA8A2;
+  border: 2px solid #050c9c;
 }
 
 /* Sudut-sudut viewfinder */
@@ -37,7 +37,7 @@
   position: absolute;
   height: 1.5rem;
   width: 1.5rem;
-  border-color: #2BA8A2;
+  border-color: #2ba8a2;
 }
 
 .viewfinderCorner:nth-child(1) {
@@ -76,13 +76,18 @@
   right: 0;
   top: 0;
   height: 2px;
-  background: #2BA8A2;
+  background: #2ba8a2;
   animation: scanMove 2s ease-in-out infinite;
 }
 
 @keyframes scanMove {
-  0%, 100% { top: 0; }
-  50% { top: 100%; }
+  0%,
+  100% {
+    top: 0;
+  }
+  50% {
+    top: 100%;
+  }
 }
 
 /* Overlay status (idle / processing / success / error) */
@@ -95,7 +100,7 @@
   justify-content: center;
   gap: 0.75rem;
   background: rgba(255, 255, 255, 0.95);
-  color: var(--color-ink, #0F172A);
+  color: var(--color-ink, #0f172a);
   padding: 0 1.5rem;
   text-align: center;
 }
@@ -112,13 +117,13 @@
 .overlayIcon {
   width: 2.25rem;
   height: 2.25rem;
-  color: var(--color-ink-muted, #94A3B8);
+  color: var(--color-ink-muted, #94a3b8);
 }
 
 /* Teks overlay */
 .overlayText {
   font-size: 0.875rem;
-  color: var(--color-ink-muted, #94A3B8);
+  color: var(--color-ink-muted, #94a3b8);
 }
 
 /* Teks petunjuk kecil di bawah teks utama overlay */
@@ -137,8 +142,15 @@
 }
 
 @keyframes pulsePermission {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.7; transform: scale(1.08); }
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.08);
+  }
 }
 
 /* Spinner processing */
@@ -146,20 +158,22 @@
   width: 2.25rem;
   height: 2.25rem;
   border-radius: 9999px;
-  border: 2px solid var(--color-outline, #D1D5DB);
-  border-top-color: #2BA8A2;
+  border: 2px solid var(--color-outline, #d1d5db);
+  border-top-color: #2ba8a2;
   animation: spin 0.8s linear infinite;
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* Ikon sukses */
 .successIcon {
   width: 3rem;
   height: 3rem;
-  color: #22C55E;
+  color: #22c55e;
 }
 
 /* Lingkaran animasi pulse untuk success */
@@ -172,15 +186,21 @@
 }
 
 @keyframes pulseRing {
-  0% { transform: scale(0.8); opacity: 0.6; }
-  100% { transform: scale(1.8); opacity: 0; }
+  0% {
+    transform: scale(0.8);
+    opacity: 0.6;
+  }
+  100% {
+    transform: scale(1.8);
+    opacity: 0;
+  }
 }
 
 /* Ikon error */
 .errorIcon {
   width: 3rem;
   height: 3rem;
-  color: #EF4444;
+  color: #ef4444;
 }
 
 /* Grup tombol aksi */

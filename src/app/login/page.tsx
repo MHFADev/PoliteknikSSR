@@ -16,7 +16,8 @@ function getCurrentPosition(): Promise<GeolocationPosition> {
     if (typeof window === "undefined" || !navigator.geolocation) {
       reject({
         code: 1,
-        message: "Geolocation tidak didukung atau diblokir karena koneksi HTTP tidak aman."
+        message:
+          "Geolocation tidak didukung atau diblokir karena koneksi HTTP tidak aman.",
       });
       return;
     }
@@ -28,13 +29,21 @@ function getCurrentPosition(): Promise<GeolocationPosition> {
   });
 }
 
-function getLocationPermissionState(): Promise<"granted" | "denied" | "prompt" | "unsupported"> {
+function getLocationPermissionState(): Promise<
+  "granted" | "denied" | "prompt" | "unsupported"
+> {
   try {
-    if (typeof window === "undefined" || !navigator.permissions || !navigator.permissions.query) {
+    if (
+      typeof window === "undefined" ||
+      !navigator.permissions ||
+      !navigator.permissions.query
+    ) {
       return Promise.resolve("unsupported" as const);
     }
     const result = navigator.permissions.query({ name: "geolocation" });
-    return result.then((s) => s.state as "granted" | "denied" | "prompt").catch(() => "unsupported" as const);
+    return result
+      .then((s) => s.state as "granted" | "denied" | "prompt")
+      .catch(() => "unsupported" as const);
   } catch {
     return Promise.resolve("unsupported" as const);
   }
@@ -73,7 +82,9 @@ export default function LoginPage() {
     // Cek apakah lokasi sudah pernah ditolak (browser remember decision)
     const locState = await getLocationPermissionState();
     if (locState === "denied") {
-      setError("Izin lokasi ditolak permanen. Buka pengaturan browser > izinkan akses lokasi, lalu reload.");
+      setError(
+        "Izin lokasi ditolak permanen. Buka pengaturan browser > izinkan akses lokasi, lalu reload.",
+      );
       setIsSubmitting(false);
       setGpsStep(false);
       return;
@@ -97,16 +108,21 @@ export default function LoginPage() {
       if (code === 1) {
         const currentLocState = await getLocationPermissionState();
         if (currentLocState === "denied") {
-          errMsg = "Izin lokasi ditolak permanen. Buka pengaturan browser > izinkan akses lokasi, lalu reload.";
+          errMsg =
+            "Izin lokasi ditolak permanen. Buka pengaturan browser > izinkan akses lokasi, lalu reload.";
         } else {
-          errMsg = "Izin lokasi ditolak atau diblokir browser (HTTP). Jika Anda mengakses via IP local (bukan localhost), browser memblokir sensor lokasi. Silakan gunakan HTTPS atau akses via http://localhost:3000.";
+          errMsg =
+            "Izin lokasi ditolak atau diblokir browser (HTTP). Jika Anda mengakses via IP local (bukan localhost), browser memblokir sensor lokasi. Silakan gunakan HTTPS atau akses via http://localhost:3000.";
         }
       } else if (code === 2) {
-        errMsg = "Tidak dapat menemukan lokasi. Pastikan GPS dan koneksi internet aktif.";
+        errMsg =
+          "Tidak dapat menemukan lokasi. Pastikan GPS dan koneksi internet aktif.";
       } else if (code === 3) {
-        errMsg = "Waktu pencarian lokasi habis. Pastikan GPS aktif, lalu coba lagi.";
+        errMsg =
+          "Waktu pencarian lokasi habis. Pastikan GPS aktif, lalu coba lagi.";
       } else {
-        errMsg = "Gagal mendapatkan lokasi. Pastikan menggunakan HTTPS atau localhost, lalu izinkan akses lokasi.";
+        errMsg =
+          "Gagal mendapatkan lokasi. Pastikan menggunakan HTTPS atau localhost, lalu izinkan akses lokasi.";
       }
 
       setError(errMsg);
@@ -127,7 +143,9 @@ export default function LoginPage() {
         </div>
         <h1 className={styles.formTitle}>Selamat Datang</h1>
         <p className={styles.formSubtitle}>
-          {gpsStep ? "Memverifikasi lokasi Anda..." : "Masuk ke akun Anda"}
+          {gpsStep
+            ? "Memverifikasi lokasi Anda..."
+            : "Silakan masuk ke akun anda"}
         </p>
       </div>
 
@@ -161,14 +179,23 @@ export default function LoginPage() {
               disabled={gpsStep}
               className={`${styles.input} ${styles.inputWithIcon} ${styles.inputPassword} ${error ? styles.inputError : styles.inputNormal} ${gpsStep ? styles.inputDisabled : ""}`}
             />
-            <button type="button" onClick={() => setShowPassword(!showPassword)} disabled={gpsStep} className={styles.toggleBtn}>
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              disabled={gpsStep}
+              className={styles.toggleBtn}
+            >
               <PasswordEye show={showPassword} />
             </button>
           </div>
         </div>
 
         {error && (
-          <motion.p initial={{ opacity: 0, x: -4 }} animate={{ opacity: 1, x: 0 }} className={styles.errorBox}>
+          <motion.p
+            initial={{ opacity: 0, x: -4 }}
+            animate={{ opacity: 1, x: 0 }}
+            className={styles.errorBox}
+          >
             <span className="text-lg">!</span>
             {error}
           </motion.p>
@@ -177,7 +204,8 @@ export default function LoginPage() {
         {gpsStep && (
           <p className={styles.gpsInfo}>
             <MapPin className={styles.gpsIcon} />
-            Browser akan meminta izin lokasi. Izinkan untuk verifikasi area kampus.
+            Browser akan meminta izin lokasi. Izinkan untuk verifikasi area
+            kampus.
           </p>
         )}
 
@@ -193,9 +221,13 @@ export default function LoginPage() {
 
       <p className={styles.footerText}>
         Belum punya akun?{" "}
-        <Link href="/register" className={styles.footerLink}>Daftar di sini</Link>
+        <Link href="/register" className={styles.footerLink}>
+          Daftar di sini
+        </Link>
       </p>
-      <p className={styles.footerSub}>Hubungi Admin Sekolah Jika Belum Memiliki Akses.</p>
+      <p className={styles.footerSub}>
+        Hubungi Admin Jika Belum Memiliki Akses.
+      </p>
     </div>
   );
 
@@ -205,14 +237,19 @@ export default function LoginPage() {
       <div className={styles.heroSection}>
         <div className={styles.heroOverlay} />
         <div className={styles.heroContent}>
-          <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.1 }}>
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+          >
             <div className={styles.heroBadge}>
               <GraduationCap className="w-5 h-5" />
               <span>Politeknik SSR</span>
             </div>
             <h2 className={styles.heroTitle}>Sistem Informasi Absensi PKL</h2>
             <p className={styles.heroDesc}>
-              Platform digital untuk memantau kehadiran, kegiatan harian, dan pengajuan izin siswa PKL secara real-time.
+              Platform digital untuk memantau kehadiran, kegiatan harian, dan
+              pengajuan izin siswa PKL secara real-time.
             </p>
             <div className={styles.heroFeatures}>
               <div className={styles.heroFeature}>
