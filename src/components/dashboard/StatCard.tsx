@@ -47,6 +47,7 @@ const accentClasses: Record<string, string> = {
   gold: "bg-[#D4AF37]20 text-[#D4AF37]",
 };
 const accentMap: Record<string, string> = {
+  ocean: styles.statCardOcean,
   sky: styles.statCardSky,
   sun: styles.statCardSun,
   leaf: styles.statCardLeaf,

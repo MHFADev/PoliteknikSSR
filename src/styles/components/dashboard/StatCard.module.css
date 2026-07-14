@@ -59,6 +59,9 @@
 .statCardBerry .statCardIcon { background: rgba(168,85,247,0.1); color: #A855F7; }
 .statCardBerry .statCardAccent { background: #A855F7; }
 
+.statCardOcean .statCardIcon { background: #DBEAFE; color: #3572EF; }
+.statCardOcean .statCardAccent { background: #3572EF; }
+
 .statCardTeal .statCardIcon { background: #E8F6F5; color: #1E8C86; }
 .statCardTeal .statCardAccent { background: #1E8C86; }
 
