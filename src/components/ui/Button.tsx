@@ -24,7 +24,7 @@ import styles from "@/styles/components/ui/Button.module.css";
 // ---------------------------------------------------------------------------
 
 type SkylearnVariant = "primary" | "secondary" | "outline" | "ghost" | "danger";
-type Flip7Variant = "gold" | "teal" | "coral" | "boom" | "flip7";
+type Flip7Variant = "gold" | "teal" | "coral" | "boom" | "flip7" | "blue";
 type Variant = SkylearnVariant | Flip7Variant;
 
 interface ButtonProps extends Omit<HTMLMotionProps<"button">, "children"> {
@@ -38,19 +38,20 @@ interface ButtonProps extends Omit<HTMLMotionProps<"button">, "children"> {
 // Mapping varian → CSS module class
 // ---------------------------------------------------------------------------
 
-const FLIP7 = new Set(["gold", "teal", "coral", "boom", "flip7"]);
+const FLIP7 = new Set(["gold", "teal", "coral", "boom", "flip7", "blue"]);
 
 const VARIANT_CLASSES: Record<Variant, string> = {
-  primary:   styles.btnPrimary,
+  primary: styles.btnPrimary,
   secondary: styles.btnSecondary,
-  outline:   styles.btnOutline,
-  ghost:     styles.btnGhost,
-  danger:    styles.btnDanger,
-  gold:      styles.btnGold,
-  teal:      styles.btnTeal,
-  coral:     styles.btnCoral,
-  boom:      styles.btnBoom,
-  flip7:     styles.btnFlip7,
+  outline: styles.btnOutline,
+  ghost: styles.btnGhost,
+  danger: styles.btnDanger,
+  gold: styles.btnGold,
+  teal: styles.btnTeal,
+  coral: styles.btnCoral,
+  boom: styles.btnBoom,
+  flip7: styles.btnFlip7,
+  blue: styles.btnBlue,
 };
 
 const SIZE_CLASSES: Record<string, string> = {
@@ -60,10 +61,21 @@ const SIZE_CLASSES: Record<string, string> = {
 };
 
 /** Animasi Skylearn — halus dan ringan */
-const SKY_TRANSITION = { type: "spring" as const, stiffness: 400, damping: 25, duration: 0.2 };
+const SKY_TRANSITION = {
+  type: "spring" as const,
+  stiffness: 400,
+  damping: 25,
+  duration: 0.2,
+};
 
 /** Animasi Flip7 — lebih ekspresif dengan bounce */
-const F7_TRANSITION = { type: "spring" as const, stiffness: 300, damping: 20, duration: 0.2, ease: "circOut" };
+const F7_TRANSITION = {
+  type: "spring" as const,
+  stiffness: 300,
+  damping: 20,
+  duration: 0.2,
+  ease: "circOut",
+};
 
 // ---------------------------------------------------------------------------
 // Komponen

@@ -11,16 +11,22 @@ import { formatDate } from "@/lib/utils";
 import type { AttendanceSession } from "@/lib/repositories";
 import styles from "@/styles/components/qr/QRGeneratorCard.module.css";
 
-export function QRGeneratorCard({ initialSession }: { initialSession: AttendanceSession | null }) {
+export function QRGeneratorCard({
+  initialSession,
+}: {
+  initialSession: AttendanceSession | null;
+}) {
   const [session, setSession] = useState(initialSession);
   const [qrImage, setQrImage] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
 
   useEffect(() => {
     if (!session) return setQrImage(null);
-    QRCode.toDataURL(session.token, { margin: 1, width: 280, color: { dark: "#2BA8A2" } }).then(
-      setQrImage
-    );
+    QRCode.toDataURL(session.token, {
+      margin: 1,
+      width: 280,
+      color: { dark: "#3572EF" },
+    }).then(setQrImage);
   }, [session]);
 
   function handleGenerate() {
@@ -34,9 +40,13 @@ export function QRGeneratorCard({ initialSession }: { initialSession: Attendance
     <Card variant="flip7">
       <CardHeader
         title="QR Presensi Hari Ini"
-        subtitle={session ? `Berlaku sampai ${formatDate(session.expiresAt ?? "", true)}` : "Belum ada sesi untuk hari ini"}
+        subtitle={
+          session
+            ? `Berlaku sampai ${formatDate(session.expiresAt ?? "", true)}`
+            : "Belum ada sesi untuk hari ini"
+        }
         action={
-          <Button variant="gold" isLoading={isPending} onClick={handleGenerate}>
+          <Button variant="blue" isLoading={isPending} onClick={handleGenerate}>
             <RefreshCw className="h-4 w-4" />
             {session ? "Generate Ulang" : "Generate QR"}
           </Button>
@@ -61,7 +71,8 @@ export function QRGeneratorCard({ initialSession }: { initialSession: Attendance
       </div>
 
       <p className={styles.helperText}>
-        Tampilkan QR ini di layar/proyektor. Siswa scan lewat menu Absensi QR di dashboard masing-masing.
+        Tampilkan QR ini di layar/proyektor. Siswa scan lewat menu Absensi QR di
+        dashboard masing-masing.
       </p>
     </Card>
   );

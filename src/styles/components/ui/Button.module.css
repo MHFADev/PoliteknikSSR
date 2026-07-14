@@ -11,60 +11,143 @@
 }
 
 /* Ukuran */
-.btnSm { min-height: 40px; padding: 8px 16px; font-size: 14px; }
-.btnMd { min-height: 56px; padding: 12px 24px; font-size: 18px; }
-.btnLg { min-height: 72px; padding: 16px 32px; font-size: 20px; }
+.btnSm {
+  min-height: 40px;
+  padding: 8px 16px;
+  font-size: 14px;
+}
+.btnMd {
+  min-height: 56px;
+  padding: 12px 24px;
+  font-size: 18px;
+}
+.btnLg {
+  min-height: 72px;
+  padding: 16px 32px;
+  font-size: 20px;
+}
 
 /* Radius */
-.radiusSkylearn { border-radius: 16px; }
-.radiusFlip7 { border-radius: 999px; }
+.radiusSkylearn {
+  border-radius: 16px;
+}
+.radiusFlip7 {
+  border-radius: 999px;
+}
 
 /* Skylearn Variants */
-.btnPrimary { background: #3B82F6; color: #FFF; box-shadow: 0 12px 32px rgba(59,130,246,0.15); }
-.btnPrimary:hover { background: #1D4ED8; }
+.btnPrimary {
+  background: #3b82f6;
+  color: #fff;
+  box-shadow: 0 12px 32px rgba(59, 130, 246, 0.15);
+}
+.btnPrimary:hover {
+  background: #1d4ed8;
+}
 
-.btnSecondary { background: #F8FAFC; color: #475569; border: 1px solid #E2E8F0; }
-.btnSecondary:hover { background: #E2E8F0; }
+.btnSecondary {
+  background: #f8fafc;
+  color: #475569;
+  border: 1px solid #e2e8f0;
+}
+.btnSecondary:hover {
+  background: #e2e8f0;
+}
 
-.btnOutline { border: 1px solid #E2E8F0; color: #475569; }
-.btnOutline:hover { background: #F8FAFC; border-color: #3B82F6; color: #3B82F6; }
+.btnOutline {
+  border: 1px solid #e2e8f0;
+  color: #475569;
+}
+.btnOutline:hover {
+  background: #f8fafc;
+  border-color: #3b82f6;
+  color: #3b82f6;
+}
 
-.btnGhost { color: #475569; }
-.btnGhost:hover { background: #F8FAFC; color: #3B82F6; }
+.btnGhost {
+  color: #475569;
+}
+.btnGhost:hover {
+  background: #f8fafc;
+  color: #3b82f6;
+}
 
-.btnDanger { background: #F87171; color: #FFF; box-shadow: 0 8px 24px rgba(15,23,42,0.06); }
-.btnDanger:hover { opacity: 0.9; }
+.btnDanger {
+  background: #f87171;
+  color: #fff;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+}
+.btnDanger:hover {
+  opacity: 0.9;
+}
 
 /* Flip7 Variants */
-.btnGold { background: #FFD23F; color: #1E8C86; box-shadow: 0 4px 20px rgba(255,210,63,0.4); }
-.btnGold:hover { background: #FFE47A; }
+.btnGold {
+  background: #ffd23f;
+  color: #1e8c86;
+  box-shadow: 0 4px 20px rgba(255, 210, 63, 0.4);
+}
+.btnGold:hover {
+  background: #ffe47a;
+}
 
-.btnTeal { background: #2BA8A2; color: #FFF; box-shadow: 0 4px 20px rgba(43,168,162,0.3); }
-.btnTeal:hover { background: #3CC4BD; }
+.btnTeal {
+  background: #2ba8a2;
+  color: #fff;
+  box-shadow: 0 4px 20px rgba(43, 168, 162, 0.3);
+}
+.btnTeal:hover {
+  background: #3cc4bd;
+}
 
-.btnCoral { background: #EF6C4A; color: #FFF; box-shadow: 0 4px 20px rgba(239,108,74,0.35); }
-.btnCoral:hover { background: #FF8A6A; }
+.btnCoral {
+  background: #ef6c4a;
+  color: #fff;
+  box-shadow: 0 4px 20px rgba(239, 108, 74, 0.35);
+}
+.btnCoral:hover {
+  background: #ff8a6a;
+}
+
+.btnBlue {
+  background: #3b82f6;
+  color: #fff;
+  box-shadow: 0 4px 20px rgba(59, 130, 246, 0.3);
+}
+.btnBlue:hover {
+  background: #1d4ed8;
+}
 
 .btnBoom {
-  background: #EF6C4A; color: #FFF;
-  box-shadow: 0 4px 20px rgba(239,108,74,0.35);
+  background: #ef6c4a;
+  color: #fff;
+  box-shadow: 0 4px 20px rgba(239, 108, 74, 0.35);
   animation: pulseBoom 2s ease-in-out infinite;
 }
 .btnFlip7 {
-  background: linear-gradient(to right, #FFD23F, #FFE47A, #FFD23F);
-  color: #1E8C86;
-  box-shadow: 0 4px 20px rgba(255,210,63,0.4);
+  background: linear-gradient(to right, #ffd23f, #ffe47a, #ffd23f);
+  color: #1e8c86;
+  box-shadow: 0 4px 20px rgba(255, 210, 63, 0.4);
 }
 .btnFlip7:hover {
-  background: linear-gradient(to right, #FFE47A, #FFD23F, #FFE47A);
+  background: linear-gradient(to right, #ffe47a, #ffd23f, #ffe47a);
 }
 
 /* State loading */
-.isLoading { pointer-events: none; }
+.isLoading {
+  pointer-events: none;
+}
 
-.fontSemi { font-weight: 600; }
+.fontSemi {
+  font-weight: 600;
+}
 
 @keyframes pulseBoom {
-  0%, 100% { box-shadow: 0 4px 20px rgba(239,108,74,0.35); }
-  50% { box-shadow: 0 4px 32px rgba(239,108,74,0.5); }
+  0%,
+  100% {
+    box-shadow: 0 4px 20px rgba(239, 108, 74, 0.35);
+  }
+  50% {
+    box-shadow: 0 4px 32px rgba(239, 108, 74, 0.5);
+  }
 }

@@ -13,8 +13,8 @@
 /* Gambar QR */
 .qrImage {
   border-radius: 0.75rem;
-  border: 1px solid #050c9c;
-  box-shadow: 0 4px 24px #050c9c;
+  border: 1px solid #3572ef;
+  box-shadow: 0 4px 24px #3572ef;
 }
 
 /* Placeholder saat QR belum digenerate */
