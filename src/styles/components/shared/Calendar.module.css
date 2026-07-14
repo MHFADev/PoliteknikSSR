@@ -55,7 +55,9 @@
   background: transparent;
   border: none;
   cursor: pointer;
-  transition: background-color 0.15s ease-in-out, color 0.15s ease-in-out;
+  transition:
+    background-color 0.15s ease-in-out,
+    color 0.15s ease-in-out;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -63,20 +65,20 @@
 
 /* Hover state tombol navigasi */
 .navButton:hover {
-  background-color: var(--color-teal-bg, #e6f7f6);
+  background-color: rgba(58, 190, 249, 0.1);
 }
 
 /* Ukuran ikon navigasi */
 /* ChevronLeft/Right className="h-5 w-5 sm:h-6 sm:w-6" */
 .navButton svg {
   height: 1.25rem; /* h-5 */
-  width: 1.25rem;  /* w-5 */
+  width: 1.25rem; /* w-5 */
 }
 
 @media (min-width: 640px) {
   .navButton svg {
-    height: 1.5rem;  /* sm:h-6 */
-    width: 1.5rem;   /* sm:w-6 */
+    height: 1.5rem; /* sm:h-6 */
+    width: 1.5rem; /* sm:w-6 */
   }
 }
 
@@ -85,22 +87,22 @@
 /* className="font-display text-lg sm:text-xl md:text-2xl font-bold text-teal-dark" */
 .title {
   font-family: var(--font-display, inherit);
-  font-size: 1.125rem;    /* text-lg */
+  font-size: 1.125rem; /* text-lg */
   line-height: 1.75rem;
-  font-weight: 700;        /* font-bold */
-  color: var(--color-teal-dark, #1e7a75);
+  font-weight: 700; /* font-bold */
+  color: #60a5fa;
 }
 
 @media (min-width: 640px) {
   .title {
-    font-size: 1.25rem;   /* sm:text-xl */
+    font-size: 1.25rem; /* sm:text-xl */
     line-height: 1.75rem;
   }
 }
 
 @media (min-width: 768px) {
   .title {
-    font-size: 1.5rem;    /* md:text-2xl */
+    font-size: 1.5rem; /* md:text-2xl */
     line-height: 2rem;
   }
 }
@@ -111,7 +113,7 @@
 .dayHeader {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 0.25rem;  /* gap-1 */
+  gap: 0.25rem; /* gap-1 */
   margin-bottom: 0.5rem; /* mb-2 */
 }
 
@@ -126,21 +128,21 @@
    text-[10px] sm:text-xs font-bold text-teal-dark bg-teal-bg" */
 .dayHeaderText {
   border-radius: var(--radius-flip7-md, 0.5rem);
-  padding: 0.25rem 0.375rem;  /* px-1 */
-  padding-top: 0.375rem;       /* py-1.5 */
+  padding: 0.25rem 0.375rem; /* px-1 */
+  padding-top: 0.375rem; /* py-1.5 */
   padding-bottom: 0.375rem;
   text-align: center;
-  font-size: 0.625rem;         /* text-[10px] */
+  font-size: 0.625rem; /* text-[10px] */
   font-weight: 700;
-  color: var(--color-teal-dark, #1e7a75);
-  background-color: var(--color-teal-bg, #e6f7f6);
+  color: #60a5fa;
+  background-color: rgba(58, 190, 249, 0.1);
 }
 
 @media (min-width: 640px) {
   .dayHeaderText {
-    padding-left: 0.5rem;      /* sm:px-2 */
+    padding-left: 0.5rem; /* sm:px-2 */
     padding-right: 0.5rem;
-    font-size: 0.75rem;        /* sm:text-xs */
+    font-size: 0.75rem; /* sm:text-xs */
     line-height: 1rem;
   }
 }
@@ -151,7 +153,7 @@
 .grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 0.25rem;  /* gap-1 */
+  gap: 0.25rem; /* gap-1 */
   margin-bottom: 1rem; /* mb-4 */
 }
 
@@ -194,13 +196,15 @@
   display: flex;
   flex-direction: column;
   gap: 0.25rem; /* gap-1 */
-  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  transition:
+    border-color 0.15s ease-in-out,
+    box-shadow 0.15s ease-in-out;
 }
 
 /* Hover state untuk sel tanggal — border teal dan shadow */
 .cell:hover {
   border-color: var(--color-teal-light, #5cc5c0);
-  box-shadow: var(--shadow-flip7-card, 0 2px 8px rgba(0,0,0,0.08));
+  box-shadow: var(--shadow-flip7-card, 0 2px 8px rgba(0, 0, 0, 0.08));
 }
 
 @media (min-width: 640px) {
@@ -220,7 +224,11 @@
 /* className="border-gold bg-gold-light/10 shadow-flip7-gold-glow" */
 .cellToday {
   border-color: var(--color-gold, #e6b800);
-  background-color: color-mix(in srgb, var(--color-gold-light, #fff3cd) 10%, transparent);
+  background-color: color-mix(
+    in srgb,
+    var(--color-gold-light, #fff3cd) 10%,
+    transparent
+  );
   box-shadow: var(--shadow-flip7-gold-glow, 0 0 8px rgba(230, 184, 0, 0.3));
 }
 
@@ -234,7 +242,11 @@
   border-radius: var(--radius-flip7-lg, 0.75rem);
   border: 2px solid var(--color-flip7-coral, #e74c3c);
   padding: 0.375rem;
-  background-color: color-mix(in srgb, var(--color-flip7-coral-light, #fde8e8) 20%, transparent);
+  background-color: color-mix(
+    in srgb,
+    var(--color-flip7-coral-light, #fde8e8) 20%,
+    transparent
+  );
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
@@ -266,20 +278,20 @@
    text-xs font-bold sm:h-7 sm:w-7 sm:text-sm" */
 .dayNumber {
   display: flex;
-  height: 1.5rem;  /* h-6 */
-  width: 1.5rem;   /* w-6 */
+  height: 1.5rem; /* h-6 */
+  width: 1.5rem; /* w-6 */
   align-items: center;
   justify-content: center;
   border-radius: 9999px; /* rounded-full */
-  font-size: 0.75rem;    /* text-xs */
+  font-size: 0.75rem; /* text-xs */
   line-height: 1rem;
-  font-weight: 700;      /* font-bold */
+  font-weight: 700; /* font-bold */
 }
 
 @media (min-width: 640px) {
   .dayNumber {
-    height: 1.75rem;  /* sm:h-7 */
-    width: 1.75rem;   /* sm:w-7 */
+    height: 1.75rem; /* sm:h-7 */
+    width: 1.75rem; /* sm:w-7 */
     font-size: 0.875rem; /* sm:text-sm */
     line-height: 1.25rem;
   }
@@ -314,8 +326,8 @@
 /* className="h-2 w-2 rounded-full sm:h-2.5 sm:w-2.5" */
 .statusDot {
   display: inline-block;
-  height: 0.5rem;   /* h-2 */
-  width: 0.5rem;    /* w-2 */
+  height: 0.5rem; /* h-2 */
+  width: 0.5rem; /* w-2 */
   border-radius: 9999px; /* rounded-full */
   /* Warna dot dari props status.dot via className tambahan */
 }
@@ -323,21 +335,21 @@
 @media (min-width: 640px) {
   .statusDot {
     height: 0.625rem; /* sm:h-2.5 */
-    width: 0.625rem;  /* sm:w-2.5 */
+    width: 0.625rem; /* sm:w-2.5 */
   }
 }
 
 /* Label status di samping dot */
 /* className="text-[9px] font-semibold text-ink sm:text-[10px]" */
 .statusLabel {
-  font-size: 9px;        /* text-[9px] */
-  font-weight: 600;      /* font-semibold */
+  font-size: 9px; /* text-[9px] */
+  font-weight: 600; /* font-semibold */
   color: var(--color-ink, #1a1a2e);
 }
 
 @media (min-width: 640px) {
   .statusLabel {
-    font-size: 10px;     /* sm:text-[10px] */
+    font-size: 10px; /* sm:text-[10px] */
   }
 }
 
@@ -349,17 +361,17 @@
   margin-top: auto;
   border-radius: var(--radius-flip7-sm, 0.375rem);
   padding: 0.125rem 0.375rem; /* px-1.5 py-0.5 */
-  font-size: 8px;            /* text-[8px] */
-  font-weight: 700;          /* font-bold */
-  line-height: 1.25;          /* leading-tight */
+  font-size: 8px; /* text-[8px] */
+  font-weight: 700; /* font-bold */
+  line-height: 1.25; /* leading-tight */
   white-space: nowrap;
   overflow: hidden;
-  text-overflow: ellipsis;    /* truncate */
+  text-overflow: ellipsis; /* truncate */
 }
 
 @media (min-width: 640px) {
   .eventBadge {
-    font-size: 10px;         /* sm:text-[10px] */
+    font-size: 10px; /* sm:text-[10px] */
   }
 }
 
@@ -374,7 +386,7 @@
 /* Badge untuk event biasa — teal background */
 /* className="bg-teal text-white shadow-flip7-teal-glow" */
 .eventDefault {
-  background-color: var(--color-teal, #2BA8A2);
+  background-color: var(--color-teal, #2ba8a2);
   color: #ffffff;
   box-shadow: var(--shadow-flip7-teal-glow, 0 0 8px rgba(43, 168, 162, 0.3));
 }
@@ -387,7 +399,7 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 0.5rem;  /* gap-2 */
+  gap: 0.5rem; /* gap-2 */
   padding: 0.5rem; /* p-2 */
   background-color: var(--color-teal-bg, #e6f7f6);
   border-radius: var(--radius-flip7-lg, 0.75rem);
@@ -395,7 +407,7 @@
 
 @media (min-width: 640px) {
   .legend {
-    gap: 0.75rem;  /* sm:gap-3 */
+    gap: 0.75rem; /* sm:gap-3 */
     padding: 0.75rem; /* sm:p-3 */
   }
 }
@@ -411,29 +423,29 @@
 /* Dot warna dalam legend */
 /* className="h-3.5 w-3.5 sm:h-4 sm:w-4 rounded-full" */
 .legendDot {
-  height: 0.875rem;  /* h-3.5 */
-  width: 0.875rem;   /* w-3.5 */
+  height: 0.875rem; /* h-3.5 */
+  width: 0.875rem; /* w-3.5 */
   border-radius: 9999px;
 }
 
 @media (min-width: 640px) {
   .legendDot {
-    height: 1rem;    /* sm:h-4 */
-    width: 1rem;     /* sm:w-4 */
+    height: 1rem; /* sm:h-4 */
+    width: 1rem; /* sm:w-4 */
   }
 }
 
 /* Teks label legend */
 /* className="text-[11px] sm:text-sm text-teal-dark font-medium" */
 .legendText {
-  font-size: 11px;            /* text-[11px] */
+  font-size: 11px; /* text-[11px] */
   color: var(--color-teal-dark, #1e7a75);
-  font-weight: 500;           /* font-medium */
+  font-weight: 500; /* font-medium */
 }
 
 @media (min-width: 640px) {
   .legendText {
-    font-size: 0.875rem;      /* sm:text-sm */
+    font-size: 0.875rem; /* sm:text-sm */
     line-height: 1.25rem;
   }
 }

@@ -9,12 +9,12 @@
   font-family: var(--font-jakarta), sans-serif;
   font-size: 1.5rem;
   font-weight: 600;
-  color: var(--color-deep, #0F172A);
+  color: var(--color-deep, #0f172a);
 }
 
 .pageHeader p {
   font-size: 0.875rem;
-  color: var(--color-mist-dim, #64748B);
+  color: var(--color-mist-dim, #64748b);
 }
 
 .qrCentered {
