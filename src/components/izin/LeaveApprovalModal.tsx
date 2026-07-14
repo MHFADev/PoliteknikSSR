@@ -18,10 +18,18 @@ interface LeaveRequestWithStudent {
   start_date: string;
   end_date: string;
   proof_url: string | null;
-  student: { full_name: string; identity_number: string | null; avatar_url?: string | null };
+  student: {
+    full_name: string;
+    identity_number: string | null;
+    avatar_url?: string | null;
+  };
 }
 
-export function PendingLeaveApprovals({ initialRequests }: { initialRequests: LeaveRequestWithStudent[] }) {
+export function PendingLeaveApprovals({
+  initialRequests,
+}: {
+  initialRequests: LeaveRequestWithStudent[];
+}) {
   const [requests, setRequests] = useState(initialRequests);
   const [active, setActive] = useState<LeaveRequestWithStudent | null>(null);
   const [note, setNote] = useState("");
@@ -36,7 +44,11 @@ export function PendingLeaveApprovals({ initialRequests }: { initialRequests: Le
     const previous = requests;
     setRequests((r) => r.filter((req) => req.id !== active.id));
 
-    const result = await reviewLeaveRequest({ id: active.id, decision, review_note: note });
+    const result = await reviewLeaveRequest({
+      id: active.id,
+      decision,
+      review_note: note,
+    });
 
     setIsSubmitting(false);
     setActive(null);
@@ -50,7 +62,7 @@ export function PendingLeaveApprovals({ initialRequests }: { initialRequests: Le
   if (requests.length === 0) {
     return (
       <div className={styles.emptyState}>
-        Tidak ada pengajuan izin yang menunggu review 🎉
+        Tidak ada pengajuan izin yang menunggu review
       </div>
     );
   }
@@ -67,7 +79,15 @@ export function PendingLeaveApprovals({ initialRequests }: { initialRequests: Le
           onClick={() => setActive(req)}
           className={styles.requestItem}
         >
-          <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", flex: 1, minWidth: 0 }}>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "0.75rem",
+              flex: 1,
+              minWidth: 0,
+            }}
+          >
             <div
               style={{
                 width: "32px",
@@ -101,12 +121,18 @@ export function PendingLeaveApprovals({ initialRequests }: { initialRequests: Le
           </div>
           <div className={styles.requestMeta}>
             <Badge tone="warning">{req.type}</Badge>
-            <span className="text-xs text-mist-dim">{formatDate(req.start_date)}</span>
+            <span className="text-xs text-mist-dim">
+              {formatDate(req.start_date)}
+            </span>
           </div>
         </motion.button>
       ))}
 
-      <Modal open={!!active} onClose={() => setActive(null)} title="Detail Pengajuan Izin">
+      <Modal
+        open={!!active}
+        onClose={() => setActive(null)}
+        title="Detail Pengajuan Izin"
+      >
         {active && (
           <div className={styles.detailSection}>
             <div>
@@ -114,7 +140,9 @@ export function PendingLeaveApprovals({ initialRequests }: { initialRequests: Le
               <p className={styles.detailValue}>
                 {active.student.full_name}{" "}
                 {active.student.identity_number && (
-                  <span className="text-mist-dim font-normal">· {active.student.identity_number}</span>
+                  <span className="text-mist-dim font-normal">
+                    · {active.student.identity_number}
+                  </span>
                 )}
               </p>
             </div>
@@ -122,7 +150,8 @@ export function PendingLeaveApprovals({ initialRequests }: { initialRequests: Le
               <div>
                 <p className={styles.detailLabel}>Tanggal</p>
                 <p className={styles.detailValue}>
-                  {formatDate(active.start_date)} – {formatDate(active.end_date)}
+                  {formatDate(active.start_date)} –{" "}
+                  {formatDate(active.end_date)}
                 </p>
               </div>
               <div>
@@ -166,7 +195,10 @@ export function PendingLeaveApprovals({ initialRequests }: { initialRequests: Le
               >
                 <X className="h-4 w-4" /> Tolak
               </Button>
-              <Button isLoading={isSubmitting} onClick={() => handleDecision("disetujui")}>
+              <Button
+                isLoading={isSubmitting}
+                onClick={() => handleDecision("disetujui")}
+              >
                 <Check className="h-4 w-4" /> Setujui
               </Button>
             </div>
