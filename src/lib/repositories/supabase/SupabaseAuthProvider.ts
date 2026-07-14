@@ -9,7 +9,16 @@ export class SupabaseAuthProvider implements IAuthProvider {
   async signIn(email: string, password: string): Promise<{ user: AuthUser | null; error?: string }> {
     const supabase = createClient();
     const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-    if (error) return { user: null, error: "Email atau kata sandi salah." };
+    if (error) {
+      console.error("[SupabaseAuthProvider.signIn] Error:", error.message);
+      if (error.message?.includes("Email not confirmed") || error.message?.includes("email_not_confirmed")) {
+        return { user: null, error: "Email belum dikonfirmasi. Cek inbox email kamu untuk tautan konfirmasi, atau hubungi admin." };
+      }
+      if (error.message?.includes("Invalid login credentials")) {
+        return { user: null, error: "Email atau kata sandi salah. Pastikan email dan password benar." };
+      }
+      return { user: null, error: "Gagal login: " + error.message };
+    }
 
     // Cek status approved — handle both false AND undefined
     const isApproved = data.user?.user_metadata?.approved;
