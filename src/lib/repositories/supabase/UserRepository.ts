@@ -198,11 +198,13 @@ export class SupabaseUserRepository implements IUserRepository {
       return { user: null, error: "Gagal login: " + error.message };
     }
 
-    // Cek status approved — blokir jika admin belum menyetujui
-    // Handle both explicit false AND undefined (belum disetujui)
+    // Cek status approved — bedakan antara "belum disetujui" dan "diblokir"
     const isApproved = data.user?.user_metadata?.approved;
     if (isApproved !== true) {
       await supabase.auth.signOut();
+      if (isApproved === false) {
+        return { user: null, error: "AKUN_DIBLOKIR" };
+      }
       return { user: null, error: "Akun Anda belum disetujui oleh admin. Silakan tunggu persetujuan." };
     }
 
