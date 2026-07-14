@@ -496,6 +496,10 @@ export class SupabaseUserRepository implements IUserRepository {
 
     // Sync ke profiles
     await supabase.from("profiles").update({ approved: false }).eq("id", userId);
+
+    // Paksa logout semua sesi user yang sedang aktif
+    await supabase.auth.admin.signOut(userId);
+
     return {};
   }
 

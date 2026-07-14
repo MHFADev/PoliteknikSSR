@@ -15,6 +15,7 @@ import { createClient } from "@/lib/supabase/server";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { MobileNav } from "@/components/layout/MobileNav";
 import { RealtimeClock } from "@/components/RealtimeClock";
+import { BlockedWatcher } from "@/components/BlockedWatcher";
 
 export default async function AdminLayout({
   children,
@@ -38,6 +39,7 @@ export default async function AdminLayout({
 
   return (
     <div className="flex min-h-screen bg-white">
+      <BlockedWatcher />
       <Sidebar role={userRole} fullName={profile?.full_name ?? "Admin"} avatarUrl={profile?.avatar_url ?? null} />
       <MobileNav role={userRole} fullName={profile?.full_name ?? "Admin"} avatarUrl={profile?.avatar_url ?? null} />
 

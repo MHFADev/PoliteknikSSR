@@ -83,6 +83,14 @@ export default function LoginPage() {
   const [imageErrors, setImageErrors] = useState<Record<number, boolean>>({});
 
   useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("blocked") === "true") {
+      setBlockedPopup(true);
+      window.history.replaceState({}, "", "/login");
+    }
+  }, []);
+
+  useEffect(() => {
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % HERO_SLIDES.length);
     }, 5000);

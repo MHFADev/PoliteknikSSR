@@ -15,6 +15,7 @@ import { createClient } from "@/lib/supabase/server";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { MobileNav } from "@/components/layout/MobileNav";
 import { RealtimeClock } from "@/components/RealtimeClock";
+import { BlockedWatcher } from "@/components/BlockedWatcher";
 
 export default async function SiswaLayout({ children }: { children: React.ReactNode }) {
   const supabase = createClient();
@@ -32,6 +33,7 @@ export default async function SiswaLayout({ children }: { children: React.ReactN
 
   return (
     <div className="flex min-h-screen bg-white">
+      <BlockedWatcher />
       <Sidebar role="siswa" fullName={profile?.full_name ?? "Siswa"} avatarUrl={profile?.avatar_url ?? null} />
       <MobileNav role="siswa" fullName={profile?.full_name ?? "Siswa"} avatarUrl={profile?.avatar_url ?? null} />
 
