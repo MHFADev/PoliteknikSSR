@@ -369,6 +369,61 @@ export type Database = {
         };
         Relationships: [];
       };
+      student_documents: {
+        Row: {
+          id: string;
+          student_id: string;
+          admin_id: string;
+          type: string;
+          file_url: string | null;
+          file_name: string | null;
+          grade_data: unknown;
+          is_kept: boolean;
+          is_read: boolean;
+          created_at: string;
+          expires_at: string;
+        };
+        Insert: {
+          id?: string;
+          student_id: string;
+          admin_id: string;
+          type: string;
+          file_url?: string | null;
+          file_name?: string | null;
+          grade_data?: unknown;
+          is_kept?: boolean;
+          is_read?: boolean;
+          created_at?: string;
+          expires_at?: string;
+        };
+        Update: {
+          id?: string;
+          student_id?: string;
+          admin_id?: string;
+          type?: string;
+          file_url?: string | null;
+          file_name?: string | null;
+          grade_data?: unknown;
+          is_kept?: boolean;
+          is_read?: boolean;
+          created_at?: string;
+          expires_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "student_documents_student_id_fkey";
+            columns: ["student_id"];
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "student_documents_admin_id_fkey";
+            columns: ["admin_id"];
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       /** Lokasi geofence yang diizinkan untuk presensi */
       allowed_locations: {
         Row: AllowedLocation;

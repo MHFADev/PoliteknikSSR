@@ -6,6 +6,7 @@
  */
 
 import type { Metadata } from "next";
+import { RouteProgressBar } from "@/components/RouteProgressBar";
 import "./globals.css";
 
 import { Inter, Plus_Jakarta_Sans, Josefin_Sans } from "next/font/google";
@@ -56,7 +57,10 @@ export default function RootLayout({
         <link rel="shortcut icon" href="/favicon.png" type="image/png" />
         <link rel="apple-touch-icon" href="/favicon.png" />
       </head>
-      <body className="font-sans antialiased">{children}</body>
+      <body className="font-sans antialiased">
+        <RouteProgressBar />
+        {children}
+      </body>
     </html>
   );
 }

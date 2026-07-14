@@ -99,8 +99,48 @@ export class SupabaseUserRepository implements IUserRepository {
       .eq("id", authUser.id)
       .single();
 
-    if (!profile) return null;
-    return this.mapToUser(profile, authUser.email);
+    if (profile) return this.mapToUser(profile, authUser.email);
+
+    // Profile tidak ditemukan — buat dari metadata auth (fallback)
+    // Ini mencegah "Sesi login tidak ditemukan" untuk akun yang profile-nya
+    // tidak terbuat otomatis oleh trigger on_auth_user_created.
+    console.warn("[getCurrentUser] Profile not found for user", authUser.id, "- creating from auth metadata");
+    const meta = authUser.user_metadata || {};
+    const adminClient = this.getAdminClient();
+    const { error: insertError } = await adminClient.from("profiles").upsert({
+      id: authUser.id,
+      full_name: meta.full_name || authUser.email?.split("@")[0] || "Pengguna",
+      role: meta.role || "siswa",
+      approved: true,
+      created_at: authUser.created_at || new Date().toISOString(),
+    }).eq("id", authUser.id);
+
+    if (insertError) {
+      console.error("[getCurrentUser] Gagal membuat profile:", insertError.message);
+      return null;
+    }
+
+    // Ambil ulang setelah insert
+    const { data: freshProfile } = await adminClient
+      .from("profiles")
+      .select(`
+        id,
+        full_name,
+        role,
+        identity_number,
+        instansi,
+        kelas,
+        jurusan_id,
+        avatar_url,
+        approved,
+        created_at,
+        study_programs ( nama )
+      `)
+      .eq("id", authUser.id)
+      .single();
+
+    if (!freshProfile) return null;
+    return this.mapToUser(freshProfile, authUser.email);
   }
 
   /**

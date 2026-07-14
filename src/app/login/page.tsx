@@ -202,8 +202,12 @@ export default function LoginPage() {
   return (
     <>
     <main className={styles.main}>
-      {/* ─── Hero Panel (Left) ──────────────────────────── */}
+      {/* ═══ Hero Panel (Left) ════════════════════════════ */}
       <div className={styles.heroSection}>
+        {/* Decorative orbs */}
+        <div className={`${styles.heroOrb} ${styles.heroOrb1}`} />
+        <div className={`${styles.heroOrb} ${styles.heroOrb2}`} />
+
         {/* Image Carousel */}
         <div className={styles.heroCarousel}>
           {HERO_SLIDES.map((slide, idx) => (
@@ -276,7 +280,8 @@ export default function LoginPage() {
         </div>
         <div className={styles.heroBottom}>
           <h2 className={styles.heroTitle}>
-            Sistem Informasi<br />Absensi PKL
+            Sistem Informasi{" "}
+            <span className={styles.heroTitleAccent}>Absensi PKL</span>
           </h2>
           <p className={styles.heroDesc}>
             Platform digital untuk memantau kehadiran, kegiatan harian, dan
@@ -284,22 +289,35 @@ export default function LoginPage() {
           </p>
           <div className={styles.heroFeatures}>
             <div className={styles.heroFeature}>
-              <ShieldCheck />
+              <div className={styles.heroFeatureIcon}>
+                <ShieldCheck />
+              </div>
               <span>Presensi via QR Code</span>
             </div>
             <div className={styles.heroFeature}>
-              <ShieldCheck />
+              <div className={styles.heroFeatureIcon}>
+                <ShieldCheck />
+              </div>
               <span>Laporan Real-time</span>
             </div>
           </div>
         </div>
 
         {/* Glass Divider */}
-        <div className={styles.glassDivider} />
+        <div className={styles.glassDivider}>
+          <div className={styles.glassDividerInner} />
+        </div>
       </div>
 
-      {/* ─── Form Panel (Right) ─────────────────────────── */}
+      {/* ═══ Form Panel (Right) ═══════════════════════════ */}
       <div className={styles.formSection}>
+        {/* Subtle background decoration */}
+        <div className={styles.formBgDecoration}>
+          <div className={styles.formBgGrid} />
+          <div className={styles.formBgGlow} />
+          <div className={styles.formBgGlow2} />
+        </div>
+
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
@@ -307,6 +325,9 @@ export default function LoginPage() {
           className={styles.formCard}
         >
           <div className={styles.formContainer}>
+            {/* Accent line */}
+            <div className={styles.formAccentLine} />
+
             {/* Mobile logo */}
             <div className={styles.formLogoMobile}>
               <Image

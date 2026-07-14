@@ -36,10 +36,11 @@
 // ============================================================
 
 import { useState, useEffect, useCallback } from "react";
-import { Save, Loader2, CheckCircle2, AlertCircle, Settings } from "lucide-react";
+import { Save, Loader2, CheckCircle2, AlertCircle, Settings, FileText } from "lucide-react";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { getSettings, updateSettings } from "@/actions/profile";
+import { StudentDocuments } from "@/components/StudentDocuments";
 import styles from "@/styles/components/profile/Settings.module.css";
 
 // ----------------------------------------------------------
@@ -254,6 +255,20 @@ export function SettingsForm({ role }: SettingsFormProps) {
             <ToggleSwitch key="notifications" label="Notifikasi Aplikasi" desc="Terima notifikasi dari aplikasi" />
             <ToggleSwitch key="compactMode" label="Mode Ringkas" desc="Tampilkan informasi secara lebih ringkas" />
             <ToggleSwitch key="dailyReminder" label="Pengingat Harian" desc="Dapatkan pengingat untuk mengisi kegiatan harian" />
+          </Card>
+
+          <Card variant="skylearn">
+            <div className={styles.formSectionTitle}>
+              <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                <FileText className="h-5 w-5 text-sky" />
+                <span>Dokumen Saya</span>
+              </div>
+            </div>
+            <p className={styles.formSectionDesc}>
+              Sertifikat PKL dan rekap nilai yang dikirim oleh admin.
+              Klik Lihat untuk preview, Download untuk menyimpan ke perangkat.
+            </p>
+            <StudentDocuments />
           </Card>
         </>
       )}

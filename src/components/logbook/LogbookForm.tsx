@@ -13,7 +13,7 @@ import { createClient } from "@/lib/supabase/client";
 import { cn } from "@/lib/utils";
 import styles from "@/styles/components/logbook/LogbookForm.module.css";
 
-export function LogbookForm({ existingContent, existingPhotoUrl }: { existingContent?: string; existingPhotoUrl?: string }) {
+export function LogbookForm({ userId, existingContent, existingPhotoUrl }: { userId?: string; existingContent?: string; existingPhotoUrl?: string }) {
   const [content, setContent] = useState(existingContent ?? "");
   const [photo, setPhoto] = useState<File | null>(null);
   const [photoPreview, setPhotoPreview] = useState<string | null>(existingPhotoUrl ?? null);
@@ -75,7 +75,8 @@ export function LogbookForm({ existingContent, existingPhotoUrl }: { existingCon
       if (photo) {
         // Upload to Supabase Storage
         const fileExt = "jpeg"; // We converted to jpeg
-        const fileName = `${Date.now()}.${fileExt}`;
+        const uniqueId = userId ?? "anonymous";
+        const fileName = `${uniqueId}/${Date.now()}.${fileExt}`;
         const filePath = `logbook_photos/${fileName}`;
 
         /*

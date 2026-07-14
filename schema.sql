@@ -385,7 +385,31 @@ insert into storage.buckets (id, name, public)
 values ('logbook_photos', 'logbook_photos', true)
 on conflict (id) do nothing;
 
--- Policy storage: siswa hanya boleh upload ke folder dengan prefix uid miliknya
+-- Storage policy: siswa upload foto logbook sendiri
+drop policy if exists "storage: siswa upload foto logbook sendiri" on storage.objects;
+create policy "storage: siswa upload foto logbook sendiri"
+  on storage.objects for insert
+  with check (
+    bucket_id = 'logbook_photos'
+    and auth.uid() is not null
+  );
+
+-- Storage policy: siswa update foto logbook sendiri
+drop policy if exists "storage: siswa update foto logbook sendiri" on storage.objects;
+create policy "storage: siswa update foto logbook sendiri"
+  on storage.objects for update
+  using (
+    bucket_id = 'logbook_photos'
+    and auth.uid() is not null
+  );
+
+-- Storage policy: semua login boleh lihat foto logbook
+drop policy if exists "storage: semua login lihat foto logbook" on storage.objects;
+create policy "storage: semua login lihat foto logbook"
+  on storage.objects for select
+  using (bucket_id = 'logbook_photos' and auth.uid() is not null);
+
+-- Policy storage: leave-proofs
 drop policy if exists "storage: siswa upload bukti izin sendiri" on storage.objects;
 create policy "storage: siswa upload bukti izin sendiri"
   on storage.objects for insert
@@ -597,6 +621,85 @@ drop policy if exists "storage: semua login boleh lihat avatar" on storage.objec
 create policy "storage: semua login boleh lihat avatar"
   on storage.objects for select
   using (bucket_id = 'avatars' and auth.uid() is not null);
+
+-- =====================================================================
+-- 17. TABEL: student_documents
+-- Dokumen yang dikirim admin ke siswa (sertifikat PKL & rekap nilai).
+-- File dihapus otomatis setelah expires_at (2 hari sejak dibuat),
+-- kecuali is_kept = true (siswa menyimpan manual).
+-- =====================================================================
+create table if not exists public.student_documents (
+  id uuid primary key default gen_random_uuid(),
+  student_id uuid not null references public.profiles(id) on delete cascade,
+  admin_id uuid not null references public.profiles(id),
+  type text not null check (type in ('certificate', 'grade_summary')),
+  file_url text,
+  file_name text,
+  grade_data jsonb, -- { subjects: [{name, score, grade}], notes: string }
+  is_kept boolean not null default false,
+  is_read boolean not null default false,
+  created_at timestamptz not null default now(),
+  expires_at timestamptz not null default (now() + interval '3 days')
+);
+
+create index if not exists idx_student_documents_student on public.student_documents(student_id);
+create index if not exists idx_student_documents_expires on public.student_documents(expires_at);
+
+comment on table public.student_documents is 'Sertifikat PKL & rekap nilai yang dikirim admin ke siswa';
+
+-- =====================================================================
+-- 17b. RLS: student_documents
+-- =====================================================================
+alter table public.student_documents enable row level security;
+
+drop policy if exists "student_documents: admin full akses" on public.student_documents;
+create policy "student_documents: admin full akses"
+  on public.student_documents for all
+  using (public.current_role() in ('admin', 'owner'))
+  with check (public.current_role() in ('admin', 'owner'));
+
+drop policy if exists "student_documents: siswa lihat dokumen sendiri" on public.student_documents;
+create policy "student_documents: siswa lihat dokumen sendiri"
+  on public.student_documents for select
+  using (student_id = auth.uid());
+
+drop policy if exists "student_documents: siswa update dokumen sendiri" on public.student_documents;
+create policy "student_documents: siswa update dokumen sendiri"
+  on public.student_documents for update
+  using (student_id = auth.uid())
+  with check (student_id = auth.uid());
+
+-- =====================================================================
+-- 18. BUCKET: student-documents
+-- Bucket untuk menyimpan file sertifikat & rekap nilai.
+-- =====================================================================
+insert into storage.buckets (id, name, public)
+values ('student-documents', 'student-documents', true)
+on conflict (id) do nothing;
+
+-- Storage policy: admin bisa upload file
+drop policy if exists "storage: admin upload student-documents" on storage.objects;
+create policy "storage: admin upload student-documents"
+  on storage.objects for insert
+  with check (
+    bucket_id = 'student-documents'
+    and public.current_role() in ('admin', 'owner')
+  );
+
+-- Storage policy: admin bisa update/hapus file
+drop policy if exists "storage: admin manage student-documents" on storage.objects;
+create policy "storage: admin manage student-documents"
+  on storage.objects for all
+  using (
+    bucket_id = 'student-documents'
+    and public.current_role() in ('admin', 'owner')
+  );
+
+-- Storage policy: semua login boleh lihat file (untuk download siswa)
+drop policy if exists "storage: semua login lihat student-documents" on storage.objects;
+create policy "storage: semua login lihat student-documents"
+  on storage.objects for select
+  using (bucket_id = 'student-documents' and auth.uid() is not null);
 
 -- =====================================================================
 -- SELESAI. Langkah selanjutnya:
