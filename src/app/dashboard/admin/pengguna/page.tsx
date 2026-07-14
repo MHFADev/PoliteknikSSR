@@ -7,6 +7,8 @@ import { UserActionsMenu } from "@/components/admin/UserActionsMenu";
 import { getPendingUsers } from "@/actions/admin";
 import styles from "@/styles/pages/dashboard/admin/Pengguna.module.css";
 
+export const dynamic = "force-dynamic";
+
 const ROLE_BADGES: Record<string, { label: string; tone: string; className: string }> = {
   admin: { label: "Admin", tone: "danger", className: "bg-[#FEE2E2] text-[#DC2626] border border-[#FECACA]" },
   pembimbing: { label: "Pembimbing", tone: "success", className: "bg-[#DCFCE7] text-[#16A34A] border border-[#BBF7D0]" },

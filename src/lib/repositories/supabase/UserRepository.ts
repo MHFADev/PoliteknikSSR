@@ -188,7 +188,14 @@ export class SupabaseUserRepository implements IUserRepository {
     const { data, error } = await supabase.auth.signInWithPassword({ email, password });
 
     if (error) {
-      return { user: null, error: "Email atau kata sandi salah." };
+      console.error("[signIn] Supabase auth error:", error.message, error.status);
+      if (error.message?.includes("Email not confirmed") || error.message?.includes("email_not_confirmed")) {
+        return { user: null, error: "Email belum dikonfirmasi. Cek inbox email kamu untuk tautan konfirmasi, atau hubungi admin." };
+      }
+      if (error.message?.includes("Invalid login credentials")) {
+        return { user: null, error: "Email atau kata sandi salah. Pastikan email dan password benar." };
+      }
+      return { user: null, error: "Gagal login: " + error.message };
     }
 
     // Cek status approved — blokir jika admin belum menyetujui
@@ -199,8 +206,42 @@ export class SupabaseUserRepository implements IUserRepository {
       return { user: null, error: "Akun Anda belum disetujui oleh admin. Silakan tunggu persetujuan." };
     }
 
-    const user = await this.getCurrentUser();
-    return { user };
+    // Cari profil di DB — jika tidak ada, buat dari data auth user
+    const authUser = data.user;
+    const adminClient = this.getAdminClient();
+    const { data: existingProfile } = await adminClient
+      .from("profiles")
+      .select("id, full_name, role, identity_number, instansi, kelas, jurusan_id, avatar_url, approved, created_at, study_programs(nama)")
+      .eq("id", authUser.id)
+      .single();
+
+    if (existingProfile) {
+      return { user: this.mapToUser(existingProfile, authUser.email) };
+    }
+
+    // Profile tidak ditemukan — buat dari metadata auth
+    const meta = authUser.user_metadata || {};
+    const { error: insertError } = await adminClient.from("profiles").upsert({
+      id: authUser.id,
+      full_name: meta.full_name || authUser.email?.split("@")[0] || "User",
+      role: meta.role || "siswa",
+      approved: true,
+      created_at: authUser.created_at || new Date().toISOString(),
+    }).eq("id", authUser.id);
+
+    if (insertError) {
+      console.error("[signIn] Gagal membuat profile:", insertError.message);
+      return { user: null, error: "Gagal memuat profil pengguna." };
+    }
+
+    // Ambil ulang setelah insert (supaya dapat field lain seperti study_programs)
+    const { data: freshProfile } = await adminClient
+      .from("profiles")
+      .select("id, full_name, role, identity_number, instansi, kelas, jurusan_id, avatar_url, approved, created_at, study_programs(nama)")
+      .eq("id", authUser.id)
+      .single();
+
+    return { user: freshProfile ? this.mapToUser(freshProfile, authUser.email) : null };
   }
 
   /**
@@ -216,20 +257,20 @@ export class SupabaseUserRepository implements IUserRepository {
    */
   async signUp(input: CreateUserInput): Promise<{ userId?: string; error?: string }> {
     const { email, password, fullName, role, kelas, identityNumber, instansi, jurusanId } = input;
-    const supabase = this.getClient();
+    const supabase = this.getAdminClient();
 
     const metadata: Record<string, any> = {
       full_name: fullName,
       role,
+      approved: false,
     };
     if (kelas) metadata.kelas = kelas;
 
-    const { data, error } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.admin.createUser({
       email,
       password,
-      options: {
-        data: metadata,
-      },
+      email_confirm: true,
+      user_metadata: metadata,
     });
 
     if (error) return { error: error.message };
