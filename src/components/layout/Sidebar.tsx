@@ -14,9 +14,10 @@ import styles from "@/styles/components/layout/Sidebar.module.css";
 interface SidebarProps {
   role: "siswa" | "pembimbing" | "admin";
   fullName: string;
+  avatarUrl?: string | null;
 }
 
-export function Sidebar({ role, fullName }: SidebarProps) {
+export function Sidebar({ role, fullName, avatarUrl }: SidebarProps) {
   const pathname = usePathname();
   const router = useRouter();
   const items = NAV[role];
@@ -58,10 +59,18 @@ export function Sidebar({ role, fullName }: SidebarProps) {
           </nav>
         </div>
 
-        <div className={styles.userSection}>
+          <div className={styles.userSection}>
           <div className={styles.userInfo}>
             <div className={styles.avatar}>
-              {fullName.charAt(0).toUpperCase()}
+              {avatarUrl ? (
+                <img
+                  src={avatarUrl}
+                  alt={fullName}
+                  className="w-full h-full rounded-full object-cover"
+                />
+              ) : (
+                fullName.charAt(0).toUpperCase()
+              )}
             </div>
             <div className="min-w-0">
               <p className={styles.userName}>{fullName}</p>

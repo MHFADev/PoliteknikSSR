@@ -91,6 +91,31 @@ export interface IUserRepository {
   rejectUser(userId: string): Promise<{ error?: string }>;
 
   /**
+   * deleteUser — Hapus akun user (admin)
+   * @param userId — UUID user
+   */
+  deleteUser(userId: string): Promise<{ error?: string }>;
+
+  /**
+   * blockUser — Blokir user (set approved = false)
+   * @param userId — UUID user
+   */
+  blockUser(userId: string): Promise<{ error?: string }>;
+
+  /**
+   * unblockUser — Buka blokir user (set approved = true)
+   * @param userId — UUID user
+   */
+  unblockUser(userId: string): Promise<{ error?: string }>;
+
+  /**
+   * updateUserRole — Ganti role user
+   * @param userId — UUID user
+   * @param role — Role baru
+   */
+  updateUserRole(userId: string, role: UserRole): Promise<{ error?: string }>;
+
+  /**
    * getAttendanceStats — Hitung statistik presensi untuk seluruh siswa
    * @param query — Filter statistik (rentang hari, jurusan, kelas, dll)
    * @returns Array statistik per siswa

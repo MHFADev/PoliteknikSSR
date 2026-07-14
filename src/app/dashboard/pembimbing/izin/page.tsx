@@ -9,7 +9,7 @@ export default async function PembimbingIzinPage() {
   const { data } = await supabase
     .from("leave_requests")
     .select(
-      "id, type, reason, start_date, end_date, proof_url, student:profiles!leave_requests_student_id_fkey(full_name, identity_number)"
+      "id, type, reason, start_date, end_date, proof_url, student:profiles!leave_requests_student_id_fkey(full_name, identity_number, avatar_url)"
     )
     .eq("status", "pending")
     .order("created_at", { ascending: true });

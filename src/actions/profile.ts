@@ -29,6 +29,7 @@ export async function updateProfile(data: {
   identityNumber?: string;
   instansi?: string;
   kelas?: string;
+  avatarUrl?: string;
 }) {
   const supabase = createClient();
   const { data: { user } } = await supabase.auth.getUser();
@@ -40,6 +41,9 @@ export async function updateProfile(data: {
   revalidatePath("/dashboard/siswa/profile");
   revalidatePath("/dashboard/pembimbing/profile");
   revalidatePath("/dashboard/admin/profile");
+  revalidatePath("/dashboard/siswa");
+  revalidatePath("/dashboard/pembimbing");
+  revalidatePath("/dashboard/admin");
   return { success: true };
 }
 

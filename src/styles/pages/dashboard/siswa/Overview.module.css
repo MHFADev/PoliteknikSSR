@@ -1,98 +1,70 @@
-/* Overview Siswa - Halaman utama dashboard siswa */
+/* ============================================
+ * SiswaOverview — Dashboard siswa layout
+ * ============================================ */
+
 .pageContainer {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1.25rem;
 }
 
-.pageHeader h1 {
-  font-family: var(--font-jakarta), sans-serif;
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: #293681;
-}
-
-.pageHeader p {
-  font-size: 0.875rem;
-  color: #0f172a;
-}
-
+/* ─── Reminder Banner ─────────────────────── */
 .reminderBanner {
-  border-radius: 16px;
-  background: #293681;
-  border: 1px solid #4274d9;
-  padding: 1rem;
+  border-radius: 12px;
+  background: rgba(255, 210, 63, 0.25);
+  border: 1px solid #FFD23F;
+  padding: 0.75rem 1rem;
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  box-shadow: 0 0 20px #95ccdd;
+  gap: 0.625rem;
 }
 
 .reminderBanner h3 {
   font-weight: 700;
-  color: #95ccdd;
+  color: var(--color-teal-dark, #1E8C86);
+  font-size: 0.875rem;
 }
 
 .reminderBanner p {
-  font-size: 0.875rem;
-  color: #f6f4f1;
-}
-
-.reminderBanner a {
-  margin-left: auto;
+  font-size: 0.75rem;
+  color: var(--color-ink-muted, #475569);
+  margin-top: 0.125rem;
 }
 
 .reminderCta {
-  background: #95ccdd;
-  color: #293681;
-  padding: 0.5rem 1rem;
+  background: #FFD23F;
+  color: var(--color-teal-dark, #1E8C86);
+  padding: 0.375rem 0.875rem;
   border-radius: 9999px;
   font-weight: 700;
+  font-size: 0.75rem;
+  white-space: nowrap;
   transition: background 0.2s;
+  text-decoration: none;
+  flex-shrink: 0;
 }
 
 .reminderCta:hover {
-  background: #f6f4f1;
+  background: #FFE47A;
 }
 
-.statGrid {
+/* ─── Stat Row — 1 baris responsif ────────── */
+.statRow {
   display: grid;
-  grid-template-columns: 1fr;
-  gap: 1rem;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
 }
 
-@media (min-width: 640px) {
-  .statGrid {
-    grid-template-columns: repeat(3, 1fr);
+@media (max-width: 640px) {
+  .statRow {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
   }
 }
 
-.twoColumnGrid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 1.5rem;
-}
-
-@media (min-width: 1024px) {
-  .twoColumnGrid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-.eventDotLibur {
-  width: 0.625rem;
-  height: 0.625rem;
-  border-radius: 9999px;
-  background: #f87171;
-  flex-shrink: 0;
-}
-
-.eventDotEvent {
-  width: 0.625rem;
-  height: 0.625rem;
-  border-radius: 9999px;
-  background: #2ba8a2;
-  flex-shrink: 0;
+/* ─── Announcement ────────────────────────── */
+.announcementCard {
+  overflow: hidden;
 }
 
 .announcementList {
@@ -101,126 +73,135 @@
 }
 
 .announcementItem {
-  padding: 0.75rem 1rem;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.625rem 1rem;
 }
 
 .announcementItem h3 {
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
   font-weight: 600;
-  color: var(--color-ink, #0f172a);
+  color: var(--color-ink, #0F172A);
 }
 
 .announcementItem p {
   font-size: 0.75rem;
   color: var(--color-ink-muted, #475569);
-  margin-top: 0.25rem;
+  margin-top: 0.125rem;
 }
 
 .announcementDate {
   font-size: 0.625rem;
-  color: var(--color-ink-subtle, #94a3b8);
-  margin-top: 0.5rem;
+  color: var(--color-ink-subtle, #94A3B8);
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
-/* ============================================
- * Responsive Mobile — Perbaikan untuk HP & Tablet
- * ============================================ */
+/* ─── Activity Row ────────────────────────── */
+.flipCard {
+  margin: 0;
+}
 
+.activityRow {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 0.625rem 1rem;
+}
+
+.activityIcon {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: #F0FDFA;
+  color: var(--color-teal, #14B8A6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.activityTitle {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--color-ink, #0F172A);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.activityDate {
+  font-size: 0.6875rem;
+  color: var(--color-ink-subtle, #94A3B8);
+  margin-top: 0.0625rem;
+}
+
+/* ─── Link ────────────────────────────────── */
+.linkAll {
+  font-size: 0.8125rem;
+  color: var(--color-teal, #14B8A6);
+  text-decoration: none;
+}
+
+.linkAll:hover {
+  text-decoration: underline;
+}
+
+/* ─── Mobile ──────────────────────────────── */
 @media (max-width: 768px) {
   .pageContainer {
-    gap: 0.75rem;
-  }
-
-  .pageHeader h1 {
-    font-size: 1.125rem;
-  }
-
-  .pageHeader p {
-    font-size: 0.75rem;
+    gap: 0.875rem;
   }
 
   .reminderBanner {
-    flex-direction: column;
-    align-items: flex-start;
+    padding: 0.625rem 0.75rem;
     gap: 0.5rem;
-    padding: 0.75rem;
-    border-radius: 12px;
   }
 
   .reminderBanner h3 {
-    font-size: 0.875rem;
+    font-size: 0.8125rem;
   }
 
   .reminderBanner p {
-    font-size: 0.75rem;
-  }
-
-  .reminderBanner a {
-    margin-left: 0;
+    font-size: 0.6875rem;
   }
 
   .reminderCta {
-    padding: 0.375rem 0.75rem;
-    font-size: 0.75rem;
+    padding: 0.3125rem 0.75rem;
+    font-size: 0.6875rem;
   }
 
-  .statGrid {
+  .statRow {
     gap: 0.5rem;
   }
 
-  .twoColumnGrid {
-    gap: 0.75rem;
+  .activityRow {
+    padding: 0.5rem 0.75rem;
   }
 
   .announcementItem {
     padding: 0.5rem 0.75rem;
   }
-
-  .announcementItem h3 {
-    font-size: 0.8125rem;
-  }
-
-  .announcementItem p {
-    font-size: 0.6875rem;
-  }
 }
 
 @media (max-width: 480px) {
   .pageContainer {
-    gap: 0.5rem;
+    gap: 0.625rem;
   }
 
-  .pageHeader h1 {
-    font-size: 1rem;
-  }
-
-  .pageHeader p {
-    font-size: 0.6875rem;
-  }
-
-  .reminderBanner {
-    padding: 0.5rem;
+  .statRow {
+    grid-template-columns: 1fr;
     gap: 0.375rem;
   }
 
-  .reminderBanner h3 {
-    font-size: 0.8125rem;
+  .activityIcon {
+    width: 24px;
+    height: 24px;
   }
 
-  .reminderBanner p {
-    font-size: 0.6875rem;
-  }
-
-  .reminderCta {
-    padding: 0.3125rem 0.625rem;
-    font-size: 0.6875rem;
-  }
-
-  .statGrid {
-    gap: 0.375rem;
-  }
-
-  .twoColumnGrid {
-    gap: 0.5rem;
+  .activityTitle {
+    font-size: 0.75rem;
   }
 }

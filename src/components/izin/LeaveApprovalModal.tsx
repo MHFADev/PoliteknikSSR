@@ -18,7 +18,7 @@ interface LeaveRequestWithStudent {
   start_date: string;
   end_date: string;
   proof_url: string | null;
-  student: { full_name: string; identity_number: string | null };
+  student: { full_name: string; identity_number: string | null; avatar_url?: string | null };
 }
 
 export function PendingLeaveApprovals({ initialRequests }: { initialRequests: LeaveRequestWithStudent[] }) {
@@ -67,9 +67,37 @@ export function PendingLeaveApprovals({ initialRequests }: { initialRequests: Le
           onClick={() => setActive(req)}
           className={styles.requestItem}
         >
-          <div className={styles.requestInfo}>
-            <p className={styles.requestName}>{req.student.full_name}</p>
-            <p className={styles.requestReason}>{req.reason}</p>
+          <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", flex: 1, minWidth: 0 }}>
+            <div
+              style={{
+                width: "32px",
+                height: "32px",
+                borderRadius: "9999px",
+                background: req.student?.avatar_url ? "transparent" : "#DBEAFE",
+                color: "#1D4ED8",
+                fontSize: "0.75rem",
+                fontWeight: 700,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                flexShrink: 0,
+                overflow: "hidden",
+              }}
+            >
+              {req.student?.avatar_url ? (
+                <img
+                  src={req.student.avatar_url}
+                  alt=""
+                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                />
+              ) : (
+                req.student.full_name?.charAt(0).toUpperCase() || "?"
+              )}
+            </div>
+            <div className={styles.requestInfo}>
+              <p className={styles.requestName}>{req.student.full_name}</p>
+              <p className={styles.requestReason}>{req.reason}</p>
+            </div>
           </div>
           <div className={styles.requestMeta}>
             <Badge tone="warning">{req.type}</Badge>

@@ -282,3 +282,320 @@ A  src/styles/pages/Login.module.css
 ?? .auto-pull.lock
 ?? public/favicon.png
 [2026-07-13 11:02:01] Commit atau stash dulu sebelum auto-pull bisa jalan.
+[2026-07-13 11:32:01] === Auto-pull dimulai ===
+[2026-07-13 11:32:01] DIBATALKAN: Ada perubahan lokal yang belum di-commit:
+[2026-07-13 11:32:01] M auto-pull.log
+?? .auto-pull.lock
+[2026-07-13 11:32:01] Commit atau stash dulu sebelum auto-pull bisa jalan.
+[2026-07-13 11:47:01] === Auto-pull dimulai ===
+[2026-07-13 11:47:01] DIBATALKAN: Ada perubahan lokal yang belum di-commit:
+[2026-07-13 11:47:01] M auto-pull.log
+?? .auto-pull.lock
+[2026-07-13 11:47:01] Commit atau stash dulu sebelum auto-pull bisa jalan.
+[2026-07-13 12:47:01] === Auto-pull dimulai ===
+[2026-07-13 12:47:01] DIBATALKAN: Ada perubahan lokal yang belum di-commit:
+[2026-07-13 12:47:01] M auto-pull.log
+ M package-lock.json
+ M package.json
+?? .auto-pull.lock
+[2026-07-13 12:47:01] Commit atau stash dulu sebelum auto-pull bisa jalan.
+[2026-07-13 13:02:01] === Auto-pull dimulai ===
+[2026-07-13 13:02:01] DIBATALKAN: Ada perubahan lokal yang belum di-commit:
+[2026-07-13 13:02:01] M auto-pull.log
+ M package-lock.json
+ M package.json
+ M src/app/dashboard/admin/export/page.tsx
+ M src/styles/pages/dashboard/admin/Export.module.css
+?? .auto-pull.lock
+?? cloudflared.exe
+?? src/lib/export-data.ts
+[2026-07-13 13:02:01] Commit atau stash dulu sebelum auto-pull bisa jalan.
+[2026-07-13 13:17:01] === Auto-pull dimulai ===
+[2026-07-13 13:17:02] DIBATALKAN: Ada perubahan lokal yang belum di-commit:
+[2026-07-13 13:17:02] M auto-pull.log
+ M package-lock.json
+ M package.json
+ M src/app/dashboard/admin/export/page.tsx
+ M src/styles/pages/dashboard/admin/Export.module.css
+?? .auto-pull.lock
+?? cloudflared.exe
+?? src/lib/export-data.ts
+[2026-07-13 13:17:02] Commit atau stash dulu sebelum auto-pull bisa jalan.
+[2026-07-13 13:32:01] === Auto-pull dimulai ===
+[2026-07-13 13:32:01] DIBATALKAN: Ada perubahan lokal yang belum di-commit:
+[2026-07-13 13:32:01] M auto-pull.log
+ M package-lock.json
+ M package.json
+ M src/app/dashboard/admin/export/page.tsx
+ M src/styles/pages/dashboard/admin/Export.module.css
+?? .auto-pull.lock
+?? cloudflared.exe
+?? src/lib/export-data.ts
+[2026-07-13 13:32:01] Commit atau stash dulu sebelum auto-pull bisa jalan.
+[2026-07-13 13:47:02] === Auto-pull dimulai ===
+[2026-07-13 13:47:02] DIBATALKAN: Ada perubahan lokal yang belum di-commit:
+[2026-07-13 13:47:02] M auto-pull.log
+ M package-lock.json
+ M package.json
+ M schema.sql
+ M src/app/dashboard/admin/export/page.tsx
+ M src/styles/pages/dashboard/admin/Export.module.css
+?? .auto-pull.lock
+?? cloudflared.exe
+?? src/lib/export-data.ts
+[2026-07-13 13:47:02] Commit atau stash dulu sebelum auto-pull bisa jalan.
+[2026-07-13 14:02:01] === Auto-pull dimulai ===
+[2026-07-13 14:02:01] DIBATALKAN: Ada perubahan lokal yang belum di-commit:
+[2026-07-13 14:02:01] M auto-pull.log
+ M package-lock.json
+ M package.json
+ M schema.sql
+ M src/actions/profile.ts
+ M src/app/dashboard/admin/absensi/page.tsx
+ M src/app/dashboard/admin/export/page.tsx
+ M src/app/dashboard/admin/izin/page.tsx
+ M src/app/dashboard/admin/kegiatan-harian/page.tsx
+ M src/app/dashboard/admin/layout.tsx
+ M src/app/dashboard/admin/page.tsx
+ M src/app/dashboard/admin/pengguna/page.tsx
+ M src/app/dashboard/pembimbing/izin/page.tsx
+ M src/app/dashboard/pembimbing/kegiatan-harian/page.tsx
+ M src/app/dashboard/pembimbing/layout.tsx
+ M src/app/dashboard/siswa/layout.tsx
+ M src/components/izin/LeaveApprovalModal.tsx
+ M src/components/layout/MobileNav.tsx
+ M src/components/layout/Sidebar.tsx
+ M src/components/logbook/LogbookGradeModal.tsx
+ M src/components/profile/ProfileForm.tsx
+ M src/lib/repositories/supabase/UserRepository.ts
+ M src/lib/repositories/types.ts
+ M src/styles/pages/dashboard/admin/Export.module.css
+?? .auto-pull.lock
+?? cloudflared.exe
+?? src/lib/export-data.ts
+[2026-07-13 14:02:01] Commit atau stash dulu sebelum auto-pull bisa jalan.
+[2026-07-13 14:17:01] === Auto-pull dimulai ===
+[2026-07-13 14:17:01] DIBATALKAN: Ada perubahan lokal yang belum di-commit:
+[2026-07-13 14:17:01] M auto-pull.log
+ M package-lock.json
+ M package.json
+ M schema.sql
+ M src/actions/profile.ts
+ M src/app/dashboard/admin/absensi/page.tsx
+ M src/app/dashboard/admin/export/page.tsx
+ M src/app/dashboard/admin/izin/page.tsx
+ M src/app/dashboard/admin/kegiatan-harian/page.tsx
+ M src/app/dashboard/admin/layout.tsx
+ M src/app/dashboard/admin/page.tsx
+ M src/app/dashboard/admin/pengguna/page.tsx
+ M src/app/dashboard/pembimbing/izin/page.tsx
+ M src/app/dashboard/pembimbing/kegiatan-harian/page.tsx
+ M src/app/dashboard/pembimbing/layout.tsx
+ M src/app/dashboard/siswa/layout.tsx
+ M src/components/izin/LeaveApprovalModal.tsx
+ M src/components/layout/MobileNav.tsx
+ M src/components/layout/Sidebar.tsx
+ M src/components/logbook/LogbookGradeModal.tsx
+ M src/components/profile/ProfileForm.tsx
+ M src/lib/repositories/supabase/UserRepository.ts
+ M src/lib/repositories/types.ts
+ M src/styles/pages/dashboard/admin/Export.module.css
+?? .auto-pull.lock
+?? cloudflared.exe
+?? src/lib/export-data.ts
+[2026-07-13 14:17:01] Commit atau stash dulu sebelum auto-pull bisa jalan.
+[2026-07-13 14:32:01] === Auto-pull dimulai ===
+[2026-07-13 14:32:01] DIBATALKAN: Ada perubahan lokal yang belum di-commit:
+[2026-07-13 14:32:01] M auto-pull.log
+ M package-lock.json
+ M package.json
+ M schema.sql
+ M src/actions/profile.ts
+ M src/app/dashboard/admin/absensi/page.tsx
+ M src/app/dashboard/admin/export/page.tsx
+ M src/app/dashboard/admin/izin/page.tsx
+ M src/app/dashboard/admin/kegiatan-harian/page.tsx
+ M src/app/dashboard/admin/layout.tsx
+ M src/app/dashboard/admin/page.tsx
+ M src/app/dashboard/admin/pengguna/page.tsx
+ M src/app/dashboard/pembimbing/izin/page.tsx
+ M src/app/dashboard/pembimbing/kegiatan-harian/page.tsx
+ M src/app/dashboard/pembimbing/layout.tsx
+ M src/app/dashboard/siswa/layout.tsx
+ M src/components/izin/LeaveApprovalModal.tsx
+ M src/components/layout/MobileNav.tsx
+ M src/components/layout/Sidebar.tsx
+ M src/components/logbook/LogbookGradeModal.tsx
+ M src/components/profile/ProfileForm.tsx
+ M src/lib/repositories/supabase/UserRepository.ts
+ M src/lib/repositories/types.ts
+ M src/styles/pages/dashboard/admin/Export.module.css
+?? .auto-pull.lock
+?? cloudflared.exe
+?? src/lib/export-data.ts
+[2026-07-13 14:32:01] Commit atau stash dulu sebelum auto-pull bisa jalan.
+[2026-07-13 14:47:01] === Auto-pull dimulai ===
+[2026-07-13 14:47:01] DIBATALKAN: Ada perubahan lokal yang belum di-commit:
+[2026-07-13 14:47:01] M auto-pull.log
+ M package-lock.json
+ M package.json
+ M schema.sql
+ M src/actions/profile.ts
+ M src/app/dashboard/admin/absensi/page.tsx
+ M src/app/dashboard/admin/export/page.tsx
+ M src/app/dashboard/admin/izin/page.tsx
+ M src/app/dashboard/admin/kegiatan-harian/page.tsx
+ M src/app/dashboard/admin/layout.tsx
+ M src/app/dashboard/admin/page.tsx
+ M src/app/dashboard/admin/pengguna/page.tsx
+ M src/app/dashboard/pembimbing/izin/page.tsx
+ M src/app/dashboard/pembimbing/kegiatan-harian/page.tsx
+ M src/app/dashboard/pembimbing/layout.tsx
+ M src/app/dashboard/siswa/layout.tsx
+ M src/components/izin/LeaveApprovalModal.tsx
+ M src/components/layout/MobileNav.tsx
+ M src/components/layout/Sidebar.tsx
+ M src/components/logbook/LogbookGradeModal.tsx
+ M src/components/profile/ProfileForm.tsx
+ M src/lib/repositories/supabase/UserRepository.ts
+ M src/lib/repositories/types.ts
+ M src/styles/pages/dashboard/admin/Export.module.css
+?? .auto-pull.lock
+?? cloudflared.exe
+?? src/lib/database.ts
+?? src/lib/export-data.ts
+?? src/lib/postgres.ts
+?? src/lib/repositories/interfaces/IAuthProvider.ts
+?? src/lib/repositories/interfaces/IStorageProvider.ts
+?? src/lib/repositories/postgresql/
+?? src/lib/repositories/supabase/SupabaseAuthProvider.ts
+?? src/lib/repositories/supabase/SupabaseStorageProvider.ts
+[2026-07-13 14:47:01] Commit atau stash dulu sebelum auto-pull bisa jalan.
+[2026-07-13 15:02:02] === Auto-pull dimulai ===
+[2026-07-13 15:02:02] DIBATALKAN: Ada perubahan lokal yang belum di-commit:
+[2026-07-13 15:02:02] M auto-pull.log
+ M package-lock.json
+ M package.json
+ M schema.sql
+ M src/actions/profile.ts
+ M src/app/dashboard/admin/absensi/page.tsx
+ M src/app/dashboard/admin/export/page.tsx
+ M src/app/dashboard/admin/izin/page.tsx
+ M src/app/dashboard/admin/kegiatan-harian/page.tsx
+ M src/app/dashboard/admin/layout.tsx
+ M src/app/dashboard/admin/page.tsx
+ M src/app/dashboard/admin/pengguna/page.tsx
+ M src/app/dashboard/pembimbing/izin/page.tsx
+ M src/app/dashboard/pembimbing/kegiatan-harian/page.tsx
+ M src/app/dashboard/pembimbing/layout.tsx
+ M src/app/dashboard/pembimbing/page.tsx
+ M src/app/dashboard/siswa/layout.tsx
+ M src/app/dashboard/siswa/page.tsx
+ M src/components/izin/LeaveApprovalModal.tsx
+ M src/components/layout/MobileNav.tsx
+ M src/components/layout/Sidebar.tsx
+ M src/components/logbook/LogbookGradeModal.tsx
+ M src/components/profile/ProfileForm.tsx
+ M src/lib/repositories/index.ts
+ M src/lib/repositories/supabase/UserRepository.ts
+ M src/lib/repositories/types.ts
+ M src/styles/pages/dashboard/admin/Export.module.css
+ M src/styles/pages/dashboard/pembimbing/Overview.module.css
+ M tsconfig.tsbuildinfo
+?? .auto-pull.lock
+?? cloudflared.exe
+?? src/lib/database.ts
+?? src/lib/export-data.ts
+?? src/lib/postgres.ts
+?? src/lib/repositories/interfaces/IAuthProvider.ts
+?? src/lib/repositories/interfaces/IStorageProvider.ts
+?? src/lib/repositories/postgresql/
+?? src/lib/repositories/supabase/SupabaseAuthProvider.ts
+?? src/lib/repositories/supabase/SupabaseStorageProvider.ts
+[2026-07-13 15:02:02] Commit atau stash dulu sebelum auto-pull bisa jalan.
+[2026-07-13 15:17:01] === Auto-pull dimulai ===
+[2026-07-13 15:17:02] DIBATALKAN: Ada perubahan lokal yang belum di-commit:
+[2026-07-13 15:17:02] M auto-pull.log
+ M package-lock.json
+ M package.json
+ M schema.sql
+ M src/actions/profile.ts
+ M src/app/dashboard/admin/absensi/page.tsx
+ M src/app/dashboard/admin/export/page.tsx
+ M src/app/dashboard/admin/izin/page.tsx
+ M src/app/dashboard/admin/kegiatan-harian/page.tsx
+ M src/app/dashboard/admin/layout.tsx
+ M src/app/dashboard/admin/page.tsx
+ M src/app/dashboard/admin/pengguna/page.tsx
+ M src/app/dashboard/pembimbing/izin/page.tsx
+ M src/app/dashboard/pembimbing/kegiatan-harian/page.tsx
+ M src/app/dashboard/pembimbing/layout.tsx
+ M src/app/dashboard/pembimbing/page.tsx
+ M src/app/dashboard/siswa/layout.tsx
+ M src/app/dashboard/siswa/page.tsx
+ M src/components/izin/LeaveApprovalModal.tsx
+ M src/components/layout/MobileNav.tsx
+ M src/components/layout/Sidebar.tsx
+ M src/components/logbook/LogbookGradeModal.tsx
+ M src/components/profile/ProfileForm.tsx
+ M src/lib/repositories/index.ts
+ M src/lib/repositories/supabase/UserRepository.ts
+ M src/lib/repositories/types.ts
+ M src/styles/pages/dashboard/admin/Export.module.css
+ M src/styles/pages/dashboard/pembimbing/Overview.module.css
+ M tsconfig.tsbuildinfo
+?? .auto-pull.lock
+?? cloudflared.exe
+?? src/lib/database.ts
+?? src/lib/export-data.ts
+?? src/lib/postgres.ts
+?? src/lib/repositories/interfaces/IAuthProvider.ts
+?? src/lib/repositories/interfaces/IStorageProvider.ts
+?? src/lib/repositories/postgresql/
+?? src/lib/repositories/supabase/SupabaseAuthProvider.ts
+?? src/lib/repositories/supabase/SupabaseStorageProvider.ts
+[2026-07-13 15:17:02] Commit atau stash dulu sebelum auto-pull bisa jalan.
+[2026-07-13 15:32:02] === Auto-pull dimulai ===
+[2026-07-13 15:32:02] DIBATALKAN: Ada perubahan lokal yang belum di-commit:
+[2026-07-13 15:32:02] M auto-pull.log
+ M package-lock.json
+ M package.json
+ M schema.sql
+ M src/actions/profile.ts
+ M src/app/dashboard/admin/absensi/page.tsx
+ M src/app/dashboard/admin/export/page.tsx
+ M src/app/dashboard/admin/izin/page.tsx
+ M src/app/dashboard/admin/kegiatan-harian/page.tsx
+ M src/app/dashboard/admin/layout.tsx
+ M src/app/dashboard/admin/page.tsx
+ M src/app/dashboard/admin/pengguna/page.tsx
+ M src/app/dashboard/pembimbing/izin/page.tsx
+ M src/app/dashboard/pembimbing/kegiatan-harian/page.tsx
+ M src/app/dashboard/pembimbing/layout.tsx
+ M src/app/dashboard/pembimbing/page.tsx
+ M src/app/dashboard/siswa/layout.tsx
+ M src/app/dashboard/siswa/page.tsx
+ M src/components/izin/LeaveApprovalModal.tsx
+ M src/components/layout/MobileNav.tsx
+ M src/components/layout/Sidebar.tsx
+ M src/components/logbook/LogbookGradeModal.tsx
+ M src/components/profile/ProfileForm.tsx
+ M src/lib/repositories/index.ts
+ M src/lib/repositories/supabase/UserRepository.ts
+ M src/lib/repositories/types.ts
+ M src/styles/pages/dashboard/admin/Export.module.css
+ M src/styles/pages/dashboard/admin/Overview.module.css
+ M src/styles/pages/dashboard/pembimbing/Overview.module.css
+ M src/styles/pages/dashboard/siswa/Overview.module.css
+ M tsconfig.tsbuildinfo
+?? .auto-pull.lock
+?? cloudflared.exe
+?? src/lib/database.ts
+?? src/lib/export-data.ts
+?? src/lib/postgres.ts
+?? src/lib/repositories/interfaces/IAuthProvider.ts
+?? src/lib/repositories/interfaces/IStorageProvider.ts
+?? src/lib/repositories/postgresql/
+?? src/lib/repositories/supabase/SupabaseAuthProvider.ts
+?? src/lib/repositories/supabase/SupabaseStorageProvider.ts
+[2026-07-13 15:32:02] Commit atau stash dulu sebelum auto-pull bisa jalan.

@@ -1,21 +1,162 @@
-/* Export Admin - Halaman ekspor data ke CSV */
+/* Export Admin — Halaman ekspor data ke CSV/Excel */
+
 .pageContainer {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+  max-width: 960px;
+}
+
+/* ── Header ──────────────────────────────────────────────────────────────── */
+
+.pageHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.headerTop {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
 }
 
 .pageHeader h1 {
   font-family: var(--font-jakarta), sans-serif;
   font-size: 1.5rem;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--color-deep, #0F172A);
+  letter-spacing: -0.02em;
 }
 
 .pageHeader p {
   font-size: 0.875rem;
   color: var(--color-mist-dim, #64748B);
+  margin-top: 0.125rem;
 }
+
+.headerBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.375rem 0.75rem;
+  border-radius: 9999px;
+  background: #EFF6FF;
+  color: #1E40AF;
+  font-size: 0.75rem;
+  font-weight: 600;
+  white-space: nowrap;
+  border: 1px solid #BFDBFE;
+}
+
+/* ── Controls Bar ────────────────────────────────────────────────────────── */
+
+.controlsBar {
+  display: flex;
+  align-items: flex-end;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+  padding: 1rem 1.25rem;
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.dateRange {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.5rem;
+}
+
+.controlLabel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.controlLabel span {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #94A3B8;
+}
+
+.dateInput {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #CBD5E1;
+  border-radius: 8px;
+  font-size: 0.8125rem;
+  font-family: inherit;
+  color: #1E293B;
+  background: #F8FAFC;
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.dateInput:focus {
+  border-color: #3B82F6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
+  background: #FFFFFF;
+}
+
+.dateSeparator {
+  color: #CBD5E1;
+  font-size: 0.875rem;
+  padding-bottom: 0.5rem;
+}
+
+.formatPicker {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-left: auto;
+}
+
+.formatToggle {
+  display: flex;
+  border: 1px solid #E2E8F0;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #F1F5F9;
+}
+
+.formatBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.5rem 0.875rem;
+  border: none;
+  background: transparent;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  font-family: inherit;
+  color: #64748B;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.formatBtn:hover {
+  color: #334155;
+  background: #E2E8F0;
+}
+
+.formatBtnActive {
+  background: #1E40AF;
+  color: #FFFFFF;
+  font-weight: 600;
+  box-shadow: 0 1px 2px rgba(30, 64, 175, 0.25);
+}
+
+.formatBtnActive:hover {
+  background: #1E3A8A;
+  color: #FFFFFF;
+}
+
+/* ── Export Cards Grid ────────────────────────────────────────────────────── */
 
 .exportGrid {
   display: grid;
@@ -29,9 +170,130 @@
   }
 }
 
+/* ── Card ─────────────────────────────────────────────────────────────────── */
+
 .exportCard {
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.25rem !important;
+  border-radius: 12px !important;
+  border: 1px solid #E2E8F0 !important;
+  background: #FFFFFF !important;
+  transition: box-shadow 0.2s, border-color 0.2s;
+}
+
+.exportCard:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  border-color: #CBD5E1;
+}
+
+.cardHeader {
+  display: flex;
   align-items: flex-start;
   gap: 0.75rem;
+}
+
+.cardIconWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  flex-shrink: 0;
+}
+
+.iconBg-blue {
+  background: #EFF6FF;
+  color: #2563EB;
+}
+
+.iconBg-amber {
+  background: #FFFBEB;
+  color: #D97706;
+}
+
+.iconBg-green {
+  background: #F0FDF4;
+  color: #16A34A;
+}
+
+.cardIcon {
+  width: 20px;
+  height: 20px;
+}
+
+.cardInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  min-width: 0;
+}
+
+.cardInfo h3 {
+  font-family: var(--font-jakarta), sans-serif;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: #0F172A;
+  margin: 0;
+}
+
+.cardInfo p {
+  font-size: 0.75rem;
+  color: #94A3B8;
+  line-height: 1.4;
+  margin: 0;
+}
+
+/* ── Export Button ────────────────────────────────────────────────────────── */
+
+.exportBtn {
+  width: 100%;
+  justify-content: center;
+  padding: 0.625rem 1rem !important;
+  border-radius: 8px !important;
+  font-size: 0.8125rem !important;
+  font-weight: 600 !important;
+}
+
+.accent-blue .exportBtn {
+  background: #1E40AF !important;
+}
+
+.accent-blue .exportBtn:hover {
+  background: #1E3A8A !important;
+}
+
+.accent-amber .exportBtn {
+  background: #B45309 !important;
+}
+
+.accent-amber .exportBtn:hover {
+  background: #92400E !important;
+}
+
+.accent-green .exportBtn {
+  background: #15803D !important;
+}
+
+.accent-green .exportBtn:hover {
+  background: #166534 !important;
+}
+
+/* ── Footer Note ──────────────────────────────────────────────────────────── */
+
+.footerNote {
+  padding: 0.75rem 1rem;
+  background: #F8FAFC;
+  border: 1px solid #E2E8F0;
+  border-radius: 8px;
+}
+
+.footerNote p {
+  font-size: 0.75rem;
+  color: #94A3B8;
+  line-height: 1.5;
+  margin: 0;
 }

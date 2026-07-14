@@ -58,6 +58,7 @@ export class SupabaseUserRepository implements IUserRepository {
       kelas: profile.kelas || null,
       jurusanId: profile.jurusan_id || null,
       studyProgramName: profile.study_programs?.nama || null,
+      avatarUrl: profile.avatar_url || null,
       approved: profile.approved ?? false,
       createdAt: profile.created_at || new Date().toISOString(),
     };
@@ -90,6 +91,7 @@ export class SupabaseUserRepository implements IUserRepository {
         instansi,
         kelas,
         jurusan_id,
+        avatar_url,
         approved,
         created_at,
         study_programs ( nama )
@@ -125,6 +127,7 @@ export class SupabaseUserRepository implements IUserRepository {
         instansi,
         kelas,
         jurusan_id,
+        avatar_url,
         approved,
         created_at,
         study_programs ( nama )
@@ -155,6 +158,7 @@ export class SupabaseUserRepository implements IUserRepository {
         instansi,
         kelas,
         jurusan_id,
+        avatar_url,
         approved,
         created_at,
         study_programs ( nama )
@@ -188,7 +192,9 @@ export class SupabaseUserRepository implements IUserRepository {
     }
 
     // Cek status approved — blokir jika admin belum menyetujui
-    if (data.user?.user_metadata?.approved === false) {
+    // Handle both explicit false AND undefined (belum disetujui)
+    const isApproved = data.user?.user_metadata?.approved;
+    if (isApproved !== true) {
       await supabase.auth.signOut();
       return { user: null, error: "Akun Anda belum disetujui oleh admin. Silakan tunggu persetujuan." };
     }
@@ -279,6 +285,7 @@ export class SupabaseUserRepository implements IUserRepository {
       user_metadata: {
         full_name: input.fullName,
         role: input.role,
+        approved: true,
       },
     });
 
@@ -331,6 +338,7 @@ export class SupabaseUserRepository implements IUserRepository {
     if (data.kelas !== undefined) updateData.kelas = data.kelas;
     if (data.jurusanId !== undefined) updateData.jurusan_id = data.jurusanId;
     if (data.role !== undefined) updateData.role = data.role;
+    if ((data as any).avatarUrl !== undefined) updateData.avatar_url = (data as any).avatarUrl;
 
     if (Object.keys(updateData).length === 0) return {};
 
@@ -416,6 +424,54 @@ export class SupabaseUserRepository implements IUserRepository {
   }
 
   /**
+   * deleteUser — Hapus akun user (admin)
+   */
+  async deleteUser(userId: string): Promise<{ error?: string }> {
+    const supabase = this.getAdminClient();
+    const { error } = await supabase.auth.admin.deleteUser(userId, true);
+    if (error) return { error: "Gagal menghapus user: " + error.message };
+    return {};
+  }
+
+  /**
+   * blockUser — Blokir user (set approved = false di metadata)
+   */
+  async blockUser(userId: string): Promise<{ error?: string }> {
+    const supabase = this.getAdminClient();
+    const { error } = await supabase.auth.admin.updateUserById(userId, {
+      user_metadata: { approved: false },
+    });
+    if (error) return { error: "Gagal memblokir user: " + error.message };
+    return {};
+  }
+
+  /**
+   * unblockUser — Buka blokir user (set approved = true di metadata)
+   */
+  async unblockUser(userId: string): Promise<{ error?: string }> {
+    const supabase = this.getAdminClient();
+    const { error } = await supabase.auth.admin.updateUserById(userId, {
+      user_metadata: { approved: true },
+    });
+    if (error) return { error: "Gagal membuka blokir: " + error.message };
+    return {};
+  }
+
+  /**
+   * updateUserRole — Ganti role user
+   */
+  async updateUserRole(userId: string, role: UserRole): Promise<{ error?: string }> {
+    const supabase = this.getAdminClient();
+    const { error } = await supabase.auth.admin.updateUserById(userId, {
+      user_metadata: { role },
+    });
+    if (error) return { error: "Gagal mengubah role: " + error.message };
+    // Update juga di profiles table
+    await supabase.from("profiles").update({ role }).eq("id", userId);
+    return {};
+  }
+
+  /**
    * getAttendanceStats — Hitung statistik presensi untuk semua/siswa tertentu
    *
    * Alur:
@@ -444,6 +500,7 @@ export class SupabaseUserRepository implements IUserRepository {
         full_name,
         kelas,
         jurusan_id,
+        avatar_url,
         approved,
         created_at,
         study_programs ( nama )
@@ -519,6 +576,7 @@ export class SupabaseUserRepository implements IUserRepository {
           fullName: student.full_name,
           kelas: student.kelas,
           jurusan: student.study_programs?.nama || null,
+          avatarUrl: student.avatar_url || null,
           hadir,
           telat,
           izin,

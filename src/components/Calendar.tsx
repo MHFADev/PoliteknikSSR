@@ -173,13 +173,19 @@ export function Calendar({ events = [], getDayStatus }: CalendarProps) {
             </span>
           </div>
           <div className="flex items-center gap-2">
+            <div className="h-3.5 w-3.5 sm:h-4 sm:w-4 rounded-full bg-[#6B7280]"></div>
+            <span className="text-[11px] sm:text-sm text-ink font-medium">
+              Telat
+            </span>
+          </div>
+          <div className="flex items-center gap-2">
             <div className="h-3.5 w-3.5 sm:h-4 sm:w-4 rounded-full bg-sun"></div>
             <span className="text-[11px] sm:text-sm text-ink font-medium">
               Izin
             </span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="h-3.5 w-3.5 sm:h-4 sm:w-4 rounded-full  bg-[#A855F7]"></div>
+            <div className="h-3.5 w-3.5 sm:h-4 sm:w-4 rounded-full bg-[#EC4899]"></div>
             <span className="text-[11px] sm:text-sm text-ink font-medium">
               Sakit
             </span>

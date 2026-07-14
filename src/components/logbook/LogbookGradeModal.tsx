@@ -18,7 +18,7 @@ interface LogbookWithStudent {
   grade: number | null;
   feedback: string | null;
   photo_url: string | null;
-  student: { full_name: string };
+  student: { full_name: string; avatar_url?: string | null };
 }
 
 export function LogbookReviewList({ initialEntries }: { initialEntries: LogbookWithStudent[] }) {
@@ -59,10 +59,38 @@ export function LogbookReviewList({ initialEntries }: { initialEntries: LogbookW
           onClick={() => openEntry(entry)}
           className={styles.entryItem}
         >
-          <div className={styles.entryInfo}>
-            <p className={styles.entryName}>{entry.student.full_name}</p>
-            <p className={styles.entryContent}>{entry.content}</p>
-            {entry.photo_url && <p className="text-[10px] text-leaf mt-1">📷 Foto bukti tersedia</p>}
+          <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", flex: 1, minWidth: 0 }}>
+            <div
+              style={{
+                width: "32px",
+                height: "32px",
+                borderRadius: "9999px",
+                background: entry.student?.avatar_url ? "transparent" : "#DBEAFE",
+                color: "#1D4ED8",
+                fontSize: "0.75rem",
+                fontWeight: 700,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                flexShrink: 0,
+                overflow: "hidden",
+              }}
+            >
+              {entry.student?.avatar_url ? (
+                <img
+                  src={entry.student.avatar_url}
+                  alt=""
+                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                />
+              ) : (
+                entry.student.full_name?.charAt(0).toUpperCase() || "?"
+              )}
+            </div>
+            <div className={styles.entryInfo}>
+              <p className={styles.entryName}>{entry.student.full_name}</p>
+              <p className={styles.entryContent}>{entry.content}</p>
+              {entry.photo_url && <p className="text-[10px] text-leaf mt-1">📷 Foto bukti tersedia</p>}
+            </div>
           </div>
           <div className={styles.entryMeta}>
             {entry.grade !== null ? (

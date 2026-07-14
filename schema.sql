@@ -567,6 +567,38 @@ create policy "announcement_recipients: semua login boleh lihat"
   using (auth.uid() is not null);
 
 -- =====================================================================
+-- 16. BUCKET: avatars
+-- Bucket untuk upload foto profil pengguna.
+-- =====================================================================
+insert into storage.buckets (id, name, public)
+values ('avatars', 'avatars', true)
+on conflict (id) do nothing;
+
+-- Storage policy: user bisa upload/mengupdate avatar sendiri
+drop policy if exists "storage: user upload avatar sendiri" on storage.objects;
+create policy "storage: user upload avatar sendiri"
+  on storage.objects for insert
+  with check (
+    bucket_id = 'avatars'
+    and (storage.foldername(name))[1] = auth.uid()::text
+  );
+
+-- Storage policy: user bisa update avatar sendiri (upsert)
+drop policy if exists "storage: user update avatar sendiri" on storage.objects;
+create policy "storage: user update avatar sendiri"
+  on storage.objects for update
+  using (
+    bucket_id = 'avatars'
+    and (storage.foldername(name))[1] = auth.uid()::text
+  );
+
+-- Storage policy: semua yang login bisa lihat avatar
+drop policy if exists "storage: semua login boleh lihat avatar" on storage.objects;
+create policy "storage: semua login boleh lihat avatar"
+  on storage.objects for select
+  using (bucket_id = 'avatars' and auth.uid() is not null);
+
+-- =====================================================================
 -- SELESAI. Langkah selanjutnya:
 -- 1. Buat user pertama (role admin) lewat Supabase Dashboard > Authentication > Add user,
 --    lalu update kolom role di tabel profiles menjadi 'admin' untuk user tsb.

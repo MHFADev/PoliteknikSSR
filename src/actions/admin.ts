@@ -150,3 +150,52 @@ export async function rejectUser(
 
   return { success: true };
 }
+
+/**
+ * deleteUser — Hapus akun user (admin)
+ */
+export async function deleteUser(
+  userId: string
+): Promise<{ success: true } | { success: false; message: string }> {
+  const result = await Repositories.users().deleteUser(userId);
+  if (result.error) return { success: false, message: result.error };
+  revalidatePath("/dashboard/admin/pengguna");
+  return { success: true };
+}
+
+/**
+ * blockUser — Blokir user (set approved = false)
+ */
+export async function blockUser(
+  userId: string
+): Promise<{ success: true } | { success: false; message: string }> {
+  const result = await Repositories.users().blockUser(userId);
+  if (result.error) return { success: false, message: result.error };
+  revalidatePath("/dashboard/admin/pengguna");
+  return { success: true };
+}
+
+/**
+ * unblockUser — Buka blokir user (set approved = true)
+ */
+export async function unblockUser(
+  userId: string
+): Promise<{ success: true } | { success: false; message: string }> {
+  const result = await Repositories.users().unblockUser(userId);
+  if (result.error) return { success: false, message: result.error };
+  revalidatePath("/dashboard/admin/pengguna");
+  return { success: true };
+}
+
+/**
+ * updateUserRole — Ganti role user
+ */
+export async function updateUserRole(
+  userId: string,
+  role: "siswa" | "pembimbing" | "admin"
+): Promise<{ success: true } | { success: false; message: string }> {
+  const result = await Repositories.users().updateUserRole(userId, role);
+  if (result.error) return { success: false, message: result.error };
+  revalidatePath("/dashboard/admin/pengguna");
+  return { success: true };
+}

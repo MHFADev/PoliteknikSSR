@@ -13,9 +13,10 @@ import styles from "@/styles/components/layout/MobileNav.module.css";
 type Props = {
   role: "siswa" | "pembimbing" | "admin";
   fullName: string;
+  avatarUrl?: string | null;
 };
 
-export function MobileNav({ role, fullName }: Props) {
+export function MobileNav({ role, fullName, avatarUrl }: Props) {
   const pathname = usePathname();
   const router = useRouter();
   const [showMore, setShowMore] = useState(false);
@@ -55,9 +56,17 @@ export function MobileNav({ role, fullName }: Props) {
               onClick={() => setShowMenu(!showMenu)}
               className={styles.avatarBtn}
             >
-              <span className={styles.avatarText}>
-                {fullName.charAt(0).toUpperCase()}
-              </span>
+              {avatarUrl ? (
+                <img
+                  src={avatarUrl}
+                  alt={fullName}
+                  className="w-full h-full rounded-full object-cover"
+                />
+              ) : (
+                <span className={styles.avatarText}>
+                  {fullName.charAt(0).toUpperCase()}
+                </span>
+              )}
             </button>
             <AnimatePresence>
               {showMenu && (

@@ -8,7 +8,7 @@ export default async function AdminLogbookPage() {
   const { data } = await supabase
     .from("logbook_entries")
     .select(
-      "id, entry_date, content, grade, feedback, photo_url, student:profiles!logbook_entries_student_id_fkey(full_name)"
+      "id, entry_date, content, grade, feedback, photo_url, student:profiles!logbook_entries_student_id_fkey(full_name, avatar_url)"
     )
     .order("entry_date", { ascending: false })
     .limit(100);

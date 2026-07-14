@@ -21,11 +21,16 @@ export default function StudentCalendar({ events, records, leaves }: StudentCale
     }
     const record = records.find((r: any) => r.scanned_at.slice(0, 10) === dayStr);
     if (record) {
-      if (record.status === "hadir" || record.status === "telat") {
-        return { label: record.status === "hadir" ? "Hadir" : "Telat", color: "bg-leaf-soft border-leaf", dot: "bg-leaf" };
-      } else {
-        return { label: record.status.charAt(0).toUpperCase() + record.status.slice(1), color: record.status === "alfa" ? "bg-coral-soft border-coral" : "bg-teal-bg border-teal", dot: record.status === "alfa" ? "bg-coral" : "bg-teal" };
+      if (record.status === "hadir") {
+        return { label: "Hadir", color: "bg-leaf-soft border-leaf", dot: "bg-leaf" };
       }
+      if (record.status === "telat") {
+        return { label: "Telat", color: "bg-[#F3F4F6] border-[#6B7280]", dot: "bg-[#6B7280]" };
+      }
+      if (record.status === "alfa") {
+        return { label: "Alfa", color: "bg-coral-soft border-coral", dot: "bg-coral" };
+      }
+      return { label: record.status.charAt(0).toUpperCase() + record.status.slice(1), color: "bg-teal-bg border-teal", dot: "bg-teal" };
     }
 
     const today = new Date().toISOString().slice(0, 10);

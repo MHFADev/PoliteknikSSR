@@ -178,7 +178,37 @@ export default function AdminAttendancePage() {
                     key={student.studentId}
                     className="border-b border-outline hover:bg-surface/50"
                   >
-                    <td className="py-3 px-4 text-ink">{student.fullName}</td>
+                    <td className="py-3 px-4 text-ink">
+                      <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
+                        <div
+                          style={{
+                            width: "32px",
+                            height: "32px",
+                            borderRadius: "9999px",
+                            background: student.avatarUrl ? "transparent" : "#DBEAFE",
+                            color: "#1D4ED8",
+                            fontSize: "0.75rem",
+                            fontWeight: 700,
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            flexShrink: 0,
+                            overflow: "hidden",
+                          }}
+                        >
+                          {student.avatarUrl ? (
+                            <img
+                              src={student.avatarUrl}
+                              alt={student.fullName}
+                              style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                            />
+                          ) : (
+                            student.fullName?.charAt(0).toUpperCase() || "?"
+                          )}
+                        </div>
+                        <span>{student.fullName}</span>
+                      </div>
+                    </td>
                     <td className="py-3 px-4 text-ink-muted">
                       {student.kelas || "-"}
                     </td>

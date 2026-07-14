@@ -31,6 +31,7 @@ export interface User {
   kelas: string | null;
   jurusanId: string | null;
   studyProgramName: string | null;
+  avatarUrl: string | null;
   approved: boolean;
   createdAt: string;
 }
@@ -173,6 +174,7 @@ export interface AttendanceStats {
   fullName: string;
   kelas: string | null;
   jurusan: string | null;
+  avatarUrl: string | null;
   hadir: number;
   telat: number;
   izin: number;
