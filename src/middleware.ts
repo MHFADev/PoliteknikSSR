@@ -24,10 +24,10 @@ import { NextResponse, type NextRequest } from "next/server";
 import { updateSession } from "@/lib/supabase/middleware";
 
 /** Mapping prefix path dashboard ke role yang diizinkan */
-const ROLE_ROUTES: Record<string, "siswa" | "pembimbing" | "admin"> = {
-  "/dashboard/siswa": "siswa",
-  "/dashboard/pembimbing": "pembimbing",
-  "/dashboard/admin": "admin",
+const ROLE_ROUTES: Record<string, ("siswa" | "pembimbing" | "admin" | "owner")[]> = {
+  "/dashboard/siswa": ["siswa"],
+  "/dashboard/pembimbing": ["pembimbing"],
+  "/dashboard/admin": ["admin", "owner"],
 };
 
 /**
@@ -37,6 +37,7 @@ const ROLE_ROUTES: Record<string, "siswa" | "pembimbing" | "admin"> = {
  */
 function dashboardPathFor(role: string | undefined) {
   switch (role) {
+    case "owner": return "/dashboard/admin";
     case "admin": return "/dashboard/admin";
     case "pembimbing": return "/dashboard/pembimbing";
     default: return "/dashboard/siswa";
@@ -86,7 +87,8 @@ export async function middleware(request: NextRequest) {
         .single();
 
       // Jika role user tidak sesuai dengan prefix route → redirect
-      if (profile?.role !== ROLE_ROUTES[matchedPrefix]) {
+      const allowedRoles = ROLE_ROUTES[matchedPrefix] ?? [];
+      if (!allowedRoles.includes(profile?.role as "siswa" | "pembimbing" | "admin" | "owner")) {
         return NextResponse.redirect(new URL(dashboardPathFor(profile?.role), request.url));
       }
     }

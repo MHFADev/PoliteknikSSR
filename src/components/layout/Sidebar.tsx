@@ -12,7 +12,7 @@ import type { NavItem } from "@/lib/navigation";
 import styles from "@/styles/components/layout/Sidebar.module.css";
 
 interface SidebarProps {
-  role: "siswa" | "pembimbing" | "admin";
+  role: "siswa" | "pembimbing" | "admin" | "owner";
   fullName: string;
   avatarUrl?: string | null;
 }

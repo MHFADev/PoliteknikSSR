@@ -11,7 +11,7 @@ import { MAIN_NAV, MORE_NAV, type NavItem } from "@/lib/navigation";
 import styles from "@/styles/components/layout/MobileNav.module.css";
 
 type Props = {
-  role: "siswa" | "pembimbing" | "admin";
+  role: "siswa" | "pembimbing" | "admin" | "owner";
   fullName: string;
   avatarUrl?: string | null;
 };

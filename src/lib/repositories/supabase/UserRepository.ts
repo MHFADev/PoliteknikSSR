@@ -405,9 +405,9 @@ export class SupabaseUserRepository implements IUserRepository {
     const { data, error } = await supabase.auth.admin.listUsers();
     if (error || !data?.users) return [];
 
-    // Filter user yang belum disetujui (approved !== true)
+    // Filter user yang belum disetujui (approved !== true), kecuali owner
     const pendingIds = data.users
-      .filter((u) => u.user_metadata?.approved !== true)
+      .filter((u) => u.user_metadata?.approved !== true && u.user_metadata?.role !== "owner")
       .map((u) => u.id);
 
     if (pendingIds.length === 0) return [];
@@ -416,7 +416,8 @@ export class SupabaseUserRepository implements IUserRepository {
     const { data: profiles } = await supabase
       .from("profiles")
       .select("id, full_name, role, created_at")
-      .in("id", pendingIds);
+      .in("id", pendingIds)
+      .neq("role", "owner");
 
     // Gabungkan data auth dengan profil
     return pendingIds.map((id) => {

@@ -35,6 +35,20 @@ export const NAV: Record<string, NavItem[]> = {
     { href: "/dashboard/admin/kalender",    label: "Kalender PKL",   icon: CalendarDays },
     { href: "/dashboard/admin/broadcast",   label: "Broadcast",      icon: Megaphone },
     { href: "/dashboard/admin/export",      label: "Ekspor Data",    icon: Download },
+    { href: "/dashboard/admin/profile",     label: "Profil Saya",    icon: UserCircle },
+    { href: "/dashboard/admin/settings",    label: "Pengaturan",     icon: Settings },
+  ],
+  owner: [
+    { href: "/dashboard/admin",            label: "Dashboard",       icon: LayoutDashboard },
+    { href: "/dashboard/admin/absensi",     label: "Rekap Absensi",  icon: FileText },
+    { href: "/dashboard/admin/pengguna",    label: "Kelola Pengguna",icon: Users },
+    { href: "/dashboard/admin/study-programs", label: "Program Studi", icon: GraduationCap },
+    { href: "/dashboard/admin/qr",          label: "Generate QR",    icon: QrCode },
+    { href: "/dashboard/admin/izin",        label: "Data Izin",      icon: FileText },
+    { href: "/dashboard/admin/kegiatan-harian", label: "Data Kegiatan", icon: NotebookPen },
+    { href: "/dashboard/admin/kalender",    label: "Kalender PKL",   icon: CalendarDays },
+    { href: "/dashboard/admin/broadcast",   label: "Broadcast",      icon: Megaphone },
+    { href: "/dashboard/admin/export",      label: "Ekspor Data",    icon: Download },
     { href: "/dashboard/admin/lokasi",      label: "Lokasi GPS",     icon: MapPin },
     { href: "/dashboard/admin/profile",     label: "Profil Saya",    icon: UserCircle },
     { href: "/dashboard/admin/settings",    label: "Pengaturan",     icon: Settings },
@@ -50,10 +64,17 @@ export const MAIN_NAV: Record<string, NavItem[]> = {
     { href: "/dashboard/admin/qr",       label: "QR Code",   icon: QrCode },
     { href: "/dashboard/admin/pengguna", label: "Pengguna",  icon: Users },
   ],
+  owner: [
+    { href: "/dashboard/admin",         label: "Dashboard",  icon: LayoutDashboard },
+    { href: "/dashboard/admin/absensi",  label: "Absensi",   icon: FileText },
+    { href: "/dashboard/admin/qr",       label: "QR Code",   icon: QrCode },
+    { href: "/dashboard/admin/pengguna", label: "Pengguna",  icon: Users },
+  ],
 };
 
 export const MORE_NAV: Record<string, NavItem[]> = {
   siswa: NAV.siswa.slice(4),
   pembimbing: NAV.pembimbing.slice(3),
   admin: NAV.admin.slice(4),
+  owner: NAV.owner.slice(4),
 };

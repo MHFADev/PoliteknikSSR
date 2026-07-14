@@ -269,7 +269,7 @@ export async function unblockUser(
  */
 export async function updateUserRole(
   userId: string,
-  role: "siswa" | "pembimbing" | "admin"
+  role: "siswa" | "pembimbing" | "admin" | "owner"
 ): Promise<{ success: true } | { success: false; message: string }> {
   const result = await Repositories.users().updateUserRole(userId, role);
   if (result.error) return { success: false, message: result.error };

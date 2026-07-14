@@ -35,13 +35,15 @@ export default async function AdminLayout({
     .eq("id", user.id)
     .single();
 
+  const userRole = (profile?.role === "owner" ? "owner" : "admin") as "admin" | "owner";
+
   return (
     <div className="flex min-h-screen bg-white">
       {/* Sidebar desktop — tampil di layar >= 1024px */}
-      <Sidebar role="admin" fullName={profile?.full_name ?? "Admin"} avatarUrl={profile?.avatar_url ?? null} />
+      <Sidebar role={userRole} fullName={profile?.full_name ?? "Admin"} avatarUrl={profile?.avatar_url ?? null} />
 
       {/* MobileNav — header + bottom nav untuk mobile */}
-      <MobileNav role="admin" fullName={profile?.full_name ?? "Admin"} avatarUrl={profile?.avatar_url ?? null} />
+      <MobileNav role={userRole} fullName={profile?.full_name ?? "Admin"} avatarUrl={profile?.avatar_url ?? null} />
 
       {/* Main content area — scrollable, padding responsif */}
       <main className="flex-1 overflow-x-hidden overflow-y-auto p-4 pt-16 sm:p-6 sm:pt-6 lg:p-8 bg-mist-soft max-w-full pb-[72px] lg:pb-8">

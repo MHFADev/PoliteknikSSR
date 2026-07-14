@@ -25,7 +25,7 @@
  */
 
 /** Role user dalam sistem */
-export type UserRole = "siswa" | "pembimbing" | "admin";
+export type UserRole = "siswa" | "pembimbing" | "admin" | "owner";
 /** Status presensi — hanya "hadir" atau "telat" */
 export type AttendanceStatus = "hadir" | "telat";
 /** Jenis izin yang bisa diajukan siswa */

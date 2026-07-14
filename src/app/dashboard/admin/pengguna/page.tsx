@@ -13,6 +13,11 @@ const ROLE_BADGES: Record<
   string,
   { label: string; tone: string; className: string }
 > = {
+  owner: {
+    label: "Owner",
+    tone: "warning",
+    className: "bg-[#FFF7ED] text-[#EA580C] border border-[#FED7AA]",
+  },
   admin: {
     label: "Admin",
     tone: "danger",
@@ -38,6 +43,7 @@ export default async function AdminUsersPage() {
     .select(
       "id, full_name, identity_number, kelas, instansi, role, approved, created_at, jurusan_id, avatar_url, study_programs!left(nama)",
     )
+    .neq("role", "owner")
     .order("created_at", { ascending: false });
 
   const pendingUsers = await getPendingUsers();

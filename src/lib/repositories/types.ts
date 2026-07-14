@@ -9,7 +9,7 @@
 // untuk model data yang dipakai di seluruh aplikasi.
 // ============================================================
 
-export type UserRole = "siswa" | "pembimbing" | "admin";
+export type UserRole = "siswa" | "pembimbing" | "admin" | "owner";
 export type AttendanceStatus = "hadir" | "telat";
 export type LeaveType = "izin" | "sakit" | "cuti";
 export type LeaveStatus = "pending" | "disetujui" | "ditolak";

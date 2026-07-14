@@ -48,7 +48,7 @@ import styles from "@/styles/components/profile/Settings.module.css";
 
 interface SettingsFormProps {
   /** Role user yang menentukan field mana yang ditampilkan */
-  role: "siswa" | "pembimbing" | "admin";
+  role: "siswa" | "pembimbing" | "admin" | "owner";
 }
 
 /**
