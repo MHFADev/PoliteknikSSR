@@ -1,7 +1,7 @@
 import {
   LayoutDashboard, QrCode, FileText, NotebookPen,
   Users, Download, MapPin, CalendarDays, Megaphone,
-  UserCircle, Settings, type LucideIcon,
+  UserCircle, Settings, GraduationCap, type LucideIcon,
 } from "lucide-react";
 
 export type NavItem = { href: string; label: string; icon: LucideIcon };
@@ -28,6 +28,7 @@ export const NAV: Record<string, NavItem[]> = {
     { href: "/dashboard/admin",            label: "Dashboard",       icon: LayoutDashboard },
     { href: "/dashboard/admin/absensi",     label: "Rekap Absensi",  icon: FileText },
     { href: "/dashboard/admin/pengguna",    label: "Kelola Pengguna",icon: Users },
+    { href: "/dashboard/admin/study-programs", label: "Program Studi", icon: GraduationCap },
     { href: "/dashboard/admin/qr",          label: "Generate QR",    icon: QrCode },
     { href: "/dashboard/admin/izin",        label: "Data Izin",      icon: FileText },
     { href: "/dashboard/admin/kegiatan-harian", label: "Data Kegiatan", icon: NotebookPen },

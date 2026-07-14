@@ -28,6 +28,10 @@ export async function register(
     return { error: "Kelas wajib diisi untuk siswa." };
   }
 
+  if (role === "siswa" && kelas && !/^\d+$/.test(kelas.trim())) {
+    return { error: "Kelas hanya boleh berisi angka (contoh: 10, 11, 12)." };
+  }
+
   if (role === "siswa" && !jurusanId) {
     return { error: "Program studi wajib dipilih untuk siswa." };
   }

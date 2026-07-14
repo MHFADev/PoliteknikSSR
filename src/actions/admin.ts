@@ -19,6 +19,7 @@
 import { Repositories } from "@/lib/repositories";
 import type { AttendanceStats } from "@/lib/repositories";
 export type { AttendanceStats };
+import { createAdminClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 import { generatePermanentStudentToken } from "@/lib/qr-token";
 
@@ -103,6 +104,82 @@ export async function ensureStudyProgram(
 ): Promise<{ id: string | null; error?: string }> {
   const result = await Repositories.studyProgram().ensure(nama);
   return { id: result.id ?? null, error: result.error };
+}
+
+/**
+ * getStudyPrograms — Ambil semua program studi
+ * @returns Array program studi
+ */
+export async function getStudyPrograms(): Promise<
+  { id: string; nama: string; kode: string }[]
+> {
+  return Repositories.studyProgram().getAll();
+}
+
+/**
+ * createStudyProgram — Buat program studi baru
+ * @param nama — Nama program studi
+ * @param kode — Kode program studi (opsional, auto jika kosong)
+ * @returns ID program studi atau error
+ */
+export async function createStudyProgram(
+  nama: string,
+  kode?: string
+): Promise<{ id: string | null; error?: string }> {
+  const trimmed = nama.trim();
+  if (!trimmed) return { id: null, error: "Nama program studi tidak boleh kosong." };
+
+  const supabase = createAdminClient();
+
+  // Cek duplikat case-insensitive
+  const { data: existing } = await supabase
+    .from("study_programs")
+    .select("id")
+    .ilike("nama", trimmed)
+    .maybeSingle();
+
+  if (existing) return { id: null, error: "Program studi sudah ada." };
+
+  // Generate kode otomatis jika tidak disediakan
+  const finalKode = kode
+    ? kode.toUpperCase().trim()
+    : trimmed
+        .toUpperCase()
+        .replace(/[^A-Z0-9]/g, "-")
+        .replace(/-+/g, "-")
+        .replace(/^-|-$/g, "")
+        .slice(0, 10);
+
+  const { data, error } = await supabase
+    .from("study_programs")
+    .insert({ nama: trimmed, kode: finalKode })
+    .select("id")
+    .single();
+
+  if (error) return { id: null, error: error.message };
+
+  revalidatePath("/dashboard/admin/study-programs");
+  return { id: data.id };
+}
+
+/**
+ * deleteStudyProgram — Hapus program studi
+ * @param id — UUID program studi
+ */
+export async function deleteStudyProgram(
+  id: string
+): Promise<{ success: boolean; error?: string }> {
+  const supabase = createAdminClient();
+
+  const { error } = await supabase
+    .from("study_programs")
+    .delete()
+    .eq("id", id);
+
+  if (error) return { success: false, error: error.message };
+
+  revalidatePath("/dashboard/admin/study-programs");
+  return { success: true };
 }
 
 /**

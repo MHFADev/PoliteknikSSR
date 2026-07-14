@@ -1,15 +1,33 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Loader2, MapPin, GraduationCap, ShieldCheck, Mail, Lock, ArrowRight } from "lucide-react";
+import {
+  Loader2,
+  MapPin,
+  ShieldCheck,
+  Mail,
+  Lock,
+  ArrowRight,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
 import { signInWithPassword } from "./actions";
 import { checkLoginLocation, hasLocationsConfigured } from "@/actions/location";
 import { PasswordEye } from "@/components/ui/PasswordEye";
 import styles from "@/styles/pages/Login.module.css";
+
+const GPS_ENABLED = false;
+
+const HERO_SLIDES = [
+  { src: "/hero/1.jpg", alt: "Kampus Politeknik SSR" },
+  { src: "/hero/2.jpg", alt: "Kegiatan PKL Siswa" },
+  { src: "/hero/3.jpg", alt: "Laboratorium Komputer" },
+];
+/* Ganti ekstensi sesuai format gambar: .jpg, .png, .webp, dll */
 
 function getCurrentPosition(): Promise<GeolocationPosition> {
   return new Promise((resolve, reject) => {
@@ -58,6 +76,36 @@ export default function LoginPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [gpsStep, setGpsStep] = useState(false);
 
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [imageErrors, setImageErrors] = useState<Record<number, boolean>>({});
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % HERO_SLIDES.length);
+    }, 5000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const goToSlide = useCallback((idx: number) => {
+    setCurrentSlide(idx);
+  }, []);
+
+  const prevSlide = useCallback(() => {
+    setCurrentSlide((prev) =>
+      prev === 0 ? HERO_SLIDES.length - 1 : prev - 1
+    );
+  }, []);
+
+  const nextSlide = useCallback(() => {
+    setCurrentSlide((prev) => (prev + 1) % HERO_SLIDES.length);
+  }, []);
+
+  function handleImageError(idx: number) {
+    setImageErrors((prev) => ({ ...prev, [idx]: true }));
+  }
+
+  const hasAnyImage = HERO_SLIDES.some((_, i) => !imageErrors[i]); /* unused — keep for carousel reactivation */
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
@@ -70,214 +118,280 @@ export default function LoginPage() {
       return;
     }
 
-    const hasLocations = await hasLocationsConfigured();
-    if (!hasLocations) {
-      router.replace("/");
-      router.refresh();
-      return;
-    }
+    if (GPS_ENABLED) {
+      const hasLocations = await hasLocationsConfigured();
+      if (!hasLocations) {
+        router.replace("/");
+        router.refresh();
+        return;
+      }
 
-    setGpsStep(true);
+      setGpsStep(true);
 
-    // Cek apakah lokasi sudah pernah ditolak (browser remember decision)
-    const locState = await getLocationPermissionState();
-    if (locState === "denied") {
-      setError(
-        "Izin lokasi ditolak permanen. Buka pengaturan browser > izinkan akses lokasi, lalu reload.",
-      );
-      setIsSubmitting(false);
-      setGpsStep(false);
-      return;
-    }
-
-    // getCurrentPosition akan trigger browser prompt (jika belum pernah di-allow/deny)
-    try {
-      const position = await getCurrentPosition();
-      const { latitude, longitude } = position.coords;
-      const locationResult = await checkLoginLocation(latitude, longitude);
-      if (!locationResult.allowed) {
-        setError(locationResult.error || "Akses ditolak.");
+      const locState = await getLocationPermissionState();
+      if (locState === "denied") {
+        setError(
+          "Izin lokasi ditolak permanen. Buka pengaturan browser > izinkan akses lokasi, lalu reload.",
+        );
         setIsSubmitting(false);
         setGpsStep(false);
         return;
       }
-    } catch (error: any) {
-      const code = error?.code;
-      let errMsg: string;
 
-      if (code === 1) {
-        const currentLocState = await getLocationPermissionState();
-        if (currentLocState === "denied") {
+      try {
+        const position = await getCurrentPosition();
+        const { latitude, longitude } = position.coords;
+        const locationResult = await checkLoginLocation(latitude, longitude);
+        if (!locationResult.allowed) {
+          setError(locationResult.error || "Akses ditolak.");
+          setIsSubmitting(false);
+          setGpsStep(false);
+          return;
+        }
+      } catch (error: any) {
+        const code = error?.code;
+        let errMsg: string;
+
+        if (code === 1) {
+          const currentLocState = await getLocationPermissionState();
+          if (currentLocState === "denied") {
+            errMsg =
+              "Izin lokasi ditolak permanen. Buka pengaturan browser > izinkan akses lokasi, lalu reload.";
+          } else {
+            errMsg =
+              "Izin lokasi ditolak atau diblokir browser (HTTP). Jika Anda mengakses via IP local (bukan localhost), browser memblokir sensor lokasi. Silakan gunakan HTTPS atau akses via http://localhost:3000.";
+          }
+        } else if (code === 2) {
           errMsg =
-            "Izin lokasi ditolak permanen. Buka pengaturan browser > izinkan akses lokasi, lalu reload.";
+            "Tidak dapat menemukan lokasi. Pastikan GPS dan koneksi internet aktif.";
+        } else if (code === 3) {
+          errMsg =
+            "Waktu pencarian lokasi habis. Pastikan GPS aktif, lalu coba lagi.";
         } else {
           errMsg =
-            "Izin lokasi ditolak atau diblokir browser (HTTP). Jika Anda mengakses via IP local (bukan localhost), browser memblokir sensor lokasi. Silakan gunakan HTTPS atau akses via http://localhost:3000.";
+            "Gagal mendapatkan lokasi. Pastikan menggunakan HTTPS atau localhost, lalu izinkan akses lokasi.";
         }
-      } else if (code === 2) {
-        errMsg =
-          "Tidak dapat menemukan lokasi. Pastikan GPS dan koneksi internet aktif.";
-      } else if (code === 3) {
-        errMsg =
-          "Waktu pencarian lokasi habis. Pastikan GPS aktif, lalu coba lagi.";
-      } else {
-        errMsg =
-          "Gagal mendapatkan lokasi. Pastikan menggunakan HTTPS atau localhost, lalu izinkan akses lokasi.";
-      }
 
-      setError(errMsg);
-      setIsSubmitting(false);
-      setGpsStep(false);
-      return;
+        setError(errMsg);
+        setIsSubmitting(false);
+        setGpsStep(false);
+        return;
+      }
     }
 
     router.replace("/");
     router.refresh();
   }
 
-  const formContent = (
-    <div className={styles.formContainer}>
-      <div className={styles.formHeader}>
-        <div className={styles.logo}>
-          <Image src="/logo.png" alt="Politeknik SSR" width={180} height={54} className={styles.formLogo} priority />
-        </div>
-        <h1 className={styles.formTitle}>Selamat Datang</h1>
-        <p className={styles.formSubtitle}>
-          {gpsStep
-            ? "Memverifikasi lokasi Anda..."
-            : "Silakan masuk ke akun anda"}
-        </p>
-      </div>
-
-      <form onSubmit={handleSubmit} className={styles.form}>
-        <div className={styles.field}>
-          <label className={styles.label}>Username</label>
-          <div className={styles.inputWrapper}>
-            <Mail className={styles.inputIcon} />
-            <input
-              type="text"
-              required
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              placeholder="nama@sekolah.ac.id"
-              disabled={gpsStep}
-              className={`${styles.input} ${styles.inputWithIcon} ${error ? styles.inputError : styles.inputNormal} ${gpsStep ? styles.inputDisabled : ""}`}
-            />
-          </div>
-        </div>
-
-        <div className={styles.field}>
-          <label className={styles.label}>Kata Sandi</label>
-          <div className={styles.inputWrapper}>
-            <Lock className={styles.inputIcon} />
-            <input
-              type={showPassword ? "text" : "password"}
-              required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="••••••••"
-              disabled={gpsStep}
-              className={`${styles.input} ${styles.inputWithIcon} ${styles.inputPassword} ${error ? styles.inputError : styles.inputNormal} ${gpsStep ? styles.inputDisabled : ""}`}
-            />
-            <button
-              type="button"
-              onClick={() => setShowPassword(!showPassword)}
-              disabled={gpsStep}
-              className={styles.toggleBtn}
-            >
-              <PasswordEye show={showPassword} />
-            </button>
-          </div>
-        </div>
-
-        {error && (
-          <motion.p
-            initial={{ opacity: 0, x: -4 }}
-            animate={{ opacity: 1, x: 0 }}
-            className={styles.errorBox}
-          >
-            <span className="text-lg">!</span>
-            {error}
-          </motion.p>
-        )}
-
-        {gpsStep && (
-          <p className={styles.gpsInfo}>
-            <MapPin className={styles.gpsIcon} />
-            Browser akan meminta izin lokasi. Izinkan untuk verifikasi area
-            kampus.
-          </p>
-        )}
-
-        <button type="submit" className={styles.submitBtn} disabled={isSubmitting || gpsStep}>
-          {isSubmitting ? (
-            <Loader2 className={styles.btnSpinner} />
-          ) : (
-            <ArrowRight className={styles.btnIcon} />
-          )}
-          <span>{gpsStep ? "Memverifikasi Lokasi..." : "Login"}</span>
-        </button>
-      </form>
-
-      <p className={styles.footerText}>
-        Belum punya akun?{" "}
-        <Link href="/register" className={styles.footerLink}>
-          Daftar di sini
-        </Link>
-      </p>
-      <p className={styles.footerSub}>
-        Hubungi Admin Jika Belum Memiliki Akses.
-      </p>
-    </div>
-  );
-
   return (
     <main className={styles.main}>
-      {/* Desktop Hero Section */}
+      {/* ─── Hero Panel (Left) ──────────────────────────── */}
       <div className={styles.heroSection}>
-        <div className={styles.heroOverlay} />
-        <div className={styles.heroContent}>
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-          >
-            <div className={styles.heroBadge}>
-              <GraduationCap className="w-5 h-5" />
-              <span>Politeknik SSR</span>
+        {/* Image Carousel */}
+        <div className={styles.heroCarousel}>
+          {HERO_SLIDES.map((slide, idx) => (
+            <div
+              key={idx}
+              className={`${styles.heroSlide} ${idx === currentSlide ? styles.heroSlideActive : ""}`}
+            >
+              {!imageErrors[idx] ? (
+                <Image
+                  src={slide.src}
+                  alt={slide.alt}
+                  fill
+                  className={styles.heroSlideImg}
+                  onError={() => handleImageError(idx)}
+                  priority={idx === 0}
+                  sizes="48vw"
+                />
+              ) : (
+                <div className={styles.heroSlideFallback} />
+              )}
             </div>
-            <h2 className={styles.heroTitle}>Sistem Informasi Absensi PKL</h2>
-            <p className={styles.heroDesc}>
-              Platform digital untuk memantau kehadiran, kegiatan harian, dan
-              pengajuan izin siswa PKL secara real-time.
-            </p>
-            <div className={styles.heroFeatures}>
-              <div className={styles.heroFeature}>
-                <ShieldCheck className="w-5 h-5" />
-                <span>Verifikasi Lokasi GPS</span>
-              </div>
-              <div className={styles.heroFeature}>
-                <ShieldCheck className="w-5 h-5" />
-                <span>Presensi via QR Code</span>
-              </div>
-              <div className={styles.heroFeature}>
-                <ShieldCheck className="w-5 h-5" />
-                <span>Laporan Real-time</span>
-              </div>
-            </div>
-          </motion.div>
+          ))}
+          <div className={styles.heroCarouselOverlay} />
+
+          {/* Carousel Controls */}
+          <div className={styles.heroCarouselControls}>
+            <button
+              type="button"
+              onClick={prevSlide}
+              className={styles.heroCarouselBtn}
+              aria-label="Sebelumnya"
+            >
+              <ChevronLeft />
+            </button>
+            <button
+              type="button"
+              onClick={nextSlide}
+              className={styles.heroCarouselBtn}
+              aria-label="Selanjutnya"
+            >
+              <ChevronRight />
+            </button>
+          </div>
+
+          {/* Dots */}
+          <div className={styles.heroDots}>
+            {HERO_SLIDES.map((_, idx) => (
+              <button
+                key={idx}
+                type="button"
+                onClick={() => goToSlide(idx)}
+                className={`${styles.heroDot} ${idx === currentSlide ? styles.heroDotActive : ""}`}
+                aria-label={`Slide ${idx + 1}`}
+              />
+            ))}
+          </div>
         </div>
+
+        {/* Content over carousel */}
+        <div className={styles.heroContent}>
+          <div className={styles.heroLogo}>
+            <Image
+              src="/logo.png"
+              alt="Politeknik SSR"
+              width={140}
+              height={44}
+              priority
+            />
+          </div>
+        </div>
+        <div className={styles.heroBottom}>
+          <h2 className={styles.heroTitle}>
+            Sistem Informasi<br />Absensi PKL
+          </h2>
+          <p className={styles.heroDesc}>
+            Platform digital untuk memantau kehadiran, kegiatan harian, dan
+            pengajuan izin siswa PKL secara real-time.
+          </p>
+          <div className={styles.heroFeatures}>
+            <div className={styles.heroFeature}>
+              <ShieldCheck />
+              <span>Presensi via QR Code</span>
+            </div>
+            <div className={styles.heroFeature}>
+              <ShieldCheck />
+              <span>Laporan Real-time</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Glass Divider */}
+        <div className={styles.glassDivider} />
       </div>
 
-      {/* Form Section */}
+      {/* ─── Form Panel (Right) ─────────────────────────── */}
       <div className={styles.formSection}>
         <motion.div
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.4, ease: [0.34, 1.56, 0.64, 1] }}
-          className={styles.glassCard}
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
+          className={styles.formCard}
         >
-          {formContent}
+          <div className={styles.formContainer}>
+            {/* Mobile logo */}
+            <div className={styles.formLogoMobile}>
+              <Image
+                src="/logo.png"
+                alt="Politeknik SSR"
+                width={140}
+                height={44}
+                priority
+              />
+            </div>
+
+            <div className={styles.formHeader}>
+              <h1 className={styles.formTitle}>Selamat Datang</h1>
+              <p className={styles.formSubtitle}>
+                Silakan masuk ke akun anda
+              </p>
+            </div>
+
+            <form onSubmit={handleSubmit} className={styles.form}>
+              <div className={styles.field}>
+                <label className={styles.label}>Username</label>
+                <div className={styles.inputWrapper}>
+                  <Mail className={styles.inputIcon} />
+                  <input
+                    type="text"
+                    required
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    placeholder="nama@sekolah.ac.id"
+                    className={`${styles.input} ${styles.inputWithIcon} ${error ? styles.inputError : styles.inputNormal}`}
+                  />
+                </div>
+              </div>
+
+              <div className={styles.field}>
+                <label className={styles.label}>Kata Sandi</label>
+                <div className={styles.inputWrapper}>
+                  <Lock className={styles.inputIcon} />
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    required
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="Masukkan kata sandi"
+                    className={`${styles.input} ${styles.inputWithIcon} ${styles.inputPassword} ${error ? styles.inputError : styles.inputNormal}`}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className={styles.toggleBtn}
+                  >
+                    <PasswordEye show={showPassword} />
+                  </button>
+                </div>
+              </div>
+
+              <a href="#" className={styles.forgotLink}>
+                Lupa kata sandi?
+              </a>
+
+              {error && (
+                <motion.p
+                  initial={{ opacity: 0, x: -4 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  className={styles.errorBox}
+                >
+                  {error}
+                </motion.p>
+              )}
+
+              {GPS_ENABLED && gpsStep && (
+                <p className={styles.gpsInfo}>
+                  <MapPin className={styles.gpsIcon} />
+                  Browser akan meminta izin lokasi. Izinkan untuk verifikasi
+                  area kampus.
+                </p>
+              )}
+
+              <button
+                type="submit"
+                className={styles.submitBtn}
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? (
+                  <Loader2 className={styles.btnSpinner} />
+                ) : (
+                  <ArrowRight className={styles.btnIcon} />
+                )}
+                <span>Masuk</span>
+              </button>
+            </form>
+
+            <p className={styles.footerText}>
+              Belum punya akun?{" "}
+              <Link href="/register" className={styles.footerLink}>
+                Daftar di sini
+              </Link>
+            </p>
+            <p className={styles.footerSub}>
+              Hubungi Admin Jika Belum Memiliki Akses.
+            </p>
+          </div>
         </motion.div>
       </div>
     </main>
