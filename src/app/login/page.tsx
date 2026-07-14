@@ -5,10 +5,9 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Loader2, MapPin, GraduationCap, ShieldCheck } from "lucide-react";
+import { Loader2, MapPin, GraduationCap, ShieldCheck, Mail, Lock, ArrowRight } from "lucide-react";
 import { signInWithPassword } from "./actions";
 import { checkLoginLocation, hasLocationsConfigured } from "@/actions/location";
-import { Button } from "@/components/ui/Button";
 import { PasswordEye } from "@/components/ui/PasswordEye";
 import styles from "@/styles/pages/Login.module.css";
 
@@ -123,7 +122,9 @@ export default function LoginPage() {
   const formContent = (
     <div className={styles.formContainer}>
       <div className={styles.formHeader}>
-        <Image src="/logo.png" alt="Politeknik SSR" width={180} height={54} className={styles.formLogo} priority />
+        <div className={styles.logoChip}>
+          <Image src="/logo.png" alt="Politeknik SSR" width={180} height={54} className={styles.formLogo} priority />
+        </div>
         <h1 className={styles.formTitle}>Selamat Datang</h1>
         <p className={styles.formSubtitle}>
           {gpsStep ? "Memverifikasi lokasi Anda..." : "Masuk ke akun Anda"}
@@ -133,20 +134,24 @@ export default function LoginPage() {
       <form onSubmit={handleSubmit} className={styles.form}>
         <div className={styles.field}>
           <label className={styles.label}>Username</label>
-          <input
-            type="text"
-            required
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            placeholder="nama@sekolah.ac.id"
-            disabled={gpsStep}
-            className={`${styles.input} ${error ? styles.inputError : styles.inputNormal} ${gpsStep ? styles.inputDisabled : ""}`}
-          />
+          <div className={styles.inputWrapper}>
+            <Mail className={styles.inputIcon} />
+            <input
+              type="text"
+              required
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              placeholder="nama@sekolah.ac.id"
+              disabled={gpsStep}
+              className={`${styles.input} ${styles.inputWithIcon} ${error ? styles.inputError : styles.inputNormal} ${gpsStep ? styles.inputDisabled : ""}`}
+            />
+          </div>
         </div>
 
         <div className={styles.field}>
           <label className={styles.label}>Kata Sandi</label>
           <div className={styles.inputWrapper}>
+            <Lock className={styles.inputIcon} />
             <input
               type={showPassword ? "text" : "password"}
               required
@@ -154,7 +159,7 @@ export default function LoginPage() {
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
               disabled={gpsStep}
-              className={`${styles.input} ${styles.inputPassword} ${error ? styles.inputError : styles.inputNormal} ${gpsStep ? styles.inputDisabled : ""}`}
+              className={`${styles.input} ${styles.inputWithIcon} ${styles.inputPassword} ${error ? styles.inputError : styles.inputNormal} ${gpsStep ? styles.inputDisabled : ""}`}
             />
             <button type="button" onClick={() => setShowPassword(!showPassword)} disabled={gpsStep} className={styles.toggleBtn}>
               <PasswordEye show={showPassword} />
@@ -176,10 +181,14 @@ export default function LoginPage() {
           </p>
         )}
 
-        <Button type="submit" className="w-full" disabled={isSubmitting}>
-          {isSubmitting && <Loader2 className="h-5 w-5 animate-spin" />}
-          {gpsStep ? "Memverifikasi Lokasi..." : "Login"}
-        </Button>
+        <button type="submit" className={styles.submitBtn} disabled={isSubmitting || gpsStep}>
+          {isSubmitting ? (
+            <Loader2 className={styles.btnSpinner} />
+          ) : (
+            <ArrowRight className={styles.btnIcon} />
+          )}
+          <span>{gpsStep ? "Memverifikasi Lokasi..." : "Login"}</span>
+        </button>
       </form>
 
       <p className={styles.footerText}>

@@ -433,10 +433,8 @@ export class SupabaseUserRepository implements IUserRepository {
   }
 
   /**
-   * approveUser — Setujui akun user (ubah metadata jadi approved: true)
-   *
-   * @param userId - UUID user yang akan disetujui
-   * @returns Error message jika gagal, atau object kosong jika sukses
+   * approveUser — Setujui akun user
+   * Update auth metadata + profiles.approved
    */
   async approveUser(userId: string): Promise<{ error?: string }> {
     const supabase = this.getAdminClient();
@@ -444,38 +442,47 @@ export class SupabaseUserRepository implements IUserRepository {
     const { error } = await supabase.auth.admin.updateUserById(userId, {
       user_metadata: { approved: true },
     });
-
     if (error) return { error: "Gagal menyetujui user: " + error.message };
+
+    // Sync ke profiles table juga
+    await supabase.from("profiles").update({ approved: true }).eq("id", userId);
     return {};
   }
 
   /**
-   * rejectUser — Tolak akun user (hapus dari Auth)
-   *
-   * @param userId - UUID user yang akan ditolak
-   * @returns Error message jika gagal, atau object kosong jika sukses
+   * rejectUser — Tolak akun user (hapus dari Auth + profiles)
    */
   async rejectUser(userId: string): Promise<{ error?: string }> {
     const supabase = this.getAdminClient();
 
-    const { error } = await supabase.auth.admin.deleteUser(userId, true);
+    // Hapus dari profiles dulu (agar foreign key tidak bermasalah)
+    await supabase.from("profiles").delete().eq("id", userId);
 
+    const { error } = await supabase.auth.admin.deleteUser(userId, true);
     if (error) return { error: "Gagal menolak user: " + error.message };
     return {};
   }
 
   /**
-   * deleteUser — Hapus akun user (admin)
+   * deleteUser — Hapus akun user (auth + profiles)
    */
   async deleteUser(userId: string): Promise<{ error?: string }> {
     const supabase = this.getAdminClient();
+
+    // Hapus dari profiles dulu
+    const { error: profileError } = await supabase.from("profiles").delete().eq("id", userId);
+    if (profileError) {
+      console.error("[deleteUser] Gagal hapus profile:", profileError.message);
+    }
+
+    // Hapus dari auth.users
     const { error } = await supabase.auth.admin.deleteUser(userId, true);
     if (error) return { error: "Gagal menghapus user: " + error.message };
     return {};
   }
 
   /**
-   * blockUser — Blokir user (set approved = false di metadata)
+   * blockUser — Blokir user (set approved = false di metadata + profiles)
    */
   async blockUser(userId: string): Promise<{ error?: string }> {
     const supabase = this.getAdminClient();
@@ -483,11 +490,14 @@ export class SupabaseUserRepository implements IUserRepository {
       user_metadata: { approved: false },
     });
     if (error) return { error: "Gagal memblokir user: " + error.message };
+
+    // Sync ke profiles
+    await supabase.from("profiles").update({ approved: false }).eq("id", userId);
     return {};
   }
 
   /**
-   * unblockUser — Buka blokir user (set approved = true di metadata)
+   * unblockUser — Buka blokir user (set approved = true di metadata + profiles)
    */
   async unblockUser(userId: string): Promise<{ error?: string }> {
     const supabase = this.getAdminClient();
@@ -495,6 +505,9 @@ export class SupabaseUserRepository implements IUserRepository {
       user_metadata: { approved: true },
     });
     if (error) return { error: "Gagal membuka blokir: " + error.message };
+
+    // Sync ke profiles
+    await supabase.from("profiles").update({ approved: true }).eq("id", userId);
     return {};
   }
 
