@@ -10,6 +10,11 @@ import {
   UserCog,
   CheckCircle,
   ShieldCheck,
+  User,
+  Mail,
+  Hash,
+  Lock,
+  ArrowRight,
 } from "lucide-react";
 import { register, getStudyPrograms } from "./actions";
 import { validateEmail } from "@/lib/email-validation";
@@ -171,14 +176,16 @@ export default function RegisterPage() {
   const formContent = (
     <div className={styles.formContainer}>
       <div className={styles.formHeader}>
-        <Image
-          src="/logo.png"
-          alt="Politeknik SSR"
-          width={180}
-          height={54}
-          className={styles.formLogo}
-          priority
-        />
+        <div className={styles.logoChip}>
+          <Image
+            src="/logo.png"
+            alt="Politeknik SSR"
+            width={180}
+            height={54}
+            className={styles.formLogo}
+            priority
+          />
+        </div>
         <h1 className={styles.formTitle}>Buat Akun Baru</h1>
         <p className={styles.formSubtitle}>
           Daftar untuk mengakses Sistem Absensi PKL Politeknik SSR
@@ -190,15 +197,18 @@ export default function RegisterPage() {
           <label className={styles.label} htmlFor="fullName">
             Nama Lengkap
           </label>
-          <input
-            id="fullName"
-            type="text"
-            required
-            value={fullName}
-            onChange={(e) => setFullName(e.target.value)}
-            placeholder="Masukkan nama lengkap Anda"
-            className={`${styles.input} ${fieldErrors.fullName ? styles.inputError : styles.inputNormal}`}
-          />
+          <div className={styles.inputWrapper}>
+            <User className={styles.inputIcon} />
+            <input
+              id="fullName"
+              type="text"
+              required
+              value={fullName}
+              onChange={(e) => setFullName(e.target.value)}
+              placeholder="Masukkan nama lengkap Anda"
+              className={`${styles.input} ${styles.inputWithIcon} ${fieldErrors.fullName ? styles.inputError : styles.inputNormal}`}
+            />
+          </div>
           {fieldErrors.fullName && (
             <span className={styles.fieldError}>{fieldErrors.fullName}</span>
           )}
@@ -209,15 +219,18 @@ export default function RegisterPage() {
             <label className={styles.label} htmlFor="email">
               Email
             </label>
-            <input
-              id="email"
-              type="email"
-              required
-              value={email}
-              onChange={(e) => handleEmailChange(e.target.value)}
-              placeholder="nama@gmail.com"
-              className={`${styles.input} ${fieldErrors.email ? styles.inputError : styles.inputNormal}`}
-            />
+            <div className={styles.inputWrapper}>
+              <Mail className={styles.inputIcon} />
+              <input
+                id="email"
+                type="email"
+                required
+                value={email}
+                onChange={(e) => handleEmailChange(e.target.value)}
+                placeholder="nama@gmail.com"
+                className={`${styles.input} ${styles.inputWithIcon} ${fieldErrors.email ? styles.inputError : styles.inputNormal}`}
+              />
+            </div>
             {emailWarning && (
               <span className={styles.emailWarning}>{emailWarning}</span>
             )}
@@ -230,19 +243,22 @@ export default function RegisterPage() {
             <label className={styles.label} htmlFor="identityNumber">
               {role === "siswa" ? "NISN" : "NIP / NIDN"}
             </label>
-            <input
-              id="identityNumber"
-              type="text"
-              required
-              value={identityNumber}
-              onChange={(e) => setIdentityNumber(e.target.value)}
-              placeholder={
-                role === "siswa"
-                  ? "Nomor Induk Siswa Nasional"
-                  : "Nomor Induk Pegawai"
-              }
-              className={`${styles.input} ${fieldErrors.identityNumber ? styles.inputError : styles.inputNormal}`}
-            />
+            <div className={styles.inputWrapper}>
+              <Hash className={styles.inputIcon} />
+              <input
+                id="identityNumber"
+                type="text"
+                required
+                value={identityNumber}
+                onChange={(e) => setIdentityNumber(e.target.value)}
+                placeholder={
+                  role === "siswa"
+                    ? "Nomor Induk Siswa Nasional"
+                    : "Nomor Induk Pegawai"
+                }
+                className={`${styles.input} ${styles.inputWithIcon} ${fieldErrors.identityNumber ? styles.inputError : styles.inputNormal}`}
+              />
+            </div>
             {fieldErrors.identityNumber && (
               <span className={styles.fieldError}>
                 {fieldErrors.identityNumber}
@@ -262,16 +278,19 @@ export default function RegisterPage() {
               <label className={styles.label} htmlFor="kelas">
                 Kelas
               </label>
-              <input
-                id="kelas"
-                type="text"
-                inputMode="numeric"
-                required
-                value={kelas}
-                onChange={(e) => setKelas(e.target.value.replace(/\D/g, ""))}
-                placeholder="Contoh: 10"
-                className={`${styles.input} ${fieldErrors.kelas ? styles.inputError : styles.inputNormal}`}
-              />
+              <div className={styles.inputWrapper}>
+                <Hash className={styles.inputIcon} />
+                <input
+                  id="kelas"
+                  type="text"
+                  inputMode="numeric"
+                  required
+                  value={kelas}
+                  onChange={(e) => setKelas(e.target.value.replace(/\D/g, ""))}
+                  placeholder="Contoh: 10"
+                  className={`${styles.input} ${styles.inputWithIcon} ${fieldErrors.kelas ? styles.inputError : styles.inputNormal}`}
+                />
+              </div>
               {fieldErrors.kelas && (
                 <span className={styles.fieldError}>{fieldErrors.kelas}</span>
               )}
@@ -337,6 +356,7 @@ export default function RegisterPage() {
               Kata Sandi
             </label>
             <div className={styles.inputWrapper}>
+              <Lock className={styles.inputIcon} />
               <input
                 id="password"
                 type={showPassword ? "text" : "password"}
@@ -344,7 +364,7 @@ export default function RegisterPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Min. 6 karakter"
-                className={`${styles.input} ${styles.inputPassword} ${fieldErrors.password ? styles.inputError : styles.inputNormal}`}
+                className={`${styles.input} ${styles.inputWithIcon} ${styles.inputPassword} ${fieldErrors.password ? styles.inputError : styles.inputNormal}`}
               />
               <button
                 type="button"
@@ -364,6 +384,7 @@ export default function RegisterPage() {
               Konfirmasi
             </label>
             <div className={styles.inputWrapper}>
+              <Lock className={styles.inputIcon} />
               <input
                 id="confirmPassword"
                 type={showConfirmPassword ? "text" : "password"}
@@ -371,7 +392,7 @@ export default function RegisterPage() {
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 placeholder="Ulangi sandi"
-                className={`${styles.input} ${styles.inputPassword} ${fieldErrors.confirmPassword ? styles.inputError : styles.inputNormal}`}
+                className={`${styles.input} ${styles.inputWithIcon} ${styles.inputPassword} ${fieldErrors.confirmPassword ? styles.inputError : styles.inputNormal}`}
               />
               <button
                 type="button"
@@ -437,8 +458,12 @@ export default function RegisterPage() {
         )}
 
         <button type="submit" disabled={loading} className={styles.submitBtn}>
-          {loading && <Loader2 className="h-5 w-5 animate-spin" />}
-          {loading ? "Mendaftarkan..." : "Daftar"}
+          {loading ? (
+            <Loader2 className={styles.btnSpinner} />
+          ) : (
+            <ArrowRight className={styles.btnIcon} />
+          )}
+          <span>{loading ? "Mendaftarkan..." : "Daftar"}</span>
         </button>
       </form>
 
@@ -448,6 +473,9 @@ export default function RegisterPage() {
           <Link href="/login" className={styles.footerLink}>
             Masuk di sini
           </Link>
+        </p>
+        <p className={styles.footerSub}>
+          Hubungi Admin Jika Belum Memiliki Akses.
         </p>
       </div>
     </div>

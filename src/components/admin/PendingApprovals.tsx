@@ -60,6 +60,7 @@ export function PendingApprovals({ pendingUsers }: { pendingUsers: PendingUser[]
 
     setSubmittingId(null);
     router.refresh();
+    setTimeout(() => window.location.reload(), 300);
   }
 
   /**
