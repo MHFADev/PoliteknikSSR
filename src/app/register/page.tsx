@@ -176,7 +176,7 @@ export default function RegisterPage() {
   const formContent = (
     <div className={styles.formContainer}>
       <div className={styles.formHeader}>
-        <div className={styles.logoChip}>
+        <div className={styles.logo}>
           <Image
             src="/logo.png"
             alt="Politeknik SSR"

@@ -138,7 +138,7 @@ export default function LoginPage() {
   const formContent = (
     <div className={styles.formContainer}>
       <div className={styles.formHeader}>
-        <div className={styles.logoChip}>
+        <div className={styles.logo}>
           <Image src="/logo.png" alt="Politeknik SSR" width={180} height={54} className={styles.formLogo} priority />
         </div>
         <h1 className={styles.formTitle}>Selamat Datang</h1>
