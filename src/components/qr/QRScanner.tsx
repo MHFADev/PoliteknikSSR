@@ -3,7 +3,15 @@
 import { useEffect, useRef, useState } from "react";
 import { Html5Qrcode } from "html5-qrcode";
 import { motion, AnimatePresence } from "framer-motion";
-import { CheckCircle2, XCircle, CameraOff, Camera, RefreshCw, Smartphone, ShieldCheck } from "lucide-react";
+import {
+  CheckCircle2,
+  XCircle,
+  CameraOff,
+  Camera,
+  RefreshCw,
+  Smartphone,
+  ShieldCheck,
+} from "lucide-react";
 import { submitAttendance } from "@/actions/attendance";
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
@@ -11,7 +19,13 @@ import styles from "@/styles/components/qr/QRScanner.module.css";
 
 const SCANNER_ELEMENT_ID = "qr-reader-viewport";
 
-type ScanState = "idle" | "requesting" | "scanning" | "processing" | "success" | "error";
+type ScanState =
+  | "idle"
+  | "requesting"
+  | "scanning"
+  | "processing"
+  | "success"
+  | "error";
 
 /**
  * QRScanner — Komponen scan QR presensi.
@@ -62,8 +76,15 @@ export function QRScanner() {
    */
   async function requestCameraPermission(): Promise<boolean> {
     try {
-      if (typeof window === "undefined" || !navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-        throw { name: "InsecureContextError", message: "Browser memblokir kamera di HTTP non-localhost" };
+      if (
+        typeof window === "undefined" ||
+        !navigator.mediaDevices ||
+        !navigator.mediaDevices.getUserMedia
+      ) {
+        throw {
+          name: "InsecureContextError",
+          message: "Browser memblokir kamera di HTTP non-localhost",
+        };
       }
 
       const constraints: MediaStreamConstraints = {
@@ -93,7 +114,7 @@ export function QRScanner() {
 
     if (name === "InsecureContextError") {
       setMessage(
-        "Akses kamera diblokir (HTTP). Browser hanya mengizinkan kamera di HTTPS atau localhost. Untuk testing via IP lokal (HP), silakan gunakan HTTPS atau atur flag browser chrome://flags/#unsafely-treat-insecure-origin-as-secure."
+        "Akses kamera diblokir (HTTP). Browser hanya mengizinkan kamera di HTTPS atau localhost. Untuk testing via IP lokal (HP), silakan gunakan HTTPS atau atur flag browser chrome://flags/#unsafely-treat-insecure-origin-as-secure.",
       );
     } else if (
       name === "NotAllowedError" ||
@@ -103,18 +124,23 @@ export function QRScanner() {
     ) {
       if (isIOS) {
         setMessage(
-          "Izin kamera ditolak. Di iOS Safari: buka Pengaturan > Safari > Kamera > pilih Izinkan, lalu kembali ke aplikasi dan coba lagi."
+          "Izin kamera ditolak. Di iOS Safari: buka Pengaturan > Safari > Kamera > pilih Izinkan, lalu kembali ke aplikasi dan coba lagi.",
         );
       } else {
         setMessage(
-          "Izin kamera ditolak. Tap ikon kamera di address bar browser, pilih Izinkan, lalu refresh dan coba lagi."
+          "Izin kamera ditolak. Tap ikon kamera di address bar browser, pilih Izinkan, lalu refresh dan coba lagi.",
         );
       }
     } else if (name === "NotFoundError" || name === "DevicesNotFoundError") {
       setMessage("Kamera tidak ditemukan di perangkat ini.");
     } else if (name === "NotReadableError" || name === "TrackStartError") {
-      setMessage("Kamera sedang dipakai aplikasi lain. Tutup aplikasi kamera lain, lalu coba lagi.");
-    } else if (name === "OverconstrainedError" || name === "ConstraintNotSatisfiedError") {
+      setMessage(
+        "Kamera sedang dipakai aplikasi lain. Tutup aplikasi kamera lain, lalu coba lagi.",
+      );
+    } else if (
+      name === "OverconstrainedError" ||
+      name === "ConstraintNotSatisfiedError"
+    ) {
       // Fallback: coba tanpa constraint facingMode
       setMessage("Kamera belakang tidak tersedia. Coba ganti ke kamera depan.");
     } else if (
@@ -123,11 +149,11 @@ export function QRScanner() {
       message_text.includes("HTTPS")
     ) {
       setMessage(
-        "Akses kamera memerlukan koneksi HTTPS. Pastikan aplikasi dibuka via https:// atau http://localhost:3000."
+        "Akses kamera memerlukan koneksi HTTPS. Pastikan aplikasi dibuka via https:// atau http://localhost:3000.",
       );
     } else {
       setMessage(
-        `Gagal mengakses kamera: ${name || "Unknown error"}. Pastikan aplikasi berjalan di HTTPS/localhost dan izin kamera telah diberikan.`
+        `Gagal mengakses kamera: ${name || "Unknown error"}. Pastikan aplikasi berjalan di HTTPS/localhost dan izin kamera telah diberikan.`,
       );
     }
   }
@@ -170,7 +196,7 @@ export function QRScanner() {
         },
         (errorMessage) => {
           console.debug("QR Scan error:", errorMessage);
-        }
+        },
       );
 
       setMessage("Silakan scan QR code!");
@@ -195,7 +221,10 @@ export function QRScanner() {
   return (
     <div className={styles.scannerWrapper}>
       <div className={styles.viewport}>
-        <div id={SCANNER_ELEMENT_ID} className="h-full w-full [&_video]:object-cover" />
+        <div
+          id={SCANNER_ELEMENT_ID}
+          className="h-full w-full [&_video]:object-cover"
+        />
 
         {state === "scanning" && (
           <div className={styles.viewfinder}>
@@ -208,7 +237,11 @@ export function QRScanner() {
         )}
 
         <AnimatePresence>
-          {(state === "idle" || state === "requesting" || state === "processing" || state === "success" || state === "error") && (
+          {(state === "idle" ||
+            state === "requesting" ||
+            state === "processing" ||
+            state === "success" ||
+            state === "error") && (
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -223,7 +256,9 @@ export function QRScanner() {
               )}
               {state === "requesting" && (
                 <div className={styles.overlayContent}>
-                  <ShieldCheck className={`${styles.overlayIcon} ${styles.permissionIcon}`} />
+                  <ShieldCheck
+                    className={`${styles.overlayIcon} ${styles.permissionIcon}`}
+                  />
                   <p className={styles.overlayText}>Menunggu izin kamera...</p>
                   <p className={styles.overlayHint}>
                     {isIOS
@@ -232,9 +267,7 @@ export function QRScanner() {
                   </p>
                 </div>
               )}
-              {state === "processing" && (
-                <div className={styles.spinner} />
-              )}
+              {state === "processing" && <div className={styles.spinner} />}
               {state === "success" && (
                 <motion.div
                   initial={{ scale: 0.6, opacity: 0 }}
@@ -257,7 +290,9 @@ export function QRScanner() {
                   className={styles.overlayContent}
                 >
                   <XCircle className={styles.errorIcon} />
-                  <p className="text-sm font-medium text-ink text-center max-w-[280px]">{message}</p>
+                  <p className="text-sm font-medium text-ink text-center max-w-[280px]">
+                    {message}
+                  </p>
                 </motion.div>
               )}
             </motion.div>
@@ -267,12 +302,16 @@ export function QRScanner() {
 
       {(state === "idle" || state === "error") && (
         <div className={styles.btnGroup}>
-          <Button variant="teal" onClick={startScanning}>
+          <Button variant="blue" onClick={startScanning}>
             <Camera className="h-4 w-4 mr-2" />
             {state === "error" ? "Coba Scan Lagi" : "Mulai Scan QR"}
           </Button>
           {state === "error" && (
-            <Button variant="outline" onClick={toggleCamera} className={styles.cameraToggle}>
+            <Button
+              variant="outline"
+              onClick={toggleCamera}
+              className={styles.cameraToggle}
+            >
               <RefreshCw className="h-4 w-4 mr-2" />
               Ganti Kamera
             </Button>
@@ -281,7 +320,11 @@ export function QRScanner() {
       )}
 
       {state === "scanning" && (
-        <Button variant="outline" onClick={toggleCamera} className={styles.cameraToggle}>
+        <Button
+          variant="outline"
+          onClick={toggleCamera}
+          className={styles.cameraToggle}
+        >
           <RefreshCw className="h-4 w-4 mr-2" />
           Ganti Kamera
         </Button>

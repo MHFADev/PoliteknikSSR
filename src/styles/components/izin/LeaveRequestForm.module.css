@@ -18,14 +18,17 @@
   font-weight: 500;
   border: 1px solid;
   cursor: pointer;
-  transition: background 0.15s, color 0.15s, border-color 0.15s;
+  transition:
+    background 0.15s,
+    color 0.15s,
+    border-color 0.15s;
 }
 
 /* Tombol aktif (terpilih) */
 .typeBtnActive {
-  border-color: #2BA8A2;
-  background: rgba(43, 168, 162, 0.1);
-  color: #2BA8A2;
+  border-color: #3572ef;
+  background: rgba(53, 114, 239, 0.1);
+  color: #3572ef;
 }
 
 /* Tombol non-aktif */
@@ -60,7 +63,7 @@
 }
 
 .inputBase:focus {
-  border-color: #2BA8A2;
+  border-color: #3572ef;
 }
 
 /* Textarea alasan */
@@ -79,7 +82,7 @@
 }
 
 .textArea:focus {
-  border-color: #2BA8A2;
+  border-color: #3572ef;
 }
 
 /* Area upload file */
@@ -115,7 +118,7 @@
   background: rgba(43, 168, 162, 0.1);
   padding: 0.5rem 0.75rem;
   font-size: 0.875rem;
-  color: #2BA8A2;
+  color: #2ba8a2;
 }
 
 /* ----- Responsive ----- */

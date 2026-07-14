@@ -18,7 +18,8 @@ const LEAVE_TYPES = [
 ] as const;
 
 export function LeaveRequestForm() {
-  const [type, setType] = useState<(typeof LEAVE_TYPES)[number]["value"]>("izin");
+  const [type, setType] =
+    useState<(typeof LEAVE_TYPES)[number]["value"]>("izin");
   const [reason, setReason] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
@@ -54,12 +55,17 @@ export function LeaveRequestForm() {
         const path = `${user.id}/${Date.now()}-${file.name.replace(/\s+/g, "-")}`;
         const { error: uploadError } = await supabase.storage
           .from("leave-proofs")
-          .upload(path, compressed, { upsert: false, contentType: compressed.type });
+          .upload(path, compressed, {
+            upsert: false,
+            contentType: compressed.type,
+          });
 
-        if (uploadError) throw new Error("Gagal upload bukti: " + uploadError.message);
+        if (uploadError)
+          throw new Error("Gagal upload bukti: " + uploadError.message);
 
         proof_path = path;
-        proof_url = supabase.storage.from("leave-proofs").getPublicUrl(path).data.publicUrl;
+        proof_url = supabase.storage.from("leave-proofs").getPublicUrl(path)
+          .data.publicUrl;
       }
 
       const result = await createLeaveRequest({
@@ -87,18 +93,28 @@ export function LeaveRequestForm() {
 
   return (
     <Card>
-      <CardHeader title="Ajukan Izin / Sakit / Cuti" subtitle="Lampirkan bukti pendukung jika ada" />
+      <CardHeader
+        title="Ajukan Izin / Sakit / Cuti"
+        subtitle="Lampirkan bukti pendukung jika ada"
+      />
 
       <form onSubmit={handleSubmit}>
         <div>
-          <label className="text-sm font-medium text-deep">Jenis Pengajuan</label>
+          <label className="text-sm font-medium text-deep">
+            Jenis Pengajuan
+          </label>
           <div className={styles.typeSelector}>
             {LEAVE_TYPES.map((t) => (
               <button
                 type="button"
                 key={t.value}
                 onClick={() => setType(t.value)}
-                className={cn(styles.typeBtn, type === t.value ? styles.typeBtnActive : styles.typeBtnInactive)}
+                className={cn(
+                  styles.typeBtn,
+                  type === t.value
+                    ? styles.typeBtnActive
+                    : styles.typeBtnInactive,
+                )}
               >
                 {t.label}
               </button>
@@ -108,7 +124,9 @@ export function LeaveRequestForm() {
 
         <div className={styles.dateGrid}>
           <div>
-            <label className="text-sm font-medium text-deep">Tanggal Mulai</label>
+            <label className="text-sm font-medium text-deep">
+              Tanggal Mulai
+            </label>
             <input
               type="date"
               required
@@ -118,7 +136,9 @@ export function LeaveRequestForm() {
             />
           </div>
           <div>
-            <label className="text-sm font-medium text-deep">Tanggal Selesai</label>
+            <label className="text-sm font-medium text-deep">
+              Tanggal Selesai
+            </label>
             <input
               type="date"
               required
@@ -147,7 +167,9 @@ export function LeaveRequestForm() {
         </div>
 
         <div>
-          <label className="text-sm font-medium text-deep">Bukti Pendukung (opsional)</label>
+          <label className="text-sm font-medium text-deep">
+            Bukti Pendukung (opsional)
+          </label>
           <label className={styles.fileUpload}>
             <UploadCloud className="h-4 w-4" />
             {file ? file.name : "Pilih foto surat / dokumen (JPG, PNG)"}
