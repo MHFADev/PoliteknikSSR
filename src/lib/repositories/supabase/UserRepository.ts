@@ -206,8 +206,42 @@ export class SupabaseUserRepository implements IUserRepository {
       return { user: null, error: "Akun Anda belum disetujui oleh admin. Silakan tunggu persetujuan." };
     }
 
-    const user = await this.getCurrentUser();
-    return { user };
+    // Cari profil di DB — jika tidak ada, buat dari data auth user
+    const authUser = data.user;
+    const adminClient = this.getAdminClient();
+    const { data: existingProfile } = await adminClient
+      .from("profiles")
+      .select("id, full_name, role, identity_number, instansi, kelas, jurusan_id, avatar_url, approved, created_at, study_programs(nama)")
+      .eq("id", authUser.id)
+      .single();
+
+    if (existingProfile) {
+      return { user: this.mapToUser(existingProfile, authUser.email) };
+    }
+
+    // Profile tidak ditemukan — buat dari metadata auth
+    const meta = authUser.user_metadata || {};
+    const { error: insertError } = await adminClient.from("profiles").upsert({
+      id: authUser.id,
+      full_name: meta.full_name || authUser.email?.split("@")[0] || "User",
+      role: meta.role || "siswa",
+      approved: true,
+      created_at: authUser.created_at || new Date().toISOString(),
+    }).eq("id", authUser.id);
+
+    if (insertError) {
+      console.error("[signIn] Gagal membuat profile:", insertError.message);
+      return { user: null, error: "Gagal memuat profil pengguna." };
+    }
+
+    // Ambil ulang setelah insert (supaya dapat field lain seperti study_programs)
+    const { data: freshProfile } = await adminClient
+      .from("profiles")
+      .select("id, full_name, role, identity_number, instansi, kelas, jurusan_id, avatar_url, approved, created_at, study_programs(nama)")
+      .eq("id", authUser.id)
+      .single();
+
+    return { user: freshProfile ? this.mapToUser(freshProfile, authUser.email) : null };
   }
 
   /**

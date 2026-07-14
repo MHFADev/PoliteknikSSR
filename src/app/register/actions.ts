@@ -47,6 +47,7 @@ export async function register(
     return { error: result.error };
   }
 
+  revalidatePath("/dashboard/admin/pengguna");
   return { success: true };
 }
 
