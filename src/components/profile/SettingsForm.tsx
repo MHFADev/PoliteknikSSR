@@ -330,6 +330,27 @@ export function SettingsForm({ role }: SettingsFormProps) {
               Sesuaikan tampilan daftar siswa dan kegiatan harian.
             </p>
 
+            {/* 🔥 Theme toggle: Terang / Gelap - untuk pembimbing */}
+            <div className={styles.toggleRow}>
+              <div>
+                <div className={styles.toggleLabel}>Tema Tampilan</div>
+                <div className={styles.toggleDesc}>
+                  {settings.theme === "dark" ? "Gelap" : "Terang"}
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => handleChange("theme", settings.theme === "dark" ? "light" : "dark")}
+                className={`${styles.toggleSwitch} ${settings.theme === "dark" ? styles.toggleActive : styles.toggleInactive}`}
+                aria-label="Toggle tema"
+                aria-pressed={settings.theme === "dark"}
+              >
+                <span
+                  className={`${styles.toggleKnob} ${settings.theme === "dark" ? styles.toggleKnobActive : styles.toggleKnobInactive}`}
+                />
+              </button>
+            </div>
+
             {/* Tampilan Default */}
             <div className={styles.formField}>
               <label className={styles.formLabel} htmlFor="defaultView">
