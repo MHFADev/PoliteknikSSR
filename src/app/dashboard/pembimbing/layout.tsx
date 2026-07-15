@@ -32,12 +32,13 @@ export default async function PembimbingLayout({ children }: { children: React.R
     .single();
 
   return (
-    <div className="flex min-h-screen bg-white">
+    /* 🔥 Layout — bg pake var() biar otomatis ngikut mode gelap/terang */
+    <div className="flex min-h-screen" style={{ backgroundColor: "var(--bg-page, #FFFFFF)" }}>
       <BlockedWatcher />
       <Sidebar role="pembimbing" fullName={profile?.full_name ?? "Pembimbing"} avatarUrl={profile?.avatar_url ?? null} />
       <MobileNav role="pembimbing" fullName={profile?.full_name ?? "Pembimbing"} avatarUrl={profile?.avatar_url ?? null} />
 
-      <main className="flex-1 overflow-x-hidden overflow-y-auto bg-mist-soft max-w-full">
+      <main className="flex-1 overflow-x-hidden overflow-y-auto max-w-full" style={{ backgroundColor: "var(--bg-muted, #F0F0F0)" }}>
         <div className="flex items-center justify-between px-4 sm:px-6 lg:px-8 py-2 mb-2">
           <div />
           <RealtimeClock />

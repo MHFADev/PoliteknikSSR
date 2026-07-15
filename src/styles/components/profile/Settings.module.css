@@ -31,9 +31,9 @@
   margin-top: 0.25rem;
 }
 
-/* Grup formulir — setiap section pengaturan */
+/* Grup formulir — 🔥 pake var() biar ngikut dark mode */
 .formSection {
-  background: white;
+  background: var(--bg-card, white);
   border: 1px solid var(--color-outline, #E2E8F0);
   border-radius: 0.75rem;
   padding: 1.5rem;
@@ -69,15 +69,15 @@
   color: var(--color-deep, #0F172A);
 }
 
-/* Input teks / number / date standar */
+/* 🔥 Input — pake var(--bg-input) & var(--color-ink) biar ngikut dark mode */
 .formInput {
   width: 100%;
   padding: 0.625rem 0.75rem;
   font-size: 0.875rem;
   border: 1px solid var(--color-outline, #E2E8F0);
   border-radius: 0.5rem;
-  background: white;
-  color: var(--color-deep, #0F172A);
+  background: var(--bg-input, white);
+  color: var(--color-ink, #0F172A);
   outline: none;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
   box-sizing: border-box;
@@ -95,8 +95,8 @@
   font-size: 0.875rem;
   border: 1px solid var(--color-outline, #E2E8F0);
   border-radius: 0.5rem;
-  background: white;
-  color: var(--color-deep, #0F172A);
+  background: var(--bg-input, white);
+  color: var(--color-ink, #0F172A);
   outline: none;
   cursor: pointer;
   transition: border-color 0.2s ease;
@@ -111,7 +111,7 @@
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
 }
 
-/* Input number — khusus untuk angka */
+/* Input number */
 .numberInput {
   width: 100%;
   max-width: 8rem;
@@ -119,8 +119,8 @@
   font-size: 0.875rem;
   border: 1px solid var(--color-outline, #E2E8F0);
   border-radius: 0.5rem;
-  background: white;
-  color: var(--color-deep, #0F172A);
+  background: var(--bg-input, white);
+  color: var(--color-ink, #0F172A);
   outline: none;
   transition: border-color 0.2s ease;
   box-sizing: border-box;
@@ -139,8 +139,8 @@
   font-size: 0.875rem;
   border: 1px solid var(--color-outline, #E2E8F0);
   border-radius: 0.5rem;
-  background: white;
-  color: var(--color-deep, #0F172A);
+  background: var(--bg-input, white);
+  color: var(--color-ink, #0F172A);
   outline: none;
   transition: border-color 0.2s ease;
   box-sizing: border-box;
@@ -254,10 +254,10 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.75rem 1rem;
-  background: #F0FDF4;
-  border: 1px solid #86EFAC;
+  background: var(--color-leaf-soft, #F0FDF4);
+  border: 1px solid var(--color-leaf, #86EFAC);
   border-radius: 0.5rem;
-  color: #166534;
+  color: var(--color-leaf-deep, #166534);
   font-size: 0.875rem;
   font-weight: 500;
   margin-bottom: 1rem;
@@ -268,10 +268,10 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.75rem 1rem;
-  background: #FEF2F2;
-  border: 1px solid #FECACA;
+  background: var(--color-flip7-coral-light, #FEF2F2);
+  border: 1px solid var(--color-flip7-coral, #FECACA);
   border-radius: 0.5rem;
-  color: #991B1B;
+  color: var(--color-flip7-coral-dark, #991B1B);
   font-size: 0.875rem;
   font-weight: 500;
   margin-bottom: 1rem;

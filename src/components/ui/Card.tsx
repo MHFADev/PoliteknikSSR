@@ -18,6 +18,8 @@
 import { cn } from "@/lib/utils";
 import { type HTMLAttributes, type ReactNode } from "react";
 import { ProgressBar } from "./ProgressBar";
+// 🔥 Import CSS Module biar background pake var(--bg-card) — ngikut mode gelap!
+import styles from "@/styles/components/ui/Card.module.css";
 
 // ---------------------------------------------------------------------------
 // Tipe
@@ -34,15 +36,21 @@ interface CardProps extends HTMLAttributes<HTMLDivElement> {
 // Variant Classes
 // ---------------------------------------------------------------------------
 
+/* 🔥 Card variants — pake CSS variables & bg-card biar ngikut mode gelap */
+/* Background diatur via CSS Module (.cardSkylearn dkk) yang pake var(--bg-card) */
 const variantClasses: Record<CardVariant, string> = {
-  skylearn:
-    "bg-white rounded-skylearn-xl border border-outline shadow-skylearn",
-  flip7:
-    "bg-white rounded-flip7-lg shadow-flip7-card border-l-4 border-[#3A5BF0]", // 👈 GANTI JADI BIRU
-  "flip7-highlight":
-    "bg-gradient-to-r from-gold-light/10 to-white rounded-flip7-lg shadow-flip7-gold-glow border-l-4 border-gold",
-  "flip7-boom":
-    "bg-gradient-to-r from-flip7-coral-light/10 to-white rounded-flip7-lg border-l-4 border-flip7-coral animate-flip7-boom-pulse",
+  skylearn: "rounded-skylearn-xl border border-outline shadow-skylearn",
+  flip7: "rounded-flip7-lg shadow-flip7-card border-l-4 border-[#3A5BF0]",
+  "flip7-highlight": "rounded-flip7-lg shadow-flip7-gold-glow border-l-4 border-gold",
+  "flip7-boom": "rounded-flip7-lg border-l-4 border-flip7-coral animate-flip7-boom-pulse",
+};
+
+/* Mapping variant → CSS Module class untuk background */
+const variantBgClass: Record<CardVariant, string> = {
+  skylearn: styles.cardSkylearn,
+  flip7: styles.cardFlip7,
+  "flip7-highlight": styles.cardFlip7Highlight,
+  "flip7-boom": styles.cardFlip7Boom,
 };
 
 // ---------------------------------------------------------------------------
@@ -57,7 +65,7 @@ export function Card({
 }: CardProps) {
   return (
     <div
-      className={cn("p-5 sm:p-6", variantClasses[variant], className)}
+      className={cn("p-5 sm:p-6", variantBgClass[variant], variantClasses[variant], className)}
       {...props}
     >
       {children}
@@ -124,10 +132,11 @@ export function LessonCard({
     <div
       onClick={!locked ? onClick : undefined}
       className={cn(
-        "bg-white rounded-skylearn-xl border border-outline p-5 transition-all cursor-pointer",
+        "rounded-skylearn-xl border border-outline p-5 transition-all cursor-pointer",
         !locked &&
           "hover:shadow-skylearn-sky hover:border-sky hover:-translate-y-1",
         locked && "opacity-60 cursor-not-allowed",
+        styles.lessonCard, /* 🔥 bg dari CSS Module biar ngikut dark mode */
         className,
       )}
     >
@@ -135,7 +144,7 @@ export function LessonCard({
         <div
           className={cn(
             "w-16 h-16 rounded-skylearn-lg flex items-center justify-center text-3xl",
-            locked ? "bg-sun-soft text-sun" : "bg-sky-soft text-sky",
+            locked ? "text-sun" : "text-sky",
           )}
         >
           {icon}

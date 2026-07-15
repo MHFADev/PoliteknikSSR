@@ -41,6 +41,7 @@ import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { getSettings, updateSettings } from "@/actions/profile";
 import { StudentDocuments } from "@/components/StudentDocuments";
+import { useTheme } from "@/components/ThemeProvider";
 import styles from "@/styles/components/profile/Settings.module.css";
 
 // ----------------------------------------------------------
@@ -57,6 +58,11 @@ interface SettingsFormProps {
  * @param role - Role user: "siswa" | "pembimbing" | "admin"
  */
 export function SettingsForm({ role }: SettingsFormProps) {
+  // ----------------------------------------------------------
+  // Hooks
+  // ----------------------------------------------------------
+  const { setTheme } = useTheme(); // Untuk terapkan tema secara instan
+
   // ----------------------------------------------------------
   // State
   // ----------------------------------------------------------
@@ -112,6 +118,7 @@ export function SettingsForm({ role }: SettingsFormProps) {
 
   /**
    * handleChange — Update nilai settings dari input (text, number, date, select)
+   * Jika key "theme", terapkan tema secara instan via ThemeProvider + localStorage.
    *
    * @param key - Nama field settings
    * @param value - Nilai baru
@@ -121,6 +128,10 @@ export function SettingsForm({ role }: SettingsFormProps) {
       ...prev,
       [key]: value,
     }));
+    // 🔥 Terapkan tema secara instan (tanpa perlu simpan dulu)
+    if (key === "theme") {
+      setTheme(value as "light" | "dark");
+    }
   };
 
   /**

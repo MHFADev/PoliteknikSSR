@@ -8,11 +8,11 @@
   gap: 1.25rem;
 }
 
-/* ─── Reminder Banner ─────────────────────── */
+/* ─── Reminder Banner — 🔥 pake var() biar ngikut dark mode ─── */
 .reminderBanner {
   border-radius: 12px;
-  background: linear-gradient(135deg, #EFF6FF, #DBEAFE);
-  border: 1px solid #93C5FD;
+  background: linear-gradient(135deg, var(--color-sky-soft, #EFF6FF), var(--color-sky-soft, #DBEAFE));
+  border: 1px solid var(--color-sky-bright, #93C5FD);
   padding: 0.75rem 1rem;
   display: flex;
   align-items: center;
@@ -21,18 +21,18 @@
 
 .reminderBanner h3 {
   font-weight: 700;
-  color: #1E3A5F;
+  color: var(--color-sky-deep, #1E3A5F);
   font-size: 0.875rem;
 }
 
 .reminderBanner p {
   font-size: 0.75rem;
-  color: #456882;
+  color: var(--color-steel, #456882);
   margin-top: 0.125rem;
 }
 
 .reminderCta {
-  background: #3B82F6;
+  background: var(--color-sky, #3B82F6);
   color: #FFFFFF;
   padding: 0.375rem 0.875rem;
   border-radius: 9999px;
@@ -45,7 +45,7 @@
 }
 
 .reminderCta:hover {
-  background: #60A5FA;
+  background: var(--color-sky-bright, #60A5FA);
 }
 
 /* ─── Stat Row — 1 baris responsif ────────── */

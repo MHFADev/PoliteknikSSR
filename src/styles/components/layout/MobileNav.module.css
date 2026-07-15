@@ -1,6 +1,6 @@
 /* MobileNav.module.css — Mobile header + bottom navigation */
 
-/* ─── Top Header ─────────────────────────── */
+/* ─── Top Header — 🔥 pake var() biar ngikut dark mode ─── */
 .topHeader {
   display: none;
   position: fixed;
@@ -9,8 +9,8 @@
   right: 0;
   z-index: 30;
   height: 56px;
-  background: #FFF;
-  border-bottom: 1px solid #E2E8F0;
+  background: var(--bg-mobile-header, #FFF);
+  border-bottom: 1px solid var(--color-outline, #E2E8F0);
   padding: 0 16px;
   align-items: center;
   justify-content: space-between;
@@ -28,7 +28,7 @@
 .headerTitle {
   font-weight: 600;
   font-size: 15px;
-  color: #0F172A;
+  color: var(--color-ink, #0F172A);
 }
 
 .headerRight {
@@ -45,11 +45,11 @@
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  background: #DBEAFE;
-  color: #1D4ED8;
+  background: var(--color-sky-soft, #DBEAFE);
+  color: var(--color-sky-deep, #1D4ED8);
   font-weight: 700;
   font-size: 14px;
-  border: 2px solid #FFF;
+  border: 2px solid var(--bg-mobile-header, #FFF);
   box-shadow: 0 2px 8px rgba(15,23,42,0.08);
   cursor: pointer;
   display: flex;
@@ -62,29 +62,29 @@
   top: calc(100% + 8px);
   right: 0;
   width: 200px;
-  background: #FFF;
+  background: var(--bg-card, #FFF);
   border-radius: 12px;
   box-shadow: 0 8px 32px rgba(15,23,42,0.12);
-  border: 1px solid #E2E8F0;
+  border: 1px solid var(--color-outline, #E2E8F0);
   overflow: hidden;
 }
 
 .dropdownUser {
   padding: 12px 16px;
-  border-bottom: 1px solid #F1F5F9;
+  border-bottom: 1px solid var(--color-outline, #F1F5F9);
 }
 
 .dropdownName {
   display: block;
   font-weight: 600;
   font-size: 14px;
-  color: #0F172A;
+  color: var(--color-ink, #0F172A);
 }
 
 .dropdownRole {
   display: block;
   font-size: 12px;
-  color: #94A3B8;
+  color: var(--color-ink-subtle, #94A3B8);
   text-transform: capitalize;
   margin-top: 2px;
 }
@@ -93,14 +93,14 @@
   display: block;
   padding: 10px 16px;
   font-size: 14px;
-  color: #475569;
+  color: var(--color-ink-muted, #475569);
   transition: background 0.15s;
 }
-.dropdownItem:hover { background: #F8FAFC; }
+.dropdownItem:hover { background: var(--bg-muted, #F8FAFC); }
 
 .dropdownDivider {
   height: 1px;
-  background: #F1F5F9;
+  background: var(--color-outline, #F1F5F9);
 }
 
 .logoutItem {
@@ -110,15 +110,15 @@
   width: 100%;
   padding: 10px 16px;
   font-size: 14px;
-  color: #EF4444;
+  color: var(--color-danger, #EF4444);
   border: none;
   background: none;
   cursor: pointer;
   transition: background 0.15s;
 }
-.logoutItem:hover { background: #FEF2F2; }
+.logoutItem:hover { background: rgba(239, 68, 68, 0.1); }
 
-/* ─── Bottom Navigation ──────────────────── */
+/* ─── Bottom Navigation — 🔥 pake var() ─── */
 .bottomNav {
   display: none;
   position: fixed;
@@ -127,8 +127,8 @@
   right: 0;
   z-index: 30;
   height: 64px;
-  background: #FFF;
-  border-top: 1px solid #E2E8F0;
+  background: var(--bg-mobile-header, #FFF);
+  border-top: 1px solid var(--color-outline, #E2E8F0);
   padding: 0 4px;
   align-items: center;
   justify-content: space-around;
@@ -146,13 +146,13 @@
   padding: 6px 8px;
   border-radius: 8px;
   text-decoration: none;
-  color: #94A3B8;
+  color: var(--color-ink-subtle, #94A3B8);
   transition: color 0.15s;
   min-width: 0;
   flex: 1;
 }
 .navItemActive {
-  color: #1D4ED8;
+  color: var(--color-sky, #1D4ED8);
 }
 
 .navIcon {
@@ -160,7 +160,7 @@
   height: 22px;
 }
 .navIconActive {
-  color: #1D4ED8;
+  color: var(--color-sky, #1D4ED8);
 }
 
 .navLabel {
@@ -170,7 +170,7 @@
   line-height: 1.1;
 }
 .navLabelActive {
-  color: #1D4ED8;
+  color: var(--color-sky, #1D4ED8);
   font-weight: 600;
 }
 
@@ -189,10 +189,10 @@
   left: 8px;
   right: 8px;
   z-index: 31;
-  background: #FFF;
+  background: var(--bg-card, #FFF);
   border-radius: 16px;
   box-shadow: 0 -4px 24px rgba(15,23,42,0.12);
-  border: 1px solid #E2E8F0;
+  border: 1px solid var(--color-outline, #E2E8F0);
   overflow: hidden;
   padding-bottom: 4px;
 }
@@ -212,14 +212,14 @@
   padding: 12px;
   border-radius: 10px;
   font-size: 14px;
-  color: #475569;
+  color: var(--color-ink-muted, #475569);
   text-decoration: none;
   transition: background 0.15s;
 }
-.moreItem:hover { background: #F8FAFC; }
+.moreItem:hover { background: var(--bg-muted, #F8FAFC); }
 .moreItemActive {
-  background: #EFF6FF;
-  color: #1D4ED8;
+  background: var(--color-sky-soft, #EFF6FF);
+  color: var(--color-sky, #1D4ED8);
   font-weight: 500;
 }
 
@@ -236,7 +236,7 @@
   padding: 8px;
   border: none;
   background: none;
-  color: #94A3B8;
+  color: var(--color-ink-subtle, #94A3B8);
   cursor: pointer;
 }
-.moreClose:hover { background: #F8FAFC; }
+.moreClose:hover { background: var(--bg-muted, #F8FAFC); }

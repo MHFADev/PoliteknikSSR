@@ -1,4 +1,7 @@
-/* Sidebar.module.css — Desktop sidebar only */
+/* ============================================
+ * Sidebar.module.css — Desktop sidebar only
+ * 🔥 Pake var(--bg-sidebar) biar ngikut mode gelap
+ * ============================================ */
 
 /* Desktop Sidebar */
 .desktop {
@@ -7,8 +10,8 @@
   height: 100dvh;
   width: 256px;
   flex-shrink: 0;
-  border-right: 1px solid #E2E8F0;
-  background: #FFF;
+  border-right: 1px solid var(--color-outline, #E2E8F0);
+  background: var(--bg-sidebar, #FFF);
 }
 @media (max-width: 1023px) {
   .desktop { display: none; }
@@ -67,18 +70,18 @@
 .nav::-webkit-scrollbar-track { background: transparent; }
 .nav::-webkit-scrollbar-thumb { background-color: #CBD5E1; border-radius: 8px; }
 .link { position: relative; display: block; }
-.activeBg { position: absolute; inset: 0; border-radius: 16px; background: #DBEAFE; }
+.activeBg { position: absolute; inset: 0; border-radius: 16px; background: var(--color-sky-soft, #DBEAFE); }
 .linkText { position: relative; display: flex; align-items: center; gap: 12px; border-radius: 16px; padding: 10px 12px; font-size: 14px; font-weight: 500; transition: color 150ms, background 150ms; }
-.linkActive { color: #1D4ED8; }
-.linkInactive { color: #475569; }
-.linkInactive:hover { color: #0F172A; background: #F8FAFC; }
+.linkActive { color: var(--color-sky, #1D4ED8); }
+.linkInactive { color: var(--color-ink-muted, #475569); }
+.linkInactive:hover { color: var(--color-ink, #0F172A); background: var(--bg-muted, #F8FAFC); }
 
-/* User Section */
+/* User Section — 🔥 pake var() biar ngikut dark mode */
 .userSection {
   flex-shrink: 0;
   margin-top: auto;
   padding-top: 16px;
-  border-top: 1px solid #E2E8F0;
+  border-top: 1px solid var(--color-outline, #E2E8F0);
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -91,15 +94,15 @@
   width: 40px;
   height: 40px;
   border-radius: 9999px;
-  background: #DBEAFE;
-  color: #1D4ED8;
+  background: var(--color-sky-soft, #DBEAFE);
+  color: var(--color-sky-deep, #1D4ED8);
   font-size: 16px;
   font-weight: 700;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  border: 2px solid #FFF;
+  border: 2px solid var(--bg-sidebar, #FFF);
   box-shadow: 0 8px 24px rgba(15,23,42,0.06);
 }
 
@@ -107,14 +110,14 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  color: #0F172A;
+  color: var(--color-ink, #0F172A);
   font-weight: 600;
   font-size: 14px;
 }
 
 .userRole {
   font-size: 12px;
-  color: #94A3B8;
+  color: var(--color-ink-subtle, #94A3B8);
   text-transform: capitalize;
 }
 
@@ -126,8 +129,8 @@
   border-radius: 16px;
   padding: 10px 12px;
   font-size: 14px;
-  color: #475569;
+  color: var(--color-ink-muted, #475569);
   transition: background 150ms, color 150ms;
   flex-shrink: 0;
 }
-.logoutBtn:hover { background: #F8FAFC; color: #F87171; }
+.logoutBtn:hover { background: var(--bg-muted, #F8FAFC); color: var(--color-danger, #F87171); }

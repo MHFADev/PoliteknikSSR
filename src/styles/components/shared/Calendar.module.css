@@ -183,19 +183,16 @@
 }
 
 /* ===== SEL TANGGAL (Default) ===== */
-/* Sel untuk setiap tanggal */
-/* className="min-h-[50px] sm:min-h-[70px] md:min-h-[90px] rounded-flip7-lg
-   border border-outline p-1.5 transition-all hover:border-teal-light
-   hover:shadow-flip7-card bg-surface flex flex-col gap-1" */
+/* 🔥 Sel tanggal — pake var() biar background & border ngikut dark mode */
 .cell {
   min-height: 50px;
   border-radius: var(--radius-flip7-lg, 0.75rem);
   border: 1px solid var(--color-outline, #d1d5db);
-  padding: 0.375rem; /* p-1.5 */
+  padding: 0.375rem;
   background-color: var(--color-surface, #ffffff);
   display: flex;
   flex-direction: column;
-  gap: 0.25rem; /* gap-1 */
+  gap: 0.25rem;
   transition:
     border-color 0.15s ease-in-out,
     box-shadow 0.15s ease-in-out;

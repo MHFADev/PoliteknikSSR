@@ -91,6 +91,7 @@
 }
 
 /* Overlay status (idle / processing / success / error) */
+/* 🔥 Overlay — pake var(--bg-card) biar ngikut dark mode */
 .overlay {
   position: absolute;
   inset: 0;
@@ -99,7 +100,7 @@
   align-items: center;
   justify-content: center;
   gap: 0.75rem;
-  background: rgba(255, 255, 255, 0.95);
+  background: color-mix(in srgb, var(--bg-card, #FFF) 95%, transparent);
   color: var(--color-ink, #0f172a);
   padding: 0 1.5rem;
   text-align: center;
@@ -129,7 +130,7 @@
 /* Teks petunjuk kecil di bawah teks utama overlay */
 .overlayHint {
   font-size: 0.75rem;
-  color: #64748b;
+  color: var(--color-ink-subtle, #64748b);
   max-width: 200px;
   text-align: center;
   line-height: 1.4;

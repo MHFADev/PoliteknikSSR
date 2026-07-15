@@ -49,21 +49,22 @@
   gap: 1rem;
 }
 
-/* Input dasar */
+/* 🔥 Input dasar — pake var() biar ngikut dark mode */
 .inputBase {
   margin-top: 0.375rem;
   width: 100%;
   border-radius: 0.75rem;
-  border: 1px solid rgba(27, 60, 83, 0.1);
-  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid var(--color-outline, rgba(27, 60, 83, 0.1));
+  background: var(--bg-input, rgba(255, 255, 255, 0.7));
   padding: 0.5rem 0.75rem;
   font-size: 0.875rem;
+  color: var(--color-ink, #0F172A);
   outline: none;
   transition: border-color 0.2s;
 }
 
 .inputBase:focus {
-  border-color: #3572ef;
+  border-color: var(--color-ocean, #3572ef);
 }
 
 /* Textarea alasan */
@@ -71,10 +72,11 @@
   margin-top: 0.375rem;
   width: 100%;
   border-radius: 0.75rem;
-  border: 1px solid rgba(27, 60, 83, 0.1);
-  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid var(--color-outline, rgba(27, 60, 83, 0.1));
+  background: var(--bg-input, rgba(255, 255, 255, 0.7));
   padding: 0.5rem 0.75rem;
   font-size: 0.875rem;
+  color: var(--color-ink, #0F172A);
   outline: none;
   resize: vertical;
   min-height: 5rem;
@@ -82,7 +84,7 @@
 }
 
 .textArea:focus {
-  border-color: #3572ef;
+  border-color: var(--color-ocean, #3572ef);
 }
 
 /* Area upload file */
@@ -93,15 +95,15 @@
   align-items: center;
   gap: 0.75rem;
   border-radius: 0.75rem;
-  border: 1px dashed rgba(27, 60, 83, 0.15);
+  border: 1px dashed var(--color-outline-strong, rgba(27, 60, 83, 0.15));
   padding: 0.75rem 1rem;
   font-size: 0.875rem;
-  color: #456882;
+  color: var(--color-steel, #456882);
   transition: background 0.15s;
 }
 
 .fileUpload:hover {
-  background: rgba(27, 60, 83, 0.05);
+  background: var(--bg-muted, rgba(27, 60, 83, 0.05));
 }
 
 /* Label upload — hidden input di dalamnya */
@@ -115,10 +117,10 @@
   align-items: center;
   gap: 0.5rem;
   border-radius: 0.75rem;
-  background: rgba(43, 168, 162, 0.1);
+  background: var(--color-teal-bg, rgba(43, 168, 162, 0.1));
   padding: 0.5rem 0.75rem;
   font-size: 0.875rem;
-  color: #2ba8a2;
+  color: var(--color-teal, #2ba8a2);
 }
 
 /* ----- Responsive ----- */

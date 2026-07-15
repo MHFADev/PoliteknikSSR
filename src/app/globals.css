@@ -3,6 +3,7 @@
  * =============================================
  * File ini adalah titik masuk utama untuk styling.
  * - Mengimpor Tailwind CSS (base, components, utilities)
+ * - Mendefinisikan CSS variables untuk Light & Dark theme
  * - Mendefinisikan style global (html, body, focus, scrollbar)
  * - Berisi aturan aksesibilitas (reduced-motion)
  * - Berisi utility class kustom untuk komponen
@@ -10,14 +11,131 @@
  * Design System:
  * - Skylearn: gaya profesional dengan warna biru/abu-abu
  * - Flip7: gaya playful dengan warna teal/emas/koral
+ *
+ * 🎨 Dark Mode:
+ * - Tambahkan class "dark" ke <html> untuk mengaktifkan.
+ * - Atur lewat ThemeProvider component (lihat components/ThemeProvider.tsx).
+ * - CSS variables di sini dipakai oleh CSS Modules & Tailwind config.
+ *
+ * Cara troubleshoot warna:
+ * - Cari `--color-*` di file ini untuk mengubah warna tema.
+ * - Cari `var(--color-*)` di file .module.css untuk komponen spesifik.
+ * - Cari `dark:` di file .tsx untuk override Tailwind di mode gelap.
  */
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* =============================================
+   🎨 LIGHT THEME (default)
+   Semua CSS variables untuk tampilan Terang.
+   ============================================= */
+:root {
+  /* ── Teks ─────────────────────────────── */
+  --color-deep: #1B3C53;
+  --color-mist-dim: #64748B;
+  --color-steel: #456882;
+  --color-ink: #0F172A;
+  --color-ink-muted: #475569;
+  --color-ink-subtle: #94A3B8;
+
+  /* ── Border / Outline ─────────────────── */
+  --color-outline: #E2E8F0;
+  --color-outline-strong: #94A3B8;
+
+  /* ── Background ───────────────────────── */
+  --color-surface: #FFFFFF;
+  --color-surface-elevated: #F3F4F6;
+  --color-surface-sunken: #F1F5F9;
+  --bg-page: #FFFFFF;
+  --bg-card: #FFFFFF;
+  --bg-sidebar: #FFFFFF;
+  --bg-mobile-header: #FFFFFF;
+  --bg-input: #FFFFFF;
+  --bg-muted: #F8FAFC;
+
+  /* ── Brand Colors ─────────────────────── */
+  --color-teal: #2BA8A2;
+  --color-teal-light: #3CC4BD;
+  --color-teal-dark: #1E7A75;
+  --color-teal-bg: #E6F7F6;
+  --color-sky: #3B82F6;
+  --color-sky-bright: #60A5FA;
+  --color-sky-deep: #1D4ED8;
+  --color-sky-soft: #DBEAFE;
+  --color-gold: #FFD23F;
+  --color-gold-light: #FFF3CD;
+  --color-gold-dark: #E6B800;
+  --color-flip7-coral: #E74C3C;
+  --color-flip7-coral-light: #FDE8E8;
+  --color-ocean: #3572EF;
+  --color-ocean-light: #3ABEF9;
+  --color-ocean-dark: #050C9C;
+  --color-leaf: #22C55E;
+  --color-leaf-deep: #16A34A;
+  --color-leaf-soft: #DCFCE7;
+  --color-success: #10B981;
+  --color-danger: #F43F5E;
+}
+
+/* =============================================
+   🌙 DARK THEME
+   Diaktifkan via class "dark" pada <html>.
+   Warna biru elegan — enak dipandang & kontras tinggi.
+   ============================================= */
+.dark {
+  /* ── Teks (terang agar kontras dengan bg gelap) ─ */
+  --color-deep: #E2E8F0;
+  --color-mist-dim: #94A3B8;
+  --color-steel: #CBD5E1;
+  --color-ink: #F1F5F9;
+  --color-ink-muted: #CBD5E1;
+  --color-ink-subtle: #94A3B8;
+
+  /* ── Border / Outline ─────────────────── */
+  --color-outline: #334155;
+  --color-outline-strong: #475569;
+
+  /* ── Background (gelap, biru elegan) ──── */
+  --color-surface: #1E293B;
+  --color-surface-elevated: #334155;
+  --color-surface-sunken: #0F172A;
+  --bg-page: #0F172A;
+  --bg-card: #1E293B;
+  --bg-sidebar: #1E293B;
+  --bg-mobile-header: #1E293B;
+  --bg-input: #334155;
+  --bg-muted: #1E293B;
+
+  /* ── Brand Colors (lebih terang & vibrant) ─ */
+  --color-teal: #5EEAD4;
+  --color-teal-light: #2DD4BF;
+  --color-teal-dark: #14B8A6;
+  --color-teal-bg: #0F4C4A;
+  --color-sky: #60A5FA;
+  --color-sky-bright: #93C5FD;
+  --color-sky-deep: #3B82F6;
+  --color-sky-soft: #1E3A5F;
+  --color-gold: #FCD34D;
+  --color-gold-light: #5C4A1E;
+  --color-gold-dark: #FBBF24;
+  --color-flip7-coral: #FB7185;
+  --color-flip7-coral-light: #4C1D24;
+  --color-ocean: #60A5FA;
+  --color-ocean-light: #93C5FD;
+  --color-ocean-dark: #1E40AF;
+  --color-leaf: #4ADE80;
+  --color-leaf-deep: #22C55E;
+  --color-leaf-soft: #14532D;
+  --color-success: #34D399;
+  --color-danger: #FB7185;
+}
+
+/* =============================================
+   Global Styles
+   ============================================= */
 @layer components {
-  /* Input error styling: coral border + background */
   .input-error {
     @apply border-coral/60 bg-coral-soft/30 focus:border-coral;
   }
@@ -28,8 +146,8 @@ html {
 }
 
 body {
-  background-color: #ffffff;
-  color: #0f172a;
+  background-color: var(--bg-page, #ffffff);
+  color: var(--color-ink, #0f172a);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }

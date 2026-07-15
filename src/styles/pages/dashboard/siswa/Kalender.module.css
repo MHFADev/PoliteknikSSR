@@ -137,9 +137,10 @@
   background: rgba(239, 68, 68, 0.08);
 }
 
+/* 🔥 Calendar cell — pake var() biar ngikut dark mode */
 .calendarCellDefault {
-  border-color: rgba(15, 23, 42, 0.06);
-  background: #ffffff;
+  border-color: var(--color-outline, rgba(15, 23, 42, 0.06));
+  background: var(--color-surface, #ffffff);
 }
 
 .calendarDayNumber {
@@ -162,8 +163,9 @@
   }
 }
 
+/* 🔥 Calendar day numbers — pake var() biar kontras di dark mode */
 .calendarDayToday {
-  background: #3b82f6;
+  background: var(--color-sky, #3b82f6);
   color: #ffffff;
 }
 

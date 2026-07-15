@@ -55,8 +55,8 @@
   align-items: center;
   justify-content: center;
   border-radius: 12px;
-  background: rgba(59,130,246,0.1);
-  color: #3B82F6;
+  background: var(--color-sky-soft, rgba(59,130,246,0.1));
+  color: var(--color-sky, #3B82F6);
 }
 
 .announcementContent {
