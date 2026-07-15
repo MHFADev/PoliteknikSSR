@@ -197,7 +197,7 @@ export function Calendar({ events = [], getDayStatus }: CalendarProps) {
             </span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="h-3.5 w-3.5 sm:h-4 sm:w-4 rounded-full bg-merah"></div>
+            <div className="h-3.5 w-3.5 sm:h-4 sm:w-4 rounded-full bg-flip7-coral-dark"></div>
             <span className="text-[11px] sm:text-sm text-ink font-medium">
               Libur PKL
             </span>

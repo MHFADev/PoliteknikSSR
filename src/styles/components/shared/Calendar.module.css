@@ -341,7 +341,7 @@
 .statusLabel {
   font-size: 9px; /* text-[9px] */
   font-weight: 600; /* font-semibold */
-  color: var(--color-ink, #1a1a2e);
+  color: var(--color-ink-dark, #1a1a2e);
 }
 
 @media (min-width: 640px) {

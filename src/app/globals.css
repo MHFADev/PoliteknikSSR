@@ -1,26 +1,6 @@
 /*
  * globals.css — Gaya Global Aplikasi
  * =============================================
- * File ini adalah titik masuk utama untuk styling.
- * - Mengimpor Tailwind CSS (base, components, utilities)
- * - Mendefinisikan CSS variables untuk Light & Dark theme
- * - Mendefinisikan style global (html, body, focus, scrollbar)
- * - Berisi aturan aksesibilitas (reduced-motion)
- * - Berisi utility class kustom untuk komponen
- *
- * Design System:
- * - Skylearn: gaya profesional dengan warna biru/abu-abu
- * - Flip7: gaya playful dengan warna teal/emas/koral
- *
- * 🎨 Dark Mode:
- * - Tambahkan class "dark" ke <html> untuk mengaktifkan.
- * - Atur lewat ThemeProvider component (lihat components/ThemeProvider.tsx).
- * - CSS variables di sini dipakai oleh CSS Modules & Tailwind config.
- *
- * Cara troubleshoot warna:
- * - Cari `--color-*` di file ini untuk mengubah warna tema.
- * - Cari `var(--color-*)` di file .module.css untuk komponen spesifik.
- * - Cari `dark:` di file .tsx untuk override Tailwind di mode gelap.
  */
 
 @tailwind base;
@@ -29,7 +9,6 @@
 
 /* =============================================
    🎨 LIGHT THEME (default)
-   Semua CSS variables untuk tampilan Terang.
    ============================================= */
 :root {
   /* ── Teks ─────────────────────────────── */
@@ -81,24 +60,17 @@
 
 /* =============================================
    🌙 DARK THEME
-   Diaktifkan via class "dark" pada <html>.
-   Warna biru elegan — enak dipandang & kontras tinggi.
    ============================================= */
 .dark {
-  /* ── Teks (terang agar kontras dengan bg gelap) ─ */
   --color-deep: #e2e8f0;
   --color-mist-dim: #94a3b8;
   --color-steel: #cbd5e1;
-  --color-ink: #f1f5f9;
+  --color-ink: #3abef9;
   --color-ink-muted: #cbd5e1;
   --color-ink-subtle: #94a3b8;
   --color-ink-dark: #123ea3;
-
-  /* ── Border / Outline ─────────────────── */
   --color-outline: #334155;
   --color-outline-strong: #475569;
-
-  /* ── Background (gelap, biru elegan) ──── */
   --color-surface: #1e293b;
   --color-surface-elevated: #334155;
   --color-surface-sunken: #0f172a;
@@ -108,8 +80,6 @@
   --bg-mobile-header: #1e293b;
   --bg-input: #334155;
   --bg-muted: #1e293b;
-
-  /* ── Brand Colors (lebih terang & vibrant) ─ */
   --color-teal: #5eead4;
   --color-teal-light: #2dd4bf;
   --color-teal-dark: #14b8a6;
@@ -136,11 +106,6 @@
 /* =============================================
    Global Styles
    ============================================= */
-@layer components {
-  .input-error {
-    @apply border-coral/60 bg-coral-soft/30 focus:border-coral;
-  }
-}
 
 html {
   scroll-behavior: smooth;
@@ -153,14 +118,12 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Focus ring styling: sky color dengan outline offset */
 :focus-visible {
   outline: 2px solid #3b82f6;
   outline-offset: 2px;
   border-radius: 8px;
 }
 
-/* Reduced motion support: animasi harus di-disable untuk aksesibilitas */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -208,7 +171,6 @@ body {
   }
 }
 
-/* Pastikan input tidak zoom di mobile (iOS Safari) */
 @media (max-width: 640px) {
   input,
   select,

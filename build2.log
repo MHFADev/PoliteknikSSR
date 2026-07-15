@@ -1,0 +1,82 @@
+﻿
+> politeknik-ssr@1.0.0 build
+> next build
+
+  Γû▓ Next.js 14.2.35
+  - Environments: .env.local
+
+   Creating an optimized production build ...
+node.exe : <w> [webpack.cache.PackFileCacheStrategy] Serializing big strings (106kiB) impacts deserialization 
+performance (consider using Buffer instead and decode when needed)
+At line:1 char:1
++ & "C:\nvm4w\nodejs/node.exe" "C:\nvm4w\nodejs/node_modules/npm/bin/np ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (<w> [webpack.ca...de when needed):String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+<w> [webpack.cache.PackFileCacheStrategy] Serializing big strings (250kiB) impacts deserialization performance 
+(consider using Buffer instead and decode when needed)
+ ΓÜá Compiled with warnings
+
+./node_modules/@supabase/supabase-js/dist/index.mjs
+A Node.js API is used (process.version at line: 23) which is not supported in the Edge Runtime.
+Learn more: https://nextjs.org/docs/api-reference/edge-runtime
+
+Import trace for requested module:
+./node_modules/@supabase/supabase-js/dist/index.mjs
+./node_modules/@supabase/ssr/dist/module/createServerClient.js
+./node_modules/@supabase/ssr/dist/module/index.js
+./src/lib/supabase/middleware.ts
+
+ Γ£ô Compiled successfully
+   Linting and checking validity of types ...
+
+./src/app/dashboard/admin/absensi/page.tsx
+208:29  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+./src/app/dashboard/admin/izin/page.tsx
+78:23  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+./src/app/dashboard/admin/page.tsx
+344:29  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+./src/app/dashboard/admin/pengguna/page.tsx
+113:31  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+./src/app/dashboard/pembimbing/page.tsx
+248:23  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+./src/components/izin/LeaveApprovalModal.tsx
+108:17  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+./src/components/layout/MobileNav.tsx
+60:17  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+./src/components/layout/Sidebar.tsx
+66:17  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+./src/components/logbook/LogbookGradeModal.tsx
+80:17  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+./src/components/profile/ProfileForm.tsx
+367:15  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+info  - Need to disable some ESLint rules? Learn more here: https://nextjs.org/docs/basic-features/eslint#disabling-rules
+Failed to compile.
+
+./src/components/AnnotationCanvas.tsx:25:45
+Type error: Property 'fabric' does not exist on type '{ default: typeof 
+import("C:/Users/USER/Downloads/politeknik-ssr/node_modules/fabric/dist/index"); getEnv: () => TFabricEnv; 
+getFabricDocument: () => Document; getFabricWindow: () => any; ... 62 more ...; isPutImageFaster: (width: number, 
+height: number) => boolean; }'.
+
+[0m [90m 23 |[39m     [36mif[39m ([36mtypeof[39m window [33m===[39m [32m"undefined"[39m [33m||[39m 
+fabricRef[33m.[39mcurrent) [36mreturn[39m[33m;[39m[0m
+[0m [90m 24 |[39m[0m
+[0m[31m[1m>[22m[39m[90m 25 |[39m     [36mconst[39m fabric [33m=[39m ([36mawait[39m 
+[36mimport[39m([32m"fabric"[39m))[33m.[39mfabric[33m;[39m[0m
+[0m [90m    |[39m                                             [31m[1m^[22m[39m[0m
+[0m [90m 26 |[39m     [36mconst[39m canvasEl [33m=[39m canvasRef[33m.[39mcurrent[33m;[39m[0m
+[0m [90m 27 |[39m     [36mif[39m ([33m![39mcanvasEl) [36mreturn[39m[33m;[39m[0m
+[0m [90m 28 |[39m[0m
+Next.js build worker exited with code: 1 and signal: null

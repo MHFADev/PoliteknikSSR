@@ -1,10 +1,13 @@
-/** @type {import('tailwindcss').Config} */
-const config = {
+import type { Config } from "tailwindcss";
+
+const config: Config = {
   darkMode: "class",
   content: ["./src/**/*.{js,ts,jsx,tsx,mdx}"],
   theme: {
     extend: {
       colors: {
+        // Flip7 Design System Colors
+        merah: "#F43F5E",
         teal: {
           DEFAULT: "var(--color-teal, #2BA8A2)",
           light: "var(--color-teal-light, #3CC4BD)",
@@ -199,4 +202,4 @@ const config = {
   plugins: [],
 };
 
-module.exports = config;
+export default config;
