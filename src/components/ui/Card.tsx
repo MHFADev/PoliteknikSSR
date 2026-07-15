@@ -41,8 +41,10 @@ interface CardProps extends HTMLAttributes<HTMLDivElement> {
 const variantClasses: Record<CardVariant, string> = {
   skylearn: "rounded-skylearn-xl border border-outline shadow-skylearn",
   flip7: "rounded-flip7-lg shadow-flip7-card border-l-4 border-[#3A5BF0]",
-  "flip7-highlight": "rounded-flip7-lg shadow-flip7-gold-glow border-l-4 border-gold",
-  "flip7-boom": "rounded-flip7-lg border-l-4 border-flip7-coral animate-flip7-boom-pulse",
+  "flip7-highlight":
+    "rounded-flip7-lg shadow-flip7-gold-glow border-l-4 border-gold",
+  "flip7-boom":
+    "rounded-flip7-lg border-l-4 border-flip7-coral animate-flip7-boom-pulse",
 };
 
 /* Mapping variant → CSS Module class untuk background */
@@ -65,7 +67,12 @@ export function Card({
 }: CardProps) {
   return (
     <div
-      className={cn("p-5 sm:p-6", variantBgClass[variant], variantClasses[variant], className)}
+      className={cn(
+        "p-5 sm:p-6",
+        variantBgClass[variant],
+        variantClasses[variant],
+        className,
+      )}
       {...props}
     >
       {children}
@@ -136,7 +143,7 @@ export function LessonCard({
         !locked &&
           "hover:shadow-skylearn-sky hover:border-sky hover:-translate-y-1",
         locked && "opacity-60 cursor-not-allowed",
-        styles.lessonCard, /* 🔥 bg dari CSS Module biar ngikut dark mode */
+        styles.lessonCard /* 🔥 bg dari CSS Module biar ngikut dark mode */,
         className,
       )}
     >

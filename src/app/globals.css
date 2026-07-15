@@ -33,50 +33,50 @@
    ============================================= */
 :root {
   /* ── Teks ─────────────────────────────── */
-  --color-deep: #1B3C53;
-  --color-mist-dim: #64748B;
+  --color-deep: #1b3c53;
+  --color-mist-dim: #64748b;
   --color-steel: #456882;
-  --color-ink: #0F172A;
+  --color-ink: #0f172a;
   --color-ink-muted: #475569;
-  --color-ink-subtle: #94A3B8;
+  --color-ink-subtle: #94a3b8;
 
   /* ── Border / Outline ─────────────────── */
-  --color-outline: #E2E8F0;
-  --color-outline-strong: #94A3B8;
+  --color-outline: #e2e8f0;
+  --color-outline-strong: #94a3b8;
 
   /* ── Background ───────────────────────── */
-  --color-surface: #FFFFFF;
-  --color-surface-elevated: #F3F4F6;
-  --color-surface-sunken: #F1F5F9;
-  --bg-page: #FFFFFF;
-  --bg-card: #FFFFFF;
-  --bg-sidebar: #FFFFFF;
-  --bg-mobile-header: #FFFFFF;
-  --bg-input: #FFFFFF;
-  --bg-muted: #F8FAFC;
+  --color-surface: #ffffff;
+  --color-surface-elevated: #f3f4f6;
+  --color-surface-sunken: #f1f5f9;
+  --bg-page: #ffffff;
+  --bg-card: #ffffff;
+  --bg-sidebar: #ffffff;
+  --bg-mobile-header: #ffffff;
+  --bg-input: #ffffff;
+  --bg-muted: #f8fafc;
 
   /* ── Brand Colors ─────────────────────── */
-  --color-teal: #2BA8A2;
-  --color-teal-light: #3CC4BD;
-  --color-teal-dark: #1E7A75;
-  --color-teal-bg: #E6F7F6;
-  --color-sky: #3B82F6;
-  --color-sky-bright: #60A5FA;
-  --color-sky-deep: #1D4ED8;
-  --color-sky-soft: #DBEAFE;
-  --color-gold: #FFD23F;
-  --color-gold-light: #FFF3CD;
-  --color-gold-dark: #E6B800;
-  --color-flip7-coral: #E74C3C;
-  --color-flip7-coral-light: #FDE8E8;
-  --color-ocean: #3572EF;
-  --color-ocean-light: #3ABEF9;
-  --color-ocean-dark: #050C9C;
-  --color-leaf: #22C55E;
-  --color-leaf-deep: #16A34A;
-  --color-leaf-soft: #DCFCE7;
-  --color-success: #10B981;
-  --color-danger: #F43F5E;
+  --color-teal: #2ba8a2;
+  --color-teal-light: #3cc4bd;
+  --color-teal-dark: #1e7a75;
+  --color-teal-bg: #e6f7f6;
+  --color-sky: #3b82f6;
+  --color-sky-bright: #60a5fa;
+  --color-sky-deep: #1d4ed8;
+  --color-sky-soft: #dbeafe;
+  --color-gold: #ffd23f;
+  --color-gold-light: #fff3cd;
+  --color-gold-dark: #e6b800;
+  --color-flip7-coral: #e74c3c;
+  --color-flip7-coral-light: #fde8e8;
+  --color-ocean: #3572ef;
+  --color-ocean-light: #3abef9;
+  --color-ocean-dark: #050c9c;
+  --color-leaf: #22c55e;
+  --color-leaf-deep: #16a34a;
+  --color-leaf-soft: #dcfce7;
+  --color-success: #10b981;
+  --color-danger: #f43f5e;
 }
 
 /* =============================================
@@ -86,50 +86,51 @@
    ============================================= */
 .dark {
   /* ── Teks (terang agar kontras dengan bg gelap) ─ */
-  --color-deep: #E2E8F0;
-  --color-mist-dim: #94A3B8;
-  --color-steel: #CBD5E1;
-  --color-ink: #F1F5F9;
-  --color-ink-muted: #CBD5E1;
-  --color-ink-subtle: #94A3B8;
+  --color-deep: #e2e8f0;
+  --color-mist-dim: #94a3b8;
+  --color-steel: #cbd5e1;
+  --color-ink: #f1f5f9;
+  --color-ink-muted: #cbd5e1;
+  --color-ink-subtle: #94a3b8;
+  --color-ink-dark: #123ea3;
 
   /* ── Border / Outline ─────────────────── */
   --color-outline: #334155;
   --color-outline-strong: #475569;
 
   /* ── Background (gelap, biru elegan) ──── */
-  --color-surface: #1E293B;
+  --color-surface: #1e293b;
   --color-surface-elevated: #334155;
-  --color-surface-sunken: #0F172A;
-  --bg-page: #0F172A;
-  --bg-card: #1E293B;
-  --bg-sidebar: #1E293B;
-  --bg-mobile-header: #1E293B;
+  --color-surface-sunken: #0f172a;
+  --bg-page: #0f172a;
+  --bg-card: #1e293b;
+  --bg-sidebar: #1e293b;
+  --bg-mobile-header: #1e293b;
   --bg-input: #334155;
-  --bg-muted: #1E293B;
+  --bg-muted: #1e293b;
 
   /* ── Brand Colors (lebih terang & vibrant) ─ */
-  --color-teal: #5EEAD4;
-  --color-teal-light: #2DD4BF;
-  --color-teal-dark: #14B8A6;
-  --color-teal-bg: #0F4C4A;
-  --color-sky: #60A5FA;
-  --color-sky-bright: #93C5FD;
-  --color-sky-deep: #3B82F6;
-  --color-sky-soft: #1E3A5F;
-  --color-gold: #FCD34D;
-  --color-gold-light: #5C4A1E;
-  --color-gold-dark: #FBBF24;
-  --color-flip7-coral: #FB7185;
-  --color-flip7-coral-light: #4C1D24;
-  --color-ocean: #60A5FA;
-  --color-ocean-light: #93C5FD;
-  --color-ocean-dark: #1E40AF;
-  --color-leaf: #4ADE80;
-  --color-leaf-deep: #22C55E;
-  --color-leaf-soft: #14532D;
-  --color-success: #34D399;
-  --color-danger: #FB7185;
+  --color-teal: #5eead4;
+  --color-teal-light: #2dd4bf;
+  --color-teal-dark: #14b8a6;
+  --color-teal-bg: #0f4c4a;
+  --color-sky: #60a5fa;
+  --color-sky-bright: #93c5fd;
+  --color-sky-deep: #3b82f6;
+  --color-sky-soft: #1e3a5f;
+  --color-gold: #fcd34d;
+  --color-gold-light: #5c4a1e;
+  --color-gold-dark: #fbbf24;
+  --color-flip7-coral: #fb7185;
+  --color-flip7-coral-light: #4c1d24;
+  --color-ocean: #60a5fa;
+  --color-ocean-light: #93c5fd;
+  --color-ocean-dark: #1e40af;
+  --color-leaf: #4ade80;
+  --color-leaf-deep: #22c55e;
+  --color-leaf-soft: #14532d;
+  --color-success: #34d399;
+  --color-danger: #fb7185;
 }
 
 /* =============================================
@@ -171,9 +172,15 @@ body {
 }
 
 @keyframes loading-bar {
-  0% { transform: translateX(-100%); }
-  50% { transform: translateX(200%); }
-  100% { transform: translateX(400%); }
+  0% {
+    transform: translateX(-100%);
+  }
+  50% {
+    transform: translateX(200%);
+  }
+  100% {
+    transform: translateX(400%);
+  }
 }
 
 .animate-loading-bar {
