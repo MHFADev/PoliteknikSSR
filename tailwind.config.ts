@@ -1,14 +1,13 @@
 import type { Config } from "tailwindcss";
 
 const config: Config = {
-  darkMode: "class", /* Aktifkan dark mode via class "dark" di <html> */
+  darkMode: "class",
   content: ["./src/**/*.{js,ts,jsx,tsx,mdx}"],
   theme: {
     extend: {
       colors: {
         // Flip7 Design System Colors
-        
-        },
+        merah: "#F43F5E",
         teal: {
           DEFAULT: "var(--color-teal, #2BA8A2)",
           light: "var(--color-teal-light, #3CC4BD)",
