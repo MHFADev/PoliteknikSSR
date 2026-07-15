@@ -14,6 +14,7 @@ import { StatCard } from "@/components/dashboard/StatCard";
 import { Card, CardHeader } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import StudentCalendar from "@/components/StudentCalendar";
+import { MentorSelector } from "@/components/siswa/MentorSelector";
 import { formatDate, todayISODate } from "@/lib/utils";
 import {
   CalendarCheck,
@@ -156,6 +157,9 @@ export default async function SiswaOverviewPage() {
           accent="coral"
         />
       </div>
+
+      {/* ─── Pilih Pembimbing ─────────────────────────────── */}
+      <MentorSelector studentJurusanId={profile?.jurusan_id} />
 
       {/* ─── Pengumuman ──────────────────────────────────────── */}
       {announcements && announcements.length > 0 && (

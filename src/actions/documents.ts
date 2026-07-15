@@ -2,36 +2,10 @@
 
 import { createClient, createAdminClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
+import type { PrakerinRecapData } from "@/lib/types";
+import { uploadToGitHub } from "@/lib/github-storage";
 
-function gradeFromScore(score: number): string {
-  if (score >= 85) return "A";
-  if (score >= 80) return "A-";
-  if (score >= 75) return "B+";
-  if (score >= 70) return "B";
-  if (score >= 65) return "B-";
-  if (score >= 60) return "C+";
-  if (score >= 55) return "C";
-  if (score >= 50) return "C-";
-  if (score >= 45) return "D+";
-  if (score >= 40) return "D";
-  return "E";
-}
-
-export const SIFAT_OPTIONS = ["Praktik", "Teori", "Produk", "Sikap", "Portofolio", "Proyek", "Laporan", "Presentasi"] as const;
-
-export interface GradeSubject {
-  name: string;
-  score: number;
-  grade: string;
-  sifat: string;
-}
-
-export interface GradeData {
-  subjects: GradeSubject[];
-  notes: string;
-  pklStartDate: string;
-  pklEndDate: string;
-}
+export type { PrakerinRecapData } from "@/lib/types";
 
 export async function sendCertificate(
   studentId: string,
@@ -45,35 +19,23 @@ export async function sendCertificate(
     const file = formData.get("file") as File;
     if (!file) return { success: false, message: "File tidak ditemukan." };
 
-    const ext = file.name.split(".").pop();
-    const timestamp = Date.now();
-    const filePath = `${studentId}/certificate_${timestamp}.${ext}`;
+    const arrayBuffer = await file.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
+    const result = await uploadToGitHub(buffer, file.name, "student-documents", studentId);
+    if (result.error) return { success: false, message: result.error };
 
     const adminSupabase = createAdminClient();
-    const { error: uploadError } = await adminSupabase.storage
-      .from("student-documents")
-      .upload(filePath, file, { upsert: true });
-
-    if (uploadError) return { success: false, message: uploadError.message };
-
-    const { data: urlData } = adminSupabase.storage
-      .from("student-documents")
-      .getPublicUrl(filePath);
-
     const { error: dbError } = await adminSupabase
       .from("student_documents")
       .insert({
         student_id: studentId,
         admin_id: user.id,
         type: "certificate",
-        file_url: urlData.publicUrl,
+        file_url: result.url,
         file_name: file.name,
       });
 
-    if (dbError) {
-      await adminSupabase.storage.from("student-documents").remove([filePath]);
-      return { success: false, message: dbError.message };
-    }
+    if (dbError) return { success: false, message: dbError.message };
 
     revalidatePath("/dashboard/admin/sertifikat-rekap");
     return { success: true };
@@ -82,9 +44,9 @@ export async function sendCertificate(
   }
 }
 
-export async function sendGradeSummary(
+export async function sendPrakerinRecap(
   studentId: string,
-  gradeData: GradeData,
+  prakerinData: PrakerinRecapData,
   file: File | null
 ): Promise<{ success: true } | { success: false; message: string }> {
   try {
@@ -97,21 +59,11 @@ export async function sendGradeSummary(
     let fileName: string | null = null;
 
     if (file && file.size > 0) {
-      const ext = file.name.split(".").pop();
-      const timestamp = Date.now();
-      const filePath = `${studentId}/grade_${timestamp}.${ext}`;
-
-      const { error: uploadError } = await adminSupabase.storage
-        .from("student-documents")
-        .upload(filePath, file, { upsert: true });
-
-      if (uploadError) return { success: false, message: uploadError.message };
-
-      const { data: urlData } = adminSupabase.storage
-        .from("student-documents")
-        .getPublicUrl(filePath);
-
-      fileUrl = urlData.publicUrl;
+      const arrayBuffer = await file.arrayBuffer();
+      const buffer = Buffer.from(arrayBuffer);
+      const result = await uploadToGitHub(buffer, file.name, "student-documents", studentId);
+      if (result.error) return { success: false, message: result.error };
+      fileUrl = result.url;
       fileName = file.name;
     }
 
@@ -120,10 +72,10 @@ export async function sendGradeSummary(
       .insert({
         student_id: studentId,
         admin_id: user.id,
-        type: "grade_summary",
+        type: "prakerin_recap",
         file_url: fileUrl,
         file_name: fileName,
-        grade_data: gradeData,
+        grade_data: prakerinData as any,
       });
 
     if (dbError) return { success: false, message: dbError.message };
@@ -131,7 +83,7 @@ export async function sendGradeSummary(
     revalidatePath("/dashboard/admin/sertifikat-rekap");
     return { success: true };
   } catch (e: any) {
-    return { success: false, message: e.message || "Gagal mengirim rekap nilai." };
+    return { success: false, message: e.message || "Gagal mengirim rekap prakerin." };
   }
 }
 
@@ -222,10 +174,10 @@ export async function toggleKeepDocument(
 export async function getStudentDocuments(): Promise<
   {
     id: string;
-    type: "certificate" | "grade_summary";
+    type: "certificate" | "prakerin_recap";
     fileUrl: string | null;
     fileName: string | null;
-    gradeData: GradeData | null;
+    gradeData: PrakerinRecapData | null;
     isRead: boolean;
     isKept: boolean;
     createdAt: string;
@@ -249,7 +201,7 @@ export async function getStudentDocuments(): Promise<
     type: d.type,
     fileUrl: d.file_url,
     fileName: d.file_name,
-    gradeData: d.grade_data as GradeData | null,
+    gradeData: d.grade_data as PrakerinRecapData | null,
     isRead: d.is_read,
     isKept: d.is_kept,
     createdAt: d.created_at,
@@ -262,26 +214,14 @@ async function cleanupExpired(): Promise<void> {
     const adminSupabase = createAdminClient();
     const now = new Date().toISOString();
 
-    const { data: expired } = await adminSupabase
-      .from("student_documents")
-      .select("id, file_url")
-      .eq("is_kept", false)
-      .lt("expires_at", now);
-
-    if (!expired || expired.length === 0) return;
-
-    const ids = expired.map((d) => d.id);
-    const { error: delError } = await adminSupabase
+    await adminSupabase
       .from("student_documents")
       .delete()
-      .in("id", ids);
-
-    if (delError) return;
+      .eq("is_kept", false)
+      .lt("expires_at", now);
   } catch {
     // silent cleanup
   }
 }
 
-export async function recalculateGrade(score: number): Promise<string> {
-  return gradeFromScore(score);
-}
+

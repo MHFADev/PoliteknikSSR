@@ -36,6 +36,10 @@ export async function register(
     return { error: "Program studi wajib dipilih untuk siswa." };
   }
 
+  if (role === "pembimbing" && !jurusanId) {
+    return { error: "Jurusan yang dibimbing wajib dipilih untuk pembimbing." };
+  }
+
   const result = await Repositories.users().signUp({
     email,
     password,

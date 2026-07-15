@@ -73,27 +73,14 @@ export function LogbookForm({ userId, existingContent, existingPhotoUrl }: { use
       let photoUrl = existingPhotoUrl ?? null;
 
       if (photo) {
-        // Upload to Supabase Storage
-        const fileExt = "jpeg"; // We converted to jpeg
-        const uniqueId = userId ?? "anonymous";
-        const fileName = `${uniqueId}/${Date.now()}.${fileExt}`;
-        const filePath = `logbook_photos/${fileName}`;
-
-        /*
-         * Upload ke bucket logbook_photos.
-         * Bucket ini harus dibuat di Supabase dashboard (Storage > Create bucket > logbook_photos, public).
-         * Untuk menghindari error "Bucket not found", pastikan bucket sudah ada.
-         */
-        const BUCKET_NAME = "logbook_photos";
-        const { error: uploadError } = await supabase.storage
-          .from(BUCKET_NAME)
-          .upload(filePath, photo, { upsert: true, contentType: "image/jpeg" });
-
-        if (uploadError) throw new Error("Gagal mengupload foto: " + uploadError.message);
-
-        // Ambil public URL hasil upload
-        const { data } = supabase.storage.from(BUCKET_NAME).getPublicUrl(filePath);
-        photoUrl = data.publicUrl;
+        const fd = new FormData();
+        fd.append("file", photo);
+        fd.append("bucket", "logbook_photos");
+        fd.append("userId", userId ?? "anonymous");
+        const res = await fetch("/api/upload", { method: "POST", body: fd });
+        const data = await res.json();
+        if (!res.ok) throw new Error("Gagal mengupload foto: " + (data.error || "Unknown error"));
+        photoUrl = data.url;
       }
 
       const result = await saveLogbookEntry({ entry_date: today, content, photoUrl });

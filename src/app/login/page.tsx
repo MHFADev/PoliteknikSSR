@@ -272,8 +272,8 @@ export default function LoginPage() {
             <Image
               src="/logo.png"
               alt="Politeknik SSR"
-              width={140}
-              height={44}
+              width={210}
+              height={66}
               priority
             />
           </div>
@@ -333,14 +333,14 @@ export default function LoginPage() {
               <Image
                 src="/logo.png"
                 alt="Politeknik SSR"
-                width={140}
-                height={44}
+                width={210}
+                height={66}
                 priority
               />
             </div>
 
             <div className={styles.formHeader}>
-              <h1 className={styles.formTitle}>Selamat Datang</h1>
+              <h1 className={styles.formTitle}>Selamat Datang di Web Absensi PKL Politeknik SSR</h1>
               <p className={styles.formSubtitle}>
                 Silakan masuk ke akun anda
               </p>
@@ -427,7 +427,7 @@ export default function LoginPage() {
               </Link>
             </p>
             <p className={styles.footerSub}>
-              Hubungi Admin Jika Belum Memiliki Akses.
+              Akun dibuat oleh Admin / Pembimbing PKL. Hubungi Admin / Pembimbing PKL jika belum punya akun.
             </p>
           </div>
         </motion.div>

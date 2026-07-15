@@ -2,15 +2,15 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { getStudentDocuments, markAsRead, toggleKeepDocument } from "@/actions/documents";
-import type { GradeData } from "@/actions/documents";
+import type { PrakerinRecapData } from "@/actions/documents";
 import { PDFViewerModal } from "./PDFViewerModal";
 
 interface Document {
   id: string;
-  type: "certificate" | "grade_summary";
+  type: "certificate" | "prakerin_recap";
   fileUrl: string | null;
   fileName: string | null;
-  gradeData: GradeData | null;
+  gradeData: PrakerinRecapData | null;
   isRead: boolean;
   isKept: boolean;
   createdAt: string;
@@ -58,7 +58,7 @@ export function StudentDocumentPopup() {
       {viewDoc && (
         <PDFViewerModal
           url={viewDoc.fileUrl}
-          title={viewDoc.fileName || (viewDoc.type === "certificate" ? "Sertifikat PKL" : "Rekap Nilai")}
+          title={viewDoc.fileName || (viewDoc.type === "certificate" ? "Sertifikat PKL" : "Rekap Prakerin")}
           gradeData={viewDoc.gradeData}
           onClose={() => setViewDoc(null)}
         />
@@ -75,10 +75,10 @@ export function StudentDocumentPopup() {
                     ? "bg-orange-100 text-orange-700"
                     : "bg-sky-100 text-sky-700"
                 }`}>
-                  {doc.type === "certificate" ? "Sertifikat PKL" : "Rekap Nilai"}
+                  {doc.type === "certificate" ? "Sertifikat PKL" : "Rekap Prakerin"}
                 </span>
                 <h4 className="text-sm font-semibold text-slate-800">
-                  {doc.fileName || (doc.type === "certificate" ? "Sertifikat PKL" : "Rekap Nilai")}
+                  {doc.fileName || (doc.type === "certificate" ? "Sertifikat PKL" : "Rekap Prakerin")}
                 </h4>
                 <p className="text-[0.7rem] text-slate-500 mt-0.5">
                   Dikirim: {formatDate(doc.createdAt)}
@@ -87,11 +87,7 @@ export function StudentDocumentPopup() {
               </div>
               <button onClick={() => setShowAll(!showAll)} className="text-slate-400 hover:text-slate-600 text-lg leading-none">&times;</button>
             </div>
-            {doc.gradeData && doc.gradeData.subjects.length > 0 && (
-              <div className="mb-2 text-[0.7rem] text-slate-500">
-                {doc.gradeData.subjects.length} mata pelajaran
-              </div>
-            )}
+
             <div className="flex gap-2">
               <button
                 onClick={() => openDocument(doc)}

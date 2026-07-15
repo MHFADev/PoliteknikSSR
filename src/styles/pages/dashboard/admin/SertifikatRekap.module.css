@@ -8,27 +8,61 @@
   font-family: var(--font-jakarta), sans-serif;
   font-size: 1.5rem;
   font-weight: 600;
-  color: var(--color-ink, #0F172A);
+  color: #0F172A;
   margin: 0;
 }
 
 .pageHeader p {
   font-size: 0.875rem;
-  color: var(--color-ink-muted, #475569);
+  color: #475569;
   margin-top: 0.25rem;
 }
 
-.loading {
-  padding: 2rem;
-  text-align: center;
-  color: #64748B;
+/* ─── Skeleton Loading ─────────────────── */
+.skeletonGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
 }
 
+.skeletonCard {
+  background: #F8FAFC;
+  border: 1px solid #E2E8F0;
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.skeletonLine {
+  height: 14px;
+  background: linear-gradient(90deg, #E2E8F0 25%, #F1F5F9 50%, #E2E8F0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+  border-radius: 4px;
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* ─── Toast ────────────────────────────── */
 .toast {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   padding: 0.75rem 1rem;
   border-radius: 0.5rem;
   font-size: 0.875rem;
   font-weight: 500;
+  animation: slideIn 0.2s ease-out;
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .toastSuccess {
@@ -43,19 +77,83 @@
   border: 1px solid #FECACA;
 }
 
-/* ─── Tabs ────────────────────────────── */
+.toastClose {
+  background: none;
+  border: none;
+  cursor: pointer;
+  opacity: 0.6;
+  transition: opacity 0.15s;
+}
+
+.toastClose:hover {
+  opacity: 1;
+}
+
+/* ─── Stats Row ────────────────────────── */
+.statsRow {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+.statCard {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 1.25rem;
+  background: #fff;
+  border: 1px solid #E2E8F0;
+  border-radius: 0.75rem;
+  transition: box-shadow 0.15s;
+}
+
+.statCard:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.statIcon {
+  width: 40px;
+  height: 40px;
+  padding: 8px;
+  background: #EFF6FF;
+  color: #2563EB;
+  border-radius: 10px;
+  flex-shrink: 0;
+}
+
+.statCard div {
+  display: flex;
+  flex-direction: column;
+}
+
+.statValue {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #0F172A;
+  line-height: 1.2;
+}
+
+.statLabel {
+  font-size: 0.75rem;
+  color: #64748B;
+}
+
+/* ─── Tabs ─────────────────────────────── */
 .tabs {
   display: flex;
   gap: 0.25rem;
   background: #F1F5F9;
   border-radius: 0.5rem;
   padding: 0.25rem;
-  overflow-x: auto;
 }
 
 .tab {
   flex: 1;
-  padding: 0.5rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1rem;
   border: none;
   background: transparent;
   border-radius: 0.375rem;
@@ -63,22 +161,22 @@
   font-weight: 500;
   color: #475569;
   cursor: pointer;
-  white-space: nowrap;
   transition: all 0.15s;
 }
 
 .tab:hover {
   color: #0F172A;
+  background: rgba(255, 255, 255, 0.5);
 }
 
 .tabActive {
   background: #fff;
   color: #2563EB;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.06);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
   font-weight: 600;
 }
 
-/* ─── Form ────────────────────────────── */
+/* ─── Form ─────────────────────────────── */
 .formBody {
   padding: 1.25rem;
   display: flex;
@@ -98,42 +196,264 @@
   color: #1E293B;
 }
 
-.select {
+.formRow2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+/* ─── Custom Select ────────────────────── */
+.selectWrapper {
+  position: relative;
+}
+
+.selectTrigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   padding: 0.5rem 0.75rem;
   border: 1px solid #CBD5E1;
-  border-radius: 0.375rem;
+  border-radius: 0.5rem;
   font-size: 0.875rem;
   background: #fff;
   color: #0F172A;
-  outline: none;
-  transition: border-color 0.15s;
+  cursor: pointer;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  text-align: left;
 }
 
-.select:focus {
+.selectTrigger:hover {
+  border-color: #94A3B8;
+}
+
+.selectTriggerActive {
   border-color: #2563EB;
   box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
 }
 
-.fileInput {
-  font-size: 0.875rem;
-  color: #475569;
+.selectValue {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  overflow: hidden;
 }
 
-.fileName {
-  font-size: 0.75rem;
-  color: #64748B;
+.selectBadge {
+  font-size: 0.6875rem;
+  padding: 0.125rem 0.375rem;
+  background: #EFF6FF;
+  color: #2563EB;
+  border-radius: 9999px;
+  font-weight: 500;
+}
+
+.selectPlaceholder {
+  color: #94A3B8;
+}
+
+.selectChevron {
+  width: 16px;
+  height: 16px;
+  color: #94A3B8;
+  transition: transform 0.2s;
+  flex-shrink: 0;
+}
+
+.selectChevronOpen {
+  transform: rotate(180deg);
+}
+
+.selectDropdown {
+  position: absolute;
+  z-index: 50;
+  top: 100%;
+  left: 0;
+  right: 0;
   margin-top: 0.25rem;
+  background: #fff;
+  border: 1px solid #E2E8F0;
+  border-radius: 0.5rem;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  overflow: hidden;
 }
 
+.selectSearchWrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid #E2E8F0;
+}
+
+.selectSearchIcon {
+  width: 16px;
+  height: 16px;
+  color: #94A3B8;
+  flex-shrink: 0;
+}
+
+.selectSearchInput {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 0.8125rem;
+  background: transparent;
+  color: #0F172A;
+}
+
+.selectOptions {
+  max-height: 240px;
+  overflow-y: auto;
+}
+
+.selectOption {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 0.75rem;
+  border: none;
+  background: transparent;
+  font-size: 0.8125rem;
+  color: #1E293B;
+  cursor: pointer;
+  transition: background 0.1s;
+  text-align: left;
+}
+
+.selectOption:hover {
+  background: #F1F5F9;
+}
+
+.selectOptionActive {
+  background: #EFF6FF;
+  color: #2563EB;
+  font-weight: 500;
+}
+
+.selectOptionMeta {
+  font-size: 0.6875rem;
+  color: #94A3B8;
+}
+
+.selectEmpty {
+  padding: 1rem;
+  text-align: center;
+  font-size: 0.8125rem;
+  color: #94A3B8;
+}
+
+/* ─── File Upload ──────────────────────── */
+.fileUploadArea {
+  position: relative;
+}
+
+.fileInputHidden {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.fileUploadLabel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 1.5rem;
+  border: 2px dashed #CBD5E1;
+  border-radius: 0.5rem;
+  font-size: 0.8125rem;
+  color: #64748B;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.fileUploadLabel:hover {
+  border-color: #2563EB;
+  background: #F8FAFC;
+  color: #2563EB;
+}
+
+.fileSelected {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #1E293B;
+}
+
+.fileRemoveBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border: none;
+  background: #FEE2E2;
+  color: #DC2626;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.fileRemoveBtn:hover {
+  background: #FECACA;
+}
+
+.fileHint {
+  font-size: 0.6875rem;
+  color: #94A3B8;
+}
+
+.linkBtn {
+  background: none;
+  border: none;
+  color: #2563EB;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 0;
+  margin-bottom: 0.5rem;
+}
+
+.linkBtn:hover {
+  color: #1D4ED8;
+}
+
+/* ─── Input Date ───────────────────────── */
+.inputDate {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #CBD5E1;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  background: #fff;
+  color: #0F172A;
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.inputDate:focus {
+  border-color: #2563EB;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+/* ─── Textarea ─────────────────────────── */
 .textarea {
   padding: 0.5rem 0.75rem;
   border: 1px solid #CBD5E1;
-  border-radius: 0.375rem;
+  border-radius: 0.5rem;
   font-size: 0.875rem;
   font-family: inherit;
   resize: vertical;
   outline: none;
-  transition: border-color 0.15s;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .textarea:focus {
@@ -141,6 +461,7 @@
   box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
 }
 
+/* ─── Form Actions ─────────────────────── */
 .formActions {
   display: flex;
   justify-content: flex-end;
@@ -149,19 +470,23 @@
 }
 
 .btnPrimary {
-  padding: 0.5rem 1.5rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1.25rem;
   background: #2563EB;
   color: #fff;
   border: none;
-  border-radius: 0.375rem;
+  border-radius: 0.5rem;
   font-size: 0.8125rem;
   font-weight: 600;
   cursor: pointer;
-  transition: background 0.15s;
+  transition: background 0.15s, box-shadow 0.15s;
 }
 
-.btnPrimary:hover {
+.btnPrimary:hover:not(:disabled) {
   background: #1D4ED8;
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
 }
 
 .btnPrimary:disabled {
@@ -170,18 +495,21 @@
 }
 
 .btnSecondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
   padding: 0.5rem 1rem;
   background: #F1F5F9;
   color: #1E293B;
   border: 1px solid #CBD5E1;
-  border-radius: 0.375rem;
+  border-radius: 0.5rem;
   font-size: 0.8125rem;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.15s;
 }
 
-.btnSecondary:hover {
+.btnSecondary:hover:not(:disabled) {
   background: #E2E8F0;
 }
 
@@ -191,11 +519,14 @@
 }
 
 .btnOutline {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
   padding: 0.5rem 1rem;
   background: transparent;
   color: #2563EB;
   border: 1px dashed #93C5FD;
-  border-radius: 0.375rem;
+  border-radius: 0.5rem;
   font-size: 0.8125rem;
   font-weight: 500;
   cursor: pointer;
@@ -206,30 +537,29 @@
 .btnOutline:hover {
   background: #EFF6FF;
   border-color: #2563EB;
+  border-style: solid;
 }
 
 .btnDangerSmall {
-  padding: 0.25rem 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
   background: transparent;
   color: #EF4444;
   border: 1px solid #FCA5A5;
-  border-radius: 0.25rem;
-  font-size: 0.75rem;
+  border-radius: 0.375rem;
   cursor: pointer;
   transition: all 0.15s;
-  white-space: nowrap;
 }
 
 .btnDangerSmall:hover {
   background: #FEE2E2;
 }
 
-/* ─── Annotation ────────────────────────── */
-.annotationSection {
-  margin-top: 0.5rem;
-}
-
-/* ─── Divider ──────────────────────────── */
+/* ─── Section Divider ──────────────────── */
 .sectionDivider {
   display: flex;
   align-items: center;
@@ -251,6 +581,7 @@
   color: #64748B;
   text-transform: uppercase;
   letter-spacing: 0.05em;
+  white-space: nowrap;
 }
 
 /* ─── Grade Editor ─────────────────────── */
@@ -262,10 +593,10 @@
 
 .gradeHeader {
   display: grid;
-  grid-template-columns: 1fr 110px 90px 70px 50px;
+  grid-template-columns: 1fr 100px 80px 60px 36px;
   gap: 0.5rem;
   padding: 0.375rem 0;
-  font-size: 0.7rem;
+  font-size: 0.6875rem;
   font-weight: 600;
   color: #64748B;
   text-transform: uppercase;
@@ -275,7 +606,7 @@
 
 .gradeRow {
   display: grid;
-  grid-template-columns: 1fr 110px 90px 70px 50px;
+  grid-template-columns: 1fr 100px 80px 60px 36px;
   gap: 0.5rem;
   align-items: center;
 }
@@ -283,7 +614,7 @@
 .gradeInput {
   padding: 0.375rem 0.5rem;
   border: 1px solid #CBD5E1;
-  border-radius: 0.25rem;
+  border-radius: 0.375rem;
   font-size: 0.8125rem;
   outline: none;
   transition: border-color 0.15s;
@@ -294,20 +625,45 @@
   box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
 }
 
+.gradeSelect {
+  padding: 0.375rem 0.5rem;
+  border: 1px solid #CBD5E1;
+  border-radius: 0.375rem;
+  font-size: 0.75rem;
+  background: #fff;
+  color: #1E293B;
+  outline: none;
+  cursor: pointer;
+}
+
+.gradeSelect:focus {
+  border-color: #2563EB;
+}
+
 .scoreInput {
   padding: 0.375rem 0.5rem;
   border: 1px solid #CBD5E1;
-  border-radius: 0.25rem;
+  border-radius: 0.375rem;
   font-size: 0.8125rem;
   width: 100%;
   outline: none;
-  transition: border-color 0.15s;
   text-align: center;
+  transition: border-color 0.15s;
 }
 
 .scoreInput:focus {
   border-color: #2563EB;
   box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
+}
+
+.gradeValue {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: #2563EB;
+  padding: 0.375rem;
 }
 
 .gradeColSubject { grid-column: 1; }
@@ -316,7 +672,28 @@
 .gradeColGrade { grid-column: 4; }
 .gradeColAction { grid-column: 5; }
 
-/* ─── History Table ────────────────────── */
+/* ─── Search Box ───────────────────────── */
+.searchBox {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.375rem 0.75rem;
+  background: #F1F5F9;
+  border: 1px solid #E2E8F0;
+  border-radius: 0.375rem;
+  color: #64748B;
+}
+
+.searchInput {
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 0.8125rem;
+  color: #1E293B;
+  width: 160px;
+}
+
+/* ─── Table ────────────────────────────── */
 .tableWrapper {
   padding: 0 1.25rem 1.25rem;
   overflow-x: auto;
@@ -333,7 +710,7 @@
   padding: 0.625rem 0.75rem;
   font-weight: 600;
   color: #64748B;
-  font-size: 0.75rem;
+  font-size: 0.6875rem;
   text-transform: uppercase;
   letter-spacing: 0.04em;
   border-bottom: 1px solid #E2E8F0;
@@ -351,24 +728,332 @@
   background: #F8FAFC;
 }
 
-.dateCell {
-  white-space: nowrap;
-  font-size: 0.75rem;
+.tableCellName {
+  font-weight: 500;
+}
+
+.tableCellMuted {
   color: #64748B;
+  font-size: 0.75rem;
 }
 
 .empty {
-  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 3rem;
   text-align: center;
   color: #94A3B8;
   font-size: 0.875rem;
 }
 
+/* ─── Annotation ───────────────────────── */
+.annotationSection {
+  margin-top: 0.5rem;
+}
+
 /* ─── Responsive ───────────────────────── */
+@media (max-width: 768px) {
+  .skeletonGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .statsRow {
+    grid-template-columns: 1fr;
+  }
+
+  .formRow2 {
+    grid-template-columns: 1fr;
+  }
+
+  .tabs {
+    overflow-x: auto;
+  }
+
+  .tab {
+    flex: none;
+    min-width: fit-content;
+  }
+}
+
+/* ─── Prakerin Section ──────────────────── */
+.prakerinSection {
+  margin-top: 1.25rem;
+  border: 1px solid #CBD5E1;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.prakerinSectionTitle {
+  font-family: var(--font-jakarta), sans-serif;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #fff;
+  padding: 0.75rem 1rem;
+  background: linear-gradient(135deg, #0F172A 0%, #1E293B 50%, #334155 100%);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid #1E293B;
+}
+
+.prakerinIdentityGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  padding: 1.25rem;
+  background: #F8FAFC;
+}
+
+/* ─── Prakerin Table ────────────────────── */
+.prakerinTable {
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+}
+
+.prakerinTableHeader {
+  display: grid;
+  grid-template-columns: 40px 1fr 110px 75px 140px;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  background: linear-gradient(180deg, #F1F5F9 0%, #E2E8F0 100%);
+  border-bottom: 2px solid #CBD5E1;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #1E293B;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.prakerinTableRow {
+  display: grid;
+  grid-template-columns: 40px 1fr 110px 75px 140px;
+  gap: 0.5rem;
+  padding: 0.625rem 1rem;
+  border-bottom: 1px solid #E2E8F0;
+  align-items: center;
+  font-size: 0.875rem;
+  transition: background-color 0.15s ease;
+}
+
+.prakerinTableRow:hover {
+  background: #F8FAFC;
+}
+
+.prakerinTableRow:last-child {
+  border-bottom: none;
+  background: linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 100%);
+  font-weight: 700;
+  box-shadow: inset 0 2px 4px rgba(37, 99, 235, 0.05);
+}
+
+.prakerinTableRow:nth-child(even):not(:last-child) {
+  background: #FAFAFA;
+}
+
+.prakerinColNo {
+  text-align: center;
+  font-weight: 600;
+  color: #64748B;
+  font-size: 0.8125rem;
+  background: #F1F5F9;
+  border-radius: 0.375rem;
+  padding: 0.25rem 0;
+  width: fit-content;
+  margin: 0 auto;
+}
+
+.prakerinColUnsur {
+  font-weight: 600;
+  color: #0F172A;
+  padding-left: 0.5rem;
+  letter-spacing: 0.01em;
+}
+
+.prakerinColNilai,
+.prakerinColHuruf,
+.prakerinColDesc {
+  text-align: center;
+}
+
+.prakerinColBidang {
+  padding-left: 0.5rem;
+  font-weight: 500;
+  color: #0F172A;
+}
+
+.prakerinColKet {
+  padding-left: 0.5rem;
+  color: #475569;
+}
+
+.prakerinInput {
+  width: 100%;
+  height: 32px;
+  border: 1.5px solid #CBD5E1;
+  border-radius: 0.5rem;
+  padding: 0 0.625rem;
+  font-size: 0.875rem;
+  outline: none;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+  background: #fff;
+}
+
+.prakerinInput:focus {
+  border-color: #2563EB;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+  background: #FAFAFA;
+}
+
+.prakerinInput::placeholder {
+  color: #94A3B8;
+}
+
+.prakerinGrade {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  font-weight: 800;
+  font-size: 0.875rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border: 2px solid transparent;
+}
+
+.gradeA {
+  background: linear-gradient(135deg, #DCFCE7 0%, #BBF7D0 100%);
+  color: #16A34A;
+  border-color: #86EFAC;
+}
+
+.gradeB {
+  background: linear-gradient(135deg, #DBEAFE 0%, #BFDBFE 100%);
+  color: #2563EB;
+  border-color: #93C5FD;
+}
+
+.gradeC {
+  background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%);
+  color: #D97706;
+  border-color: #FCD34D;
+}
+
+.gradeD {
+  background: linear-gradient(135deg, #FEE2E2 0%, #FECACA 100%);
+  color: #DC2626;
+  border-color: #FCA5A5;
+}
+
+.prakerinLabel {
+  font-size: 0.8125rem;
+  color: #475569;
+  font-weight: 500;
+  padding: 0.25rem 0.5rem;
+  background: #F1F5F9;
+  border-radius: 0.25rem;
+  display: inline-block;
+}
+
+/* ─── Skala ──────────────────────────────── */
+.prakerinSkalaRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-top: 1.25rem;
+}
+
+.prakerinSkalaCard {
+  border: 1.5px solid #CBD5E1;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.prakerinSkalaTitle {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.75rem 1rem;
+  background: linear-gradient(180deg, #F8FAFC 0%, #F1F5F9 100%);
+  color: #1E293B;
+  border-bottom: 1.5px solid #E2E8F0;
+}
+
+.prakerinSkalaList {
+  padding: 0.75rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  background: #fff;
+}
+
+.prakerinSkalaItem {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.8125rem;
+  color: #334155;
+  padding: 0.375rem 0.5rem;
+  border-radius: 0.375rem;
+  transition: background-color 0.15s ease;
+}
+
+.prakerinSkalaItem:hover {
+  background: #F8FAFC;
+}
+
+.skalaRange {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 60px;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.5rem;
+  font-weight: 700;
+  font-size: 0.75rem;
+  white-space: nowrap;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+@media (max-width: 640px) {
+  .prakerinIdentityGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .prakerinTableHeader,
+  .prakerinTableRow {
+    grid-template-columns: 30px 1fr 80px 50px 90px;
+    gap: 0.125rem;
+    padding: 0.375rem 0.375rem;
+    font-size: 0.7rem;
+  }
+
+  .prakerinSkalaRow {
+    grid-template-columns: 1fr;
+  }
+
+  .prakerinInput {
+    font-size: 0.7rem;
+    height: 24px;
+  }
+
+  .prakerinGrade {
+    width: 24px;
+    height: 24px;
+    font-size: 0.7rem;
+  }
+}
+
 @media (max-width: 640px) {
   .gradeHeader,
   .gradeRow {
-    grid-template-columns: 1fr 90px 70px 55px 40px;
+    grid-template-columns: 1fr 80px 60px 50px 32px;
     gap: 0.25rem;
   }
 
@@ -376,6 +1061,15 @@
   .scoreInput {
     font-size: 0.7rem;
     padding: 0.25rem 0.375rem;
+  }
+
+  .gradeSelect {
+    font-size: 0.65rem;
+    padding: 0.25rem 0.375rem;
+  }
+
+  .gradeValue {
+    font-size: 0.7rem;
   }
 
   .table th:nth-child(4),
@@ -393,10 +1087,6 @@
   .btnSecondary,
   .btnOutline {
     width: 100%;
-    text-align: center;
-  }
-
-  .annotationSection {
-    margin-top: 1rem;
+    justify-content: center;
   }
 }

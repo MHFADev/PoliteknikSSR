@@ -106,7 +106,6 @@ export default function RegisterPage() {
     setRole(next);
     if (next === "pembimbing") {
       setKelas("");
-      setJurusanId("");
       setInstansi("");
     }
   }
@@ -147,6 +146,11 @@ export default function RegisterPage() {
         errors.instansi = "Instansi / tempat PKL wajib diisi.";
       }
     }
+    if (role === "pembimbing") {
+      if (!jurusanId) {
+        errors.jurusanId = "Jurusan yang dibimbing wajib dipilih.";
+      }
+    }
     if (!agreed) {
       errors.agreed = "Anda harus menyetujui Syarat & Ketentuan.";
     }
@@ -168,7 +172,7 @@ export default function RegisterPage() {
         role === "siswa" ? kelas.trim() : undefined,
         identityNumber.trim(),
         role === "siswa" ? instansi.trim() : undefined,
-        role === "siswa" ? jurusanId : undefined,
+        jurusanId || undefined,
       );
       if (result.error) {
         setError(result.error);
@@ -592,6 +596,38 @@ export default function RegisterPage() {
                     )}
                   </div>
                 </>
+              )}
+
+              {role === "pembimbing" && (
+                <div className={styles.field}>
+                  <label className={styles.label} htmlFor="jurusanId">
+                    Pembimbing Jurusan
+                  </label>
+                  <select
+                    id="jurusanId"
+                    required
+                    value={jurusanId}
+                    onChange={(e) => setJurusanId(e.target.value)}
+                    className={`${styles.select} ${fieldErrors.jurusanId ? styles.selectError : ""} ${!jurusanId ? styles.selectPlaceholder : ""}`}
+                  >
+                    <option value="" disabled>
+                      Pilih jurusan yang dibimbing
+                    </option>
+                    {studyPrograms.map((sp) => (
+                      <option key={sp.id} value={sp.id}>
+                        {sp.nama}
+                      </option>
+                    ))}
+                  </select>
+                  {fieldErrors.jurusanId && (
+                    <span className={styles.fieldError}>
+                      {fieldErrors.jurusanId}
+                    </span>
+                  )}
+                  <p className={styles.emailWarning}>
+                    Pilih jurusan tempat Anda membimbing siswa PKL
+                  </p>
+                </div>
               )}
 
               <div className={styles.checkboxWrapper}>

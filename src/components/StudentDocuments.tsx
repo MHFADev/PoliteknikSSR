@@ -2,17 +2,16 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { getStudentDocuments, toggleKeepDocument } from "@/actions/documents";
-import type { GradeData } from "@/actions/documents";
+import type { PrakerinRecapData } from "@/actions/documents";
 import { PDFViewerModal } from "@/components/PDFViewerModal";
-import { downloadGradePdf } from "@/lib/pdf/gradePdfGenerator";
 import { FileText, Image, FileDown, Eye, Trash2 } from "lucide-react";
 
 interface Document {
   id: string;
-  type: "certificate" | "grade_summary";
+  type: "certificate" | "prakerin_recap";
   fileUrl: string | null;
   fileName: string | null;
-  gradeData: GradeData | null;
+  gradeData: PrakerinRecapData | null;
   isRead: boolean;
   isKept: boolean;
   createdAt: string;
@@ -46,9 +45,6 @@ export function StudentDocuments() {
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
-    } else if (doc.gradeData && doc.gradeData.subjects.length > 0) {
-      const studentName = "Siswa";
-      await downloadGradePdf(studentName, "", "", doc.gradeData);
     }
   };
 
@@ -64,7 +60,7 @@ export function StudentDocuments() {
   if (docs.length === 0) {
     return (
       <div className="text-sm text-slate-400 py-8 text-center">
-        Belum ada sertifikat atau rekap nilai yang diterima.
+        Belum ada sertifikat atau rekap prakerin yang diterima.
       </div>
     );
   }
@@ -74,7 +70,7 @@ export function StudentDocuments() {
       {viewDoc && (
         <PDFViewerModal
           url={viewDoc.fileUrl}
-          title={viewDoc.fileName || (viewDoc.type === "certificate" ? "Sertifikat PKL" : "Rekap Nilai")}
+          title={viewDoc.fileName || (viewDoc.type === "certificate" ? "Sertifikat PKL" : "Rekap Prakerin")}
           gradeData={viewDoc.gradeData}
           onClose={() => setViewDoc(null)}
         />
@@ -97,7 +93,7 @@ export function StudentDocuments() {
                   ? "bg-orange-100 text-orange-700"
                   : "bg-sky-100 text-sky-700"
               }`}>
-                {doc.type === "certificate" ? "Sertifikat" : "Rekap Nilai"}
+                {doc.type === "certificate" ? "Sertifikat" : "Rekap Prakerin"}
               </span>
               {doc.isKept && (
                 <span className="text-[0.6rem] font-semibold px-1.5 py-0.5 rounded-full bg-green-100 text-green-700">
@@ -106,7 +102,7 @@ export function StudentDocuments() {
               )}
             </div>
             <p className="text-sm font-medium text-slate-800 truncate mt-0.5">
-              {doc.fileName || (doc.type === "certificate" ? "Sertifikat PKL" : "Rekap Nilai")}
+              {doc.fileName || (doc.type === "certificate" ? "Sertifikat PKL" : "Rekap Prakerin")}
             </p>
             <p className="text-[0.7rem] text-slate-500">
               Diterima: {formatDate(doc.createdAt)}

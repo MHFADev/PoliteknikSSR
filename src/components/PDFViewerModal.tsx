@@ -6,7 +6,7 @@ interface Props {
   url: string | null;
   title: string;
   onClose: () => void;
-  gradeData?: { subjects: { name: string; score: number; grade: string; sifat: string }[]; notes: string; pklStartDate?: string; pklEndDate?: string } | null;
+  gradeData?: any;
   studentName?: string;
 }
 
@@ -43,7 +43,7 @@ export function PDFViewerModal({ url, title, onClose, gradeData, studentName }: 
       ${studentName ? `<p class="sub">Nama Siswa: ${studentName}</p>` : ""}
       ${gradeData?.pklStartDate ? `<p class="sub">Periode PKL: ${new Date(gradeData.pklStartDate + "T00:00:00").toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" })} — ${gradeData.pklEndDate ? new Date(gradeData.pklEndDate + "T00:00:00").toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" }) : "-"}</p>` : ""}
       <table><thead><tr><th>Unsur Nilai</th><th>Sifat</th><th>Skor</th><th>Nilai</th></tr></thead><tbody>
-      ${(gradeData?.subjects || []).map((s) => `<tr><td>${s.name}</td><td>${s.sifat || "-"}</td><td>${s.score}</td><td><strong>${s.grade}</strong></td></tr>`).join("")}
+      ${((gradeData?.subjects || []) as any[]).map((s: any) => `<tr><td>${s.name}</td><td>${s.sifat || "-"}</td><td>${s.score}</td><td><strong>${s.grade}</strong></td></tr>`).join("")}
       </tbody></table>
       ${gradeData?.notes ? `<div class="notes"><strong>Catatan:</strong><br>${gradeData.notes}</div>` : ""}
       <p class="footer">Dibuat: ${new Date().toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" })}</p>
@@ -135,7 +135,7 @@ export function PDFViewerModal({ url, title, onClose, gradeData, studentName }: 
                     </tr>
                   </thead>
                   <tbody>
-                    {gradeData.subjects.map((s, i) => (
+                    {(gradeData.subjects as any[])?.map((s: any, i: number) => (
                       <tr key={i} className={i % 2 === 0 ? "bg-slate-50" : ""}>
                         <td className="px-3 py-2 text-sm">{s.name}</td>
                         <td className="px-3 py-2 text-sm text-slate-500">{s.sifat || "-"}</td>

@@ -307,6 +307,7 @@ export class SupabaseUserRepository implements IUserRepository {
       approved: false,
     };
     if (kelas) metadata.kelas = kelas;
+    if (jurusanId) metadata.jurusan_id = jurusanId;
 
     const { data, error } = await supabase.auth.admin.createUser({
       email,
