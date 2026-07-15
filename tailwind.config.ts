@@ -6,8 +6,7 @@ const config: Config = {
     extend: {
       colors: {
         // Flip7 Design System Colors
-        merah: {
-          DEFAULT: "#ff0000",
+        
         },
         teal: {
           DEFAULT: "#2BA8A2",

@@ -360,8 +360,18 @@
   }
 }
 
+<<<<<<< HEAD
 .calendarDayNormal {
   color: #475569;
+=======
+/* 🔥 Calendar day "Hari Ini" — BACKGROUND DIHAPUS (biar nomor tanggal bersih),
+   cukup pake text warna biru ocean biar tetap kelihatan kalo hari ini */
+/* 🔧 TROUBLESHOOT: Kalo mau aksen bg lagi, tambahin "background: var(--color-sky); color: #fff;" */
+.calendarDayToday {
+  background: transparent;
+  color: var(--color-ocean, #3572ef);
+  font-weight: 700;
+>>>>>>> 7d5580ed97f85f73b8d04e1f18b72986fe3fc149
 }
 
 .calendarDayToday {
@@ -390,12 +400,19 @@
   }
 }
 
+/* 🔥 Label status (Alfa, Masuk, Sakit, Izin) — pake ocean biru biar kontras & gampang dibaca */
+/* 🔧 TROUBLESHOOT: Ganti value color kalo mau warna lain, misal var(--color-gold) buat gold */
 .calendarStatusLabel {
   font-size: 0.5rem;
+<<<<<<< HEAD
   color: inherit;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+=======
+  font-weight: 600;
+  color: var(--color-ocean, #3572ef);
+>>>>>>> 7d5580ed97f85f73b8d04e1f18b72986fe3fc149
 }
 
 @media (min-width: 640px) {
