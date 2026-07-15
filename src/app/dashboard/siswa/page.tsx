@@ -54,6 +54,7 @@ export default async function SiswaOverviewPage() {
     { data: attendanceRecords },
     { data: leaves },
     announcements,
+    { data: todayRecord },
   ] = await Promise.all([
     supabase
       .from("attendance_records")
@@ -93,6 +94,13 @@ export default async function SiswaOverviewPage() {
       .select("type, start_date, end_date")
       .eq("student_id", user!.id),
     getAnnouncementsForStudent(user!.id, profile?.jurusan_id ?? null),
+    supabase
+      .from("attendance_records")
+      .select("status, scanned_at")
+      .eq("student_id", user!.id)
+      .gte("scanned_at", `${today}T00:00:00`)
+      .lte("scanned_at", `${today}T23:59:59`)
+      .maybeSingle(),
   ]);
 
   const todayEntry = recentLogbook?.find(
@@ -157,6 +165,36 @@ export default async function SiswaOverviewPage() {
           accent="coral"
         />
       </div>
+
+      {/* ─── Status Presensi Hari Ini ─────────────────────────── */}
+      {todayRecord && (
+        <div className={styles.reminderBanner} style={{
+          background: todayRecord.status === "hadir"
+            ? "linear-gradient(135deg, #DCFCE7, #F0FDF4)"
+            : "linear-gradient(135deg, #FEF3C7, #FFFBEB)",
+          border: todayRecord.status === "hadir"
+            ? "1px solid #86EFAC"
+            : "1px solid #FCD34D",
+        }}>
+          <CalendarCheck className="h-5 w-5 shrink-0" style={{
+            color: todayRecord.status === "hadir" ? "#16A34A" : "#D97706",
+          }} />
+          <div className="min-w-0 flex-1">
+            <h3 style={{
+              color: todayRecord.status === "hadir" ? "#16A34A" : "#D97706",
+            }}>
+              {todayRecord.status === "hadir" ? "Hadir Hari Ini" : "Telat Hari Ini"}
+            </h3>
+            <p style={{ color: "#475569" }}>
+              Scan pukul{" "}
+              {new Date(todayRecord.scanned_at).toLocaleTimeString("id-ID", {
+                hour: "2-digit",
+                minute: "2-digit",
+              })}
+            </p>
+          </div>
+        </div>
+      )}
 
       {/* ─── Pilih Pembimbing ─────────────────────────────── */}
       <MentorSelector studentJurusanId={profile?.jurusan_id} />

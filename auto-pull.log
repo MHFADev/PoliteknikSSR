@@ -682,13 +682,9 @@ A  src/styles/pages/Login.module.css
 ?? image.png
 ?? public/hero/
 [2026-07-14 10:17:02] Commit atau stash dulu sebelum auto-pull bisa jalan.
-[2026-07-15 14:02:02] === Auto-pull dimulai ===
-[2026-07-15 14:02:02] DIBATALKAN: Ada perubahan lokal yang belum di-commit:
-[2026-07-15 14:02:02] M auto-pull.log
-M  src/app/globals.css
-M  src/components/Calendar.tsx
-M  src/styles/components/shared/Calendar.module.css
-UU tailwind.config.js
+[2026-07-15 12:02:02] === Auto-pull dimulai ===
+[2026-07-15 12:02:02] DIBATALKAN: Ada perubahan lokal yang belum di-commit:
+[2026-07-15 12:02:02] M auto-pull.log
 ?? .agents/
 ?? .auto-pull.lock
 ?? .claude/SKILLS/
@@ -707,5 +703,185 @@ UU tailwind.config.js
 ?? public/hero/smpn177-jkt-bahasa-indonesia.pdf
 ?? public/rekap-penilaian.html
 ?? skills-lock.json
-?? tailwind.config.ts
-[2026-07-15 14:02:02] Commit atau stash dulu sebelum auto-pull bisa jalan.
+?? src/actions/student-mentors.ts
+?? src/app/api/upload/
+?? src/components/siswa/
+?? src/lib/github-storage.ts
+?? src/lib/pdf/prakerinPdfGenerator.ts
+?? src/lib/repositories/github/
+?? src/lib/types.ts
+[2026-07-15 12:02:02] Commit atau stash dulu sebelum auto-pull bisa jalan.
+[2026-07-15 12:32:02] === Auto-pull dimulai ===
+[2026-07-15 12:32:02] DIBATALKAN: Ada perubahan lokal yang belum di-commit:
+[2026-07-15 12:32:02] M auto-pull.log
+ M package-lock.json
+?? .agents/
+?? .auto-pull.lock
+?? .claude/SKILLS/
+?? .opencode/
+?? build.log
+?? build2.log
+?? build3.log
+?? build4.log
+?? build5.log
+?? build6.log
+?? build7.log
+?? build_continue.log
+?? build_final.log
+?? build_latest.log
+?? public/hero/audiorelay-0.27.5.exe
+?? public/hero/smpn177-jkt-bahasa-indonesia.pdf
+?? public/rekap-penilaian.html
+?? skills-lock.json
+?? src/actions/student-mentors.ts
+?? src/app/api/upload/
+?? src/components/siswa/
+?? src/lib/github-storage.ts
+?? src/lib/pdf/prakerinPdfGenerator.ts
+?? src/lib/repositories/github/
+?? src/lib/types.ts
+[2026-07-15 12:32:02] Commit atau stash dulu sebelum auto-pull bisa jalan.
+[2026-07-15 12:47:02] === Auto-pull dimulai ===
+[2026-07-15 12:47:02] DIBATALKAN: Ada perubahan lokal yang belum di-commit:
+[2026-07-15 12:47:02] M auto-pull.log
+ M package-lock.json
+ M postcss.config.js
+ M src/styles/pages/dashboard/siswa/Kalender.module.css
+ D tailwind.config.ts
+?? .agents/
+?? .auto-pull.lock
+?? .claude/SKILLS/
+?? .opencode/
+?? build.log
+?? build2.log
+?? build3.log
+?? build4.log
+?? build5.log
+?? build6.log
+?? build7.log
+?? build_continue.log
+?? build_final.log
+?? build_latest.log
+?? public/hero/audiorelay-0.27.5.exe
+?? public/hero/smpn177-jkt-bahasa-indonesia.pdf
+?? public/rekap-penilaian.html
+?? skills-lock.json
+?? src/actions/student-mentors.ts
+?? src/app/api/upload/
+?? src/components/siswa/
+?? src/lib/github-storage.ts
+?? src/lib/pdf/prakerinPdfGenerator.ts
+?? src/lib/repositories/github/
+?? src/lib/types.ts
+?? tailwind.config.js
+[2026-07-15 12:47:02] Commit atau stash dulu sebelum auto-pull bisa jalan.
+[2026-07-15 13:02:01] === Auto-pull dimulai ===
+[2026-07-15 13:02:02] DIBATALKAN: Ada perubahan lokal yang belum di-commit:
+[2026-07-15 13:02:02] M auto-pull.log
+?? .agents/
+?? .auto-pull.lock
+?? .claude/SKILLS/
+?? .opencode/
+?? build.log
+?? build2.log
+?? build3.log
+?? build4.log
+?? build5.log
+?? build6.log
+?? build7.log
+?? build_continue.log
+?? build_final.log
+?? build_latest.log
+?? public/hero/audiorelay-0.27.5.exe
+?? public/hero/smpn177-jkt-bahasa-indonesia.pdf
+?? public/rekap-penilaian.html
+?? skills-lock.json
+?? src/actions/student-mentors.ts
+?? src/app/api/upload/
+?? src/components/siswa/
+?? src/lib/github-storage.ts
+?? src/lib/pdf/prakerinPdfGenerator.ts
+?? src/lib/repositories/github/
+?? src/lib/types.ts
+[2026-07-15 13:02:02] Commit atau stash dulu sebelum auto-pull bisa jalan.
+[2026-07-15 13:17:01] === Auto-pull dimulai ===
+[2026-07-15 13:17:01] DIBATALKAN: Ada perubahan lokal yang belum di-commit:
+[2026-07-15 13:17:01] M auto-pull.log
+?? .agents/
+?? .auto-pull.lock
+?? .claude/SKILLS/
+?? .opencode/
+?? build.log
+?? build2.log
+?? build3.log
+?? build4.log
+?? build5.log
+?? build6.log
+?? build7.log
+?? build_continue.log
+?? build_final.log
+?? build_latest.log
+?? public/hero/audiorelay-0.27.5.exe
+?? public/hero/smpn177-jkt-bahasa-indonesia.pdf
+?? public/rekap-penilaian.html
+?? skills-lock.json
+[2026-07-15 13:17:01] Commit atau stash dulu sebelum auto-pull bisa jalan.
+[2026-07-15 13:32:01] === Auto-pull dimulai ===
+[2026-07-15 13:32:02] DIBATALKAN: Ada perubahan lokal yang belum di-commit:
+[2026-07-15 13:32:02] M auto-pull.log
+ M src/actions/profile.ts
+ M src/actions/qr.ts
+ M src/app/dashboard/admin/page.tsx
+ M src/app/dashboard/siswa/page.tsx
+ M src/components/profile/SettingsForm.tsx
+ M src/lib/repositories/supabase/AttendanceRepository.ts
+ M src/styles/pages/dashboard/admin/Overview.module.css
+?? .agents/
+?? .auto-pull.lock
+?? .claude/SKILLS/
+?? .opencode/
+?? build.log
+?? build2.log
+?? build3.log
+?? build4.log
+?? build5.log
+?? build6.log
+?? build7.log
+?? build_continue.log
+?? build_final.log
+?? build_latest.log
+?? public/hero/audiorelay-0.27.5.exe
+?? public/hero/smpn177-jkt-bahasa-indonesia.pdf
+?? public/rekap-penilaian.html
+?? skills-lock.json
+[2026-07-15 13:32:02] Commit atau stash dulu sebelum auto-pull bisa jalan.
+[2026-07-15 13:47:02] === Auto-pull dimulai ===
+[2026-07-15 13:47:02] DIBATALKAN: Ada perubahan lokal yang belum di-commit:
+[2026-07-15 13:47:02] M auto-pull.log
+ M src/actions/profile.ts
+ M src/actions/qr.ts
+ M src/app/dashboard/admin/page.tsx
+ M src/app/dashboard/siswa/page.tsx
+ M src/components/profile/SettingsForm.tsx
+ M src/lib/pdf/prakerinPdfGenerator.ts
+ M src/lib/repositories/supabase/AttendanceRepository.ts
+ M src/styles/pages/dashboard/admin/Overview.module.css
+?? .agents/
+?? .auto-pull.lock
+?? .claude/SKILLS/
+?? .opencode/
+?? build.log
+?? build2.log
+?? build3.log
+?? build4.log
+?? build5.log
+?? build6.log
+?? build7.log
+?? build_continue.log
+?? build_final.log
+?? build_latest.log
+?? public/hero/audiorelay-0.27.5.exe
+?? public/hero/smpn177-jkt-bahasa-indonesia.pdf
+?? public/rekap-penilaian.html
+?? skills-lock.json
+[2026-07-15 13:47:02] Commit atau stash dulu sebelum auto-pull bisa jalan.

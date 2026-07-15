@@ -293,7 +293,7 @@ export async function generatePrakerinPdf(data: PrakerinRecapData): Promise<Uint
   skalaData.forEach((row, idx) => {
     const ry = y - skRowH;
     drawRect(MARGIN, ry, halfW, skRowH, idx % 2 === 0 ? ROW_EVEN : ROW_ODD);
-    drawText(row[0], MARGIN + 10, ry + 5, 7.5, bold, TEXT_DARK);
+    drawText(row[0] as string, MARGIN + 10, ry + 5, 7.5, bold, TEXT_DARK);
     drawText(`= ${row[1]}`, MARGIN + 65, ry + 5, 7.5, font, TEXT_DARK);
     drawText(`(${row[2]})`, MARGIN + halfW - 35, ry + 5, 7.5, bold, row[4] as any);
     y = ry;

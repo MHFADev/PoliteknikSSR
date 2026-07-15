@@ -96,7 +96,8 @@ export async function getSettings() {
     defaults.pklStartDate = "";
     defaults.pklEndDate = "";
     defaults.qrExpiryHours = 12;
-    defaults.attendanceCutoffHour = 8;
+    defaults.entryTime = "07:00";
+    defaults.lateTime = "08:00";
     defaults.defaultLocationRadius = 100;
   }
 

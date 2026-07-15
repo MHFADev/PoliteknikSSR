@@ -6,7 +6,20 @@ import { generateDailyToken } from "@/lib/qr-token";
 import { revalidatePath } from "next/cache";
 import { randomUUID } from "crypto";
 
-const SESSION_DURATION_HOURS = 12;
+const DEFAULT_SESSION_DURATION_HOURS = 12;
+
+async function getQrExpiryHours(): Promise<number> {
+  try {
+    const supabase = createAdminClient();
+    const { data: admins } = await supabase.auth.admin.listUsers();
+    const adminUser = admins?.users?.find(
+      (u) => u.user_metadata?.role === "admin" || u.user_metadata?.role === "owner",
+    );
+    return adminUser?.user_metadata?.settings?.qrExpiryHours || DEFAULT_SESSION_DURATION_HOURS;
+  } catch {
+    return DEFAULT_SESSION_DURATION_HOURS;
+  }
+}
 
 /**
  * generateTodaySession — Buat sesi QR baru untuk hari ini (Admin only)
@@ -30,7 +43,8 @@ export async function generateTodaySession() {
 
   const sessionId = randomUUID();
   const sessionDate = new Date().toISOString().slice(0, 10);
-  const expiresAt = new Date(Date.now() + SESSION_DURATION_HOURS * 60 * 60 * 1000);
+  const durationHours = await getQrExpiryHours();
+  const expiresAt = new Date(Date.now() + durationHours * 60 * 60 * 1000);
 
   // --- Generate token QR yg ditandatangani (sessionId tertanam di payload) ---
   const token = await generateDailyToken(

@@ -441,22 +441,37 @@ export function SettingsForm({ role }: SettingsFormProps) {
               <div className={styles.toggleDesc}>Berapa lama QR code berlaku sebelum kadaluarsa.</div>
             </div>
 
-            {/* Batas Waktu Hadir */}
+            {/* Jam Masuk */}
             <div className={styles.formField}>
-              <label className={styles.formLabel} htmlFor="attendanceCutoffHour">
-                Batas Waktu Hadir (jam)
+              <label className={styles.formLabel} htmlFor="entryTime">
+                Jam Masuk
               </label>
               <input
-                id="attendanceCutoffHour"
-                type="number"
-                className={styles.numberInput}
-                value={settings.attendanceCutoffHour || 8}
-                onChange={(e) => handleChange("attendanceCutoffHour", Number(e.target.value))}
-                min={1}
-                max={23}
+                id="entryTime"
+                type="time"
+                className={styles.dateInput}
+                value={settings.entryTime || "07:00"}
+                onChange={(e) => handleChange("entryTime", e.target.value)}
               />
               <div className={styles.toggleDesc}>
-                Batas maksimal jam presensi sebelum dianggap telat. Default: jam 8.
+                Jam resmi masuk PKL. Siswa yang scan sebelum jam ini dianggap &ldquo;Hadir&rdquo;.
+              </div>
+            </div>
+
+            {/* Jam Batas Telat */}
+            <div className={styles.formField}>
+              <label className={styles.formLabel} htmlFor="lateTime">
+                Jam Batas Telat
+              </label>
+              <input
+                id="lateTime"
+                type="time"
+                className={styles.dateInput}
+                value={settings.lateTime || "08:00"}
+                onChange={(e) => handleChange("lateTime", e.target.value)}
+              />
+              <div className={styles.toggleDesc}>
+                Siswa yang scan setelah jam ini dianggap &ldquo;Telat&rdquo;. Default: 08:00.
               </div>
             </div>
           </Card>
