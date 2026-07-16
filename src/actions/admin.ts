@@ -332,19 +332,16 @@ export async function forceLogoutUser(
   }
 
   try {
-    // Hapus semua sessions user via Admin REST API — TIDAK ubah password atau data
-    const url = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/auth/v1/admin/users/${userId}/sessions`;
-    const res = await fetch(url, {
-      method: "DELETE",
-      headers: {
-        "apikey": process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-        "Authorization": `Bearer ${process.env.SUPABASE_SERVICE_ROLE_KEY!}`,
-      },
-    });
-
-    if (!res.ok) {
-      return { success: false, message: "Gagal menghapus session. Coba ulangi." };
+    // Update metadata (trigger session refresh)
+    const { data: existing } = await supabase.auth.admin.getUserById(userId);
+    if (existing?.user) {
+      await supabase.auth.admin.updateUserById(userId, {
+        user_metadata: { ...existing.user.user_metadata, force_logout: Date.now() },
+      });
     }
+
+    // Sign out semua sessions user
+    await supabase.auth.admin.signOut(userId);
 
     return { success: true };
   } catch (err: any) {
