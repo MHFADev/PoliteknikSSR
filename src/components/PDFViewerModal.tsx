@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, useEffect, useMemo } from "react";
+import { useRef, useState, useEffect } from "react";
 import type { PrakerinRecapData } from "@/lib/types";
 
 interface Props {
@@ -36,14 +36,32 @@ export function PDFViewerModal({ url, title, onClose, gradeData, studentName, fi
   const [mode, setMode] = useState<"pdf" | "grade">(url ? "pdf" : "grade");
   const [zoom, setZoom] = useState(1);
   const [isImage, setIsImage] = useState(false);
+  const [blobUrl, setBlobUrl] = useState<string | null>(null);
+  const [loadingPdf, setLoadingPdf] = useState(false);
   const gradePrintRef = useRef<HTMLDivElement>(null);
+  const blobRef = useRef<string | null>(null);
 
-  const proxyUrl = useMemo(() => {
-    if (!url) return null;
+  useEffect(() => {
+    if (!url) return;
     const isImage = isImageUrl(url);
     setIsImage(isImage);
-    return `/api/download-document?url=${encodeURIComponent(url)}&mode=preview&filename=${encodeURIComponent(title)}`;
-  }, [url, title]);
+    // Cleanup old blob
+    if (blobRef.current) { URL.revokeObjectURL(blobRef.current); blobRef.current = null; setBlobUrl(null); }
+    if (!isImage) {
+      setLoadingPdf(true);
+      const fn = fileName || title.toLowerCase().replace(/\s+/g, '-') + '.pdf';
+      fetch(`/api/download-document?url=${encodeURIComponent(url)}&mode=preview&filename=${encodeURIComponent(fn)}`)
+        .then(r => r.blob())
+        .then(blob => {
+          const b = URL.createObjectURL(blob);
+          blobRef.current = b;
+          setBlobUrl(b);
+          setLoadingPdf(false);
+        })
+        .catch(() => setLoadingPdf(false));
+    }
+    return () => { if (blobRef.current) URL.revokeObjectURL(blobRef.current); };
+  }, [url]);
 
   const zoomIn = () => setZoom((z) => Math.min(ZOOM_MAX, +(z + ZOOM_STEP).toFixed(2)));
   const zoomOut = () => setZoom((z) => Math.max(ZOOM_MIN, +(z - ZOOM_STEP).toFixed(2)));
@@ -171,9 +189,12 @@ export function PDFViewerModal({ url, title, onClose, gradeData, studentName, fi
                   Reset
                 </button>
               </div>
-              <div className="w-full overflow-auto border border-slate-200 rounded-lg bg-white shadow-sm"
-                style={{ maxHeight: "65vh" }}>
-                {isImage ? (
+<div className="w-full overflow-auto border border-slate-200 rounded-lg bg-white shadow-sm"
+                  style={{ maxHeight: "65vh" }}>
+                  {loadingPdf && !isImage && (
+                    <div className="flex items-center justify-center py-16 text-sm text-slate-400">Memuat PDF...</div>
+                  )}
+                  {isImage ? (
                   <div style={{
                     width: `${100 / zoom}%`,
                     transform: `scale(${zoom})`,
@@ -183,7 +204,7 @@ export function PDFViewerModal({ url, title, onClose, gradeData, studentName, fi
                     backgroundColor: "#f8fafc"
                   }}>
                       <img
-                        src={proxyUrl || url}
+                        src={url}
                         alt={title}
                         crossOrigin="anonymous"
                         style={{
@@ -197,7 +218,7 @@ export function PDFViewerModal({ url, title, onClose, gradeData, studentName, fi
                   </div>
                 ) : (
                   <iframe
-                    src={proxyUrl || url}
+                    src={blobUrl || ""}
                     className="border-0"
                     style={{
                       width: `${100 / zoom}%`,
