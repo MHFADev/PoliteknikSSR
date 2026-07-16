@@ -7,11 +7,15 @@ export interface PDFPageInfo {
 export class PDFViewerEngine {
   private doc: any = null;
 
-  async load(_url: string): Promise<PDFPageInfo[]> {
+  async load(url: string): Promise<PDFPageInfo[]> {
     const pdfjsLib = await import("pdfjs-dist");
-    pdfjsLib.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
-    const loadingTask = pdfjsLib.getDocument(_url);
+    
+    // ✅ Worker path yang benar
+    pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
+    
+    const loadingTask = pdfjsLib.getDocument(url);
     this.doc = await loadingTask.promise;
+    
     const pages: PDFPageInfo[] = [];
     for (let i = 1; i <= this.doc.numPages; i++) {
       const page = await this.doc.getPage(i);
@@ -26,10 +30,15 @@ export class PDFViewerEngine {
     const pdfjsLib = await import("pdfjs-dist");
     const page = await this.doc.getPage(pageNumber);
     const vp = page.getViewport({ scale });
+    
     canvas.width = vp.width;
     canvas.height = vp.height;
     const ctx = canvas.getContext("2d")!;
-    const renderTask = page.render({ canvasContext: ctx, viewport: vp });
+    
+    const renderTask = page.render({ 
+      canvasContext: ctx, 
+      viewport: vp 
+    });
     await renderTask.promise;
   }
 
