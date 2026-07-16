@@ -25,11 +25,8 @@ import styles from "@/styles/pages/Login.module.css";
 const GPS_ENABLED = false;
 
 const HERO_SLIDES = [
-  { src: "/hero/1.jpg", alt: "Kampus Politeknik SSR" },
-  { src: "/hero/2.jpg", alt: "Kegiatan PKL Siswa" },
-  { src: "/hero/3.jpg", alt: "Laboratorium Komputer" },
+  { src: "/hero/1.jpg", alt: "Politeknik SSR" },
 ];
-/* Ganti ekstensi sesuai format gambar: .jpg, .png, .webp, dll */
 
 function getCurrentPosition(): Promise<GeolocationPosition> {
   return new Promise((resolve, reject) => {
@@ -80,6 +77,7 @@ export default function LoginPage() {
   const [blockedPopup, setBlockedPopup] = useState(false);
 
   const [currentSlide, setCurrentSlide] = useState(0);
+  const hasMultipleSlides = HERO_SLIDES.length > 1;
   const [imageErrors, setImageErrors] = useState<Record<number, boolean>>({});
 
   useEffect(() => {
@@ -234,36 +232,32 @@ export default function LoginPage() {
 
           {/* Carousel Controls */}
           <div className={styles.heroCarouselControls}>
-            <button
-              type="button"
-              onClick={prevSlide}
-              className={styles.heroCarouselBtn}
-              aria-label="Sebelumnya"
-            >
-              <ChevronLeft />
-            </button>
-            <button
-              type="button"
-              onClick={nextSlide}
-              className={styles.heroCarouselBtn}
-              aria-label="Selanjutnya"
-            >
-              <ChevronRight />
-            </button>
+            {hasMultipleSlides && (
+              <>
+                <button type="button" onClick={prevSlide} className={styles.heroCarouselBtn} aria-label="Sebelumnya">
+                  <ChevronLeft />
+                </button>
+                <button type="button" onClick={nextSlide} className={styles.heroCarouselBtn} aria-label="Selanjutnya">
+                  <ChevronRight />
+                </button>
+              </>
+            )}
           </div>
 
           {/* Dots */}
-          <div className={styles.heroDots}>
-            {HERO_SLIDES.map((_, idx) => (
-              <button
-                key={idx}
-                type="button"
-                onClick={() => goToSlide(idx)}
-                className={`${styles.heroDot} ${idx === currentSlide ? styles.heroDotActive : ""}`}
-                aria-label={`Slide ${idx + 1}`}
-              />
-            ))}
-          </div>
+          {hasMultipleSlides && (
+            <div className={styles.heroDots}>
+              {HERO_SLIDES.map((_, idx) => (
+                <button
+                  key={idx}
+                  type="button"
+                  onClick={() => goToSlide(idx)}
+                  className={`${styles.heroDot} ${idx === currentSlide ? styles.heroDotActive : ""}`}
+                  aria-label={`Slide ${idx + 1}`}
+                />
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Content over carousel */}
