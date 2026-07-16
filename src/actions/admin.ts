@@ -332,16 +332,12 @@ export async function forceLogoutUser(
   }
 
   try {
-    // Update metadata (trigger session refresh)
-    const { data: existing } = await supabase.auth.admin.getUserById(userId);
-    if (existing?.user) {
-      await supabase.auth.admin.updateUserById(userId, {
-        user_metadata: { ...existing.user.user_metadata, force_logout: Date.now() },
-      });
-    }
+    // Hapus sessions via Postgres function (SECURITY DEFINER, bypass RLS)
+    const { error } = await (supabase.rpc as any)("delete_user_sessions", { p_user_id: userId });
 
-    // Sign out semua sessions user
-    await supabase.auth.admin.signOut(userId);
+    if (error) {
+      return { success: false, message: "Gagal logout: " + error.message };
+    }
 
     return { success: true };
   } catch (err: any) {

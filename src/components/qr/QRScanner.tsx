@@ -47,6 +47,7 @@ export function QRScanner() {
   const scannerRef = useRef<Html5Qrcode | null>(null);
   const [state, setState] = useState<ScanState>("idle");
   const [message, setMessage] = useState<string>("");
+  const [resultData, setResultData] = useState<{ status: string; name: string; time: string } | null>(null);
   const [useFrontCamera, setUseFrontCamera] = useState(false);
   const [isIOS, setIsIOS] = useState(false);
 
@@ -185,10 +186,11 @@ export function QRScanner() {
           setState("processing");
           setMessage("Memproses presensi...");
 
-          const result = await submitAttendance(decodedText);
+          const result = await submitAttendance(decodedText) as any;
           if (result.success) {
             setState("success");
             setMessage(result.message ?? "Presensi berhasil!");
+            setResultData(result);
           } else {
             setState("error");
             setMessage(result.message ?? "Presensi gagal.");
@@ -209,6 +211,7 @@ export function QRScanner() {
   function reset() {
     setState("idle");
     setMessage("");
+    setResultData(null);
   }
 
   function toggleCamera() {
@@ -268,18 +271,22 @@ export function QRScanner() {
                 </div>
               )}
               {state === "processing" && <div className={styles.spinner} />}
-              {state === "success" && (
+              {state === "success" && resultData && (
                 <motion.div
                   initial={{ scale: 0.6, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
                   transition={{ type: "spring", stiffness: 260, damping: 18 }}
-                  className="relative flex flex-col items-center gap-2"
+                  className="relative flex flex-col items-center gap-2 px-4 text-center"
                 >
                   <div className="relative">
                     <span className={styles.successRing} />
                     <CheckCircle2 className={styles.successIcon} />
                   </div>
-                  <p className="text-sm font-medium text-ink">{message}</p>
+                  <p className="text-sm font-semibold text-ink">{resultData.name}</p>
+                  <p className="text-sm font-medium" style={{ color: resultData.status === "hadir" ? "#16A34A" : "#D97706" }}>
+                    {resultData.status === "hadir" ? "✅ Hadir Tepat Waktu" : "⏰ Telat"}
+                  </p>
+                  <p className="text-xs text-slate-500">Pukul {resultData.time}</p>
                 </motion.div>
               )}
               {state === "error" && (

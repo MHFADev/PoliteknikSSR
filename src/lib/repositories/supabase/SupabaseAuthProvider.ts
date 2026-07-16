@@ -21,9 +21,14 @@ export class SupabaseAuthProvider implements IAuthProvider {
     }
 
     // Cek status approved — handle both false AND undefined
-    const isApproved = data.user?.user_metadata?.approved;
+    const meta = data.user?.user_metadata || {};
+    const isApproved = meta.approved;
+    const isBlocked = meta.blocked === true;
     if (isApproved !== true) {
       await supabase.auth.signOut();
+      if (isBlocked) {
+        return { user: null, error: "AKUN_DIBLOKIR" };
+      }
       return { user: null, error: "Akun Anda belum disetujui oleh admin. Silakan tunggu persetujuan." };
     }
 
