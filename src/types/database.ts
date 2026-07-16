@@ -453,13 +453,7 @@ export type Database = {
         Update: { id?: string; nama?: string; created_at?: string };
         Relationships: [];
       };
-      verification_codes: {
-        Row: { id: string; email: string; code: string; expires_at: string; used: boolean; created_at: string };
-        Insert: { id?: string; email: string; code: string; expires_at?: string; used?: boolean; created_at?: string };
-        Update: { id?: string; email?: string; code?: string; expires_at?: string; used?: boolean; created_at?: string };
-        Relationships: [];
       };
-    };
     Views: Record<string, never>;
     Functions: Record<string, never>;
     Enums: {

@@ -734,22 +734,6 @@ create policy "classes: admin/root/owner kelola"
   with check (public.current_role() in ('admin', 'owner', 'root'));
 
 -- =====================================================================
--- 20. TABEL: verification_codes
--- Kode verifikasi email untuk pendaftaran (expired 10 menit)
--- =====================================================================
-create table if not exists public.verification_codes (
-  id uuid primary key default gen_random_uuid(),
-  email text not null,
-  code text not null,
-  expires_at timestamptz not null default (now() + interval '10 minutes'),
-  used boolean not null default false,
-  created_at timestamptz not null default now()
-);
-
-create index if not exists idx_verification_codes_email on public.verification_codes(email);
-create index if not exists idx_verification_codes_expires on public.verification_codes(expires_at);
-
--- =====================================================================
 -- SELESAI. Langkah selanjutnya:
 -- 1. Buat user pertama (role admin) lewat Supabase Dashboard > Authentication > Add user,
 --    lalu update kolom role di tabel profiles menjadi 'admin' untuk user tsb.
