@@ -174,7 +174,8 @@
 }
 
 .calendarDayNormal {
-  color: var(--color-deep, #0f172a);
+  /* 🔥 Ganti warna angka tanggal menjadi biru #123ea3 untuk kontras lebih baik */
+  color: #123ea3;
 }
 
 .calendarEvents {

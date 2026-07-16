@@ -18,6 +18,7 @@
 //     • Tampilan Default (select: Ringkas/Lengkap)
 //     • Item per Halaman (select: 10/25/50)
 //     • Notifikasi Email (toggle)
+//     • Tema Terang/Gelap (toggle)
 //
 // - Admin:
 //     • Periode PKL (tanggal mulai & selesai)
@@ -25,6 +26,7 @@
 //     • Batas Waktu Hadir (number, jam)
 //     • Default Radius (number, meter)
 //     • Notifikasi Sistem (toggle)
+//     • Tema Terang/Gelap (toggle)
 //
 // Cara pakai:
 //   <SettingsForm role="siswa" />
@@ -542,6 +544,39 @@ export function SettingsForm({ role }: SettingsFormProps) {
             </p>
 
             <ToggleSwitch key="notifications" label="Notifikasi Sistem" desc="Kirim notifikasi sistem ke semua pengguna" />
+          </Card>
+
+          {/* 🔥 Theme toggle: Terang / Gelap - untuk admin */}
+          <Card variant="skylearn">
+            <div className={styles.formSectionTitle}>
+              <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                <Settings className="h-5 w-5 text-sky" />
+                <span>Tema Tampilan</span>
+              </div>
+            </div>
+            <p className={styles.formSectionDesc}>
+              Pilih tema tampilan aplikasi untuk seluruh pengguna.
+            </p>
+
+            <div className={styles.toggleRow}>
+              <div>
+                <div className={styles.toggleLabel}>Tema</div>
+                <div className={styles.toggleDesc}>
+                  {settings.theme === "dark" ? "Gelap" : "Terang"}
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => handleChange("theme", settings.theme === "dark" ? "light" : "dark")}
+                className={`${styles.toggleSwitch} ${settings.theme === "dark" ? styles.toggleActive : styles.toggleInactive}`}
+                aria-label="Toggle tema"
+                aria-pressed={settings.theme === "dark"}
+              >
+                <span
+                  className={`${styles.toggleKnob} ${settings.theme === "dark" ? styles.toggleKnobActive : styles.toggleKnobInactive}`}
+                />
+              </button>
+            </div>
           </Card>
         </>
       )}

@@ -370,6 +370,10 @@
   font-weight: 700;
 }
 
+.calendarDayNormal {
+  color: #123ea3;
+}
+
 .calendarStatus {
   display: flex;
   align-items: center;
