@@ -60,6 +60,12 @@ export default function RegisterPage() {
   const [classList, setClassList] = useState<{ id: string; nama: string }[]>([]);
   const [agreed, setAgreed] = useState(false);
 
+  // Email verification
+  const [verifCode, setVerifCode] = useState("");
+  const [codeSent, setCodeSent] = useState(false);
+  const [sendingCode, setSendingCode] = useState(false);
+  const [emailVerified, setEmailVerified] = useState(false);
+
   const [currentSlide, setCurrentSlide] = useState(0);
   const [imageErrors, setImageErrors] = useState<Record<number, boolean>>({});
 
@@ -118,6 +124,8 @@ export default function RegisterPage() {
     if (!fullName.trim()) errors.fullName = "Nama lengkap wajib diisi.";
     if (!email.trim()) {
       errors.email = "Email wajib diisi.";
+    } else if (!emailVerified) {
+      errors.email = "Verifikasi email terlebih dahulu.";
     } else {
       const emailResult = validateEmail(email);
       if (!emailResult.valid)
@@ -370,7 +378,7 @@ export default function RegisterPage() {
 
               <div className={styles.field}>
                 <label className={styles.label} htmlFor="email">
-                  Email
+                  Email <span style={{ color: "#DC2626", fontSize: "0.75rem" }}>(Wajib Pakai Email Aktif)</span>
                 </label>
                 <div className={styles.inputWrapper}>
                   <Mail className={styles.inputIcon} />
@@ -379,16 +387,59 @@ export default function RegisterPage() {
                     type="email"
                     required
                     value={email}
-                    onChange={(e) => handleEmailChange(e.target.value)}
+                    disabled={emailVerified}
+                    onChange={(e) => { handleEmailChange(e.target.value); setCodeSent(false); setEmailVerified(false); }}
                     placeholder="nama@gmail.com"
                     className={`${styles.input} ${styles.inputWithIcon} ${fieldErrors.email ? styles.inputError : styles.inputNormal}`}
                   />
                 </div>
-                {emailWarning && (
-                  <span className={styles.emailWarning}>{emailWarning}</span>
+                {!emailVerified && (
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      if (!email.trim()) { setFieldErrors(prev => ({ ...prev, email: "Masukkan email terlebih dahulu." })); return; }
+                      setSendingCode(true); setError(null);
+                      try {
+                        const res = await fetch("/api/send-verification", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email }) });
+                        const data = await res.json();
+                        if (data.error) { setError(data.error); } else { setCodeSent(true); }
+                      } catch { setError("Gagal mengirim kode."); }
+                      setSendingCode(false);
+                    }}
+                    disabled={sendingCode || !email.trim()}
+                    style={{ marginTop: "0.5rem", padding: "0.5rem 1rem", background: "#2563EB", color: "#fff", border: "none", borderRadius: "0.5rem", fontSize: "0.8125rem", fontWeight: 600, cursor: "pointer", width: "100%" }}
+                  >
+                    {sendingCode ? "Mengirim..." : codeSent ? "Kirim Ulang Kode" : "Kirim Kode Verifikasi"}
+                  </button>
                 )}
-                {fieldErrors.email && !emailWarning && (
-                  <span className={styles.fieldError}>{fieldErrors.email}</span>
+                {codeSent && !emailVerified && (
+                  <div style={{ marginTop: "0.75rem", display: "flex", gap: "0.5rem", alignItems: "center" }}>
+                    <input
+                      type="text" inputMode="numeric" pattern="[0-9]*" maxLength={6} placeholder="000000"
+                      value={verifCode} onChange={(e) => setVerifCode(e.target.value.replace(/\D/g, "").slice(0, 6))}
+                      style={{ flex: 1, padding: "0.5rem", border: "1px solid #CBD5E1", borderRadius: "0.5rem", fontSize: "1rem", textAlign: "center", letterSpacing: "0.5em", fontWeight: 700, outline: "none" }}
+                    />
+                    <button
+                      type="button"
+                      onClick={async () => {
+                        if (verifCode.length < 6) { setError("Masukkan kode 6 digit."); return; }
+                        setLoading(true); setError(null);
+                        try {
+                          const res = await fetch("/api/verify-code", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email, code: verifCode }) });
+                          const data = await res.json();
+                          if (data.error) { setError(data.error); } else { setEmailVerified(true); }
+                        } catch { setError("Gagal verifikasi."); }
+                        setLoading(false);
+                      }}
+                      disabled={loading || verifCode.length < 6}
+                      style={{ padding: "0.5rem 1rem", background: "#16A34A", color: "#fff", border: "none", borderRadius: "0.5rem", fontSize: "0.8125rem", fontWeight: 600, cursor: "pointer", whiteSpace: "nowrap" }}
+                    >
+                      {loading ? "..." : "Verifikasi"}
+                    </button>
+                  </div>
+                )}
+                {emailVerified && (
+                  <p style={{ marginTop: "0.5rem", fontSize: "0.8125rem", color: "#16A34A", fontWeight: 600 }}>✓ Email terverifikasi</p>
                 )}
               </div>
 
