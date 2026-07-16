@@ -212,7 +212,7 @@ Buka `http://localhost:3000` → login dengan akun admin yang baru dibuat.
 Project ini menggunakan **Skylearn Design System** sebagai basis utama + **Flip7 Accent** untuk tombol aksen:
 
 ### Skylearn (Utama)
-- **Warna utama**: Sky (#3B82F6), Sun (#FBBF24), Leaf (#22C55E), Coral (#F87171)
+- **Warna utama**: Sky (#3B82F6), Sun (#FBBF24), Leaf (#22C55E), Coral (#F87171), Ocean(#3572EF)
 - **Tipografi: Plus Jakarta Sans (display) + Inter (body)
 - **Radius**: 12px (input), 16px (tombol), 20px (kartu), 28px (panel)
 - **Shadow**: Skylearn soft shadow (`0 8px 24px rgba(15,23,42,0.06)`)
