@@ -18,6 +18,16 @@ interface Document {
   expiresAt: string;
 }
 
+function downloadFileWithBlob(url: string, filename: string) {
+  const downloadUrl = `/api/download-document?url=${encodeURIComponent(url)}&filename=${encodeURIComponent(filename)}`;
+  const a = document.createElement('a');
+  a.href = downloadUrl;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+}
+
 export function StudentDocuments() {
   const [docs, setDocs] = useState<Document[]>([]);
   const [loading, setLoading] = useState(true);
@@ -39,12 +49,7 @@ export function StudentDocuments() {
 
   const downloadFile = async (doc: Document) => {
     if (doc.fileUrl) {
-      const a = document.createElement("a");
-      a.href = doc.fileUrl;
-      a.download = doc.fileName || "dokumen";
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
+      downloadFileWithBlob(doc.fileUrl, doc.fileName || "dokumen");
     }
   };
 
@@ -72,6 +77,7 @@ export function StudentDocuments() {
           url={viewDoc.fileUrl}
           title={viewDoc.fileName || (viewDoc.type === "certificate" ? "Sertifikat PKL" : "Rekap Prakerin")}
           gradeData={viewDoc.gradeData}
+          fileName={viewDoc.fileName || undefined}
           onClose={() => setViewDoc(null)}
         />
       )}
@@ -83,7 +89,7 @@ export function StudentDocuments() {
           <div className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 ${
             doc.type === "certificate" ? "bg-orange-100 text-orange-600" : "bg-sky-100 text-sky-600"
           }`}>
-            {doc.type === "certificate" ? <Image className="h-4 w-4" /> : <FileText className="h-4 w-4" />}
+            {doc.type === "certificate" ? <Image className="h-4 w-4" aria-label="sertifikat" /> : <FileText className="h-4 w-4" aria-label="dokumen" />}
           </div>
 
           <div className="flex-1 min-w-0">
@@ -113,12 +119,12 @@ export function StudentDocuments() {
           <div className="flex gap-1.5 shrink-0">
             <button onClick={() => setViewDoc(doc)}
               className="text-xs px-2.5 py-1.5 rounded-md bg-blue-50 text-blue-600 hover:bg-blue-100 font-medium transition-colors flex items-center gap-1">
-              <Eye className="h-3 w-3" />
+              <Eye className="h-3 w-3" aria-label="lihat" />
               Lihat
             </button>
             <button onClick={() => downloadFile(doc)}
               className="text-xs px-2.5 py-1.5 rounded-md bg-slate-100 text-slate-700 hover:bg-slate-200 font-medium transition-colors flex items-center gap-1">
-              <FileDown className="h-3 w-3" />
+              <FileDown className="h-3 w-3" aria-label="download" />
               Download
             </button>
             {!doc.isKept ? (
@@ -131,7 +137,7 @@ export function StudentDocuments() {
               <button onClick={() => handleKeep(doc.id, false)}
                 className="text-xs px-2 py-1.5 rounded-md border border-red-200 text-red-500 hover:bg-red-50 transition-colors"
                 title="Izinkan penghapusan otomatis">
-                <Trash2 className="h-3 w-3" />
+                <Trash2 className="h-3 w-3" aria-label="hapus" />
               </button>
             )}
           </div>

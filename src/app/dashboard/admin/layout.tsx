@@ -35,7 +35,7 @@ export default async function AdminLayout({
     .eq("id", user.id)
     .single();
 
-  const userRole = (profile?.role === "owner" ? "owner" : "admin") as "admin" | "owner";
+  const userRole = (profile?.role === "owner" || profile?.role === "root" ? profile.role : "admin") as "admin" | "owner" | "root";
 
   return (
     /* 🔥 Layout — bg pake var() biar otomatis ngikut mode gelap/terang */

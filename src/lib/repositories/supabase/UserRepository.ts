@@ -448,9 +448,11 @@ export class SupabaseUserRepository implements IUserRepository {
     const { data, error } = await supabase.auth.admin.listUsers();
     if (error || !data?.users) return [];
 
-    // Filter user yang belum disetujui (approved !== true), kecuali owner
+    // Filter user yang belum disetujui (approved !== true), kecuali owner, root & blocked
     const pendingIds = data.users
-      .filter((u) => u.user_metadata?.approved !== true && u.user_metadata?.role !== "owner")
+      .filter((u) => u.user_metadata?.approved !== true
+        && !["owner", "root"].includes(u.user_metadata?.role)
+        && u.user_metadata?.blocked !== true)
       .map((u) => u.id);
 
     if (pendingIds.length === 0) return [];
@@ -460,7 +462,8 @@ export class SupabaseUserRepository implements IUserRepository {
       .from("profiles")
       .select("id, full_name, role, created_at")
       .in("id", pendingIds)
-      .neq("role", "owner");
+      .neq("role", "owner")
+      .neq("role", "root");
 
     // Gabungkan data auth dengan profil
     return pendingIds.map((id) => {
@@ -499,6 +502,12 @@ export class SupabaseUserRepository implements IUserRepository {
   async rejectUser(userId: string): Promise<{ error?: string }> {
     const supabase = this.getAdminClient();
 
+    // Cek apakah user adalah root — root tidak bisa ditolak
+    const { data: profile } = await supabase.from("profiles").select("role").eq("id", userId).single();
+    if (profile?.role === "root" || profile?.role === "owner") {
+      return { error: "Tidak dapat menolak akun root/owner." };
+    }
+
     // Hapus dari profiles dulu (agar foreign key tidak bermasalah)
     await supabase.from("profiles").delete().eq("id", userId);
 
@@ -512,6 +521,12 @@ export class SupabaseUserRepository implements IUserRepository {
    */
   async deleteUser(userId: string): Promise<{ error?: string }> {
     const supabase = this.getAdminClient();
+
+    // Cek apakah user adalah root — root tidak bisa dihapus
+    const { data: profile } = await supabase.from("profiles").select("role").eq("id", userId).single();
+    if (profile?.role === "root" || profile?.role === "owner") {
+      return { error: "Tidak dapat menghapus akun root/owner." };
+    }
 
     // Hapus dari profiles dulu
     const { error: profileError } = await supabase.from("profiles").delete().eq("id", userId);
@@ -530,8 +545,17 @@ export class SupabaseUserRepository implements IUserRepository {
    */
   async blockUser(userId: string): Promise<{ error?: string }> {
     const supabase = this.getAdminClient();
+
+    // Cek apakah user adalah root — root tidak bisa diblokir
+    const { data: profile } = await supabase.from("profiles").select("role").eq("id", userId).single();
+    if (profile?.role === "root" || profile?.role === "owner") {
+      return { error: "Tidak dapat memblokir akun root/owner." };
+    }
+
+    const { data: existing } = await supabase.auth.admin.getUserById(userId);
+    const meta = { ...(existing?.user?.user_metadata || {}), approved: false, blocked: true };
     const { error } = await supabase.auth.admin.updateUserById(userId, {
-      user_metadata: { approved: false },
+      user_metadata: meta,
     });
     if (error) return { error: "Gagal memblokir user: " + error.message };
 
@@ -549,8 +573,15 @@ export class SupabaseUserRepository implements IUserRepository {
    */
   async unblockUser(userId: string): Promise<{ error?: string }> {
     const supabase = this.getAdminClient();
+
+    // Ambil metadata existing dulu, jangan timpa semua
+    const { data: existing } = await supabase.auth.admin.getUserById(userId);
+    if (!existing?.user) return { error: "User tidak ditemukan" };
+
+    const meta: Record<string, any> = { ...existing.user.user_metadata, approved: true };
+    delete meta.blocked;
     const { error } = await supabase.auth.admin.updateUserById(userId, {
-      user_metadata: { approved: true },
+      user_metadata: meta,
     });
     if (error) return { error: "Gagal membuka blokir: " + error.message };
 
@@ -564,6 +595,13 @@ export class SupabaseUserRepository implements IUserRepository {
    */
   async updateUserRole(userId: string, role: UserRole): Promise<{ error?: string }> {
     const supabase = this.getAdminClient();
+
+    // Cek apakah user adalah root — root tidak bisa diubah role-nya
+    const { data: profile } = await supabase.from("profiles").select("role").eq("id", userId).single();
+    if (profile?.role === "root" || profile?.role === "owner") {
+      return { error: "Tidak dapat mengubah role akun root/owner." };
+    }
+
     const { error } = await supabase.auth.admin.updateUserById(userId, {
       user_metadata: { role },
     });

@@ -22,7 +22,8 @@ export interface UnsurNilai {
 
 export interface BidangKeahlian {
   name: string;
-  keterangan: string;
+  score: number;
+  keterangan?: string;
 }
 
 export interface PrakerinRecapData {
@@ -93,9 +94,9 @@ export function createDefaultPrakerinData(): PrakerinRecapData {
     industri: "",
     periode: "",
     unsurNilai: UNSUR_NILAI_LABELS.map((name) => ({ name, score: 0 })),
-    bidangKeahlian: Array.from({ length: 10 }, () => ({
+    bidangKeahlian: Array.from({ length: 3 }, () => ({
       name: "",
-      keterangan: "",
+      score: 0,
     })),
     notes: "",
     pklStartDate: "",

@@ -21,8 +21,18 @@ export function getRawUrl(owner: string, repo: string, branch: string, path: str
 async function compressBuffer(buf: Buffer, mimetype: string): Promise<Buffer> {
   if (mimetype.startsWith("image/")) {
     try {
+      const meta = await sharp(buf).metadata();
+      // Resize: max 1200px untuk foto profil, 1600px untuk lainnya
+      const maxDim = 1200;
+      let resizeOpts: any = { withoutEnlargement: true };
+      if (meta.width && meta.width > maxDim || meta.height && meta.height > maxDim) {
+        resizeOpts.width = maxDim;
+        resizeOpts.height = maxDim;
+        resizeOpts.fit = "inside";
+      }
       const compressed = await sharp(buf)
-        .jpeg({ quality: 70 })
+        .resize(resizeOpts)
+        .jpeg({ quality: 60, mozjpeg: true })
         .toBuffer();
       return compressed;
     } catch {
@@ -31,6 +41,8 @@ async function compressBuffer(buf: Buffer, mimetype: string): Promise<Buffer> {
   }
   return buf;
 }
+
+const IMAGE_EXTS = [".jpg", ".jpeg", ".png", ".gif", ".webp", ".bmp", ".tiff", ".avif"];
 
 export async function uploadToGitHub(
   fileBuffer: Buffer,
@@ -42,12 +54,18 @@ export async function uploadToGitHub(
     return { url: "", error: `Ukuran file maksimal 20MB. File ini ${(fileBuffer.length / 1024 / 1024).toFixed(1)}MB.` };
   }
 
+  // Kompres gambar agresif — semua foto di-convert ke JPEG quality 60
+  const ext = "." + fileName.split(".").pop()?.toLowerCase();
+  const isImage = IMAGE_EXTS.includes(ext);
+  const compressed = isImage ? await compressBuffer(fileBuffer, "image/jpeg") : fileBuffer;
+
   const { token, repo, owner } = getConfig();
   const branch = "main";
   const timestamp = Date.now();
-  const safeName = fileName.replace(/\s+/g, "-").replace(/[^a-zA-Z0-9._-]/g, "");
+  const finalName = isImage ? fileName.replace(/\.[^.]+$/, ".jpg") : fileName;
+  const safeName = finalName.replace(/\s+/g, "-").replace(/[^a-zA-Z0-9._-]/g, "");
   const path = `uploads/${bucket}/${userId}/${timestamp}-${safeName}`;
-  const content = fileBuffer.toString("base64");
+  const content = compressed.toString("base64");
 
   const { error: commitError, sha } = await getFileSha(owner, repo, path, branch, token);
   const body: Record<string, any> = {

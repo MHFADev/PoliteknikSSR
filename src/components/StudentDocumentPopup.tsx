@@ -17,6 +17,16 @@ interface Document {
   expiresAt: string;
 }
 
+function downloadFileWithBlob(url: string, filename: string) {
+  const downloadUrl = `/api/download-document?url=${encodeURIComponent(url)}&filename=${encodeURIComponent(filename)}`;
+  const a = document.createElement('a');
+  a.href = downloadUrl;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+}
+
 export function StudentDocumentPopup() {
   const [docs, setDocs] = useState<Document[]>([]);
   const [loading, setLoading] = useState(true);
@@ -60,6 +70,7 @@ export function StudentDocumentPopup() {
           url={viewDoc.fileUrl}
           title={viewDoc.fileName || (viewDoc.type === "certificate" ? "Sertifikat PKL" : "Rekap Prakerin")}
           gradeData={viewDoc.gradeData}
+          fileName={viewDoc.fileName || undefined}
           onClose={() => setViewDoc(null)}
         />
       )}

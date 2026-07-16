@@ -3,7 +3,8 @@
 import { useState, useEffect, useCallback, useTransition, useMemo } from "react";
 import { Card, CardHeader } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
-import { Loader2, FileText, History, Search, ChevronDown, X, ClipboardList } from "lucide-react";
+import { createClient } from "@/lib/supabase/client";
+import { Loader2, FileText, History, Search, ChevronDown, X, ClipboardList, Plus } from "lucide-react";
 import { getStudents, getSentDocuments, sendCertificate, sendPrakerinRecap } from "@/actions/documents";
 import { UNSUR_NILAI_LABELS, prakerinGradeFromScore, prakerinGradeLabel, createDefaultPrakerinData } from "@/lib/types";
 import type { PrakerinRecapData, UnsurNilai, BidangKeahlian } from "@/lib/types";
@@ -19,7 +20,7 @@ function StudentSelect({
   onChange,
   placeholder,
 }: {
-  students: { id: string; fullName: string; kelas: string | null; identityNumber: string | null }[];
+  students: { id: string; fullName: string; kelas: string | null; identityNumber: string | null; instansi: string | null; jurusanId: string | null; studyProgramName: string | null }[];
   value: string;
   onChange: (id: string) => void;
   placeholder?: string;
@@ -99,23 +100,43 @@ function StudentSelect({
 
 export default function SertifikatRekapPage() {
   const [tab, setTab] = useState<Tab>("certificate");
-  const [students, setStudents] = useState<{ id: string; fullName: string; kelas: string | null; identityNumber: string | null }[]>([]);
+  const [students, setStudents] = useState<{ id: string; fullName: string; kelas: string | null; identityNumber: string | null; instansi: string | null; jurusanId: string | null; studyProgramName: string | null }[]>([]);
   const [history, setHistory] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useTransition();
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
+
+  const IMAGE_EXTS = [".jpg", ".jpeg", ".png", ".gif", ".webp", ".bmp"];
 
   // Certificate form
   const [certStudentId, setCertStudentId] = useState("");
   const [certFile, setCertFile] = useState<File | null>(null);
   const [pdfEditorUrl, setPdfEditorUrl] = useState<string | null>(null);
   const [pdfEditorTitle, setPdfEditorTitle] = useState("");
+  const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null);
+  const [imagePreviewTitle, setImagePreviewTitle] = useState("");
 
   // Prakerin recap form
   const [prakerinStudentId, setPrakerinStudentId] = useState("");
   const [prakerin, setPrakerin] = useState<PrakerinRecapData>(createDefaultPrakerinData());
   const [prakerinFile, setPrakerinFile] = useState<File | null>(null);
   const [studentSearch, setStudentSearch] = useState("");
+
+  // Auto-fill identitas saat pilih siswa
+  const handlePrakerinStudentChange = useCallback((id: string) => {
+    setPrakerinStudentId(id);
+    const s = students.find(st => st.id === id);
+    if (s) {
+      setPrakerin(prev => ({
+        ...prev,
+        studentName: s.fullName,
+        nis: s.identityNumber || "",
+        kelas: s.kelas || "",
+        industri: s.instansi || "",
+        programKeahlian: s.studyProgramName || "",
+      }));
+    }
+  }, [students]);
 
   const loadData = useCallback(async () => {
     setLoading(true);
@@ -132,6 +153,18 @@ export default function SertifikatRekapPage() {
     loadData();
   }, [loadData]);
 
+  // Realtime subscription — refresh stats when document sent/deleted
+  useEffect(() => {
+    const supabase = createClient();
+    const channel = supabase
+      .channel("student_documents_changes")
+      .on("postgres_changes", { event: "*", schema: "public", table: "student_documents" }, () => {
+        loadData();
+      })
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
+  }, [loadData]);
+
   const showMessage = useCallback((type: "success" | "error", text: string) => {
     setMessage({ type, text });
     setTimeout(() => setMessage(null), 4000);
@@ -143,8 +176,14 @@ export default function SertifikatRekapPage() {
       return;
     }
     const url = URL.createObjectURL(certFile);
-    setPdfEditorUrl(url);
-    setPdfEditorTitle(`Pratinjau Sertifikat - ${certFile.name}`);
+    const isImage = IMAGE_EXTS.some(ext => certFile.name.toLowerCase().endsWith(ext));
+    if (isImage) {
+      setImagePreviewUrl(url);
+      setImagePreviewTitle(`Pratinjau Sertifikat - ${certFile.name}`);
+    } else {
+      setPdfEditorUrl(url);
+      setPdfEditorTitle(`Pratinjau Sertifikat - ${certFile.name}`);
+    }
   }, [certFile, showMessage]);
 
   const handleClosePdfEditor = useCallback(() => {
@@ -153,15 +192,21 @@ export default function SertifikatRekapPage() {
     setPdfEditorTitle("");
   }, [pdfEditorUrl]);
 
+  const handleCloseImagePreview = useCallback(() => {
+    if (imagePreviewUrl) URL.revokeObjectURL(imagePreviewUrl);
+    setImagePreviewUrl(null);
+    setImagePreviewTitle("");
+  }, [imagePreviewUrl]);
+
   const handleSendCertificate = useCallback(() => {
     if (!certStudentId || !certFile) {
       showMessage("error", "Pilih siswa dan file sertifikat.");
       return;
     }
-    setSending(async () => {
-      const fd = new FormData();
-      fd.append("file", certFile);
-      const result = await sendCertificate(certStudentId, fd);
+    setSending(() => {});
+    const fd = new FormData();
+    fd.append("file", certFile);
+    sendCertificate(certStudentId, fd).then((result) => {
       if (result.success) {
         showMessage("success", "Sertifikat berhasil dikirim!");
         setCertFile(null);
@@ -196,11 +241,55 @@ export default function SertifikatRekapPage() {
     });
   }, []);
 
-  const updateBidangKeahlian = useCallback((idx: number, field: keyof BidangKeahlian, value: string) => {
+  const updateBidangKeahlian = useCallback((idx: number, field: keyof BidangKeahlian, value: string | number) => {
     setPrakerin((prev) => {
       const updated = [...prev.bidangKeahlian];
-      updated[idx] = { ...updated[idx], [field]: value };
+      if (field === "score") {
+        const numValue = typeof value === "string" ? parseInt(value) || 0 : value;
+        updated[idx] = { ...updated[idx], score: Math.min(100, Math.max(0, numValue)) };
+      } else {
+        updated[idx] = { ...updated[idx], [field]: value } as any;
+      }
       return { ...prev, bidangKeahlian: updated };
+    });
+  }, []);
+
+  const addBidangKeahlian = useCallback(() => {
+    setPrakerin((prev) => ({
+      ...prev,
+      bidangKeahlian: [...prev.bidangKeahlian, { name: "", score: 0 }],
+    }));
+  }, []);
+
+  const removeBidangKeahlian = useCallback((idx: number) => {
+    setPrakerin((prev) => {
+      const updated = [...prev.bidangKeahlian];
+      updated.splice(idx, 1);
+      return { ...prev, bidangKeahlian: updated };
+    });
+  }, []);
+
+  const addUnsurNilai = useCallback(() => {
+    setPrakerin((prev) => ({
+      ...prev,
+      unsurNilai: [...prev.unsurNilai, { name: "", score: 0 }],
+    }));
+  }, []);
+
+  const updateUnsurNilaiName = useCallback((idx: number, name: string) => {
+    setPrakerin((prev) => {
+      const updated = [...prev.unsurNilai];
+      updated[idx] = { ...updated[idx], name };
+      return { ...prev, unsurNilai: updated };
+    });
+  }, []);
+
+  const removeUnsurNilai = useCallback((idx: number) => {
+    setPrakerin((prev) => {
+      if (prev.unsurNilai.length <= 1) return prev;
+      const updated = [...prev.unsurNilai];
+      updated.splice(idx, 1);
+      return { ...prev, unsurNilai: updated };
     });
   }, []);
 
@@ -226,8 +315,8 @@ export default function SertifikatRekapPage() {
       showMessage("error", "Isi minimal 1 unsur nilai.");
       return;
     }
-    setSending(async () => {
-      const result = await sendPrakerinRecap(prakerinStudentId, prakerin, prakerinFile);
+    setSending(() => {});
+    sendPrakerinRecap(prakerinStudentId, prakerin, prakerinFile).then((result) => {
       if (result.success) {
         showMessage("success", "Rekap prakerin berhasil dikirim!");
         setPrakerinStudentId("");
@@ -392,7 +481,7 @@ export default function SertifikatRekapPage() {
           <div className={styles.formBody}>
             <div className={styles.formGroup}>
               <label>Siswa Penerima</label>
-              <StudentSelect students={students} value={prakerinStudentId} onChange={setPrakerinStudentId} placeholder="Pilih siswa..." />
+              <StudentSelect students={students} value={prakerinStudentId} onChange={handlePrakerinStudentChange} placeholder="Pilih siswa..." />
             </div>
 
             {/* ─── Identity ──────────────────────────── */}
@@ -430,31 +519,40 @@ export default function SertifikatRekapPage() {
             <div className={styles.prakerinSection}>
               <div className={styles.prakerinSectionTitle}>Tabel Unsur Nilai</div>
               <div className={styles.prakerinTable}>
-                <div className={styles.prakerinTableHeader}>
+                <div className={styles.prakerinTableHeaderBidang}>
                   <span className={styles.prakerinColNo}>No</span>
                   <span className={styles.prakerinColUnsur}>Unsur Penilaian</span>
                   <span className={styles.prakerinColNilai}>Nilai Angka</span>
                   <span className={styles.prakerinColHuruf}>Nilai Huruf</span>
                   <span className={styles.prakerinColDesc}>Keterangan</span>
+                  <span className={styles.prakerinColAction}>Aksi</span>
                 </div>
                 {prakerin.unsurNilai.map((item, idx) => {
                   const grade = item.score > 0 ? prakerinGradeFromScore(item.score) : "—";
                   const label = item.score > 0 ? prakerinGradeLabel(item.score) : "";
                   return (
-                    <div key={idx} className={styles.prakerinTableRow}>
+                    <div key={idx} className={styles.prakerinTableRowBidang}>
                       <span className={styles.prakerinColNo}>{idx + 1}</span>
-                      <span className={styles.prakerinColUnsur}>{item.name}</span>
+                      <span className={styles.prakerinColUnsur}>
+                        <input
+                          type="text"
+                          value={item.name}
+                          onChange={(e) => updateUnsurNilaiName(idx, e.target.value)}
+                          placeholder="Nama unsur penilaian"
+                          className={styles.prakerinInput}
+                        />
+                      </span>
                       <span className={styles.prakerinColNilai}>
-                          <input
-                            type="number"
-                            min={0}
-                            max={100}
-                            step={1}
-                            value={item.score || ""}
-                            onChange={(e) => updateUnsurNilai(idx, parseInt(e.target.value) || 0)}
-                            className={styles.prakerinInput}
-                            placeholder="0"
-                          />
+                        <input
+                          type="number"
+                          min={0}
+                          max={100}
+                          step={1}
+                          value={item.score || ""}
+                          onChange={(e) => updateUnsurNilai(idx, parseInt(e.target.value) || 0)}
+                          className={styles.prakerinInput}
+                          placeholder="0"
+                        />
                       </span>
                       <span className={styles.prakerinColHuruf}>
                         <span className={`${styles.prakerinGrade} ${item.score >= 90 ? styles.gradeA : item.score >= 80 ? styles.gradeB : item.score >= 70 ? styles.gradeC : item.score > 0 ? styles.gradeD : ""}`}>
@@ -464,10 +562,21 @@ export default function SertifikatRekapPage() {
                       <span className={styles.prakerinColDesc}>
                         <span className={styles.prakerinLabel}>{label}</span>
                       </span>
+                      <span className={styles.prakerinColAction}>
+                        <button
+                          type="button"
+                          onClick={() => removeUnsurNilai(idx)}
+                          className={styles.btnDangerSmall}
+                          aria-label="Hapus unsur nilai"
+                          disabled={prakerin.unsurNilai.length <= 1}
+                        >
+                          <X className="h-4 w-4" />
+                        </button>
+                      </span>
                     </div>
                   );
                 })}
-                <div className={styles.prakerinTableRow}>
+                <div className={styles.prakerinTableRowBidang}>
                   <span className={styles.prakerinColNo}></span>
                   <span className={styles.prakerinColUnsur} style={{ fontWeight: 700, textAlign: "right", paddingRight: "12px" }}>RATA-RATA</span>
                   <span className={styles.prakerinColNilai} style={{ fontWeight: 700 }}>{prakerinAvg > 0 ? Math.round(prakerinAvg) : "—"}</span>
@@ -477,7 +586,14 @@ export default function SertifikatRekapPage() {
                     </span>
                   </span>
                   <span className={styles.prakerinColDesc} style={{ fontWeight: 500 }}>{prakerinAvg > 0 ? prakerinGradeLabel(prakerinAvg) : ""}</span>
+                  <span className={styles.prakerinColAction}></span>
                 </div>
+              </div>
+              <div className="p-3 bg-slate-50 border-t border-slate-200">
+                <button type="button" onClick={addUnsurNilai} className={styles.btnOutline}>
+                  <Plus className="h-4 w-4" />
+                  Tambah Unsur Nilai
+                </button>
               </div>
             </div>
 
@@ -485,34 +601,72 @@ export default function SertifikatRekapPage() {
             <div className={styles.prakerinSection}>
               <div className={styles.prakerinSectionTitle}>Bidang Keahlian Yang Dilatihkan</div>
               <div className={styles.prakerinTable}>
-                <div className={styles.prakerinTableHeader}>
+                <div className={styles.prakerinTableHeaderBidang}>
                   <span className={styles.prakerinColNo}>No</span>
-                  <span className={styles.prakerinColBidang}>Bidang Keahlian / Keterampilan</span>
-                  <span className={styles.prakerinColKet}>Keterangan</span>
+                  <span className={styles.prakerinColUnsur}>Bidang Keahlian / Keterampilan</span>
+                  <span className={styles.prakerinColNilai}>Nilai Angka</span>
+                  <span className={styles.prakerinColHuruf}>Nilai Huruf</span>
+                  <span className={styles.prakerinColDesc}>Keterangan</span>
+                  <span className={styles.prakerinColAction}>Aksi</span>
                 </div>
-                {prakerin.bidangKeahlian.map((item, idx) => (
-                  <div key={idx} className={styles.prakerinTableRow}>
-                    <span className={styles.prakerinColNo}>{idx + 1}</span>
-                    <span className={styles.prakerinColBidang}>
-                      <input
-                        type="text"
-                        value={item.name}
-                        onChange={(e) => updateBidangKeahlian(idx, "name", e.target.value)}
-                        placeholder="Contoh: Pemrograman Web"
-                        className={styles.prakerinInput}
-                      />
-                    </span>
-                    <span className={styles.prakerinColKet}>
-                      <input
-                        type="text"
-                        value={item.keterangan}
-                        onChange={(e) => updateBidangKeahlian(idx, "keterangan", e.target.value)}
-                        placeholder="Deskripsi singkat"
-                        className={styles.prakerinInput}
-                      />
-                    </span>
-                  </div>
-                ))}
+                {prakerin.bidangKeahlian.map((item, idx) => {
+                  const grade = item.score > 0 ? prakerinGradeFromScore(item.score) : "—";
+                  const label = item.score > 0 ? prakerinGradeLabel(item.score) : "";
+                  return (
+                    <div key={idx} className={styles.prakerinTableRowBidang}>
+                      <span className={styles.prakerinColNo}>{idx + 1}</span>
+                      <span className={styles.prakerinColUnsur}>
+                        <input
+                          type="text"
+                          value={item.name}
+                          onChange={(e) => updateBidangKeahlian(idx, "name", e.target.value)}
+                          placeholder="Contoh: Pemrograman Web"
+                          className={styles.prakerinInput}
+                        />
+                      </span>
+                      <span className={styles.prakerinColNilai}>
+                        <input
+                          type="number"
+                          min={0}
+                          max={100}
+                          step={1}
+                          value={item.score || ""}
+                          onChange={(e) => updateBidangKeahlian(idx, "score", e.target.value)}
+                          className={styles.prakerinInput}
+                          placeholder="0"
+                        />
+                      </span>
+                      <span className={styles.prakerinColHuruf}>
+                        <span className={`${styles.prakerinGrade} ${item.score >= 90 ? styles.gradeA : item.score >= 80 ? styles.gradeB : item.score >= 70 ? styles.gradeC : item.score > 0 ? styles.gradeD : ""}`}>
+                          {grade}
+                        </span>
+                      </span>
+                      <span className={styles.prakerinColDesc}>
+                        <span className={styles.prakerinLabel}>{label}</span>
+                      </span>
+                      <span className={styles.prakerinColAction}>
+                        <button
+                          type="button"
+                          onClick={() => removeBidangKeahlian(idx)}
+                          className={styles.btnDangerSmall}
+                          aria-label="Hapus bidang keahlian"
+                        >
+                          <X className="h-4 w-4" />
+                        </button>
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+              <div className="p-3 bg-slate-50 border-t border-slate-200">
+                <button
+                  type="button"
+                  onClick={addBidangKeahlian}
+                  className={styles.btnOutline}
+                >
+                  <Plus className="h-4 w-4" />
+                  Tambah Bidang Keahlian
+                </button>
               </div>
             </div>
 
@@ -626,6 +780,24 @@ export default function SertifikatRekapPage() {
             URL.revokeObjectURL(url);
           }}
         />
+      )}
+
+      {imagePreviewUrl && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40" onClick={handleCloseImagePreview}>
+          <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full mx-4 max-h-[90vh] flex flex-col" onClick={e => e.stopPropagation()}>
+            <div className="flex items-center justify-between px-5 py-3 border-b border-slate-200">
+              <h3 className="font-semibold text-slate-800 text-sm truncate">{imagePreviewTitle}</h3>
+              <button onClick={handleCloseImagePreview} className="text-slate-400 hover:text-slate-600 text-lg leading-none">&times;</button>
+            </div>
+            <div className="flex-1 overflow-auto p-4 bg-slate-50 flex items-center justify-center">
+              <img
+                src={imagePreviewUrl}
+                alt={imagePreviewTitle}
+                className="max-w-full max-h-[75vh] object-contain rounded-lg shadow-sm"
+              />
+            </div>
+          </div>
+        </div>
       )}
 
       {tab === "history" && (

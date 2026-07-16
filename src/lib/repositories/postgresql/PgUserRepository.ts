@@ -265,6 +265,8 @@ export class PgUserRepository implements IUserRepository {
         `SELECT id, email, full_name, role, created_at
          FROM profiles
          WHERE approved = false
+           AND role != 'root'
+           AND role != 'owner'
          ORDER BY created_at DESC`
       );
 
@@ -297,6 +299,11 @@ export class PgUserRepository implements IUserRepository {
    */
   async rejectUser(userId: string): Promise<{ error?: string }> {
     try {
+      // Proteksi root/owner
+      const { rows } = await query(`SELECT role FROM profiles WHERE id = $1`, [userId]);
+      if (rows.length > 0 && (rows[0].role === 'root' || rows[0].role === 'owner')) {
+        return { error: "Tidak dapat menolak akun root/owner." };
+      }
       await query(`DELETE FROM profiles WHERE id = $1`, [userId]);
       return {};
     } catch (err: any) {
@@ -306,6 +313,11 @@ export class PgUserRepository implements IUserRepository {
 
   async deleteUser(userId: string): Promise<{ error?: string }> {
     try {
+      // Proteksi root/owner
+      const { rows } = await query(`SELECT role FROM profiles WHERE id = $1`, [userId]);
+      if (rows.length > 0 && (rows[0].role === 'root' || rows[0].role === 'owner')) {
+        return { error: "Tidak dapat menghapus akun root/owner." };
+      }
       await query(`DELETE FROM profiles WHERE id = $1`, [userId]);
       return {};
     } catch (err: any) {
@@ -315,6 +327,11 @@ export class PgUserRepository implements IUserRepository {
 
   async blockUser(userId: string): Promise<{ error?: string }> {
     try {
+      // Proteksi root/owner
+      const { rows } = await query(`SELECT role FROM profiles WHERE id = $1`, [userId]);
+      if (rows.length > 0 && (rows[0].role === 'root' || rows[0].role === 'owner')) {
+        return { error: "Tidak dapat memblokir akun root/owner." };
+      }
       await query(`UPDATE profiles SET approved = false WHERE id = $1`, [userId]);
       return {};
     } catch (err: any) {
@@ -333,6 +350,11 @@ export class PgUserRepository implements IUserRepository {
 
   async updateUserRole(userId: string, role: UserRole): Promise<{ error?: string }> {
     try {
+      // Proteksi root/owner
+      const { rows } = await query(`SELECT role FROM profiles WHERE id = $1`, [userId]);
+      if (rows.length > 0 && (rows[0].role === 'root' || rows[0].role === 'owner')) {
+        return { error: "Tidak dapat mengubah role akun root/owner." };
+      }
       await query(`UPDATE profiles SET role = $1 WHERE id = $2`, [role, userId]);
       return {};
     } catch (err: any) {

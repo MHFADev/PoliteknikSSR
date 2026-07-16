@@ -45,8 +45,8 @@ export function LeaveRequestForm() {
 
       if (file) {
         const compressed = await imageCompression(file, {
-          maxSizeMB: 0.8,
-          maxWidthOrHeight: 1600,
+          maxSizeMB: 0.5,
+          maxWidthOrHeight: 1200,
           useWebWorker: true,
         });
 

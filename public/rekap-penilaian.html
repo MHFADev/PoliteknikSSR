@@ -192,6 +192,11 @@
     }
 
     /* ─── Tables ──────────────────────────────── */
+    .table-container {
+      overflow-x: auto;
+      margin-bottom: 20px;
+    }
+
     table {
       width: 100%;
       border-collapse: collapse;
@@ -308,6 +313,43 @@
 
     .keahlian-table .col-keterangan {
       width: 120px;
+    }
+
+    .keahlian-table .col-nilai-angka {
+      width: 70px;
+    }
+
+    .keahlian-table .col-nilai-huruf {
+      width: 60px;
+    }
+
+    .add-row-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      margin-bottom: 12px;
+      transition: background 0.2s;
+    }
+
+    .add-row-btn:hover {
+      background: #1d4ed8;
+    }
+
+    .grade-badge-small {
+      display: inline-block;
+      padding: 1px 8px;
+      border-radius: 4px;
+      font-weight: 700;
+      font-size: 10px;
+      min-width: 24px;
     }
 
     .keahlian-input {
@@ -483,11 +525,14 @@
     }
 
     /* ─── Responsive ──────────────────────────── */
-    @media (max-width: 800px) {
+    @media (max-width: 1200px) {
       .page {
         width: 100%;
-        padding: 16px;
+        padding: 18px;
         margin: 0;
+      }
+      .identity-grid {
+        grid-template-columns: 1fr 1fr;
       }
       .signature-section {
         grid-template-columns: 1fr;
@@ -495,6 +540,117 @@
       }
       .keterangan-section {
         grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 992px) {
+      .page {
+        padding: 14px;
+      }
+      .header {
+        padding-bottom: 16px;
+        margin-bottom: 16px;
+      }
+      .identity-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .page {
+        width: 100%;
+        padding: 12px;
+        margin: 0;
+      }
+      .header-logo {
+        flex-direction: column;
+        gap: 8px;
+      }
+      .header-text h1 {
+        font-size: 16px;
+      }
+      .doc-title {
+        font-size: 14px;
+        padding: 6px 0;
+      }
+      .identity-grid {
+        grid-template-columns: 1fr;
+        gap: 4px 8px;
+      }
+      .identity-label {
+        font-size: 10px;
+      }
+      .identity-value {
+        font-size: 10px;
+        min-height: 18px;
+      }
+      table {
+        font-size: 9px;
+      }
+      thead th {
+        padding: 6px 4px;
+        font-size: 9px;
+      }
+      tbody td {
+        padding: 4px 6px;
+      }
+      .nilai-input {
+        height: 20px;
+        font-size: 9px;
+        padding: 0 3px;
+      }
+      .keahlian-input {
+        height: 18px;
+        font-size: 9px;
+        padding: 0 4px;
+      }
+      .section-title {
+        font-size: 10px;
+        padding: 4px 8px;
+        margin: 16px 0 8px;
+      }
+      .skala-item {
+        font-size: 8px;
+        gap: 4px;
+      }
+      .skala-range {
+        min-width: 40px;
+        padding: 1px 4px;
+        font-size: 8px;
+      }
+      .signature-line {
+        margin: 24px 0 4px;
+      }
+      .footer {
+        font-size: 7px;
+        flex-direction: column;
+        gap: 8px;
+        text-align: center;
+      }
+      .print-btn {
+        bottom: 12px;
+        right: 12px;
+        padding: 8px 16px;
+        font-size: 12px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .page {
+        padding: 8px;
+      }
+      .header {
+        padding-bottom: 12px;
+      }
+      .nilai-table .col-nilai,
+      .nilai-table .col-huruf {
+        width: 60px;
+      }
+      .nilai-table .col-deskripsi {
+        display: none;
+      }
+      .keahlian-table .col-keterangan {
+        display: none;
       }
     }
   </style>
@@ -549,77 +705,79 @@
       <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
       </svg>
-      TABEL UNSOR NILAI
+      TABEL UNSUR NILAI
     </div>
 
-    <table class="nilai-table">
-      <thead>
-        <tr>
-          <th class="col-no">No</th>
-          <th class="col-unsur">Unsur Penilaian</th>
-          <th class="col-nilai">Nilai Angka</th>
-          <th class="col-huruf">Nilai Huruf</th>
-          <th class="col-deskripsi">Keterangan</th>
-        </tr>
-      </thead>
-      <tbody id="nilai-body">
-        <tr>
-          <td>1</td>
-          <td class="col-unsur">Disiplin</td>
-          <td><input type="number" class="nilai-input" min="0" max="10" step="0.1" data-idx="0" oninput="calcGrade(this)"></td>
-          <td><span class="grade-badge" id="grade-0">—</span></td>
-          <td class="col-deskripsi" id="desc-0"></td>
-        </tr>
-        <tr>
-          <td>2</td>
-          <td class="col-unsur">Kerja Sama</td>
-          <td><input type="number" class="nilai-input" min="0" max="10" step="0.1" data-idx="1" oninput="calcGrade(this)"></td>
-          <td><span class="grade-badge" id="grade-1">—</span></td>
-          <td class="col-deskripsi" id="desc-1"></td>
-        </tr>
-        <tr>
-          <td>3</td>
-          <td class="col-unsur">Inisiatif</td>
-          <td><input type="number" class="nilai-input" min="0" max="10" step="0.1" data-idx="2" oninput="calcGrade(this)"></td>
-          <td><span class="grade-badge" id="grade-2">—</span></td>
-          <td class="col-deskripsi" id="desc-2"></td>
-        </tr>
-        <tr>
-          <td>4</td>
-          <td class="col-unsur">Kerajinan</td>
-          <td><input type="number" class="nilai-input" min="0" max="10" step="0.1" data-idx="3" oninput="calcGrade(this)"></td>
-          <td><span class="grade-badge" id="grade-3">—</span></td>
-          <td class="col-deskripsi" id="desc-3"></td>
-        </tr>
-        <tr>
-          <td>5</td>
-          <td class="col-unsur">Tanggung Jawab</td>
-          <td><input type="number" class="nilai-input" min="0" max="10" step="0.1" data-idx="4" oninput="calcGrade(this)"></td>
-          <td><span class="grade-badge" id="grade-4">—</span></td>
-          <td class="col-deskripsi" id="desc-4"></td>
-        </tr>
-        <tr>
-          <td>6</td>
-          <td class="col-unsur">Kepribadian</td>
-          <td><input type="number" class="nilai-input" min="0" max="10" step="0.1" data-idx="5" oninput="calcGrade(this)"></td>
-          <td><span class="grade-badge" id="grade-5">—</span></td>
-          <td class="col-deskripsi" id="desc-5"></td>
-        </tr>
-        <tr>
-          <td>7</td>
-          <td class="col-unsur">Kehadiran</td>
-          <td><input type="number" class="nilai-input" min="0" max="10" step="0.1" data-idx="6" oninput="calcGrade(this)"></td>
-          <td><span class="grade-badge" id="grade-6">—</span></td>
-          <td class="col-deskripsi" id="desc-6"></td>
-        </tr>
-        <tr class="summary-row">
-          <td colspan="2" style="text-align:right; padding-right:12px;">RATA-RATA</td>
-          <td id="avg-score">—</td>
-          <td><span class="grade-badge" id="avg-grade">—</span></td>
-          <td id="avg-desc"></td>
-        </tr>
-      </tbody>
-    </table>
+    <div class="table-container">
+      <table class="nilai-table">
+        <thead>
+          <tr>
+            <th class="col-no">No</th>
+            <th class="col-unsur">Unsur Penilaian</th>
+            <th class="col-nilai">Nilai Angka</th>
+            <th class="col-huruf">Nilai Huruf</th>
+            <th class="col-deskripsi">Keterangan</th>
+          </tr>
+        </thead>
+        <tbody id="nilai-body">
+          <tr>
+            <td>1</td>
+            <td class="col-unsur">Disiplin</td>
+            <td><input type="number" class="nilai-input" min="0" max="10" step="0.1" data-idx="0" oninput="calcGrade(this)"></td>
+            <td><span class="grade-badge" id="grade-0">—</span></td>
+            <td class="col-deskripsi" id="desc-0"></td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td class="col-unsur">Kerja Sama</td>
+            <td><input type="number" class="nilai-input" min="0" max="10" step="0.1" data-idx="1" oninput="calcGrade(this)"></td>
+            <td><span class="grade-badge" id="grade-1">—</span></td>
+            <td class="col-deskripsi" id="desc-1"></td>
+          </tr>
+          <tr>
+            <td>3</td>
+            <td class="col-unsur">Inisiatif</td>
+            <td><input type="number" class="nilai-input" min="0" max="10" step="0.1" data-idx="2" oninput="calcGrade(this)"></td>
+            <td><span class="grade-badge" id="grade-2">—</span></td>
+            <td class="col-deskripsi" id="desc-2"></td>
+          </tr>
+          <tr>
+            <td>4</td>
+            <td class="col-unsur">Kerajinan</td>
+            <td><input type="number" class="nilai-input" min="0" max="10" step="0.1" data-idx="3" oninput="calcGrade(this)"></td>
+            <td><span class="grade-badge" id="grade-3">—</span></td>
+            <td class="col-deskripsi" id="desc-3"></td>
+          </tr>
+          <tr>
+            <td>5</td>
+            <td class="col-unsur">Tanggung Jawab</td>
+            <td><input type="number" class="nilai-input" min="0" max="10" step="0.1" data-idx="4" oninput="calcGrade(this)"></td>
+            <td><span class="grade-badge" id="grade-4">—</span></td>
+            <td class="col-deskripsi" id="desc-4"></td>
+          </tr>
+          <tr>
+            <td>6</td>
+            <td class="col-unsur">Kepribadian</td>
+            <td><input type="number" class="nilai-input" min="0" max="10" step="0.1" data-idx="5" oninput="calcGrade(this)"></td>
+            <td><span class="grade-badge" id="grade-5">—</span></td>
+            <td class="col-deskripsi" id="desc-5"></td>
+          </tr>
+          <tr>
+            <td>7</td>
+            <td class="col-unsur">Kehadiran</td>
+            <td><input type="number" class="nilai-input" min="0" max="10" step="0.1" data-idx="6" oninput="calcGrade(this)"></td>
+            <td><span class="grade-badge" id="grade-6">—</span></td>
+            <td class="col-deskripsi" id="desc-6"></td>
+          </tr>
+          <tr class="summary-row">
+            <td colspan="2" style="text-align:right; padding-right:12px;">RATA-RATA</td>
+            <td id="avg-score">—</td>
+            <td><span class="grade-badge" id="avg-grade">—</span></td>
+            <td id="avg-desc"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
 
     <!-- ═══ Tabel 2: Bidang Keahlian ═════════════ -->
     <div class="section-title">
@@ -630,27 +788,28 @@
       BIDANG KEAHLIAN YANG DILATIHKAN
     </div>
 
-    <table class="keahlian-table">
-      <thead>
-        <tr>
-          <th class="col-no">No</th>
-          <th class="col-keahlian">Bidang Keahlian / Keterampilan</th>
-          <th class="col-keterangan">Keterangan</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr><td>1</td><td><input type="text" class="keahlian-input" placeholder="Contoh: Pemrograman Web"></td><td><input type="text" class="keahlian-input" placeholder="Deskripsi singkat"></td></tr>
-        <tr><td>2</td><td><input type="text" class="keahlian-input" placeholder="Contoh: Desain UI/UX"></td><td><input type="text" class="keahlian-input" placeholder="Deskripsi singkat"></td></tr>
-        <tr><td>3</td><td><input type="text" class="keahlian-input" placeholder="Contoh: Database Management"></td><td><input type="text" class="keahlian-input" placeholder="Deskripsi singkat"></td></tr>
-        <tr><td>4</td><td><input type="text" class="keahlian-input" placeholder="Contoh: Jaringan Komputer"></td><td><input type="text" class="keahlian-input" placeholder="Deskripsi singkat"></td></tr>
-        <tr><td>5</td><td><input type="text" class="keahlian-input" placeholder="Contoh: DevOps & Cloud"></td><td><input type="text" class="keahlian-input" placeholder="Deskripsi singkat"></td></tr>
-        <tr><td>6</td><td><input type="text" class="keahlian-input" placeholder="Contoh: Mobile Development"></td><td><input type="text" class="keahlian-input" placeholder="Deskripsi singkat"></td></tr>
-        <tr><td>7</td><td><input type="text" class="keahlian-input" placeholder="Contoh: Testing & QA"></td><td><input type="text" class="keahlian-input" placeholder="Deskripsi singkat"></td></tr>
-        <tr><td>8</td><td><input type="text" class="keahlian-input" placeholder="Contoh: System Analysis"></td><td><input type="text" class="keahlian-input" placeholder="Deskripsi singkat"></td></tr>
-        <tr><td>9</td><td><input type="text" class="keahlian-input" placeholder="Contoh: Project Management"></td><td><input type="text" class="keahlian-input" placeholder="Deskripsi singkat"></td></tr>
-        <tr><td>10</td><td><input type="text" class="keahlian-input" placeholder="Contoh: Documentation"></td><td><input type="text" class="keahlian-input" placeholder="Deskripsi singkat"></td></tr>
-      </tbody>
-    </table>
+    <button class="add-row-btn" onclick="addKeahlianRow()">+ Tambah Bidang Keahlian</button>
+
+    <div class="table-container">
+      <table class="keahlian-table">
+        <thead>
+          <tr>
+            <th class="col-no">No</th>
+            <th class="col-keahlian">Bidang Keahlian / Keterampilan</th>
+            <th class="col-nilai-angka">Nilai Angka</th>
+            <th class="col-nilai-huruf">Nilai Huruf</th>
+            <th class="col-keterangan">Keterangan</th>
+          </tr>
+        </thead>
+        <tbody id="keahlian-body">
+          <tr><td>1</td><td><input type="text" class="keahlian-input" placeholder="Contoh: Pemrograman Web"></td><td><input type="number" class="nilai-input keahlian-nilai" min="0" max="10" step="0.1"></td><td><span class="grade-badge-small" id="keahlian-grade-1">—</span></td><td><input type="text" class="keahlian-input" placeholder="Deskripsi singkat"></td></tr>
+          <tr><td>2</td><td><input type="text" class="keahlian-input" placeholder="Contoh: Desain UI/UX"></td><td><input type="number" class="nilai-input keahlian-nilai" min="0" max="10" step="0.1"></td><td><span class="grade-badge-small" id="keahlian-grade-2">—</span></td><td><input type="text" class="keahlian-input" placeholder="Deskripsi singkat"></td></tr>
+          <tr><td>3</td><td><input type="text" class="keahlian-input" placeholder="Contoh: Database Management"></td><td><input type="number" class="nilai-input keahlian-nilai" min="0" max="10" step="0.1"></td><td><span class="grade-badge-small" id="keahlian-grade-3">—</span></td><td><input type="text" class="keahlian-input" placeholder="Deskripsi singkat"></td></tr>
+          <tr><td>4</td><td><input type="text" class="keahlian-input" placeholder="Contoh: Jaringan Komputer"></td><td><input type="number" class="nilai-input keahlian-nilai" min="0" max="10" step="0.1"></td><td><span class="grade-badge-small" id="keahlian-grade-4">—</span></td><td><input type="text" class="keahlian-input" placeholder="Deskripsi singkat"></td></tr>
+          <tr><td>5</td><td><input type="text" class="keahlian-input" placeholder="Contoh: DevOps & Cloud"></td><td><input type="number" class="nilai-input keahlian-nilai" min="0" max="10" step="0.1"></td><td><span class="grade-badge-small" id="keahlian-grade-5">—</span></td><td><input type="text" class="keahlian-input" placeholder="Deskripsi singkat"></td></tr>
+        </tbody>
+      </table>
+    </div>
 
     <!-- ═══ Keterangan ═══════════════════════════ -->
     <div class="keterangan-section">
@@ -737,6 +896,44 @@
   </button>
 
   <script>
+    let keahlianCount = 5;
+
+    function addKeahlianRow() {
+      keahlianCount++;
+      const tbody = document.getElementById('keahlian-body');
+      const newRow = document.createElement('tr');
+      newRow.innerHTML = `
+        <td>${keahlianCount}</td>
+        <td><input type="text" class="keahlian-input" placeholder="Contoh: Bidang Keahlian"></td>
+        <td><input type="number" class="nilai-input keahlian-nilai" min="0" max="10" step="0.1"></td>
+        <td><span class="grade-badge-small" id="keahlian-grade-${keahlianCount}">—</span></td>
+        <td><input type="text" class="keahlian-input" placeholder="Deskripsi singkat"></td>
+      `;
+      tbody.appendChild(newRow);
+    }
+
+    function calcKeahlianGrade(input) {
+      const row = input.closest('tr');
+      const idx = row.querySelector('.keahlian-input').value || keahlianCount;
+      const val = parseFloat(input.value);
+      const badge = row.querySelector('.grade-badge-small');
+
+      if (isNaN(val) || input.value === '') {
+        badge.textContent = '—';
+        badge.className = 'grade-badge-small';
+        return;
+      }
+
+      const clamped = Math.min(10, Math.max(0, val));
+      const info = getGradeInfo(clamped);
+      badge.textContent = info.letter;
+      badge.className = `grade-badge-small ${info.cls}`;
+    }
+
+    document.querySelectorAll('.keahlian-nilai').forEach(input => {
+      input.addEventListener('input', function() { calcKeahlianGrade(this); });
+    });
+
     // ─── Grade Calculation ────────────────────────
     function getGradeInfo(score) {
       if (score >= 9) return { letter: 'A', label: 'Sangat Baik', cls: 'grade-A' };

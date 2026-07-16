@@ -885,3 +885,621 @@ A  src/styles/pages/Login.module.css
 ?? public/rekap-penilaian.html
 ?? skills-lock.json
 [2026-07-15 13:47:02] Commit atau stash dulu sebelum auto-pull bisa jalan.
+[2026-07-15 14:32:02] === Auto-pull dimulai ===
+[2026-07-15 14:32:02] DIBATALKAN: Ada perubahan lokal yang belum di-commit:
+[2026-07-15 14:32:02] M auto-pull.log
+ M src/components/PDFViewerModal.tsx
+?? .auto-pull.lock
+[2026-07-15 14:32:02] Commit atau stash dulu sebelum auto-pull bisa jalan.
+[2026-07-15 14:47:02] === Auto-pull dimulai ===
+[2026-07-15 14:47:02] DIBATALKAN: Ada perubahan lokal yang belum di-commit:
+[2026-07-15 14:47:02] M auto-pull.log
+ M src/app/dashboard/admin/sertifikat-rekap/page.tsx
+ M src/components/PDFViewerModal.tsx
+ M src/components/StudentDocumentPopup.tsx
+ M src/components/StudentDocuments.tsx
+ M src/lib/types.ts
+ M src/styles/pages/dashboard/admin/SertifikatRekap.module.css
+?? .auto-pull.lock
+[2026-07-15 14:47:02] Commit atau stash dulu sebelum auto-pull bisa jalan.
+[2026-07-15 15:02:02] === Auto-pull dimulai ===
+[2026-07-15 15:02:02] DIBATALKAN: Ada perubahan lokal yang belum di-commit:
+[2026-07-15 15:02:02] M auto-pull.log
+ M public/rekap-penilaian.html
+ M src/app/dashboard/admin/sertifikat-rekap/page.tsx
+ M src/components/PDFViewerModal.tsx
+ M src/components/StudentDocumentPopup.tsx
+ M src/components/StudentDocuments.tsx
+ M src/lib/types.ts
+ M src/styles/pages/dashboard/admin/SertifikatRekap.module.css
+?? .auto-pull.lock
+[2026-07-15 15:02:02] Commit atau stash dulu sebelum auto-pull bisa jalan.
+[2026-07-15 15:17:02] === Auto-pull dimulai ===
+[2026-07-15 15:17:02] DIBATALKAN: Ada perubahan lokal yang belum di-commit:
+[2026-07-15 15:17:02] M auto-pull.log
+ M public/rekap-penilaian.html
+ M src/app/dashboard/admin/sertifikat-rekap/page.tsx
+ M src/components/PDFViewerModal.tsx
+ M src/components/StudentDocumentPopup.tsx
+ M src/components/StudentDocuments.tsx
+ M src/lib/pdf/prakerinPdfGenerator.ts
+ M src/lib/types.ts
+ M src/styles/pages/dashboard/admin/SertifikatRekap.module.css
+?? .auto-pull.lock
+[2026-07-15 15:17:02] Commit atau stash dulu sebelum auto-pull bisa jalan.
+[2026-07-15 15:32:02] === Auto-pull dimulai ===
+[2026-07-15 15:32:02] DIBATALKAN: Ada perubahan lokal yang belum di-commit:
+[2026-07-15 15:32:02] M auto-pull.log
+ M public/rekap-penilaian.html
+ M src/app/dashboard/admin/sertifikat-rekap/page.tsx
+ M src/components/PDFViewerModal.tsx
+ M src/components/StudentDocumentPopup.tsx
+ M src/components/StudentDocuments.tsx
+M  src/components/profile/SettingsForm.tsx
+ M src/lib/pdf/prakerinPdfGenerator.ts
+ M src/lib/types.ts
+M  src/styles/pages/dashboard/admin/Kalender.module.css
+ M src/styles/pages/dashboard/admin/SertifikatRekap.module.css
+UU src/styles/pages/dashboard/siswa/Kalender.module.css
+?? .auto-pull.lock
+?? "Screenshot 2026-07-15 152229.png"
+[2026-07-15 15:32:02] Commit atau stash dulu sebelum auto-pull bisa jalan.
+[2026-07-15 15:47:04] === Auto-pull dimulai ===
+[2026-07-15 15:47:05] DIBATALKAN: Ada perubahan lokal yang belum di-commit:
+[2026-07-15 15:47:05] M auto-pull.log
+ M public/rekap-penilaian.html
+ M src/app/dashboard/admin/sertifikat-rekap/page.tsx
+ M src/components/PDFViewerModal.tsx
+ M src/components/StudentDocumentPopup.tsx
+ M src/components/StudentDocuments.tsx
+ M src/components/admin/UserActionsMenu.tsx
+M  src/components/profile/SettingsForm.tsx
+ M src/lib/pdf/prakerinPdfGenerator.ts
+ M src/lib/types.ts
+M  src/styles/pages/dashboard/admin/Kalender.module.css
+ M src/styles/pages/dashboard/admin/SertifikatRekap.module.css
+UU src/styles/pages/dashboard/siswa/Kalender.module.css
+?? .auto-pull.lock
+?? "Screenshot 2026-07-15 152229.png"
+[2026-07-15 15:47:05] Commit atau stash dulu sebelum auto-pull bisa jalan.
+[2026-07-16 07:32:03] === Auto-pull dimulai ===
+[2026-07-16 07:32:03] DIBATALKAN: Ada perubahan lokal yang belum di-commit:
+[2026-07-16 07:32:03] M auto-pull.log
+ M public/rekap-penilaian.html
+ M src/app/api/create-owner/route.ts
+ M src/app/dashboard/admin/sertifikat-rekap/page.tsx
+ M src/components/PDFViewerModal.tsx
+ M src/components/StudentDocumentPopup.tsx
+ M src/components/StudentDocuments.tsx
+ M src/components/admin/UserActionsMenu.tsx
+M  src/components/profile/SettingsForm.tsx
+ M src/lib/pdf/pdfViewer.ts
+ M src/lib/pdf/prakerinPdfGenerator.ts
+ M src/lib/types.ts
+M  src/styles/pages/dashboard/admin/Kalender.module.css
+ M src/styles/pages/dashboard/admin/SertifikatRekap.module.css
+UU src/styles/pages/dashboard/siswa/Kalender.module.css
+?? .auto-pull.lock
+?? "Screenshot 2026-07-15 152229.png"
+[2026-07-16 07:32:03] Commit atau stash dulu sebelum auto-pull bisa jalan.
+[2026-07-16 07:47:02] === Auto-pull dimulai ===
+[2026-07-16 07:47:03] DIBATALKAN: Ada perubahan lokal yang belum di-commit:
+[2026-07-16 07:47:03] M auto-pull.log
+ M public/rekap-penilaian.html
+ M src/app/api/create-owner/route.ts
+ M src/app/dashboard/admin/sertifikat-rekap/page.tsx
+ M src/components/PDFViewerModal.tsx
+ M src/components/StudentDocumentPopup.tsx
+ M src/components/StudentDocuments.tsx
+ M src/components/admin/UserActionsMenu.tsx
+M  src/components/profile/SettingsForm.tsx
+ M src/lib/pdf/pdfViewer.ts
+ M src/lib/pdf/prakerinPdfGenerator.ts
+ M src/lib/types.ts
+M  src/styles/pages/dashboard/admin/Kalender.module.css
+ M src/styles/pages/dashboard/admin/SertifikatRekap.module.css
+UU src/styles/pages/dashboard/siswa/Kalender.module.css
+?? .auto-pull.lock
+?? "Screenshot 2026-07-15 152229.png"
+[2026-07-16 07:47:03] Commit atau stash dulu sebelum auto-pull bisa jalan.
+[2026-07-16 08:02:02] === Auto-pull dimulai ===
+[2026-07-16 08:02:03] DIBATALKAN: Ada perubahan lokal yang belum di-commit:
+[2026-07-16 08:02:03] M auto-pull.log
+ M public/rekap-penilaian.html
+ M src/app/api/create-owner/route.ts
+ M src/app/dashboard/admin/sertifikat-rekap/page.tsx
+ M src/components/PDFViewerModal.tsx
+ M src/components/StudentDocumentPopup.tsx
+ M src/components/StudentDocuments.tsx
+ M src/components/admin/UserActionsMenu.tsx
+M  src/components/profile/SettingsForm.tsx
+ M src/lib/pdf/pdfViewer.ts
+ M src/lib/pdf/prakerinPdfGenerator.ts
+ M src/lib/types.ts
+M  src/styles/pages/dashboard/admin/Kalender.module.css
+ M src/styles/pages/dashboard/admin/SertifikatRekap.module.css
+UU src/styles/pages/dashboard/siswa/Kalender.module.css
+?? .auto-pull.lock
+?? "Screenshot 2026-07-15 152229.png"
+[2026-07-16 08:02:03] Commit atau stash dulu sebelum auto-pull bisa jalan.
+[2026-07-16 08:17:02] === Auto-pull dimulai ===
+[2026-07-16 08:17:02] DIBATALKAN: Ada perubahan lokal yang belum di-commit:
+[2026-07-16 08:17:02] M auto-pull.log
+ M public/rekap-penilaian.html
+ M src/app/api/create-owner/route.ts
+ M src/app/dashboard/admin/sertifikat-rekap/page.tsx
+ M src/components/PDFViewerModal.tsx
+ M src/components/StudentDocumentPopup.tsx
+ M src/components/StudentDocuments.tsx
+ M src/components/admin/UserActionsMenu.tsx
+M  src/components/profile/SettingsForm.tsx
+ M src/lib/pdf/pdfViewer.ts
+ M src/lib/pdf/prakerinPdfGenerator.ts
+ M src/lib/types.ts
+M  src/styles/pages/dashboard/admin/Kalender.module.css
+ M src/styles/pages/dashboard/admin/SertifikatRekap.module.css
+UU src/styles/pages/dashboard/siswa/Kalender.module.css
+?? .auto-pull.lock
+?? "Screenshot 2026-07-15 152229.png"
+[2026-07-16 08:17:02] Commit atau stash dulu sebelum auto-pull bisa jalan.
+[2026-07-16 08:32:02] === Auto-pull dimulai ===
+[2026-07-16 08:32:02] DIBATALKAN: Ada perubahan lokal yang belum di-commit:
+[2026-07-16 08:32:02] M auto-pull.log
+ M public/rekap-penilaian.html
+ M src/app/api/create-owner/route.ts
+ M src/app/dashboard/admin/sertifikat-rekap/page.tsx
+ M src/components/PDFViewerModal.tsx
+ M src/components/StudentDocumentPopup.tsx
+ M src/components/StudentDocuments.tsx
+ M src/components/admin/UserActionsMenu.tsx
+M  src/components/profile/SettingsForm.tsx
+ M src/lib/pdf/pdfViewer.ts
+ M src/lib/pdf/prakerinPdfGenerator.ts
+ M src/lib/types.ts
+M  src/styles/pages/dashboard/admin/Kalender.module.css
+ M src/styles/pages/dashboard/admin/SertifikatRekap.module.css
+UU src/styles/pages/dashboard/siswa/Kalender.module.css
+?? .auto-pull.lock
+?? "Screenshot 2026-07-15 152229.png"
+[2026-07-16 08:32:02] Commit atau stash dulu sebelum auto-pull bisa jalan.
+[2026-07-16 08:47:02] === Auto-pull dimulai ===
+[2026-07-16 08:47:02] DIBATALKAN: Ada perubahan lokal yang belum di-commit:
+[2026-07-16 08:47:02] M auto-pull.log
+ M public/rekap-penilaian.html
+ M src/app/api/create-owner/route.ts
+ M src/app/dashboard/admin/sertifikat-rekap/page.tsx
+ M src/components/PDFViewerModal.tsx
+ M src/components/StudentDocumentPopup.tsx
+ M src/components/StudentDocuments.tsx
+ M src/components/admin/UserActionsMenu.tsx
+M  src/components/profile/SettingsForm.tsx
+ M src/lib/pdf/pdfViewer.ts
+ M src/lib/pdf/prakerinPdfGenerator.ts
+ M src/lib/types.ts
+M  src/styles/pages/dashboard/admin/Kalender.module.css
+ M src/styles/pages/dashboard/admin/SertifikatRekap.module.css
+UU src/styles/pages/dashboard/siswa/Kalender.module.css
+?? .auto-pull.lock
+?? "Screenshot 2026-07-15 152229.png"
+[2026-07-16 08:47:02] Commit atau stash dulu sebelum auto-pull bisa jalan.
+[2026-07-16 09:02:02] === Auto-pull dimulai ===
+[2026-07-16 09:02:02] DIBATALKAN: Ada perubahan lokal yang belum di-commit:
+[2026-07-16 09:02:02] M auto-pull.log
+ M public/rekap-penilaian.html
+ M src/app/api/create-owner/route.ts
+ M src/app/dashboard/admin/sertifikat-rekap/page.tsx
+ M src/components/PDFViewerModal.tsx
+ M src/components/StudentDocumentPopup.tsx
+ M src/components/StudentDocuments.tsx
+ M src/components/admin/UserActionsMenu.tsx
+M  src/components/profile/SettingsForm.tsx
+ M src/lib/pdf/pdfViewer.ts
+ M src/lib/pdf/prakerinPdfGenerator.ts
+ M src/lib/types.ts
+M  src/styles/pages/dashboard/admin/Kalender.module.css
+ M src/styles/pages/dashboard/admin/SertifikatRekap.module.css
+UU src/styles/pages/dashboard/siswa/Kalender.module.css
+?? .auto-pull.lock
+?? "Screenshot 2026-07-15 152229.png"
+[2026-07-16 09:02:02] Commit atau stash dulu sebelum auto-pull bisa jalan.
+[2026-07-16 09:17:02] === Auto-pull dimulai ===
+[2026-07-16 09:17:02] DIBATALKAN: Ada perubahan lokal yang belum di-commit:
+[2026-07-16 09:17:03] M auto-pull.log
+ M package-lock.json
+ M package.json
+ M public/rekap-penilaian.html
+ M schema.sql
+ M scripts/create-user.mjs
+ M src/app/api/create-owner/route.ts
+ M src/app/dashboard/admin/layout.tsx
+ M src/app/dashboard/admin/pengguna/page.tsx
+ M src/app/dashboard/admin/sertifikat-rekap/page.tsx
+ M src/components/PDFViewerModal.tsx
+ M src/components/StudentDocumentPopup.tsx
+ M src/components/StudentDocuments.tsx
+ M src/components/admin/UserActionsMenu.tsx
+ M src/components/layout/MobileNav.tsx
+ M src/components/layout/Sidebar.tsx
+MM src/components/profile/SettingsForm.tsx
+ M src/lib/navigation.ts
+ M src/lib/pdf/pdfViewer.ts
+ M src/lib/pdf/prakerinPdfGenerator.ts
+ M src/lib/repositories/supabase/UserRepository.ts
+ M src/lib/types.ts
+ M src/middleware.ts
+M  src/styles/pages/dashboard/admin/Kalender.module.css
+ M src/styles/pages/dashboard/admin/SertifikatRekap.module.css
+UU src/styles/pages/dashboard/siswa/Kalender.module.css
+ M src/types/database.ts
+?? .auto-pull.lock
+?? "Screenshot 2026-07-15 152229.png"
+?? src/app/api/create-root/
+?? supabase/migrations/20250716_add_root_role.sql
+[2026-07-16 09:17:03] Commit atau stash dulu sebelum auto-pull bisa jalan.
+[2026-07-16 09:32:02] === Auto-pull dimulai ===
+[2026-07-16 09:32:02] DIBATALKAN: Ada perubahan lokal yang belum di-commit:
+[2026-07-16 09:32:02] M auto-pull.log
+ M package-lock.json
+ M package.json
+ M public/rekap-penilaian.html
+ M schema.sql
+ M scripts/create-user.mjs
+ M src/actions/admin.ts
+ M src/app/api/create-owner/route.ts
+ M src/app/dashboard/admin/layout.tsx
+ M src/app/dashboard/admin/pengguna/page.tsx
+ M src/app/dashboard/admin/sertifikat-rekap/page.tsx
+ M src/components/PDFViewerModal.tsx
+ M src/components/StudentDocumentPopup.tsx
+ M src/components/StudentDocuments.tsx
+ M src/components/admin/UserActionsMenu.tsx
+ M src/components/layout/MobileNav.tsx
+ M src/components/layout/Sidebar.tsx
+MM src/components/profile/SettingsForm.tsx
+ M src/lib/navigation.ts
+ M src/lib/pdf/pdfViewer.ts
+ M src/lib/pdf/prakerinPdfGenerator.ts
+ M src/lib/repositories/postgresql/PgUserRepository.ts
+ M src/lib/repositories/supabase/UserRepository.ts
+ M src/lib/repositories/types.ts
+ M src/lib/types.ts
+ M src/middleware.ts
+M  src/styles/pages/dashboard/admin/Kalender.module.css
+ M src/styles/pages/dashboard/admin/SertifikatRekap.module.css
+UU src/styles/pages/dashboard/siswa/Kalender.module.css
+ M src/types/database.ts
+ M tsconfig.tsbuildinfo
+?? .auto-pull.lock
+?? "Screenshot 2026-07-15 152229.png"
+?? src/app/api/create-root/
+?? supabase/migrations/20250716_add_root_role.sql
+[2026-07-16 09:32:02] Commit atau stash dulu sebelum auto-pull bisa jalan.
+[2026-07-16 09:47:02] === Auto-pull dimulai ===
+[2026-07-16 09:47:02] DIBATALKAN: Ada perubahan lokal yang belum di-commit:
+[2026-07-16 09:47:02] M auto-pull.log
+ M package-lock.json
+ M package.json
+ M public/rekap-penilaian.html
+ M schema.sql
+ M scripts/create-user.mjs
+ M src/actions/admin.ts
+ M src/app/api/create-owner/route.ts
+ M src/app/dashboard/admin/layout.tsx
+ M src/app/dashboard/admin/pengguna/page.tsx
+ M src/app/dashboard/admin/sertifikat-rekap/page.tsx
+ M src/components/PDFViewerModal.tsx
+ M src/components/StudentDocumentPopup.tsx
+ M src/components/StudentDocuments.tsx
+ M src/components/admin/UserActionsMenu.tsx
+ M src/components/layout/MobileNav.tsx
+ M src/components/layout/Sidebar.tsx
+MM src/components/profile/SettingsForm.tsx
+ M src/lib/navigation.ts
+ M src/lib/pdf/pdfViewer.ts
+ M src/lib/pdf/prakerinPdfGenerator.ts
+ M src/lib/repositories/postgresql/PgUserRepository.ts
+ M src/lib/repositories/supabase/UserRepository.ts
+ M src/lib/repositories/types.ts
+ M src/lib/types.ts
+ M src/middleware.ts
+M  src/styles/pages/dashboard/admin/Kalender.module.css
+ M src/styles/pages/dashboard/admin/SertifikatRekap.module.css
+UU src/styles/pages/dashboard/siswa/Kalender.module.css
+ M src/types/database.ts
+ M tsconfig.tsbuildinfo
+?? .auto-pull.lock
+?? "Screenshot 2026-07-15 152229.png"
+?? src/app/api/create-root/
+?? supabase/migrations/20250716_add_root_role.sql
+[2026-07-16 09:47:02] Commit atau stash dulu sebelum auto-pull bisa jalan.
+[2026-07-16 10:02:03] === Auto-pull dimulai ===
+[2026-07-16 10:02:03] DIBATALKAN: Ada perubahan lokal yang belum di-commit:
+[2026-07-16 10:02:03] M auto-pull.log
+ M package-lock.json
+ M package.json
+ M public/rekap-penilaian.html
+ M schema.sql
+ M scripts/create-user.mjs
+ M src/actions/admin.ts
+ M src/app/api/create-owner/route.ts
+ M src/app/dashboard/admin/layout.tsx
+ M src/app/dashboard/admin/pengguna/page.tsx
+ M src/app/dashboard/admin/sertifikat-rekap/page.tsx
+ M src/components/PDFViewerModal.tsx
+ M src/components/StudentDocumentPopup.tsx
+ M src/components/StudentDocuments.tsx
+ M src/components/admin/UserActionsMenu.tsx
+ M src/components/layout/MobileNav.tsx
+ M src/components/layout/Sidebar.tsx
+MM src/components/profile/SettingsForm.tsx
+ M src/lib/navigation.ts
+ M src/lib/pdf/pdfViewer.ts
+ M src/lib/pdf/prakerinPdfGenerator.ts
+ M src/lib/repositories/postgresql/PgUserRepository.ts
+ M src/lib/repositories/supabase/UserRepository.ts
+ M src/lib/repositories/types.ts
+ M src/lib/types.ts
+ M src/middleware.ts
+M  src/styles/pages/dashboard/admin/Kalender.module.css
+ M src/styles/pages/dashboard/admin/SertifikatRekap.module.css
+UU src/styles/pages/dashboard/siswa/Kalender.module.css
+ M src/types/database.ts
+ M tsconfig.tsbuildinfo
+?? .auto-pull.lock
+?? "Screenshot 2026-07-15 152229.png"
+?? src/app/api/create-root/
+?? supabase/migrations/20250716_add_root_role.sql
+[2026-07-16 10:02:03] Commit atau stash dulu sebelum auto-pull bisa jalan.
+[2026-07-16 10:17:02] === Auto-pull dimulai ===
+[2026-07-16 10:17:02] DIBATALKAN: Ada perubahan lokal yang belum di-commit:
+[2026-07-16 10:17:02] M auto-pull.log
+ M package-lock.json
+ M package.json
+ M public/rekap-penilaian.html
+ M schema.sql
+ M scripts/create-user.mjs
+ M src/actions/admin.ts
+ M src/app/api/create-owner/route.ts
+ M src/app/dashboard/admin/layout.tsx
+ M src/app/dashboard/admin/pengguna/page.tsx
+ M src/app/dashboard/admin/sertifikat-rekap/page.tsx
+ M src/components/PDFViewerModal.tsx
+ M src/components/StudentDocumentPopup.tsx
+ M src/components/StudentDocuments.tsx
+ M src/components/admin/UserActionsMenu.tsx
+ M src/components/layout/MobileNav.tsx
+ M src/components/layout/Sidebar.tsx
+MM src/components/profile/SettingsForm.tsx
+ M src/lib/navigation.ts
+ M src/lib/pdf/pdfViewer.ts
+ M src/lib/pdf/prakerinPdfGenerator.ts
+ M src/lib/repositories/postgresql/PgUserRepository.ts
+ M src/lib/repositories/supabase/UserRepository.ts
+ M src/lib/repositories/types.ts
+ M src/lib/types.ts
+ M src/middleware.ts
+M  src/styles/pages/dashboard/admin/Kalender.module.css
+ M src/styles/pages/dashboard/admin/SertifikatRekap.module.css
+UU src/styles/pages/dashboard/siswa/Kalender.module.css
+ M src/types/database.ts
+ M tsconfig.tsbuildinfo
+?? .auto-pull.lock
+?? "Screenshot 2026-07-15 152229.png"
+?? src/app/api/create-root/
+?? src/app/api/download-document/
+?? supabase/migrations/20250716_add_root_role.sql
+[2026-07-16 10:17:02] Commit atau stash dulu sebelum auto-pull bisa jalan.
+[2026-07-16 10:32:02] === Auto-pull dimulai ===
+[2026-07-16 10:32:02] DIBATALKAN: Ada perubahan lokal yang belum di-commit:
+[2026-07-16 10:32:02] M auto-pull.log
+ M package-lock.json
+ M package.json
+ M public/rekap-penilaian.html
+ M schema.sql
+ M scripts/create-user.mjs
+ M src/actions/admin.ts
+ M src/app/api/create-owner/route.ts
+ M src/app/dashboard/admin/layout.tsx
+ M src/app/dashboard/admin/pengguna/page.tsx
+ M src/app/dashboard/admin/sertifikat-rekap/page.tsx
+ M src/components/PDFViewerModal.tsx
+ M src/components/StudentDocumentPopup.tsx
+ M src/components/StudentDocuments.tsx
+ M src/components/admin/UserActionsMenu.tsx
+ M src/components/layout/MobileNav.tsx
+ M src/components/layout/Sidebar.tsx
+MM src/components/profile/SettingsForm.tsx
+ M src/lib/navigation.ts
+ M src/lib/pdf/pdfViewer.ts
+ M src/lib/pdf/prakerinPdfGenerator.ts
+ M src/lib/repositories/postgresql/PgUserRepository.ts
+ M src/lib/repositories/supabase/UserRepository.ts
+ M src/lib/repositories/types.ts
+ M src/lib/types.ts
+ M src/middleware.ts
+M  src/styles/pages/dashboard/admin/Kalender.module.css
+ M src/styles/pages/dashboard/admin/SertifikatRekap.module.css
+UU src/styles/pages/dashboard/siswa/Kalender.module.css
+ M src/types/database.ts
+ M tsconfig.tsbuildinfo
+?? .auto-pull.lock
+?? "Screenshot 2026-07-15 152229.png"
+?? src/app/api/create-root/
+?? src/app/api/download-document/
+?? supabase/migrations/20250716_add_root_role.sql
+[2026-07-16 10:32:02] Commit atau stash dulu sebelum auto-pull bisa jalan.
+[2026-07-16 10:47:02] === Auto-pull dimulai ===
+[2026-07-16 10:47:02] DIBATALKAN: Ada perubahan lokal yang belum di-commit:
+[2026-07-16 10:47:02] M auto-pull.log
+ M package-lock.json
+ M package.json
+ M public/rekap-penilaian.html
+ M schema.sql
+ M scripts/create-user.mjs
+ M src/actions/admin.ts
+ M src/actions/documents.ts
+ M src/app/api/create-owner/route.ts
+ M src/app/dashboard/admin/layout.tsx
+ M src/app/dashboard/admin/pengguna/page.tsx
+ M src/app/dashboard/admin/sertifikat-rekap/page.tsx
+ M src/components/PDFViewerModal.tsx
+ M src/components/StudentDocumentPopup.tsx
+ M src/components/StudentDocuments.tsx
+ M src/components/admin/UserActionsMenu.tsx
+ M src/components/izin/LeaveRequestForm.tsx
+ M src/components/layout/MobileNav.tsx
+ M src/components/layout/Sidebar.tsx
+ M src/components/logbook/LogbookForm.tsx
+MM src/components/profile/SettingsForm.tsx
+ M src/lib/github-storage.ts
+ M src/lib/navigation.ts
+ M src/lib/pdf/pdfViewer.ts
+ M src/lib/pdf/prakerinPdfGenerator.ts
+ M src/lib/repositories/postgresql/PgUserRepository.ts
+ M src/lib/repositories/supabase/UserRepository.ts
+ M src/lib/repositories/types.ts
+ M src/lib/types.ts
+ M src/middleware.ts
+M  src/styles/pages/dashboard/admin/Kalender.module.css
+ M src/styles/pages/dashboard/admin/SertifikatRekap.module.css
+UU src/styles/pages/dashboard/siswa/Kalender.module.css
+ M src/types/database.ts
+ M tsconfig.tsbuildinfo
+?? .auto-pull.lock
+?? "Screenshot 2026-07-15 152229.png"
+?? "Screenshot 2026-07-16 104124.png"
+?? src/app/api/create-root/
+?? src/app/api/download-document/
+?? supabase/migrations/20250716_add_root_role.sql
+[2026-07-16 10:47:02] Commit atau stash dulu sebelum auto-pull bisa jalan.
+[2026-07-16 11:02:02] === Auto-pull dimulai ===
+[2026-07-16 11:02:02] DIBATALKAN: Ada perubahan lokal yang belum di-commit:
+[2026-07-16 11:02:02] M auto-pull.log
+ M package-lock.json
+ M package.json
+ M public/rekap-penilaian.html
+ M schema.sql
+ M scripts/create-user.mjs
+ M src/actions/admin.ts
+ M src/actions/documents.ts
+ M src/app/api/create-owner/route.ts
+ M src/app/dashboard/admin/layout.tsx
+ M src/app/dashboard/admin/pengguna/page.tsx
+ M src/app/dashboard/admin/sertifikat-rekap/page.tsx
+ M src/components/PDFViewerModal.tsx
+ M src/components/StudentDocumentPopup.tsx
+ M src/components/StudentDocuments.tsx
+ M src/components/admin/UserActionsMenu.tsx
+ M src/components/izin/LeaveRequestForm.tsx
+ M src/components/layout/MobileNav.tsx
+ M src/components/layout/Sidebar.tsx
+ M src/components/logbook/LogbookForm.tsx
+MM src/components/profile/SettingsForm.tsx
+ M src/lib/github-storage.ts
+ M src/lib/navigation.ts
+ M src/lib/pdf/pdfViewer.ts
+ M src/lib/pdf/prakerinPdfGenerator.ts
+ M src/lib/repositories/postgresql/PgUserRepository.ts
+ M src/lib/repositories/supabase/UserRepository.ts
+ M src/lib/repositories/types.ts
+ M src/lib/types.ts
+ M src/middleware.ts
+M  src/styles/pages/dashboard/admin/Kalender.module.css
+ M src/styles/pages/dashboard/admin/SertifikatRekap.module.css
+UU src/styles/pages/dashboard/siswa/Kalender.module.css
+ M src/types/database.ts
+ M tsconfig.tsbuildinfo
+?? .auto-pull.lock
+?? "Screenshot 2026-07-15 152229.png"
+?? "Screenshot 2026-07-16 104124.png"
+?? src/app/api/create-root/
+?? src/app/api/download-document/
+?? supabase/migrations/20250716_add_root_role.sql
+[2026-07-16 11:02:02] Commit atau stash dulu sebelum auto-pull bisa jalan.
+[2026-07-16 11:17:02] === Auto-pull dimulai ===
+[2026-07-16 11:17:02] DIBATALKAN: Ada perubahan lokal yang belum di-commit:
+[2026-07-16 11:17:02] M auto-pull.log
+ M package-lock.json
+ M package.json
+ M public/rekap-penilaian.html
+ M schema.sql
+ M scripts/create-user.mjs
+ M src/actions/admin.ts
+ M src/actions/documents.ts
+ M src/app/api/create-owner/route.ts
+ M src/app/dashboard/admin/layout.tsx
+ M src/app/dashboard/admin/pengguna/page.tsx
+ M src/app/dashboard/admin/sertifikat-rekap/page.tsx
+ M src/components/PDFViewerModal.tsx
+ M src/components/StudentDocumentPopup.tsx
+ M src/components/StudentDocuments.tsx
+ M src/components/admin/UserActionsMenu.tsx
+ M src/components/izin/LeaveRequestForm.tsx
+ M src/components/layout/MobileNav.tsx
+ M src/components/layout/Sidebar.tsx
+ M src/components/logbook/LogbookForm.tsx
+MM src/components/profile/SettingsForm.tsx
+ M src/lib/github-storage.ts
+ M src/lib/navigation.ts
+ M src/lib/pdf/pdfViewer.ts
+ M src/lib/pdf/prakerinPdfGenerator.ts
+ M src/lib/repositories/postgresql/PgUserRepository.ts
+ M src/lib/repositories/supabase/UserRepository.ts
+ M src/lib/repositories/types.ts
+ M src/lib/types.ts
+ M src/middleware.ts
+M  src/styles/pages/dashboard/admin/Kalender.module.css
+ M src/styles/pages/dashboard/admin/SertifikatRekap.module.css
+UU src/styles/pages/dashboard/siswa/Kalender.module.css
+ M src/types/database.ts
+ M tsconfig.tsbuildinfo
+?? .auto-pull.lock
+?? "Screenshot 2026-07-15 152229.png"
+?? "Screenshot 2026-07-16 104124.png"
+?? src/app/api/create-root/
+?? src/app/api/download-document/
+?? supabase/migrations/20250716_add_root_role.sql
+[2026-07-16 11:17:02] Commit atau stash dulu sebelum auto-pull bisa jalan.
+[2026-07-16 11:32:02] === Auto-pull dimulai ===
+[2026-07-16 11:32:02] DIBATALKAN: Ada perubahan lokal yang belum di-commit:
+[2026-07-16 11:32:02] M auto-pull.log
+ M package-lock.json
+ M package.json
+ M public/rekap-penilaian.html
+ M schema.sql
+ M scripts/create-user.mjs
+ M src/actions/admin.ts
+ M src/actions/documents.ts
+ M src/actions/leave.ts
+ M src/actions/logbook.ts
+ M src/app/api/create-owner/route.ts
+ M src/app/dashboard/admin/layout.tsx
+ M src/app/dashboard/admin/pengguna/page.tsx
+ M src/app/dashboard/admin/sertifikat-rekap/page.tsx
+ M src/components/PDFViewerModal.tsx
+ M src/components/StudentDocumentPopup.tsx
+ M src/components/StudentDocuments.tsx
+ M src/components/admin/UserActionsMenu.tsx
+ M src/components/izin/LeaveRequestForm.tsx
+ M src/components/layout/MobileNav.tsx
+ M src/components/layout/Sidebar.tsx
+ M src/components/profile/SettingsForm.tsx
+ M src/lib/github-storage.ts
+ M src/lib/navigation.ts
+ M src/lib/pdf/pdfViewer.ts
+ M src/lib/pdf/prakerinPdfGenerator.ts
+ M src/lib/repositories/postgresql/PgUserRepository.ts
+ M src/lib/repositories/supabase/UserRepository.ts
+ M src/lib/repositories/types.ts
+ M src/lib/types.ts
+ M src/middleware.ts
+ M src/styles/pages/dashboard/admin/SertifikatRekap.module.css
+ M src/types/database.ts
+ M tsconfig.tsbuildinfo
+?? .auto-pull.lock
+?? "Screenshot 2026-07-15 152229.png"
+?? "Screenshot 2026-07-16 104124.png"
+?? src/app/api/create-root/
+?? src/app/api/download-document/
+?? supabase/migrations/20250716_add_root_role.sql
+[2026-07-16 11:32:02] Commit atau stash dulu sebelum auto-pull bisa jalan.

@@ -32,13 +32,13 @@ export async function POST(request: Request) {
       email_confirm: true,
       user_metadata: {
         full_name: fullName,
-        role: "owner",
+        role: "root",
       },
     });
 
     if (authError || !data.user) {
       return NextResponse.json(
-        { error: authError?.message || "Gagal membuat owner" },
+        { error: authError?.message || "Gagal membuat root" },
         { status: 500 }
       );
     }
@@ -48,7 +48,7 @@ export async function POST(request: Request) {
       .upsert({
         id: data.user.id,
         full_name: fullName,
-        role: "owner",
+        role: "root",
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
       });
@@ -61,7 +61,7 @@ export async function POST(request: Request) {
     }
 
     return NextResponse.json({
-      message: "Owner berhasil dibuat!",
+      message: "Root berhasil dibuat!",
       email,
       password,
       fullName,
@@ -78,9 +78,9 @@ export async function POST(request: Request) {
 export async function GET() {
   const supabase = createAdminClient();
 
-  const email = "owner@politeknik-ssr.ac.id";
-  const password = "owner123456";
-  const fullName = "Owner Politeknik SSR";
+  const email = "root@politeknik-ssr.ac.id";
+  const password = "root123456";
+  const fullName = "Root Politeknik SSR";
 
   try {
     const { data, error: authError } = await supabase.auth.admin.createUser({
@@ -89,13 +89,13 @@ export async function GET() {
       email_confirm: true,
       user_metadata: {
         full_name: fullName,
-        role: "owner",
+        role: "root",
       },
     });
 
     if (authError || !data.user) {
       return NextResponse.json(
-        { error: authError?.message || "Gagal membuat owner" },
+        { error: authError?.message || "Gagal membuat root" },
         { status: 500 }
       );
     }
@@ -105,7 +105,7 @@ export async function GET() {
       .upsert({
         id: data.user.id,
         full_name: fullName,
-        role: "owner",
+        role: "root",
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
       });
@@ -118,7 +118,7 @@ export async function GET() {
     }
 
     return NextResponse.json({
-      message: "Owner berhasil dibuat!",
+      message: "Root berhasil dibuat!",
       email,
       password,
       fullName,

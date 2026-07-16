@@ -13,7 +13,9 @@ create extension if not exists "pgcrypto";
 -- 1. ENUM TYPES
 -- ---------------------------------------------------------------------
 do $$ begin
-  create type public.user_role as enum ('siswa', 'pembimbing', 'admin');
+  create type public.user_role as enum ('siswa', 'pembimbing', 'admin', 'owner', 'root');
+-- After creation, if 'root' needs to be added later:
+-- ALTER TYPE public.user_role ADD VALUE IF NOT EXISTS 'root';
 exception when duplicate_object then null; end $$;
 
 do $$ begin
@@ -41,6 +43,7 @@ create table if not exists public.profiles (
   instansi text, -- nama perusahaan/instansi tempat PKL (khusus siswa)
   kelas text, -- kelas siswa
   avatar_url text,
+  approved boolean not null default false,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
@@ -54,11 +57,12 @@ language plpgsql
 security definer set search_path = public
 as $$
 begin
-  insert into public.profiles (id, full_name, role)
+  insert into public.profiles (id, full_name, role, approved)
   values (
     new.id,
     coalesce(new.raw_user_meta_data->>'full_name', 'Pengguna Baru'),
-    coalesce((new.raw_user_meta_data->>'role')::public.user_role, 'siswa')
+    coalesce((new.raw_user_meta_data->>'role')::public.user_role, 'siswa'),
+    true
   )
   on conflict (id) do nothing;
   return new;

@@ -230,17 +230,19 @@ export async function generatePrakerinPdf(data: PrakerinRecapData): Promise<Uint
   drawText("BIDANG KEAHLIAN YANG DILATIHKAN", MARGIN + 10, y - 12.5, 9, bold, HEADER_TEXT);
   y -= sectionH + 5;
 
-  const t2RowH = 19;
+  const t2RowH = 20;
   const t2ColDef = [
     { x: MARGIN, w: 32, label: "NO" },
     { x: MARGIN + 36, w: 130, label: "BIDANG KEAHLIAN" },
-    { x: MARGIN + 170, w: PAGE_W - MARGIN * 2 - 176, label: "KETERANGAN" },
+    { x: MARGIN + 170, w: 75, label: "NILAI ANGKA" },
+    { x: MARGIN + 249, w: 65, label: "NILAI HURUF" },
+    { x: MARGIN + 318, w: PAGE_W - MARGIN * 2 - 324, label: "KETERANGAN" },
   ];
 
   drawRect(MARGIN, y - t2RowH, PAGE_W - MARGIN * 2, t2RowH, HEADER_BG);
   t2ColDef.forEach((col, ci) => {
     const tw = bold.widthOfTextAtSize(col.label, 7.5);
-    const cx = ci === 0 ? col.x + 12 : col.x + 8;
+    const cx = ci >= 2 ? col.x + (col.w - tw) / 2 : col.x + 8;
     drawText(col.label, cx, y - t2RowH + 6, 7.5, bold, HEADER_TEXT);
   });
   y -= t2RowH;
@@ -250,9 +252,33 @@ export async function generatePrakerinPdf(data: PrakerinRecapData): Promise<Uint
     drawRect(MARGIN, ry, PAGE_W - MARGIN * 2, t2RowH, idx % 2 === 0 ? ROW_EVEN : ROW_ODD);
     drawLine(MARGIN, ry, PAGE_W - MARGIN, ry, 0.75, BORDER);
 
+    const score = item.score;
+    const scoreStr = score > 0 ? String(Math.round(score)) : "-";
+    const grade = score > 0 ? prakerinGradeFromScore(score) : "-";
+    const gradeLabel = score > 0 ? prakerinGradeLabel(score) : "";
+    const gradeColor = getGradeColor(score);
+
     drawText(String(idx + 1), MARGIN + 14, ry + 6, 8.5, bold, TEXT_DARK);
     drawText(item.name || "-", MARGIN + 44, ry + 6, 8, font, TEXT_DARK);
-    drawText(item.keterangan || "-", MARGIN + 178, ry + 6, 8, font, TEXT_MUTED);
+    drawText(scoreStr, MARGIN + 207, ry + 6, 8.5, bold, TEXT_DARK);
+
+    if (score > 0) {
+      const badgeX = MARGIN + 275;
+      const badgeY = ry + 3;
+      const badgeW = 22;
+      const badgeH = 14;
+      drawRect(badgeX, badgeY, badgeW, badgeH, gradeColor.bg);
+      drawLine(badgeX, badgeY, badgeX + badgeW, badgeY, 0.5, gradeColor.border);
+      drawLine(badgeX, badgeY, badgeX, badgeY + badgeH, 0.5, gradeColor.border);
+      drawLine(badgeX + badgeW, badgeY, badgeX + badgeW, badgeY + badgeH, 0.5, gradeColor.border);
+      drawLine(badgeX, badgeY + badgeH, badgeX + badgeW, badgeY + badgeH, 0.5, gradeColor.border);
+      const gw = bold.widthOfTextAtSize(grade, 8);
+      drawText(grade, badgeX + (badgeW - gw) / 2, badgeY + 3, 8, bold, gradeColor.text);
+    } else {
+      drawText(grade, MARGIN + 282, ry + 6, 8.5, bold, TEXT_DARK);
+    }
+
+    drawText(gradeLabel, MARGIN + 328, ry + 6, 7.5, font, TEXT_MUTED);
 
     y = ry;
   });
