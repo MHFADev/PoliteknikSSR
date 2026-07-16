@@ -7,6 +7,7 @@ import { Modal } from "@/components/ui/Modal";
 import { Button } from "@/components/ui/Button";
 import { addStudent, ensureStudyProgram } from "@/actions/admin";
 import { getStudyPrograms } from "@/actions/broadcast";
+import { getClasses } from "@/actions/classes";
 import { cn } from "@/lib/utils";
 import styles from "@/styles/components/admin/AddStudentModal.module.css";
 
@@ -25,6 +26,7 @@ export function AddStudentModal() {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [programs, setPrograms] = useState<{ id: string; nama: string }[]>([]);
+  const [classList, setClassList] = useState<{ id: string; nama: string }[]>([]);
   const [jurusanInput, setJurusanInput] = useState("");
   const [showDropdown, setShowDropdown] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -45,7 +47,10 @@ export function AddStudentModal() {
   });
 
   useEffect(() => {
-    if (open) getStudyPrograms().then((data) => setPrograms(data as any));
+    if (open) {
+      getStudyPrograms().then((data) => setPrograms(data as any));
+      getClasses().then(setClassList);
+    }
   }, [open]);
 
   useEffect(() => {
@@ -413,13 +418,12 @@ export function AddStudentModal() {
                     <label className={styles.label}>Kelas</label>
                     <div className={styles.inputWrapper}>
                       <GraduationCap className={styles.inputIcon} />
-                      <input
-                        type="text"
-                        value={formData.kelas}
-                        onChange={(e) => updateField("kelas", e.target.value)}
-                        placeholder="XII RPL 1"
-                        className={styles.inputBase}
-                      />
+                      <select value={formData.kelas} onChange={(e) => updateField("kelas", e.target.value)}
+                        className={styles.inputBase} style={{ paddingLeft: "2.25rem" }}
+                      >
+                        <option value="">Pilih kelas</option>
+                        {classList.map((c) => <option key={c.id} value={c.nama}>{c.nama}</option>)}
+                      </select>
                     </div>
                   </div>
                 </div>

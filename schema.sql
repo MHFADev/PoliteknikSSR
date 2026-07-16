@@ -706,6 +706,34 @@ create policy "storage: semua login lihat student-documents"
   using (bucket_id = 'student-documents' and auth.uid() is not null);
 
 -- =====================================================================
+-- 19. TABEL: classes
+-- Daftar kelas yang tersedia (10, 11, 12, dll)
+-- =====================================================================
+create table if not exists public.classes (
+  id uuid primary key default gen_random_uuid(),
+  nama text not null unique,
+  created_at timestamptz not null default now()
+);
+
+comment on table public.classes is 'Daftar kelas yang tersedia';
+
+insert into public.classes (nama) values ('10'), ('11'), ('12')
+on conflict (nama) do nothing;
+
+alter table public.classes enable row level security;
+
+drop policy if exists "classes: semua login boleh lihat" on public.classes;
+create policy "classes: semua login boleh lihat"
+  on public.classes for select
+  using (auth.uid() is not null);
+
+drop policy if exists "classes: admin/root/owner kelola" on public.classes;
+create policy "classes: admin/root/owner kelola"
+  on public.classes for all
+  using (public.current_role() in ('admin', 'owner', 'root'))
+  with check (public.current_role() in ('admin', 'owner', 'root'));
+
+-- =====================================================================
 -- SELESAI. Langkah selanjutnya:
 -- 1. Buat user pertama (role admin) lewat Supabase Dashboard > Authentication > Add user,
 --    lalu update kolom role di tabel profiles menjadi 'admin' untuk user tsb.

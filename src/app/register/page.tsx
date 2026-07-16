@@ -19,6 +19,7 @@ import {
   ChevronRight,
 } from "lucide-react";
 import { register, getStudyPrograms } from "./actions";
+import { getClasses } from "@/actions/classes";
 import { validateEmail } from "@/lib/email-validation";
 import { PasswordEye } from "@/components/ui/PasswordEye";
 import styles from "@/styles/pages/Register.module.css";
@@ -56,6 +57,7 @@ export default function RegisterPage() {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [studyPrograms, setStudyPrograms] = useState<StudyProgram[]>([]);
+  const [classList, setClassList] = useState<{ id: string; nama: string }[]>([]);
   const [agreed, setAgreed] = useState(false);
 
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -65,6 +67,7 @@ export default function RegisterPage() {
     getStudyPrograms().then((programs) => {
       if (Array.isArray(programs)) setStudyPrograms(programs);
     });
+    getClasses().then(setClassList);
   }, []);
 
   useEffect(() => {
@@ -518,6 +521,18 @@ export default function RegisterPage() {
 
               {role === "siswa" && (
                 <>
+                  <div className={styles.fieldRow}>
+                    <div className={styles.field}>
+                      <label className={styles.label} htmlFor="kelas">Kelas</label>
+                      <select id="kelas" required value={kelas} onChange={(e) => setKelas(e.target.value)}
+                        className={`${styles.select} ${fieldErrors.kelas ? styles.selectError : ""} ${!kelas ? styles.selectPlaceholder : ""}`}
+                      >
+                        <option value="" disabled>Pilih kelas</option>
+                        {classList.map((c) => <option key={c.id} value={c.nama}>{c.nama}</option>)}
+                      </select>
+                      {fieldErrors.kelas && <span className={styles.fieldError}>{fieldErrors.kelas}</span>}
+                    </div>
+                  </div>
                   <div className={styles.fieldRow}>
                     <div className={styles.field}>
                       <label className={styles.label} htmlFor="jurusanId">

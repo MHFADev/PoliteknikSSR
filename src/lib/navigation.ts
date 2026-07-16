@@ -1,7 +1,7 @@
 import {
   LayoutDashboard, QrCode, FileText, NotebookPen,
   Users, Download, MapPin, CalendarDays, Megaphone,
-  UserCircle, Settings, GraduationCap, Award,
+  UserCircle, Settings, GraduationCap, Award, ListOrdered,
   type LucideIcon,
 } from "lucide-react";
 
@@ -30,6 +30,7 @@ export const NAV: Record<string, NavItem[]> = {
     { href: "/dashboard/admin/absensi",     label: "Rekap Absensi",      icon: FileText, group: "Manajemen" },
     { href: "/dashboard/admin/pengguna",    label: "Kelola Pengguna",    icon: Users, group: "Manajemen" },
     { href: "/dashboard/admin/study-programs", label: "Program Studi",   icon: GraduationCap, group: "Manajemen" },
+    { href: "/dashboard/admin/kelas",        label: "Kelola Kelas",      icon: ListOrdered, group: "Manajemen" },
     { href: "/dashboard/admin/sertifikat-rekap", label: "Sertifikat & Nilai", icon: Award, group: "Manajemen" },
     { href: "/dashboard/admin/qr",          label: "Generate QR",        icon: QrCode, group: "Manajemen" },
     { href: "/dashboard/admin/izin",        label: "Data Izin",          icon: FileText, group: "Data" },
@@ -45,6 +46,7 @@ export const NAV: Record<string, NavItem[]> = {
     { href: "/dashboard/admin/absensi",     label: "Rekap Absensi",      icon: FileText, group: "Manajemen" },
     { href: "/dashboard/admin/pengguna",    label: "Kelola Pengguna",    icon: Users, group: "Manajemen" },
     { href: "/dashboard/admin/study-programs", label: "Program Studi",   icon: GraduationCap, group: "Manajemen" },
+    { href: "/dashboard/admin/kelas",        label: "Kelola Kelas",      icon: ListOrdered, group: "Manajemen" },
     { href: "/dashboard/admin/sertifikat-rekap", label: "Sertifikat & Nilai", icon: Award, group: "Manajemen" },
     { href: "/dashboard/admin/qr",          label: "Generate QR",        icon: QrCode, group: "Manajemen" },
     { href: "/dashboard/admin/izin",        label: "Data Izin",          icon: FileText, group: "Data" },
@@ -61,6 +63,7 @@ export const NAV: Record<string, NavItem[]> = {
     { href: "/dashboard/admin/absensi",     label: "Rekap Absensi",      icon: FileText, group: "Manajemen" },
     { href: "/dashboard/admin/pengguna",    label: "Kelola Pengguna",    icon: Users, group: "Manajemen" },
     { href: "/dashboard/admin/study-programs", label: "Program Studi",   icon: GraduationCap, group: "Manajemen" },
+    { href: "/dashboard/admin/kelas",        label: "Kelola Kelas",      icon: ListOrdered, group: "Manajemen" },
     { href: "/dashboard/admin/sertifikat-rekap", label: "Sertifikat & Nilai", icon: Award, group: "Manajemen" },
     { href: "/dashboard/admin/qr",          label: "Generate QR",        icon: QrCode, group: "Manajemen" },
     { href: "/dashboard/admin/izin",        label: "Data Izin",          icon: FileText, group: "Data" },

@@ -24,7 +24,9 @@ export async function register(
     return { error: "Nomor Induk (NISN/NIP) wajib diisi." };
   }
 
-  // Kelas diisi oleh admin di panel, bukan saat register
+  if (role === "siswa" && !kelas?.trim()) {
+    return { error: "Pilih kelas terlebih dahulu." };
+  }
 
   if (role === "siswa" && !jurusanId) {
     return { error: "Program studi wajib dipilih untuk siswa." };
