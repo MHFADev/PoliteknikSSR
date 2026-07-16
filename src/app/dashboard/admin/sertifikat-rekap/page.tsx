@@ -747,6 +747,15 @@ export default function SertifikatRekapPage() {
                   )}
                 </label>
               </div>
+              {prakerinFile && IMAGE_EXTS.some(ext => prakerinFile.name.toLowerCase().endsWith(ext)) && (
+                <div style={{ marginTop: "0.75rem", borderRadius: "0.75rem", overflow: "hidden", border: "1px solid #E2E8F0" }}>
+                  <img
+                    src={URL.createObjectURL(prakerinFile)}
+                    alt="Preview"
+                    style={{ width: "100%", maxHeight: "300px", objectFit: "contain", background: "#F8FAFC" }}
+                  />
+                </div>
+              )}
             </div>
 
             <div className={styles.formActions}>

@@ -1538,3 +1538,13 @@ UU src/styles/pages/dashboard/siswa/Kalender.module.css
 [2026-07-16 13:32:02] M auto-pull.log
 ?? .auto-pull.lock
 [2026-07-16 13:32:02] Commit atau stash dulu sebelum auto-pull bisa jalan.
+[2026-07-16 13:47:01] === Auto-pull dimulai ===
+[2026-07-16 13:47:02] DIBATALKAN: Ada perubahan lokal yang belum di-commit:
+[2026-07-16 13:47:02] M auto-pull.log
+?? .auto-pull.lock
+[2026-07-16 13:47:02] Commit atau stash dulu sebelum auto-pull bisa jalan.
+[2026-07-16 14:02:02] === Auto-pull dimulai ===
+[2026-07-16 14:02:02] DIBATALKAN: Ada perubahan lokal yang belum di-commit:
+[2026-07-16 14:02:02] M auto-pull.log
+?? .auto-pull.lock
+[2026-07-16 14:02:02] Commit atau stash dulu sebelum auto-pull bisa jalan.
