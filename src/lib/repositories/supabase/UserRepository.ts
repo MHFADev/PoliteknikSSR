@@ -321,15 +321,17 @@ export class SupabaseUserRepository implements IUserRepository {
 
     // Trigger handle_new_user sudah membuat baris profil (full_name, role, kelas).
     // Lengkapi dengan field tambahan via admin client (bypass RLS).
-    if (identityNumber || instansi || jurusanId) {
-      const admin = this.getAdminClient();
+    const admin = this.getAdminClient();
+    const updateData: any = {};
+    if (identityNumber) updateData.identity_number = identityNumber;
+    if (instansi) updateData.instansi = instansi;
+    if (jurusanId) updateData.jurusan_id = jurusanId;
+    updateData.approved = false;
+
+    if (Object.keys(updateData).length > 0) {
       const { error: profileError } = await admin
         .from("profiles")
-        .update({
-          identity_number: identityNumber || null,
-          instansi: instansi || null,
-          jurusan_id: jurusanId || null,
-        })
+        .update(updateData)
         .eq("id", data.user.id);
 
       if (profileError) {

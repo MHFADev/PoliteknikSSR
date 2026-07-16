@@ -95,7 +95,6 @@ export async function getStudents(): Promise<
     .from("profiles")
     .select("id, full_name, kelas, identity_number, instansi, jurusan_id, study_programs!left(nama)")
     .eq("role", "siswa")
-    .eq("approved", true)
     .order("full_name", { ascending: true });
 
   return (data || []).map((s: any) => ({
