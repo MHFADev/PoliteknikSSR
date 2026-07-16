@@ -134,11 +134,8 @@ export default function RegisterPage() {
       errors.confirmPassword = "Kata sandi tidak cocok.";
     }
     if (role === "siswa") {
-      if (!kelas.trim()) {
-        errors.kelas = "Kelas wajib diisi.";
-      } else if (!/^\d+$/.test(kelas.trim())) {
-        errors.kelas = "Kelas hanya boleh berisi angka.";
-      }
+    // Kelas diisi oleh admin, bukan saat register
+
       if (!jurusanId) {
         errors.jurusanId = "Program studi wajib dipilih.";
       }
@@ -522,32 +519,6 @@ export default function RegisterPage() {
               {role === "siswa" && (
                 <>
                   <div className={styles.fieldRow}>
-                    <div className={styles.field}>
-                      <label className={styles.label} htmlFor="kelas">
-                        Kelas
-                      </label>
-                      <div className={styles.inputWrapper}>
-                        <Hash className={styles.inputIcon} />
-                        <input
-                          id="kelas"
-                          type="text"
-                          inputMode="numeric"
-                          required
-                          value={kelas}
-                          onChange={(e) =>
-                            setKelas(e.target.value.replace(/\D/g, ""))
-                          }
-                          placeholder="Contoh: 10"
-                          className={`${styles.input} ${styles.inputWithIcon} ${fieldErrors.kelas ? styles.inputError : styles.inputNormal}`}
-                        />
-                      </div>
-                      {fieldErrors.kelas && (
-                        <span className={styles.fieldError}>
-                          {fieldErrors.kelas}
-                        </span>
-                      )}
-                    </div>
-
                     <div className={styles.field}>
                       <label className={styles.label} htmlFor="jurusanId">
                         Program Studi

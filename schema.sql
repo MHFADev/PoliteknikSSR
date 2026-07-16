@@ -62,7 +62,7 @@ begin
     new.id,
     coalesce(new.raw_user_meta_data->>'full_name', 'Pengguna Baru'),
     coalesce((new.raw_user_meta_data->>'role')::public.user_role, 'siswa'),
-    true
+    coalesce((new.raw_user_meta_data->>'approved')::boolean, true)
   )
   on conflict (id) do nothing;
   return new;
