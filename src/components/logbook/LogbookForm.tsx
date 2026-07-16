@@ -5,7 +5,7 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import { CheckCircle2, UploadCloud, X } from "lucide-react";
 import imageCompression from "browser-image-compression";
-import { saveLogbookEntry } from "@/actions/logbook";
+import { saveLogbookEntry, getUploadSignedUrl } from "@/actions/logbook";
 import { Button } from "@/components/ui/Button";
 import { Card, CardHeader } from "@/components/ui/Card";
 import { todayISODate, formatDate } from "@/lib/utils";
@@ -73,26 +73,24 @@ export function LogbookForm({ userId, existingContent, existingPhotoUrl }: { use
       let photoUrl = existingPhotoUrl ?? null;
 
       if (photo) {
-        // Upload to Supabase Storage
-        const fileExt = "jpeg"; // We converted to jpeg
-        const uniqueId = userId ?? "anonymous";
-        const fileName = `${uniqueId}/${Date.now()}.${fileExt}`;
-        const filePath = `logbook_photos/${fileName}`;
+        // Dapatkan signed URL dari server (menggunakan service_role key, bypass RLS)
+        const signedResult = await getUploadSignedUrl(userId ?? "", today);
+        if ("error" in signedResult) throw new Error("Gagal mengupload foto: " + signedResult.error);
 
-        /*
-         * Upload ke bucket logbook_photos.
-         * Bucket ini harus dibuat di Supabase dashboard (Storage > Create bucket > logbook_photos, public).
-         * Untuk menghindari error "Bucket not found", pastikan bucket sudah ada.
-         */
-        const BUCKET_NAME = "logbook_photos";
-        const { error: uploadError } = await supabase.storage
-          .from(BUCKET_NAME)
-          .upload(filePath, photo, { upsert: true, contentType: "image/jpeg" });
+        const { signedUrl: uploadUrl, path: uploadPath } = signedResult;
 
-        if (uploadError) throw new Error("Gagal mengupload foto: " + uploadError.message);
+        // Upload file langsung ke signed URL (tidak perlu auth — token sudah di encode di URL)
+        const uploadResponse = await fetch(uploadUrl, {
+          method: "PUT",
+          body: photo,
+          headers: { "Content-Type": "image/jpeg" },
+        });
+        if (!uploadResponse.ok) {
+          throw new Error("Gagal mengupload foto: " + uploadResponse.statusText);
+        }
 
-        // Ambil public URL hasil upload
-        const { data } = supabase.storage.from(BUCKET_NAME).getPublicUrl(filePath);
+        // Ambil public URL dari path yang sudah ditentukan server
+        const { data } = supabase.storage.from("logbook_photos").getPublicUrl(uploadPath);
         photoUrl = data.publicUrl;
       }
 
@@ -102,6 +100,8 @@ export function LogbookForm({ userId, existingContent, existingPhotoUrl }: { use
         setError(result.error);
       } else {
         setSaved(true);
+        // Bersihkan state foto agar preview tidak bertahan setelah berhasil disimpan
+        removePhoto();
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Terjadi kesalahan");
@@ -134,8 +134,8 @@ export function LogbookForm({ userId, existingContent, existingPhotoUrl }: { use
           <p className="text-sm font-medium text-ink-muted">Foto Bukti Kegiatan (opsional)</p>
           {photoPreview ? (
             <div className={styles.photoPreview}>
-              {/* Ganti <img> ke <Image> dari next/image agar kompatibel dengan SSR */}
-              <Image src={photoPreview} alt="Preview foto bukti" fill unoptimized={true} className={styles.photoPreviewImg} />
+              {/* Tidak pakai fill agar parent div (tanpa tinggi eksplisit) tidak membuat image collapse */}
+              <Image src={photoPreview} alt="Preview foto bukti" width={0} height={0} sizes="100vw" unoptimized={true} className={styles.photoPreviewImg} />
               <button
                 type="button"
                 onClick={removePhoto}

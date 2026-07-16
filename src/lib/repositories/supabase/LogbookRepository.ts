@@ -220,13 +220,17 @@ export class SupabaseLogbookRepository implements ILogbookRepository {
   }
 
   /**
-   * getUploadUrl — Dapatkan URL untuk upload foto logbook
+   * getUploadUrl — Dapatkan signed URL untuk upload foto logbook
+   * Menggunakan createAdminClient() (service_role) agar dapat membuat signed URL
+   * tanpa terhalang RLS. Signed URL yang dihasilkan bisa dipakai dari browser
+   * tanpa perlu auth token.
+   *
    * @param studentId — UUID siswa
    * @param entryDate — Tanggal entri
-   * @returns Public URL untuk upload, atau null jika gagal
+   * @returns Signed URL untuk upload, atau null jika gagal
    */
   async getUploadUrl(studentId: string, entryDate: string): Promise<string | null> {
-    const supabase = createClient();
+    const supabase = createAdminClient();
 
     const fileExtension = "jpg";
     const fileName = `${studentId}/${entryDate}/proof.${fileExtension}`;

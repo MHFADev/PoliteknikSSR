@@ -1,0 +1,80 @@
+SARAN PERBAIKAN ERROR
+=====================
+
+1. MASALAH GAMBAR DIATAS (FOTO PREVIEW KEGIATAN HARIAN)
+---------------------------------------------------------
+Lokasi: src/components/logbook/LogbookForm.tsx (baris 137-138)
+
+Penyebab: Component <Image> menggunakan prop "fill" namun parent div (.photoPreview)
+tidak memiliki tinggi (height) eksplisit. Karena "fill" membuat image position:absolute
+dan mengikuti tinggi parent, sedangkan parent tidak punya tinggi, image collapse ke 0px.
+
+Perbaikan: Sudah diperbaiki — "fill" diganti dengan width={0} height={0} sizes="100vw"
+agar class .photoPreviewImg (height: 12rem) bisa bekerja dengan benar.
+
+
+2. ERROR "new row violates row-level security policy" (UPLOAD FOTO)
+-------------------------------------------------------------------
+Lokasi: src/components/logbook/LogbookForm.tsx + src/lib/repositories/supabase/LogbookRepository.ts
+
+Penyebab: Upload foto langsung dari client menggunakan anon key (createBrowserClient)
+yang tunduk pada RLS storage.objects. Jika policy RLS untuk bucket logbook_photos
+belum dibuat di Supabase Dashboard, maka insert ke storage.objects ditolak.
+
+Perbaikan: Sudah diperbaiki — upload sekarang menggunakan signed URL yang dibuat
+server dengan service_role key (bypass RLS). File di-upload via fetch() PUT ke
+signed URL, tanpa perlu auth token.
+
+PENTING: Pastikan environment variable berikut ada di file .env.local:
+  - NEXT_PUBLIC_SUPABASE_URL=<URL>
+  - NEXT_PUBLIC_SUPABASE_ANON_KEY=<anon key>
+  - SUPABASE_SERVICE_ROLE_KEY=<service role key>  ← WAJIB ADA untuk signed URL
+
+
+3. ERROR TYPESCRIPT DI FILE LAIN (PRE-EXISTING)
+------------------------------------------------
+Lokasi: src/lib/pdf/pdfViewer.ts (baris 16)
+
+Penyebab: Parameter yang dikirim ke PDF.js tidak sesuai tipe DocumentInitParameters.
+Error ini SUDAH ADA SEBELUMNYA dan tidak terkait perubahan di atas.
+
+Saran: Perbaiki di file tersebut atau biarkan jika tidak mengganggu build production.
+
+
+4. JIKA SIGNED URL TETAP GAGAL
+-------------------------------
+- Buka Supabase Dashboard → Storage → bucket "logbook_photos"
+- Pastikan bucket sudah dibuat dan set ke Public
+- Jalankan SQL berikut di Supabase SQL Editor untuk membuat policy:
+
+    -- Bucket (jika belum ada)
+    insert into storage.buckets (id, name, public)
+    values ('logbook_photos', 'logbook_photos', true)
+    on conflict (id) do nothing;
+
+    -- Policy insert (via signed URL tidak butuh policy ini, tapi baiknya tetap ada)
+    drop policy if exists "storage: siswa upload foto logbook sendiri" on storage.objects;
+    create policy "storage: siswa upload foto logbook sendiri"
+      on storage.objects for insert
+      with check (
+        bucket_id = 'logbook_photos'
+        and auth.uid() is not null
+      );
+
+    -- Policy select
+    drop policy if exists "storage: semua login lihat foto logbook" on storage.objects;
+    create policy "storage: semua login lihat foto logbook"
+      on storage.objects for select
+      using (bucket_id = 'logbook_photos' and auth.uid() is not null);
+
+- Jika error masih muncul, cek Network tab di DevTools browser untuk melihat
+  response detail dari Supabase API.
+
+
+5. VERIFIKASI UPLOAD BERHASIL
+-------------------------------
+Setelah submit form "Simpan Kegiatan":
+- Cek Supabase Dashboard → Storage → logbook_photos → folder [userId]/[tanggal]/
+  harus ada file proof.jpg
+- Cek tabel logbook_entries → baris dengan student_id dan entry_date sesuai
+  harus memiliki photo_url yang terisi
