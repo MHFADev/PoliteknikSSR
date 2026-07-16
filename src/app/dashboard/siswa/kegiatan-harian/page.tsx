@@ -62,11 +62,13 @@ export default async function SiswaLogbookPage() {
                   
                   {entry.photo_url && (
                     <div className={styles.historyItemPhoto}>
-                      {/* Ganti <img> ke <Image> dari next/image untuk optimasi gambar */}
+                      {/* Tidak pakai fill — parent .historyItemPhoto tidak punya position + tinggi,
+                          sehingga fill akan membuat img position:absolute relatif ke viewport
+                          dan menutupi konten di atasnya (bug "gambar diatas"). */}
                       <Image 
                         src={entry.photo_url} 
                         alt="Bukti kegiatan" 
-                        fill
+                        width={0} height={0} sizes="100vw"
                         unoptimized={true}
                       />
                     </div>

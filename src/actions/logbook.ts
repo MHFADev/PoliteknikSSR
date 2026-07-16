@@ -30,7 +30,7 @@ export async function saveLogbookEntry(input: z.infer<typeof entrySchema>) {
   return { success: true };
 }
 
-export async function getUploadSignedUrl(userId: string, entryDate: string) {
+export async function getUploadSignedUrl(userId: string, entryDate: string): Promise<{ signedUrl: string; path: string } | { error: string }> {
   const signedUrl = await Repositories.logbook().getUploadUrl(userId, entryDate);
   if (!signedUrl) {
     return { error: "Gagal membuat URL upload" };

@@ -37,7 +37,7 @@ export function QRGeneratorCard({
   }
 
   return (
-    <Card variant="flip7">
+    <Card variant="flip7" className={styles.card}>
       <CardHeader
         title="QR Presensi Hari Ini"
         subtitle={

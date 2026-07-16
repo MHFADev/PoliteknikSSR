@@ -21,8 +21,8 @@
 .cardFlip7 {
   background: var(--bg-card, #fff);
   border-radius: 24px;
-  border-left: 4px solid var(--color-teal-light, #3cc4bd);
-  box-shadow: 0 4px 20px rgba(43, 168, 162, 0.1);
+  border-left: 4px solid var(--color-ocean, #3572ef);
+  box-shadow: 0 4px 20px #3573ef41;
 }
 .cardFlip7Highlight {
   background: linear-gradient(
