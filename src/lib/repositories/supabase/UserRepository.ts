@@ -609,7 +609,8 @@ export class SupabaseUserRepository implements IUserRepository {
 
     // Baca metadata existing dulu, jangan timpa semua
     const { data: existing } = await supabase.auth.admin.getUserById(userId);
-    const meta: Record<string, any> = { ...(existing?.user?.user_metadata || {}), role };
+    if (!existing?.user) return { error: "User tidak ditemukan." };
+    const meta: Record<string, any> = { ...existing.user.user_metadata, role };
     if (role === "pembimbing") meta.approved = true;
     const { error } = await supabase.auth.admin.updateUserById(userId, {
       user_metadata: meta,
@@ -618,7 +619,8 @@ export class SupabaseUserRepository implements IUserRepository {
     // Update juga di profiles table
     const updateData: Record<string, any> = { role };
     if (role === "pembimbing") updateData.approved = true;
-    await supabase.from("profiles").update(updateData as any).eq("id", userId);
+    const { error: profileError } = await supabase.from("profiles").update(updateData as any).eq("id", userId);
+    if (profileError) console.error("[updateUserRole] profile update error:", profileError.message);
     return {};
   }
 

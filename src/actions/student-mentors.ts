@@ -35,8 +35,7 @@ export async function getAvailableMentors(jurusanId?: string): Promise<MentorInf
   let query = adminSupabase
     .from("profiles")
     .select("id, full_name, avatar_url, jurusan_id, study_programs!left(nama)")
-    .eq("role", "pembimbing")
-    .eq("approved", true);
+    .eq("role", "pembimbing");
 
   if (jurusanId) {
     query = query.eq("jurusan_id", jurusanId);

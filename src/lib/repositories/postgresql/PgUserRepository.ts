@@ -355,7 +355,8 @@ export class PgUserRepository implements IUserRepository {
       if (rows.length > 0 && (rows[0].role === 'root' || rows[0].role === 'owner')) {
         return { error: "Tidak dapat mengubah role akun root/owner." };
       }
-      await query(`UPDATE profiles SET role = $1 WHERE id = $2`, [role, userId]);
+      const setClause = role === 'pembimbing' ? "role = $1, approved = true" : "role = $1";
+      await query(`UPDATE profiles SET ${setClause} WHERE id = $2`, [role, userId]);
       return {};
     } catch (err: any) {
       return { error: "Gagal mengubah role: " + err.message };
