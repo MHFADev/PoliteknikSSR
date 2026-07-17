@@ -767,6 +767,10 @@ export default function SertifikatRekapPage() {
               <div className={styles.prakerinSectionTitle}>Tanda Tangan & NIP</div>
               <div className={styles.prakerinIdentityGrid}>
                 <div className={styles.formGroup}>
+                  <label>Pembimbing Sekolah — Nama</label>
+                  <input type="text" value={prakerin.pembimbingSekolahNama} onChange={(e) => updatePrakerinField("pembimbingSekolahNama", e.target.value)} placeholder="Nama lengkap pembimbing sekolah" className={styles.inputDate} />
+                </div>
+                <div className={styles.formGroup}>
                   <label>Pembimbing Sekolah — NIP</label>
                   <input type="text" value={prakerin.pembimbingSekolahNip} onChange={(e) => updatePrakerinField("pembimbingSekolahNip", e.target.value)} placeholder="NIP pembimbing sekolah" className={styles.inputDate} />
                 </div>
@@ -785,6 +789,10 @@ export default function SertifikatRekapPage() {
                       <img src={prakerin.pembimbingSekolahTtd} alt="TTD Sekolah" style={{ width: "100%", height: "100%", objectFit: "contain" }} />
                     </div>
                   )}
+                </div>
+                <div className={styles.formGroup}>
+                  <label>Pembimbing Industri — Nama</label>
+                  <input type="text" value={prakerin.pembimbingIndustriNama} onChange={(e) => updatePrakerinField("pembimbingIndustriNama", e.target.value)} placeholder="Nama lengkap pembimbing industri" className={styles.inputDate} />
                 </div>
                 <div className={styles.formGroup}>
                   <label>Pembimbing Industri — NIP</label>

@@ -75,6 +75,7 @@ export function Sidebar({ role, fullName, avatarUrl }: SidebarProps) {
       <div className={styles.content}>
         <div className={styles.logo}>
           <Image src="/logo.png" alt="Politeknik SSR" width={140} height={40} className="h-auto w-auto" priority />
+          <div className={styles.logoText}>Politeknik SSR</div>
         </div>
         <nav className={styles.nav}>
           {rendered}

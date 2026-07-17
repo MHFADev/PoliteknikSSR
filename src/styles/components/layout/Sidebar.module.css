@@ -48,12 +48,21 @@
 
 .logo {
   flex-shrink: 0;
-  margin-bottom: 24px;
+  margin-bottom: 16px;
   padding: 0 8px;
 }
 .logo img {
   max-width: 100%;
   height: auto;
+}
+.logoText {
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: #64748B;
+  text-align: center;
+  margin-top: 4px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 
 .nav {

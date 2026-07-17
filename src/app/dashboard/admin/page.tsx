@@ -248,7 +248,7 @@ export default async function AdminOverviewPage() {
       {/* ─── Header ──────────────────────────────────────────── */}
       <div>
         <h1 className={styles.headerTitle}>
-          Halo, {profile?.full_name || "Admin"}
+          Halo, {profile?.full_name || "Admin"} 👋👋
         </h1>
         <p className={styles.headerSub}>
           Gambaran umum seluruh peserta PKL Politeknik SSR

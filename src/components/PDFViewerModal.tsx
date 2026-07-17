@@ -138,7 +138,7 @@ export function PDFViewerModal({ url, title, onClose, gradeData, studentName, fi
             <p style="font-size:0.8rem;color:#64748B;margin:0 0 0.75rem">Pembimbing Sekolah</p>
             ${data.pembimbingSekolahTtd ? `<img src="${data.pembimbingSekolahTtd}" style="height:50px;object-fit:contain;display:block;margin:0 auto 0.5rem" />` : '<div style="height:50px"></div>'}
             <hr style="border:none;border-top:1.5px solid #1E293B;width:70%;margin:0 auto 0.25rem" />
-            <p style="font-size:0.85rem;font-weight:700;margin:0.25rem 0 0">_________________________</p>
+            <p style="font-size:0.85rem;font-weight:700;margin:0.25rem 0 0">${data.pembimbingSekolahNama || "_________________________"}</p>
             <p style="font-size:0.75rem;color:#64748B;margin:0">${data.pembimbingSekolahNip ? `NIP. ${data.pembimbingSekolahNip}` : "NIP. _____________________"}</p>
           </div>
           <div style="text-align:center;width:45%">
@@ -146,7 +146,7 @@ export function PDFViewerModal({ url, title, onClose, gradeData, studentName, fi
             <p style="font-size:0.8rem;color:#64748B;margin:0 0 0.75rem">Pembimbing Industri / Perusahaan</p>
             ${data.pembimbingIndustriTtd ? `<img src="${data.pembimbingIndustriTtd}" style="height:50px;object-fit:contain;display:block;margin:0 auto 0.5rem" />` : '<div style="height:50px"></div>'}
             <hr style="border:none;border-top:1.5px solid #1E293B;width:70%;margin:0 auto 0.25rem" />
-            <p style="font-size:0.85rem;font-weight:700;margin:0.25rem 0 0">_________________________</p>
+            <p style="font-size:0.85rem;font-weight:700;margin:0.25rem 0 0">${data.pembimbingIndustriNama || "_________________________"}</p>
             <p style="font-size:0.75rem;color:#64748B;margin:0">${data.pembimbingIndustriNip ? `NIP. ${data.pembimbingIndustriNip}` : "NIP. _____________________"}</p>
           </div>
         </div>
@@ -398,7 +398,7 @@ export function PDFViewerModal({ url, title, onClose, gradeData, studentName, fi
                             <div style={{ height: "50px" }} />
                           )}
                           <div style={{ borderTop: "1.5px solid #1E293B", width: "70%", margin: "0 auto 0.25rem" }} />
-                          <div style={{ fontSize: "0.8rem", fontWeight: 700, color: "#1E293B" }}>_________________________</div>
+                          <div style={{ fontSize: "0.85rem", fontWeight: 700, color: "#1E293B" }}>{data.pembimbingSekolahNama || "_________________________"}</div>
                           <div style={{ fontSize: "0.75rem", color: "#64748B" }}>{data.pembimbingSekolahNip ? `NIP. ${data.pembimbingSekolahNip}` : "NIP. _____________________"}</div>
                         </div>
                         <div style={{ textAlign: "center" }}>
@@ -412,7 +412,7 @@ export function PDFViewerModal({ url, title, onClose, gradeData, studentName, fi
                             <div style={{ height: "50px" }} />
                           )}
                           <div style={{ borderTop: "1.5px solid #1E293B", width: "70%", margin: "0 auto 0.25rem" }} />
-                          <div style={{ fontSize: "0.8rem", fontWeight: 700, color: "#1E293B" }}>_________________________</div>
+                          <div style={{ fontSize: "0.85rem", fontWeight: 700, color: "#1E293B" }}>{data.pembimbingIndustriNama || "_________________________"}</div>
                           <div style={{ fontSize: "0.75rem", color: "#64748B" }}>{data.pembimbingIndustriNip ? `NIP. ${data.pembimbingIndustriNip}` : "NIP. _____________________"}</div>
                         </div>
                       </div>

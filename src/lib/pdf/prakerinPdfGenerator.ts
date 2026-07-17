@@ -361,8 +361,8 @@ export async function generatePrakerinPdf(data: PrakerinRecapData, themeKey = "n
     drawText(nip ? `NIP. ${nip}` : "NIP. _____________________", x, ttdY - 28, 7.5, font, TEXT_MUTED);
   }
 
-  await drawSignature(signX1, "Pembimbing Sekolah", data.pembimbingSekolahNip, data.pembimbingSekolahTtd || null, "");
-  await drawSignature(signX2, "Pembimbing Industri / Perusahaan", data.pembimbingIndustriNip, data.pembimbingIndustriTtd || null, "");
+  await drawSignature(signX1, "Pembimbing Sekolah", data.pembimbingSekolahNip, data.pembimbingSekolahTtd || null, data.pembimbingSekolahNama);
+  await drawSignature(signX2, "Pembimbing Industri / Perusahaan", data.pembimbingIndustriNip, data.pembimbingIndustriTtd || null, data.pembimbingIndustriNama);
 
   // ═══ Footer ════════════════════════════════════
   drawLine(MARGIN, 38, PAGE_W - MARGIN, 38, 0.75, BORDER);

@@ -49,8 +49,10 @@ export interface PrakerinRecapData {
   pklEndDate: string;
 
   // Tanda tangan & NIP
+  pembimbingSekolahNama: string;
   pembimbingSekolahNip: string;
   pembimbingSekolahTtd: string;
+  pembimbingIndustriNama: string;
   pembimbingIndustriNip: string;
   pembimbingIndustriTtd: string;
 }
@@ -140,8 +142,10 @@ export function createDefaultPrakerinData(): PrakerinRecapData {
     notes: "",
     pklStartDate: "",
     pklEndDate: "",
+    pembimbingSekolahNama: "",
     pembimbingSekolahNip: "",
     pembimbingSekolahTtd: "",
+    pembimbingIndustriNama: "",
     pembimbingIndustriNip: "",
     pembimbingIndustriTtd: "",
   };
