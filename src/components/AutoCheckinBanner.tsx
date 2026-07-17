@@ -45,32 +45,23 @@ export function AutoCheckinBanner() {
     })();
   }, []);
 
+  const B = { display: "flex", alignItems: "center", gap: "0.5rem", padding: "0.5rem 1rem", borderRadius: "0.5rem", fontSize: "0.8125rem", fontWeight: 500, marginBottom: "0.75rem" } as const;
+
   if (state === "checking") {
-    return (
-      <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", padding: "0.5rem 1rem", background: "#EFF6FF", color: "#1D4ED8", borderRadius: "0.5rem", fontSize: "0.8125rem", fontWeight: 500, marginBottom: "0.75rem" }}>
-        <Loader2 className="h-4 w-4 animate-spin" />
-        Auto-checkin: memeriksa lokasi...
-      </div>
-    );
+    return <div style={{ ...B, background: "#EFF6FF", color: "#2563EB" }}><Loader2 className="h-4 w-4 animate-spin" /> Auto-checkin: memeriksa lokasi...</div>;
   }
 
   if (state === "done" && status) {
-    const isHadir = status === "hadir";
     return (
-      <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", padding: "0.5rem 1rem", background: isHadir ? "#DCFCE7" : "#FEF3C7", color: isHadir ? "#16A34A" : "#D97706", borderRadius: "0.5rem", fontSize: "0.8125rem", fontWeight: 500, marginBottom: "0.75rem" }}>
-        {isHadir ? <CheckCircle2 className="h-4 w-4" /> : <MapPin className="h-4 w-4" />}
+      <div style={{ ...B, background: status === "hadir" ? "#DCFCE7" : "#FEF3C7", color: status === "hadir" ? "#22c55e" : "#f59e0b" }}>
+        {status === "hadir" ? <CheckCircle2 className="h-4 w-4" /> : <MapPin className="h-4 w-4" />}
         {msg}
       </div>
     );
   }
 
   if (state === "done" && !status) {
-    return (
-      <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", padding: "0.5rem 1rem", background: "#FEE2E2", color: "#DC2626", borderRadius: "0.5rem", fontSize: "0.8125rem", fontWeight: 500, marginBottom: "0.75rem" }}>
-        <XCircle className="h-4 w-4" />
-        {msg}
-      </div>
-    );
+    return <div style={{ ...B, background: "#FEE2E2", color: "#ef4444" }}><XCircle className="h-4 w-4" /> {msg}</div>;
   }
 
   return null;
