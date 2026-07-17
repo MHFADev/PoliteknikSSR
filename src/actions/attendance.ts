@@ -2,7 +2,7 @@
 
 import { Repositories } from "@/lib/repositories";
 import { revalidatePath } from "next/cache";
-import { createAdminClient } from "@/lib/supabase/server";
+import { createClient, createAdminClient } from "@/lib/supabase/server";
 
 export async function submitAttendance(scannedToken: string) {
   const user = await Repositories.users().getCurrentUser();
@@ -31,30 +31,33 @@ export async function submitAttendance(scannedToken: string) {
 }
 
 export async function saveAttendanceSettings(lateTime: string, qrDuration: number) {
-  const supabase = createAdminClient();
   const user = await Repositories.users().getCurrentUser();
   if (!user) return { error: "Sesi tidak ditemukan." };
+  if (user.role !== "admin") return { error: "Hanya admin yang dapat mengubah pengaturan." };
 
-  const { data: existing } = await supabase.auth.admin.getUserById(user.id);
-  if (!existing?.user) return { error: "User tidak ditemukan." };
-
-  const meta = { ...existing.user.user_metadata };
-  meta.settings = { ...(meta.settings || {}), lateTime, qrExpiryHours: qrDuration };
-
-  const { error } = await supabase.auth.admin.updateUserById(user.id, { user_metadata: meta });
+  const supabase = createAdminClient();
+  const { error } = await supabase
+    .from("app_settings")
+    .upsert({
+      id: 1,
+      late_time: lateTime,
+      qr_expiry_hours: qrDuration,
+      updated_by: user.id,
+      updated_at: new Date().toISOString(),
+    });
   if (error) return { error: error.message };
   return { success: true };
 }
 
 export async function getAttendanceSettings() {
-  const user = await Repositories.users().getCurrentUser();
-  if (!user) return { lateTime: "08:00", qrDuration: 12 };
-
-  const supabase = createAdminClient();
-  const { data } = await supabase.auth.admin.getUserById(user.id);
-  const settings = data?.user?.user_metadata?.settings;
+  const supabase = createClient();
+  const { data } = await supabase
+    .from("app_settings")
+    .select("late_time, qr_expiry_hours")
+    .eq("id", 1)
+    .maybeSingle();
   return {
-    lateTime: settings?.lateTime || "08:00",
-    qrDuration: settings?.qrExpiryHours || 12,
+    lateTime: data?.late_time || "08:00",
+    qrDuration: data?.qr_expiry_hours || 12,
   };
 }

@@ -447,6 +447,38 @@ export type Database = {
         };
         Relationships: [];
       };
+      app_settings: {
+        Row: {
+          id: number;
+          late_time: string;
+          qr_expiry_hours: number;
+          updated_at: string;
+          updated_by: string | null;
+        };
+        Insert: {
+          id?: number;
+          late_time?: string;
+          qr_expiry_hours?: number;
+          updated_at?: string;
+          updated_by?: string | null;
+        };
+        Update: {
+          id?: number;
+          late_time?: string;
+          qr_expiry_hours?: number;
+          updated_at?: string;
+          updated_by?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "app_settings_updated_by_fkey";
+            columns: ["updated_by"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       classes: {
         Row: { id: string; nama: string; created_at: string };
         Insert: { id?: string; nama: string; created_at?: string };

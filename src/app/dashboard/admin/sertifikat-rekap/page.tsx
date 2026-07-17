@@ -10,6 +10,7 @@ import { UNSUR_NILAI_LABELS, prakerinGradeFromScore, prakerinGradeLabel, createD
 import type { PrakerinRecapData, UnsurNilai, BidangKeahlian } from "@/lib/types";
 import { downloadPrakerinPdf } from "@/lib/pdf/prakerinPdfGenerator";
 import { PDFEditor } from "@/components/PDFEditor";
+import { PDFViewerModal } from "@/components/PDFViewerModal";
 import styles from "@/styles/pages/dashboard/admin/SertifikatRekap.module.css";
 
 type Tab = "certificate" | "prakerin" | "history";
@@ -120,6 +121,7 @@ export default function SertifikatRekapPage() {
   const [prakerinStudentId, setPrakerinStudentId] = useState("");
   const [prakerin, setPrakerin] = useState<PrakerinRecapData>(createDefaultPrakerinData());
   const [prakerinFile, setPrakerinFile] = useState<File | null>(null);
+  const [previewData, setPreviewData] = useState<PrakerinRecapData | null>(null);
   const [studentSearch, setStudentSearch] = useState("");
 
   // Auto-fill identitas saat pilih siswa
@@ -759,6 +761,9 @@ export default function SertifikatRekapPage() {
             </div>
 
             <div className={styles.formActions}>
+              <button onClick={() => setPreviewData(prakerin)} disabled={prakerinActiveScores.length === 0} className={styles.btnSecondary}>
+                Pratinjau Nilai
+              </button>
               <button onClick={handleDownloadPrakerinPdf} disabled={prakerinActiveScores.length === 0} className={styles.btnSecondary}>
                 Download PDF
               </button>
@@ -807,6 +812,16 @@ export default function SertifikatRekapPage() {
             </div>
           </div>
         </div>
+      )}
+
+      {previewData && (
+        <PDFViewerModal
+          url={null}
+          title="Pratinjau Rekap Prakerin"
+          gradeData={previewData}
+          studentName={previewData.studentName}
+          onClose={() => setPreviewData(null)}
+        />
       )}
 
       {tab === "history" && (

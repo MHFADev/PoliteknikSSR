@@ -238,14 +238,14 @@ export class SupabaseUserRepository implements IUserRepository {
       return { user: null, error: "Gagal login: " + error.message };
     }
 
-    // Cek status approved — bedakan antara "belum disetujui" dan "diblokir"
-    const isApproved = data.user?.user_metadata?.approved;
-    if (isApproved !== true) {
+    // Cek status approved — bedakan antara "diblokir" dan "belum disetujui"
+    const authMeta = data.user?.user_metadata || {};
+    if (authMeta.approved !== true) {
       await supabase.auth.signOut();
-      if (isApproved === false) {
+      if (authMeta.blocked === true) {
         return { user: null, error: "AKUN_DIBLOKIR" };
       }
-      return { user: null, error: "Akun Anda belum disetujui oleh admin. Silakan tunggu persetujuan." };
+      return { user: null, error: "AKUN_BELUM_DISETUJUI" };
     }
 
     // Cari profil di DB — jika tidak ada, buat dari data auth user

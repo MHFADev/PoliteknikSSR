@@ -1,23 +1,23 @@
 "use server";
 
 import { createAdminClient } from "@/lib/supabase/server";
+import { createClient } from "@/lib/supabase/server";
 import { Repositories } from "@/lib/repositories";
 import { generateDailyToken } from "@/lib/qr-token";
 import { revalidatePath } from "next/cache";
 import { randomUUID } from "crypto";
 
-const DEFAULT_SESSION_DURATION_HOURS = 12;
-
 async function getQrExpiryHours(): Promise<number> {
   try {
-    const supabase = createAdminClient();
-    const { data: admins } = await supabase.auth.admin.listUsers();
-    const adminUser = admins?.users?.find(
-      (u) => u.user_metadata?.role === "admin" || u.user_metadata?.role === "owner",
-    );
-    return adminUser?.user_metadata?.settings?.qrExpiryHours || DEFAULT_SESSION_DURATION_HOURS;
+    const supabase = createClient();
+    const { data } = await supabase
+      .from("app_settings")
+      .select("qr_expiry_hours")
+      .eq("id", 1)
+      .maybeSingle();
+    return data?.qr_expiry_hours || 12;
   } catch {
-    return DEFAULT_SESSION_DURATION_HOURS;
+    return 12;
   }
 }
 

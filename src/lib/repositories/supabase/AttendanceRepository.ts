@@ -28,41 +28,20 @@ import type {
 } from "../types";
 import type { IAttendanceRepository } from "../interfaces/IAttendanceRepository";
 
-const DEFAULT_SESSION_DURATION_HOURS = 12;
-
-async function getQrExpiryHours(): Promise<number> {
+async function getSettings(): Promise<{ lateTime: string; qrExpiryHours: number }> {
   try {
-    const supabase = createAdminClient();
-    const { data: admins } = await supabase.auth.admin.listUsers();
-    const adminUser = admins?.users?.find(
-      (u) => u.user_metadata?.role === "admin" || u.user_metadata?.role === "owner",
-    );
-    return adminUser?.user_metadata?.settings?.qrExpiryHours || DEFAULT_SESSION_DURATION_HOURS;
+    const supabase = createClient();
+    const { data } = await supabase
+      .from("app_settings")
+      .select("late_time, qr_expiry_hours")
+      .eq("id", 1)
+      .maybeSingle();
+    return {
+      lateTime: data?.late_time || "08:00",
+      qrExpiryHours: data?.qr_expiry_hours || 12,
+    };
   } catch {
-    return DEFAULT_SESSION_DURATION_HOURS;
-  }
-}
-
-/** Default jam batas telat (HH:MM) jika admin belum atur */
-const DEFAULT_LATE_TIME = "08:00";
-
-/**
- * getLateTimeFromSettings — Ambil jam batas telat dari settings admin
- * Query admin user dari profiles → auth metadata → settings.lateTime
- */
-async function getLateTimeFromSettings(): Promise<string> {
-  try {
-    const adminSupabase = createAdminClient();
-    // Cari user admin/owner
-    const { data: admins } = await adminSupabase.auth.admin.listUsers();
-    const adminUser = admins?.users?.find(
-      (u) =>
-        u.user_metadata?.role === "admin" || u.user_metadata?.role === "owner",
-    );
-    const settings = adminUser?.user_metadata?.settings;
-    return settings?.lateTime || DEFAULT_LATE_TIME;
-  } catch {
-    return DEFAULT_LATE_TIME;
+    return { lateTime: "08:00", qrExpiryHours: 12 };
   }
 }
 
@@ -122,19 +101,8 @@ export class SupabaseAttendanceRepository implements IAttendanceRepository {
     const supabase = createAdminClient();
     const sessionId = randomUUID();
 
-    // Ambil durasi QR expiry dari settings admin
-    let sessionDurationHours = 12;
-    try {
-      const { data: admins } = await supabase.auth.admin.listUsers();
-      const adminUser = admins?.users?.find(
-        (u) => u.user_metadata?.role === "admin" || u.user_metadata?.role === "owner",
-      );
-      const settings = adminUser?.user_metadata?.settings;
-      if (settings?.qrExpiryHours) {
-        sessionDurationHours = Number(settings.qrExpiryHours);
-      }
-    } catch {}
-
+    // Ambil durasi QR expiry dari app_settings
+    const { qrExpiryHours: sessionDurationHours } = await getSettings();
     const expiresAt = new Date(Date.now() + sessionDurationHours * 60 * 60 * 1000).toISOString();
 
     const { data, error } = await supabase
@@ -222,7 +190,7 @@ export class SupabaseAttendanceRepository implements IAttendanceRepository {
 
       if (!todaySession) {
         const newSessionId = randomUUID();
-        const durationHours = await getQrExpiryHours();
+        const { qrExpiryHours: durationHours } = await getSettings();
         const expiresAt = new Date(Date.now() + durationHours * 60 * 60 * 1000);
         const token = await generateDailyToken(
           {
@@ -257,7 +225,7 @@ export class SupabaseAttendanceRepository implements IAttendanceRepository {
     }
 
     // --- Tentukan status hadir/telat berdasarkan jam batas telat admin ---
-    const lateTime = await getLateTimeFromSettings();
+    const { lateTime } = await getSettings();
     const isOnTime = isOnTimeByScanTime(lateTime);
     const status: AttendanceStatus = isOnTime ? "hadir" : "telat";
 

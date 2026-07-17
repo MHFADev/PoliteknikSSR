@@ -43,7 +43,11 @@ type ScanState =
  * - Prompt izin HARUS dipicu dari user gesture (tap).
  * - iOS tidak punya Permissions API, jadi kita tidak pakai permission.query().
  */
-export function QRScanner() {
+interface QRScannerProps {
+  gpsReady?: boolean;
+}
+
+export function QRScanner({ gpsReady = true }: QRScannerProps) {
   const scannerRef = useRef<Html5Qrcode | null>(null);
   const [state, setState] = useState<ScanState>("idle");
   const [message, setMessage] = useState<string>("");
@@ -309,9 +313,9 @@ export function QRScanner() {
 
       {(state === "idle" || state === "error") && (
         <div className={styles.btnGroup}>
-          <Button variant="blue" onClick={startScanning}>
+          <Button variant="blue" onClick={startScanning} disabled={!gpsReady}>
             <Camera className="h-4 w-4 mr-2" />
-            {state === "error" ? "Coba Scan Lagi" : "Mulai Scan QR"}
+            {!gpsReady ? "Menunggu lokasi..." : state === "error" ? "Coba Scan Lagi" : "Mulai Scan QR"}
           </Button>
           {state === "error" && (
             <Button

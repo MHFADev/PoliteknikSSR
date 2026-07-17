@@ -22,7 +22,7 @@ import { checkLoginLocation, hasLocationsConfigured } from "@/actions/location";
 import { PasswordEye } from "@/components/ui/PasswordEye";
 import styles from "@/styles/pages/Login.module.css";
 
-const GPS_ENABLED = false;
+const GPS_ENABLED = true;
 
 const HERO_SLIDES = [
   { src: "/hero/1.jpg", alt: "Politeknik SSR" },
@@ -75,6 +75,7 @@ export default function LoginPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [gpsStep, setGpsStep] = useState(false);
   const [blockedPopup, setBlockedPopup] = useState(false);
+  const [unapprovedPopup, setUnapprovedPopup] = useState(false);
   const [forgotMode, setForgotMode] = useState(false);
   const [resetEmail, setResetEmail] = useState("");
   const [resetMsg, setResetMsg] = useState<string | null>(null);
@@ -127,6 +128,11 @@ export default function LoginPage() {
     if (result.error) {
       if (result.error === "AKUN_DIBLOKIR") {
         setBlockedPopup(true);
+        setIsSubmitting(false);
+        return;
+      }
+      if (result.error === "AKUN_BELUM_DISETUJUI") {
+        setUnapprovedPopup(true);
         setIsSubmitting(false);
         return;
       }
@@ -490,6 +496,40 @@ export default function LoginPage() {
               </p>
               <button
                 onClick={() => setBlockedPopup(false)}
+                className="w-full py-2.5 px-4 rounded-xl bg-gray-900 text-white text-sm font-semibold hover:bg-gray-800 transition-colors"
+              >
+                Mengerti
+              </button>
+            </motion.div>
+          </motion.div>
+        )}
+
+        {unapprovedPopup && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/40 backdrop-blur-sm px-4"
+            onClick={() => setUnapprovedPopup(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.9, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.9, y: 20 }}
+              className="bg-white rounded-2xl shadow-2xl max-w-sm w-full p-6 text-center"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="mx-auto w-14 h-14 rounded-full bg-yellow-100 flex items-center justify-center mb-4">
+                <ShieldCheck className="w-7 h-7 text-yellow-600" />
+              </div>
+              <h2 className="text-lg font-bold text-gray-900 mb-2">
+                Akun Belum Disetujui
+              </h2>
+              <p className="text-sm text-gray-500 mb-6 leading-relaxed">
+                Akun anda belum di acc / approve oleh admin, silahkan hubungi admin.
+              </p>
+              <button
+                onClick={() => setUnapprovedPopup(false)}
                 className="w-full py-2.5 px-4 rounded-xl bg-gray-900 text-white text-sm font-semibold hover:bg-gray-800 transition-colors"
               >
                 Mengerti

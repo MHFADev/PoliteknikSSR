@@ -23,6 +23,33 @@
   padding: 2rem 0;
 }
 
+/* ─── GPS Banner ───────────────────────────── */
+.gpsBanner {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1rem;
+  border-radius: 0.75rem;
+  font-size: 0.8125rem;
+  font-weight: 500;
+}
+.gpsLoading {
+  background: #EFF6FF;
+  color: #1D4ED8;
+}
+.gpsSuccess {
+  background: #DCFCE7;
+  color: #16A34A;
+}
+.gpsError {
+  background: #FEE2E2;
+  color: #DC2626;
+}
+.gpsWarning {
+  background: #FEF3C7;
+  color: #D97706;
+}
+
 /* ============================================
  * Responsive Mobile — Perbaikan untuk HP & Tablet
  * ============================================ */
