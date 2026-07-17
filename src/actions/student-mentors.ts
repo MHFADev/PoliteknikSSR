@@ -92,12 +92,12 @@ export async function selectMentor(mentorId: string): Promise<{ success: boolean
     const adminSupabase = createAdminClient();
     const { data: mentor } = await adminSupabase
       .from("profiles")
-      .select("id, role, approved")
+      .select("id, role")
       .eq("id", mentorId)
       .single();
 
-    if (!mentor || mentor.role !== "pembimbing" || !mentor.approved) {
-      return { success: false, message: "Pembimbing tidak ditemukan atau belum disetujui." };
+    if (!mentor || mentor.role !== "pembimbing") {
+      return { success: false, message: "Pembimbing tidak ditemukan." };
     }
 
     // Upsert the student_mentors record (one student = one mentor)
