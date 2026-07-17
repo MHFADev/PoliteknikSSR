@@ -14,13 +14,15 @@ import styles from "@/styles/components/qr/QRGeneratorCard.module.css";
 
 export function QRGeneratorCard({
   initialSession,
+  showSettings = true,
 }: {
   initialSession: AttendanceSession | null;
+  showSettings?: boolean;
 }) {
   const [session, setSession] = useState(initialSession);
   const [qrImage, setQrImage] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
-  const [showSettings, setShowSettings] = useState(false);
+  const [settingsOpen, setSettingsOpen] = useState(false);
   const [lateTime, setLateTime] = useState("08:00");
   const [qrDuration, setQrDuration] = useState(12);
   const [saving, setSaving] = useState(false);
@@ -69,9 +71,11 @@ export function QRGeneratorCard({
         }
         action={
           <div style={{ display: "flex", gap: "0.5rem" }}>
-            <Button variant="outline" onClick={() => setShowSettings(!showSettings)}>
-              <Settings className="h-4 w-4" />
-            </Button>
+            {showSettings && (
+              <Button variant="outline" onClick={() => setSettingsOpen(!settingsOpen)}>
+                <Settings className="h-4 w-4" />
+              </Button>
+            )}
             <Button variant="blue" isLoading={isPending} onClick={handleGenerate}>
               <RefreshCw className="h-4 w-4" />
               {session ? "Generate Ulang" : "Generate QR"}
@@ -80,7 +84,7 @@ export function QRGeneratorCard({
         }
       />
 
-      {showSettings && (
+      {settingsOpen && (
         <div style={{ padding: "0 1.25rem 1rem", display: "flex", flexDirection: "column", gap: "0.75rem", borderBottom: "1px solid #E2E8F0" }}>
           <div style={{ display: "flex", gap: "1rem", alignItems: "end" }}>
             <div style={{ flex: 1 }}>

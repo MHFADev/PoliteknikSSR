@@ -37,8 +37,8 @@ async function getQrExpiryHours(): Promise<number> {
 export async function generateTodaySession() {
   const user = await Repositories.users().getCurrentUser();
   if (!user) return { error: "Sesi login tidak ditemukan." };
-  if (user.role !== "admin") {
-    return { error: "Hanya Admin yang dapat membuat sesi QR." };
+  if (user.role !== "admin" && user.role !== "pembimbing") {
+    return { error: "Hanya Admin dan Pembimbing yang dapat membuat sesi QR." };
   }
 
   const sessionId = randomUUID();

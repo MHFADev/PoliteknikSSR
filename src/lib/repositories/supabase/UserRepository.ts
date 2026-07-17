@@ -298,7 +298,7 @@ export class SupabaseUserRepository implements IUserRepository {
    * @returns userId jika berhasil, atau pesan error
    */
   async signUp(input: CreateUserInput): Promise<{ userId?: string; error?: string }> {
-    const { email, password, fullName, role, kelas, identityNumber, instansi, jurusanId } = input;
+    const { email, password, fullName, role, kelas, identityNumber, instansi, jurusanId, periode } = input;
     const supabase = this.getAdminClient();
 
     const metadata: Record<string, any> = {
@@ -308,6 +308,7 @@ export class SupabaseUserRepository implements IUserRepository {
     };
     if (kelas) metadata.kelas = kelas;
     if (jurusanId) metadata.jurusan_id = jurusanId;
+    if (periode) metadata.periode = periode;
 
     const { data, error } = await supabase.auth.admin.createUser({
       email,
@@ -327,6 +328,7 @@ export class SupabaseUserRepository implements IUserRepository {
     if (kelas) updateData.kelas = kelas;
     if (instansi) updateData.instansi = instansi;
     if (jurusanId) updateData.jurusan_id = jurusanId;
+    if (periode) updateData.periode = periode;
     updateData.approved = false;
 
     if (Object.keys(updateData).length > 0) {
@@ -605,12 +607,18 @@ export class SupabaseUserRepository implements IUserRepository {
       return { error: "Tidak dapat mengubah role akun root/owner." };
     }
 
+    // Baca metadata existing dulu, jangan timpa semua
+    const { data: existing } = await supabase.auth.admin.getUserById(userId);
+    const meta: Record<string, any> = { ...(existing?.user?.user_metadata || {}), role };
+    if (role === "pembimbing") meta.approved = true;
     const { error } = await supabase.auth.admin.updateUserById(userId, {
-      user_metadata: { role },
+      user_metadata: meta,
     });
     if (error) return { error: "Gagal mengubah role: " + error.message };
     // Update juga di profiles table
-    await supabase.from("profiles").update({ role }).eq("id", userId);
+    const updateData: Record<string, any> = { role };
+    if (role === "pembimbing") updateData.approved = true;
+    await supabase.from("profiles").update(updateData as any).eq("id", userId);
     return {};
   }
 

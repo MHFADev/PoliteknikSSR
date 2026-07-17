@@ -22,6 +22,8 @@ export const NAV: Record<string, NavItem[]> = {
     { href: "/dashboard/pembimbing",             label: "Dashboard",          icon: LayoutDashboard, group: "Utama" },
     { href: "/dashboard/pembimbing/izin",        label: "Persetujuan Izin",   icon: FileText, group: "Penilaian" },
     { href: "/dashboard/pembimbing/kegiatan-harian", label: "Penilaian Kegiatan", icon: NotebookPen, group: "Penilaian" },
+    { href: "/dashboard/pembimbing/sertifikat-rekap", label: "Sertifikat & Nilai", icon: Award, group: "Penilaian" },
+    { href: "/dashboard/pembimbing/qr",          label: "Generate QR",        icon: QrCode, group: "Penilaian" },
     { href: "/dashboard/pembimbing/profile",     label: "Profil Saya",        icon: UserCircle, group: "Akun" },
     { href: "/dashboard/pembimbing/settings",    label: "Pengaturan",         icon: Settings, group: "Akun" },
   ],

@@ -30,7 +30,7 @@ export function UserActionsMenu({ userId, userName, currentRole, isApproved }: U
   const [open, setOpen] = useState(false);
   const [showAll, setShowAll] = useState(false);
   const [isPending, startTransition] = useTransition();
-  const [position, setPosition] = useState<"bottom" | "top">("bottom");
+  const [menuStyle, setMenuStyle] = useState<React.CSSProperties>({});
   const [showResetPw, setShowResetPw] = useState(false);
   const [newPassword, setNewPassword] = useState("");
   const [actionMsg, setActionMsg] = useState<{ type: "success" | "error"; text: string } | null>(null);
@@ -54,10 +54,16 @@ export function UserActionsMenu({ userId, userName, currentRole, isApproved }: U
     if (!btnRef.current) return;
     const rect = btnRef.current.getBoundingClientRect();
     const spaceBelow = window.innerHeight - rect.bottom;
-    setPosition(spaceBelow < 200 ? "top" : "bottom");
+    const spaceAbove = rect.top;
+    const menuH = 320;
+    if (spaceBelow < menuH && spaceAbove > menuH) {
+      setMenuStyle({ bottom: window.innerHeight - rect.top + 4, right: window.innerWidth - rect.right });
+    } else {
+      setMenuStyle({ top: rect.bottom + 4, right: window.innerWidth - rect.right });
+    }
   }, []);
 
-  useEffect(() => { if (open) updatePosition(); }, [open, updatePosition]);
+  useEffect(() => { if (open) { updatePosition(); window.addEventListener("scroll", updatePosition, true); } return () => window.removeEventListener("scroll", updatePosition, true); }, [open, updatePosition]);
 
   useEffect(() => {
     if (!open) return;
@@ -99,8 +105,6 @@ export function UserActionsMenu({ userId, userName, currentRole, isApproved }: U
     setShowResetPw(false);
     setNewPassword("");
   };
-
-  const menuPos = position === "top" ? "bottom-full mb-1" : "top-full mt-1";
 
   // ── Build flat action list ──
   const actionItems: React.ReactNode[] = [];
@@ -203,7 +207,8 @@ export function UserActionsMenu({ userId, userName, currentRole, isApproved }: U
       </button>
 
       {actionMsg && (
-        <div className={`absolute right-0 ${menuPos === 'top-full mt-1' ? 'bottom-full mb-12' : 'top-full mt-10'} z-50 text-xs px-3 py-1.5 rounded-lg shadow-sm whitespace-nowrap ${
+        <div style={{ position: "fixed", top: btnRef.current?.getBoundingClientRect().bottom ? btnRef.current.getBoundingClientRect().bottom - 30 : 0, right: 16, zIndex: 60 }}
+          className={`text-xs px-3 py-1.5 rounded-lg shadow-sm whitespace-nowrap ${
           actionMsg.type === "success" ? "bg-green-100 text-green-700 border border-green-200" : "bg-red-100 text-red-700 border border-red-200"
         }`}>
           {actionMsg.text}
@@ -214,7 +219,8 @@ export function UserActionsMenu({ userId, userName, currentRole, isApproved }: U
         <>
           <div className="fixed inset-0 z-40" onClick={() => { setOpen(false); setShowAll(false); }} />
           <div
-            className={`absolute right-0 ${menuPos} z-50 min-w-[12rem] bg-white rounded-xl border border-gray-200 shadow-xl py-1.5 overflow-hidden`}
+            style={{ position: "fixed", ...menuStyle, zIndex: 50, maxHeight: "calc(100vh - 16px)", overflowY: "auto" }}
+            className="min-w-[12rem] bg-white rounded-xl border border-gray-200 shadow-xl py-1.5"
           >
             <div>
               <div className="px-3 py-1.5 text-[10px] font-semibold text-gray-400 uppercase tracking-wider flex items-center gap-1.5">

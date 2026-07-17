@@ -13,7 +13,8 @@ export async function register(
   kelas?: string,
   identityNumber?: string,
   instansi?: string,
-  jurusanId?: string
+  jurusanId?: string,
+  periode?: string,
 ) {
   const emailValidation = validateEmail(email);
   if (!emailValidation.valid) {
@@ -45,6 +46,7 @@ export async function register(
     identityNumber: identityNumber || undefined,
     instansi: instansi || undefined,
     jurusanId: jurusanId || undefined,
+    periode: periode || undefined,
   });
 
   if (result.error) {

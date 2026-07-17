@@ -48,6 +48,7 @@ export default function RegisterPage() {
   const [kelas, setKelas] = useState("");
   const [jurusanId, setJurusanId] = useState("");
   const [instansi, setInstansi] = useState("");
+  const [periodePkl, setPeriodePkl] = useState("");
   const [role, setRole] = useState<Role>("siswa");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -173,6 +174,7 @@ export default function RegisterPage() {
         identityNumber.trim(),
         role === "siswa" ? instansi.trim() : undefined,
         jurusanId || undefined,
+        role === "siswa" ? periodePkl.trim() : undefined,
       );
       if (result.error) {
         setError(result.error);
@@ -578,6 +580,25 @@ export default function RegisterPage() {
                     {fieldErrors.instansi && (
                       <span className={styles.fieldError}>
                         {fieldErrors.instansi}
+                      </span>
+                    )}
+                  </div>
+
+                  <div className={styles.field}>
+                    <label className={styles.label} htmlFor="periodePkl">
+                      Periode PKL
+                    </label>
+                    <input
+                      id="periodePkl"
+                      type="text"
+                      value={periodePkl}
+                      onChange={(e) => setPeriodePkl(e.target.value)}
+                      placeholder="Contoh: Januari - Maret 2026"
+                      className={`${styles.input} ${fieldErrors.periodePkl ? styles.inputError : styles.inputNormal}`}
+                    />
+                    {fieldErrors.periodePkl && (
+                      <span className={styles.fieldError}>
+                        {fieldErrors.periodePkl}
                       </span>
                     )}
                   </div>

@@ -206,6 +206,7 @@ export interface CreateUserInput {
   instansi?: string;
   kelas?: string;
   jurusanId?: string;
+  periode?: string;
 }
 
 export interface CreateEventInput {

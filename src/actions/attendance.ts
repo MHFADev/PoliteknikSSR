@@ -33,7 +33,7 @@ export async function submitAttendance(scannedToken: string) {
 export async function saveAttendanceSettings(lateTime: string, qrDuration: number) {
   const user = await Repositories.users().getCurrentUser();
   if (!user) return { error: "Sesi tidak ditemukan." };
-  if (user.role !== "admin") return { error: "Hanya admin yang dapat mengubah pengaturan." };
+  if (!["admin", "owner", "root"].includes(user.role)) return { error: "Hanya admin dan root yang dapat mengubah pengaturan." };
 
   const supabase = createAdminClient();
   const { error } = await supabase
