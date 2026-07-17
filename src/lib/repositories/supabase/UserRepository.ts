@@ -324,6 +324,7 @@ export class SupabaseUserRepository implements IUserRepository {
     const admin = this.getAdminClient();
     const updateData: any = {};
     if (identityNumber) updateData.identity_number = identityNumber;
+    if (kelas) updateData.kelas = kelas;
     if (instansi) updateData.instansi = instansi;
     if (jurusanId) updateData.jurusan_id = jurusanId;
     updateData.approved = false;
