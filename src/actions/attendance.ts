@@ -4,18 +4,19 @@ import { Repositories } from "@/lib/repositories";
 import { revalidatePath } from "next/cache";
 import { createClient, createAdminClient } from "@/lib/supabase/server";
 
-export async function submitAttendance(scannedToken: string) {
+export async function submitAttendance(scannedToken: string, clientTimestamp?: string) {
   const user = await Repositories.users().getCurrentUser();
   if (!user) return { success: false, message: "Sesi login tidak ditemukan. Silakan login ulang." };
   if (user.role !== "siswa") {
     return { success: false, message: "Hanya akun siswa yang dapat melakukan presensi." };
   }
 
-  const result = await Repositories.attendance().verifyAndRecordAttendance(scannedToken, user.id);
+  const clientDate = clientTimestamp ? new Date(clientTimestamp) : undefined;
+  const result = await Repositories.attendance().verifyAndRecordAttendance(scannedToken, user.id, clientDate);
   if (result.error) return { success: false, message: result.error };
 
-  const now = new Date();
-  const timeStr = now.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" });
+  const displayTime = clientDate || new Date();
+  const timeStr = displayTime.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" });
   const name = user.fullName || "Siswa";
 
   revalidatePath("/dashboard/siswa");

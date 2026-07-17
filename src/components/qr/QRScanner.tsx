@@ -190,7 +190,7 @@ export function QRScanner({ gpsReady = true }: QRScannerProps) {
           setState("processing");
           setMessage("Memproses presensi...");
 
-          const result = await submitAttendance(decodedText) as any;
+          const result = await submitAttendance(decodedText, new Date().toISOString()) as any;
           if (result.success) {
             setState("success");
             setMessage(result.message ?? "Presensi berhasil!");

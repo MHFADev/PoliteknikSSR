@@ -43,7 +43,8 @@ export interface IAttendanceRepository {
    */
   verifyAndRecordAttendance(
     scannedToken: string,
-    studentId: string
+    studentId: string,
+    clientTime?: Date
   ): Promise<{ status: AttendanceStatus; error?: string }>;
 
   /**

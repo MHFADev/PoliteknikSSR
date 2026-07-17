@@ -50,8 +50,8 @@ async function getSettings(): Promise<{ lateTime: string; qrExpiryHours: number 
  * @param lateTime — Format "HH:MM" dari settings admin
  * @returns true jika hadir tepat waktu, false jika telat
  */
-function isOnTimeByScanTime(lateTime: string): boolean {
-  const now = new Date();
+function isOnTimeByScanTime(lateTime: string, checkTime?: Date): boolean {
+  const now = checkTime || new Date();
   const [lateHour, lateMinute] = lateTime.split(":").map(Number);
   const scanMinutes = now.getHours() * 60 + now.getMinutes();
   const cutoffMinutes = lateHour * 60 + lateMinute;
@@ -148,7 +148,8 @@ export class SupabaseAttendanceRepository implements IAttendanceRepository {
    */
   async verifyAndRecordAttendance(
     scannedToken: string,
-    studentId: string
+    studentId: string,
+    clientTime?: Date
   ): Promise<{ status: AttendanceStatus; error?: string }> {
     const supabase = createClient();
     const adminSupabase = createAdminClient();
@@ -226,7 +227,7 @@ export class SupabaseAttendanceRepository implements IAttendanceRepository {
 
     // --- Tentukan status hadir/telat berdasarkan jam batas telat admin ---
     const { lateTime } = await getSettings();
-    const isOnTime = isOnTimeByScanTime(lateTime);
+    const isOnTime = isOnTimeByScanTime(lateTime, clientTime);
     const status: AttendanceStatus = isOnTime ? "hadir" : "telat";
 
     // --- Simpan record presensi ---
