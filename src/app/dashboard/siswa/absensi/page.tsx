@@ -3,9 +3,34 @@
 import { useEffect, useState } from "react";
 import { QRScanner } from "@/components/qr/QRScanner";
 import { Card, CardHeader } from "@/components/ui/Card";
-import { MapPin, Loader2, ShieldOff, CheckCircle2, AlertTriangle } from "lucide-react";
+import { Clock, MapPin, Loader2, ShieldOff, CheckCircle2, AlertTriangle } from "lucide-react";
 import { checkLoginLocation, hasLocationsConfigured } from "@/actions/location";
 import styles from "@/styles/pages/dashboard/siswa/Absensi.module.css";
+
+const DAYS = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
+const MONTHS = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+
+function LiveClock() {
+  const [now, setNow] = useState(new Date());
+  useEffect(() => {
+    const t = setInterval(() => setNow(new Date()), 1000);
+    return () => clearInterval(t);
+  }, []);
+  return (
+    <div style={{ textAlign: "center", padding: "0.75rem 1rem", background: "linear-gradient(135deg, #0F172A 0%, #1E293B 100%)", borderRadius: "1rem", color: "#fff" }}>
+      <div style={{ fontSize: "0.75rem", opacity: 0.6, marginBottom: "0.15rem" }}>
+        {DAYS[now.getDay()]}, {now.getDate()} {MONTHS[now.getMonth()]} {now.getFullYear()}
+      </div>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "0.5rem" }}>
+        <Clock className="h-5 w-5" style={{ opacity: 0.7 }} />
+        <span style={{ fontSize: "2rem", fontWeight: 700, fontVariantNumeric: "tabular-nums", letterSpacing: "0.05em" }}>
+          {String(now.getHours()).padStart(2, "0")}:{String(now.getMinutes()).padStart(2, "0")}:{String(now.getSeconds()).padStart(2, "0")}
+        </span>
+        <span style={{ fontSize: "0.7rem", opacity: 0.5 }}>WIB</span>
+      </div>
+    </div>
+  );
+}
 
 type GpsState = "loading" | "granted" | "denied" | "unavailable" | "outside" | "error";
 
@@ -29,7 +54,6 @@ export default function SiswaAbsensiPage() {
           return;
         }
 
-        // Minta izin & posisi otomatis
         navigator.geolocation.getCurrentPosition(
           async (pos) => {
             if (cancelled) return;
@@ -121,6 +145,8 @@ export default function SiswaAbsensiPage() {
         <h1>Absensi QR</h1>
         <p>Scan QR yang ditampilkan admin untuk mencatat kehadiran hari ini.</p>
       </div>
+
+      <LiveClock />
 
       {renderGpsBanner()}
 
