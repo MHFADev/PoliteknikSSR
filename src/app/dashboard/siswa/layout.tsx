@@ -17,6 +17,7 @@ import { MobileNav } from "@/components/layout/MobileNav";
 import { RealtimeClock } from "@/components/RealtimeClock";
 import { BlockedWatcher } from "@/components/BlockedWatcher";
 import { StudentDocumentPopup } from "@/components/StudentDocumentPopup";
+import { AutoCheckinBanner } from "@/components/AutoCheckinBanner";
 
 export default async function SiswaLayout({ children }: { children: React.ReactNode }) {
   const supabase = createClient();
@@ -45,7 +46,10 @@ export default async function SiswaLayout({ children }: { children: React.ReactN
           <div />
           <RealtimeClock />
         </div>
-        <div className="px-4 pb-[72px] sm:px-6 lg:px-8 lg:pb-8">{children}</div>
+        <div className="px-4 pb-[72px] sm:px-6 lg:px-8 lg:pb-8">
+          <AutoCheckinBanner />
+          {children}
+        </div>
       </main>
     </div>
   );
