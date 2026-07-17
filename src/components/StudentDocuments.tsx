@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { getStudentDocuments, toggleKeepDocument } from "@/actions/documents";
 import type { PrakerinRecapData } from "@/actions/documents";
 import { PDFViewerModal } from "@/components/PDFViewerModal";
+import { downloadPrakerinPdf } from "@/lib/pdf/prakerinPdfGenerator";
 import { FileText, Image, FileDown, Eye, Trash2 } from "lucide-react";
 
 interface Document {
@@ -122,11 +123,20 @@ export function StudentDocuments() {
               <Eye className="h-3 w-3" aria-label="lihat" />
               Lihat
             </button>
-            <button onClick={() => downloadFile(doc)}
-              className="text-xs px-2.5 py-1.5 rounded-md bg-slate-100 text-slate-700 hover:bg-slate-200 font-medium transition-colors flex items-center gap-1">
-              <FileDown className="h-3 w-3" aria-label="download" />
-              Download
-            </button>
+            {doc.type === "prakerin_recap" && doc.gradeData ? (
+              <button onClick={() => downloadPrakerinPdf(doc.gradeData as PrakerinRecapData)}
+                className="text-xs px-2.5 py-1.5 rounded-md bg-emerald-50 text-emerald-700 hover:bg-emerald-100 font-medium transition-colors flex items-center gap-1"
+                style={{ background: "#ECFDF5", color: "#047857" }}>
+                <FileDown className="h-3 w-3" aria-label="download" />
+                Download PDF
+              </button>
+            ) : (
+              <button onClick={() => downloadFile(doc)}
+                className="text-xs px-2.5 py-1.5 rounded-md bg-slate-100 text-slate-700 hover:bg-slate-200 font-medium transition-colors flex items-center gap-1">
+                <FileDown className="h-3 w-3" aria-label="download" />
+                Download
+              </button>
+            )}
             {!doc.isKept ? (
               <button onClick={() => handleKeep(doc.id, true)}
                 className="text-xs px-2 py-1.5 rounded-md border border-slate-200 text-slate-600 hover:bg-slate-50 transition-colors"

@@ -6,8 +6,8 @@ import { Badge } from "@/components/ui/Badge";
 import { createClient } from "@/lib/supabase/client";
 import { Loader2, FileText, History, Search, ChevronDown, X, ClipboardList, Plus } from "lucide-react";
 import { getStudents, getSentDocuments, sendCertificate, sendPrakerinRecap } from "@/actions/documents";
-import { UNSUR_NILAI_LABELS, prakerinGradeFromScore, prakerinGradeLabel, createDefaultPrakerinData } from "@/lib/types";
-import type { PrakerinRecapData, UnsurNilai, BidangKeahlian } from "@/lib/types";
+import { UNSUR_NILAI_LABELS, prakerinGradeFromScore, prakerinGradeLabel, createDefaultPrakerinData, RECAP_THEMES } from "@/lib/types";
+import type { PrakerinRecapData, UnsurNilai, BidangKeahlian, ThemeColors } from "@/lib/types";
 import { downloadPrakerinPdf } from "@/lib/pdf/prakerinPdfGenerator";
 import { PDFEditor } from "@/components/PDFEditor";
 import { PDFViewerModal } from "@/components/PDFViewerModal";
@@ -122,6 +122,7 @@ export default function SertifikatRekapPage() {
   const [prakerin, setPrakerin] = useState<PrakerinRecapData>(createDefaultPrakerinData());
   const [prakerinFile, setPrakerinFile] = useState<File | null>(null);
   const [previewData, setPreviewData] = useState<PrakerinRecapData | null>(null);
+  const [recapTheme, setRecapTheme] = useState<string>("navy");
   const [studentSearch, setStudentSearch] = useState("");
 
   // Auto-fill identitas saat pilih siswa
@@ -238,7 +239,8 @@ export default function SertifikatRekapPage() {
   const updateUnsurNilai = useCallback((idx: number, score: number) => {
     setPrakerin((prev) => {
       const updated = [...prev.unsurNilai];
-      updated[idx] = { ...updated[idx], score: Math.min(100, Math.max(0, Math.round(score) || 0)) };
+      const s = Math.min(100, Math.max(0, Math.round(score) || 0));
+      updated[idx] = { ...updated[idx], score: s };
       return { ...prev, unsurNilai: updated };
     });
   }, []);
@@ -248,7 +250,8 @@ export default function SertifikatRekapPage() {
       const updated = [...prev.bidangKeahlian];
       if (field === "score") {
         const numValue = typeof value === "string" ? parseInt(value) || 0 : value;
-        updated[idx] = { ...updated[idx], score: Math.min(100, Math.max(0, numValue)) };
+        const s = Math.min(100, Math.max(0, numValue));
+        updated[idx] = { ...updated[idx], score: s, keterangan: s > 0 ? prakerinGradeLabel(s) : "" };
       } else {
         updated[idx] = { ...updated[idx], [field]: value } as any;
       }
@@ -259,7 +262,7 @@ export default function SertifikatRekapPage() {
   const addBidangKeahlian = useCallback(() => {
     setPrakerin((prev) => ({
       ...prev,
-      bidangKeahlian: [...prev.bidangKeahlian, { name: "", score: 0 }],
+      bidangKeahlian: [...prev.bidangKeahlian, { name: "", score: 0, keterangan: "" }],
     }));
   }, []);
 
@@ -337,7 +340,7 @@ export default function SertifikatRekapPage() {
       return;
     }
     try {
-      await downloadPrakerinPdf(prakerin);
+      await downloadPrakerinPdf(prakerin, recapTheme);
     } catch {
       showMessage("error", "Gagal generate PDF prakerin.");
     }
@@ -718,6 +721,32 @@ export default function SertifikatRekapPage() {
               </div>
             </div>
 
+            {/* ─── Tema Warna ────────────────────────── */}
+            <div className={styles.prakerinSection}>
+              <div className={styles.prakerinSectionTitle}>Tema Warna Tabel</div>
+              <div style={{ padding: "1rem", display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>
+                {Object.entries(RECAP_THEMES).map(([key, theme]) => (
+                  <button
+                    key={key}
+                    type="button"
+                    onClick={() => setRecapTheme(key)}
+                    style={{
+                      display: "flex", alignItems: "center", gap: "0.5rem",
+                      padding: "0.5rem 0.75rem", borderRadius: "0.5rem", border: recapTheme === key ? `2px solid ${theme.colors.accent}` : "1px solid #CBD5E1",
+                      background: recapTheme === key ? "#F8FAFC" : "#fff", cursor: "pointer", fontSize: "0.8125rem", fontWeight: 500, color: "#1E293B",
+                      transition: "all 0.15s", minHeight: "36px",
+                    }}
+                  >
+                    <span style={{ display: "flex", gap: "2px" }}>
+                      <span style={{ width: "16px", height: "16px", borderRadius: "3px", background: theme.colors.headerBg }} />
+                      <span style={{ width: "16px", height: "16px", borderRadius: "3px", background: theme.colors.rowEven }} />
+                    </span>
+                    {theme.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
             {/* ─── Catatan & File ─────────────────────── */}
             <div className={styles.formRow2}>
               <div className={styles.formGroup}>
@@ -733,6 +762,53 @@ export default function SertifikatRekapPage() {
               <label>Catatan (opsional)</label>
               <textarea value={prakerin.notes} onChange={(e) => updatePrakerinField("notes", e.target.value)} placeholder="Catatan tambahan..." rows={2} className={styles.textarea} />
             </div>
+            {/* ─── TTD & NIP ──────────────────────────── */}
+            <div className={styles.prakerinSection}>
+              <div className={styles.prakerinSectionTitle}>Tanda Tangan & NIP</div>
+              <div className={styles.prakerinIdentityGrid}>
+                <div className={styles.formGroup}>
+                  <label>Pembimbing Sekolah — NIP</label>
+                  <input type="text" value={prakerin.pembimbingSekolahNip} onChange={(e) => updatePrakerinField("pembimbingSekolahNip", e.target.value)} placeholder="NIP pembimbing sekolah" className={styles.inputDate} />
+                </div>
+                <div className={styles.formGroup}>
+                  <label>Pembimbing Sekolah — Foto TTD</label>
+                  <input type="file" accept="image/*" onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) {
+                      const reader = new FileReader();
+                      reader.onload = () => updatePrakerinField("pembimbingSekolahTtd", reader.result as string);
+                      reader.readAsDataURL(file);
+                    }
+                  }} className={styles.inputDate} style={{ padding: "0.375rem" }} />
+                  {prakerin.pembimbingSekolahTtd && (
+                    <div style={{ marginTop: "0.375rem", borderRadius: "0.5rem", overflow: "hidden", border: "1px solid #E2E8F0", width: "120px", height: "60px", background: "#F8FAFC" }}>
+                      <img src={prakerin.pembimbingSekolahTtd} alt="TTD Sekolah" style={{ width: "100%", height: "100%", objectFit: "contain" }} />
+                    </div>
+                  )}
+                </div>
+                <div className={styles.formGroup}>
+                  <label>Pembimbing Industri — NIP</label>
+                  <input type="text" value={prakerin.pembimbingIndustriNip} onChange={(e) => updatePrakerinField("pembimbingIndustriNip", e.target.value)} placeholder="NIP pembimbing industri" className={styles.inputDate} />
+                </div>
+                <div className={styles.formGroup}>
+                  <label>Pembimbing Industri — Foto TTD</label>
+                  <input type="file" accept="image/*" onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) {
+                      const reader = new FileReader();
+                      reader.onload = () => updatePrakerinField("pembimbingIndustriTtd", reader.result as string);
+                      reader.readAsDataURL(file);
+                    }
+                  }} className={styles.inputDate} style={{ padding: "0.375rem" }} />
+                  {prakerin.pembimbingIndustriTtd && (
+                    <div style={{ marginTop: "0.375rem", borderRadius: "0.5rem", overflow: "hidden", border: "1px solid #E2E8F0", width: "120px", height: "60px", background: "#F8FAFC" }}>
+                      <img src={prakerin.pembimbingIndustriTtd} alt="TTD Industri" style={{ width: "100%", height: "100%", objectFit: "contain" }} />
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+
             <div className={styles.formGroup}>
               <label>Upload File (opsional — PDF/Gambar)</label>
               <div className={styles.fileUploadArea}>
@@ -820,6 +896,7 @@ export default function SertifikatRekapPage() {
           title="Pratinjau Rekap Prakerin"
           gradeData={previewData}
           studentName={previewData.studentName}
+          theme={recapTheme}
           onClose={() => setPreviewData(null)}
         />
       )}

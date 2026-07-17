@@ -1,31 +1,12 @@
 import { PDFDocument, rgb, StandardFonts } from "pdf-lib";
-import type { PrakerinRecapData } from "@/lib/types";
-import { prakerinGradeFromScore, prakerinGradeLabel } from "@/lib/types";
-
-const PRIMARY = rgb(0.06, 0.09, 0.16);
-const PRIMARY_LIGHT = rgb(0.12, 0.16, 0.29);
-const ACCENT = rgb(0.15, 0.39, 0.92);
-const HEADER_BG = rgb(0.06, 0.09, 0.16);
-const HEADER_TEXT = rgb(1, 1, 1);
-const ROW_EVEN = rgb(0.98, 0.98, 0.99);
-const ROW_ODD = rgb(1, 1, 1);
-const BORDER = rgb(0.79, 0.84, 0.91);
-const TEXT_DARK = rgb(0.06, 0.09, 0.16);
-const TEXT_MUTED = rgb(0.4, 0.45, 0.55);
-const SUCCESS_BG = rgb(0.94, 1, 0.96);
-const SUCCESS = rgb(0.05, 0.5, 0.2);
-const WARNING_BG = rgb(1, 0.96, 0.88);
-const WARNING = rgb(0.75, 0.4, 0.02);
-const DANGER_BG = rgb(1, 0.94, 0.94);
-const DANGER = rgb(0.8, 0.1, 0.1);
-const INFO_BG = rgb(0.93, 0.96, 1);
-const INFO = rgb(0.15, 0.39, 0.92);
+import type { PrakerinRecapData, ThemeColors } from "@/lib/types";
+import { prakerinGradeFromScore, prakerinGradeLabel, RECAP_THEMES } from "@/lib/types";
 
 function getGradeColor(score: number) {
-  if (score >= 90) return { bg: SUCCESS_BG, text: SUCCESS, border: rgb(0.4, 0.85, 0.5) };
-  if (score >= 80) return { bg: INFO_BG, text: INFO, border: rgb(0.5, 0.7, 0.95) };
-  if (score >= 70) return { bg: WARNING_BG, text: WARNING, border: rgb(0.95, 0.75, 0.3) };
-  return { bg: DANGER_BG, text: DANGER, border: rgb(0.95, 0.5, 0.5) };
+  if (score >= 90) return { bg: rgb(0.94, 1, 0.96), text: rgb(0.05, 0.5, 0.2), border: rgb(0.4, 0.85, 0.5) };
+  if (score >= 80) return { bg: rgb(0.93, 0.96, 1), text: rgb(0.15, 0.39, 0.92), border: rgb(0.5, 0.7, 0.95) };
+  if (score >= 70) return { bg: rgb(1, 0.96, 0.88), text: rgb(0.75, 0.4, 0.02), border: rgb(0.95, 0.75, 0.3) };
+  return { bg: rgb(1, 0.94, 0.94), text: rgb(0.8, 0.1, 0.1), border: rgb(0.95, 0.5, 0.5) };
 }
 
 function wrapText(text: string, font: any, size: number, maxWidth: number): string[] {
@@ -45,7 +26,24 @@ function wrapText(text: string, font: any, size: number, maxWidth: number): stri
   return lines;
 }
 
-export async function generatePrakerinPdf(data: PrakerinRecapData): Promise<Uint8Array> {
+function hexToRgb(hex: string) {
+  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  return result ? rgb(parseInt(result[1], 16) / 255, parseInt(result[2], 16) / 255, parseInt(result[3], 16) / 255) : rgb(0.06, 0.09, 0.16);
+}
+
+export async function generatePrakerinPdf(data: PrakerinRecapData, themeKey = "navy"): Promise<Uint8Array> {
+  const tc = (RECAP_THEMES[themeKey] || RECAP_THEMES.navy).colors;
+  const PRIMARY = hexToRgb(tc.primary);
+  const PRIMARY_LIGHT = hexToRgb(tc.primaryLight);
+  const ACCENT = hexToRgb(tc.accent);
+  const HEADER_BG = hexToRgb(tc.headerBg);
+  const HEADER_TEXT = hexToRgb(tc.headerText);
+  const ROW_EVEN = hexToRgb(tc.rowEven);
+  const ROW_ODD = rgb(1, 1, 1);
+  const BORDER = hexToRgb(tc.border);
+  const TEXT_DARK = hexToRgb(tc.primary);
+  const TEXT_MUTED = rgb(0.4, 0.45, 0.55);
+
   const doc = await PDFDocument.create();
   const font = await doc.embedFont(StandardFonts.Helvetica);
   const bold = await doc.embedFont(StandardFonts.HelveticaBold);
@@ -308,10 +306,10 @@ export async function generatePrakerinPdf(data: PrakerinRecapData): Promise<Uint
   y -= sectionH + 5;
 
   const skalaData: [string, string, string, any, any, any][] = [
-    ["90 – 100", "Sangat Baik", "A", SUCCESS_BG, SUCCESS, rgb(0.4, 0.85, 0.5)],
-    ["80 – 89", "Baik", "B", INFO_BG, INFO, rgb(0.5, 0.7, 0.95)],
-    ["70 – 79", "Cukup", "C", WARNING_BG, WARNING, rgb(0.95, 0.75, 0.3)],
-    ["0 – 69", "Kurang", "D", DANGER_BG, DANGER, rgb(0.95, 0.5, 0.5)],
+    ["90 – 100", "Sangat Baik", "A", rgb(0.94, 1, 0.96), rgb(0.05, 0.5, 0.2), rgb(0.4, 0.85, 0.5)],
+    ["80 – 89", "Baik", "B", rgb(0.93, 0.96, 1), rgb(0.15, 0.39, 0.92), rgb(0.5, 0.7, 0.95)],
+    ["70 – 79", "Cukup", "C", rgb(1, 0.96, 0.88), rgb(0.75, 0.4, 0.02), rgb(0.95, 0.75, 0.3)],
+    ["0 – 69", "Kurang", "D", rgb(1, 0.94, 0.94), rgb(0.8, 0.1, 0.1), rgb(0.95, 0.5, 0.5)],
   ];
 
   const halfW = (PAGE_W - MARGIN * 2) / 2 - 5;
@@ -332,17 +330,39 @@ export async function generatePrakerinPdf(data: PrakerinRecapData): Promise<Uint
   const signX2 = MARGIN + (PAGE_W - MARGIN * 2) / 2 + 25;
   const signW = 155;
 
-  drawText("Mengetahui,", signX1, y, 8.5, font, TEXT_MUTED);
-  drawText("Pembimbing Sekolah", signX1, y - 14, 8.5, font, TEXT_MUTED);
-  drawLine(signX1, y - 60, signX1 + signW, y - 60, 1, TEXT_DARK);
-  drawText("_________________________", signX1, y - 74, 8.5, bold, TEXT_DARK);
-  drawText("NIP. _____________________", signX1, y - 88, 7.5, font, TEXT_MUTED);
+  async function drawSignature(x: number, label: string, nip: string, ttdDataUrl: string | null, nama: string) {
+    drawText("Mengetahui,", x, y, 8.5, font, TEXT_MUTED);
+    drawText(label, x, y - 14, 8.5, font, TEXT_MUTED);
 
-  drawText("Mengetahui,", signX2, y, 8.5, font, TEXT_MUTED);
-  drawText("Pembimbing Industri / Perusahaan", signX2, y - 14, 8.5, font, TEXT_MUTED);
-  drawLine(signX2, y - 60, signX2 + signW, y - 60, 1, TEXT_DARK);
-  drawText("_________________________", signX2, y - 74, 8.5, bold, TEXT_DARK);
-  drawText("NIP. _____________________", signX2, y - 88, 7.5, font, TEXT_MUTED);
+    let ttdY = y - 60;
+
+    if (ttdDataUrl) {
+      try {
+        const imgData = ttdDataUrl.split(",")[1];
+        let img: any;
+        if (ttdDataUrl.startsWith("data:image/png")) {
+          img = await doc.embedPng(imgData);
+        } else {
+          img = await doc.embedJpg(imgData);
+        }
+        const aspect = img.width / img.height;
+        const imgH = 45;
+        const imgW = imgH * aspect;
+        const imgX = x + (signW - imgW) / 2;
+        drawRect(imgX, ttdY - imgH, imgW, imgH, rgb(1, 1, 1));
+        page.drawImage(img, { x: imgX, y: ttdY - imgH, width: imgW, height: imgH });
+        ttdY -= imgH + 10;
+      } catch { /* fallback ke garis */ }
+    }
+
+    drawLine(x, ttdY, x + signW, ttdY, 1, TEXT_DARK);
+    const namaText = nama || "_________________________";
+    drawText(namaText, x, ttdY - 14, 8.5, bold, TEXT_DARK);
+    drawText(nip ? `NIP. ${nip}` : "NIP. _____________________", x, ttdY - 28, 7.5, font, TEXT_MUTED);
+  }
+
+  await drawSignature(signX1, "Pembimbing Sekolah", data.pembimbingSekolahNip, data.pembimbingSekolahTtd || null, "");
+  await drawSignature(signX2, "Pembimbing Industri / Perusahaan", data.pembimbingIndustriNip, data.pembimbingIndustriTtd || null, "");
 
   // ═══ Footer ════════════════════════════════════
   drawLine(MARGIN, 38, PAGE_W - MARGIN, 38, 0.75, BORDER);
@@ -362,8 +382,8 @@ export async function generatePrakerinPdf(data: PrakerinRecapData): Promise<Uint
   return doc.save();
 }
 
-export async function downloadPrakerinPdf(data: PrakerinRecapData): Promise<void> {
-  const pdfBytes = await generatePrakerinPdf(data);
+export async function downloadPrakerinPdf(data: PrakerinRecapData, themeKey = "navy"): Promise<void> {
+  const pdfBytes = await generatePrakerinPdf(data, themeKey);
   const blob = new Blob([pdfBytes as BlobPart], { type: "application/pdf" });
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");

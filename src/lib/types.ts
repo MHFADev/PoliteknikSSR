@@ -47,6 +47,12 @@ export interface PrakerinRecapData {
   // Tanggal
   pklStartDate: string;
   pklEndDate: string;
+
+  // Tanda tangan & NIP
+  pembimbingSekolahNip: string;
+  pembimbingSekolahTtd: string;
+  pembimbingIndustriNip: string;
+  pembimbingIndustriTtd: string;
 }
 
 // ─── Pembimbing-Siswa Relationship ─────────────────────
@@ -85,6 +91,39 @@ export function prakerinGradeLabel(score: number): string {
   return "Kurang";
 }
 
+export interface ThemeColors {
+  primary: string;
+  primaryLight: string;
+  headerBg: string;
+  headerText: string;
+  rowEven: string;
+  border: string;
+  accent: string;
+}
+
+export const RECAP_THEMES: Record<string, { label: string; colors: ThemeColors }> = {
+  navy: {
+    label: "Navy",
+    colors: { primary: "#0F172A", primaryLight: "#1E293B", headerBg: "#0F172A", headerText: "#FFFFFF", rowEven: "#F8FAFC", border: "#CBD5E1", accent: "#2563EB" },
+  },
+  emerald: {
+    label: "Emerald",
+    colors: { primary: "#064E3B", primaryLight: "#065F46", headerBg: "#064E3B", headerText: "#FFFFFF", rowEven: "#F0FDF4", border: "#A7F3D0", accent: "#059669" },
+  },
+  royal: {
+    label: "Royal",
+    colors: { primary: "#1E1B4B", primaryLight: "#312E81", headerBg: "#1E1B4B", headerText: "#FFFFFF", rowEven: "#EEF2FF", border: "#C7D2FE", accent: "#6366F1" },
+  },
+  wine: {
+    label: "Wine",
+    colors: { primary: "#4C0519", primaryLight: "#881337", headerBg: "#4C0519", headerText: "#FFFFFF", rowEven: "#FFF1F2", border: "#FDA4AF", accent: "#E11D48" },
+  },
+  slate: {
+    label: "Slate",
+    colors: { primary: "#1E293B", primaryLight: "#334155", headerBg: "#1E293B", headerText: "#FFFFFF", rowEven: "#F8FAFC", border: "#CBD5E1", accent: "#475569" },
+  },
+};
+
 export function createDefaultPrakerinData(): PrakerinRecapData {
   return {
     studentName: "",
@@ -101,5 +140,9 @@ export function createDefaultPrakerinData(): PrakerinRecapData {
     notes: "",
     pklStartDate: "",
     pklEndDate: "",
+    pembimbingSekolahNip: "",
+    pembimbingSekolahTtd: "",
+    pembimbingIndustriNip: "",
+    pembimbingIndustriTtd: "",
   };
 }
