@@ -101,7 +101,7 @@ export async function selectMentor(mentorId: string): Promise<{ success: boolean
     }
 
     // Upsert the student_mentors record (one student = one mentor)
-    const { error } = await supabase
+    const { error } = await adminSupabase
       .from("student_mentors")
       .upsert(
         { student_id: user.id, mentor_id: mentorId },
@@ -165,7 +165,8 @@ export async function removeStudentFromMentor(studentId: string): Promise<{ succ
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return { success: false, message: "Unauthorized" };
 
-    const { error } = await supabase
+    const adminSupabase = createAdminClient();
+    const { error } = await adminSupabase
       .from("student_mentors")
       .delete()
       .eq("student_id", studentId)
