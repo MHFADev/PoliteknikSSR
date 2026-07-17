@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback, useTransition, useMemo } from "react"
 import { Card, CardHeader } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { createClient } from "@/lib/supabase/client";
-import { Loader2, FileText, History, Search, ChevronDown, X, ClipboardList, Plus } from "lucide-react";
+import { Loader2, FileText, History, Search, ChevronDown, X, ClipboardList, Plus, Image } from "lucide-react";
 import { getSentDocuments, sendCertificate, sendPrakerinRecap } from "@/actions/documents";
 import { UNSUR_NILAI_LABELS, prakerinGradeFromScore, prakerinGradeLabel, createDefaultPrakerinData, RECAP_THEMES } from "@/lib/types";
 import type { PrakerinRecapData, UnsurNilai, BidangKeahlian } from "@/lib/types";
@@ -13,7 +13,7 @@ import { getMyStudents } from "@/actions/student-mentors";
 import { PDFViewerModal } from "@/components/PDFViewerModal";
 import styles from "@/styles/pages/dashboard/admin/SertifikatRekap.module.css";
 
-type Tab = "prakerin" | "history";
+type Tab = "certificate" | "prakerin" | "history";
 
 function StudentSelect({
   students,
@@ -108,6 +108,10 @@ export default function PembimbingSertifikatRekapPage() {
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
 
   const IMAGE_EXTS = [".jpg", ".jpeg", ".png", ".gif", ".webp", ".bmp"];
+
+  // Certificate form
+  const [certStudentId, setCertStudentId] = useState("");
+  const [certFile, setCertFile] = useState<File | null>(null);
 
   // Prakerin recap form
   const [prakerinStudentId, setPrakerinStudentId] = useState("");
@@ -355,6 +359,10 @@ export default function PembimbingSertifikatRekapPage() {
       </div>
 
       <div className={styles.tabs}>
+        <button onClick={() => setTab("certificate")} className={`${styles.tab} ${tab === "certificate" ? styles.tabActive : ""}`}>
+          <Image className="h-4 w-4" />
+          Upload Sertifikat
+        </button>
         <button onClick={() => setTab("prakerin")} className={`${styles.tab} ${tab === "prakerin" ? styles.tabActive : ""}`}>
           <ClipboardList className="h-4 w-4" />
           Rekap Prakerin
@@ -364,6 +372,54 @@ export default function PembimbingSertifikatRekapPage() {
           Riwayat
         </button>
       </div>
+
+      {tab === "certificate" && (
+        <Card>
+          <CardHeader title="Kirim Sertifikat PKL" />
+          <div className={styles.formBody}>
+            <div className={styles.formGroup}>
+              <label>Siswa Penerima</label>
+              <StudentSelect students={students} value={certStudentId} onChange={setCertStudentId} placeholder="Pilih siswa penerima..." />
+            </div>
+            <div className={styles.formGroup}>
+              <label>File Sertifikat (PDF/Gambar)</label>
+              <div className={styles.fileUploadArea}>
+                <input type="file" accept=".pdf,image/*" onChange={(e) => setCertFile(e.target.files?.[0] || null)} className={styles.fileInputHidden} id="cert-file" />
+                <label htmlFor="cert-file" className={styles.fileUploadLabel}>
+                  {certFile ? (
+                    <div className={styles.fileSelected}>
+                      <FileText className="h-5 w-5" />
+                      <span>{certFile.name}</span>
+                      <button type="button" onClick={(e) => { e.preventDefault(); e.stopPropagation(); setCertFile(null); }} className={styles.fileRemoveBtn}><X className="h-4 w-4" /></button>
+                    </div>
+                  ) : (
+                    <><FileText className="h-8 w-8 opacity-40" /><span>Klik untuk pilih file</span><span className={styles.fileHint}>PDF, JPG, PNG (maks. 10MB)</span></>
+                  )}
+                </label>
+              </div>
+            </div>
+            <div className={styles.formActions}>
+              <button onClick={() => {
+                if (!certFile) { showMessage("error", "Pilih file sertifikat terlebih dahulu."); return; }
+                setSending(() => {});
+                const fd = new FormData();
+                fd.append("file", certFile);
+                sendCertificate(certStudentId, fd).then((result) => {
+                  if (result.success) {
+                    showMessage("success", "Sertifikat berhasil dikirim!");
+                    setCertFile(null);
+                    setCertStudentId("");
+                    loadData();
+                  } else { showMessage("error", result.message); }
+                });
+              }} disabled={sending || !certStudentId || !certFile} className={styles.btnPrimary}>
+                {sending && <Loader2 className="h-4 w-4 animate-spin" />}
+                Kirim Sertifikat
+              </button>
+            </div>
+          </div>
+        </Card>
+      )}
 
       {tab === "prakerin" && (
         <Card>
@@ -571,46 +627,30 @@ export default function PembimbingSertifikatRekapPage() {
             {/* TTD & NIP */}
             <div className={styles.prakerinSection}>
               <div className={styles.prakerinSectionTitle}>Tanda Tangan & NIP</div>
-              <div className={styles.prakerinIdentityGrid}>
-                <div className={styles.formGroup}>
-                  <label>Pembimbing Sekolah — Nama</label>
-                  <input type="text" value={prakerin.pembimbingSekolahNama} onChange={(e) => updatePrakerinField("pembimbingSekolahNama", e.target.value)} placeholder="Nama lengkap pembimbing sekolah" className={styles.inputDate} />
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem", padding: "1rem" }}>
+                <div style={{ padding: "0.75rem", border: "1px solid #E2E8F0", borderRadius: "0.5rem", background: "#FAFAFA" }}>
+                  <div style={{ fontSize: "0.8125rem", fontWeight: 700, color: "#0F172A", marginBottom: "0.625rem", paddingBottom: "0.375rem", borderBottom: "2px solid #0F172A" }}>PEMBIMBING SEKOLAH</div>
+                  <div className={styles.formGroup}><label>Nama</label><input type="text" value={prakerin.pembimbingSekolahNama} onChange={(e) => updatePrakerinField("pembimbingSekolahNama", e.target.value)} placeholder="Nama lengkap" className={styles.inputDate} /></div>
+                  <div className={styles.formGroup} style={{ marginTop: "0.5rem" }}><label>NIP</label><input type="text" value={prakerin.pembimbingSekolahNip} onChange={(e) => updatePrakerinField("pembimbingSekolahNip", e.target.value)} placeholder="NIP" className={styles.inputDate} /></div>
+                  <div className={styles.formGroup} style={{ marginTop: "0.5rem" }}>
+                    <label>Foto Tanda Tangan</label>
+                    <input type="file" accept="image/*" onChange={(e) => {
+                      const file = e.target.files?.[0]; if (file) { const r = new FileReader(); r.onload = () => updatePrakerinField("pembimbingSekolahTtd", r.result as string); r.readAsDataURL(file); }
+                    }} className={styles.inputDate} style={{ padding: "0.375rem" }} />
+                    {prakerin.pembimbingSekolahTtd && <div style={{ marginTop: "0.375rem", borderRadius: "0.375rem", overflow: "hidden", border: "1px solid #E2E8F0", width: "120px", height: "60px", background: "#F8FAFC" }}><img src={prakerin.pembimbingSekolahTtd} alt="TTD" style={{ width: "100%", height: "100%", objectFit: "contain" }} /></div>}
+                  </div>
                 </div>
-                <div className={styles.formGroup}>
-                  <label>Pembimbing Sekolah — NIP</label>
-                  <input type="text" value={prakerin.pembimbingSekolahNip} onChange={(e) => updatePrakerinField("pembimbingSekolahNip", e.target.value)} placeholder="NIP pembimbing sekolah" className={styles.inputDate} />
-                </div>
-                <div className={styles.formGroup}>
-                  <label>Pembimbing Sekolah — Foto TTD</label>
-                  <input type="file" accept="image/*" onChange={(e) => {
-                    const file = e.target.files?.[0];
-                    if (file) { const r = new FileReader(); r.onload = () => updatePrakerinField("pembimbingSekolahTtd", r.result as string); r.readAsDataURL(file); }
-                  }} className={styles.inputDate} style={{ padding: "0.375rem" }} />
-                  {prakerin.pembimbingSekolahTtd && (
-                    <div style={{ marginTop: "0.375rem", borderRadius: "0.5rem", overflow: "hidden", border: "1px solid #E2E8F0", width: "120px", height: "60px", background: "#F8FAFC" }}>
-                      <img src={prakerin.pembimbingSekolahTtd} alt="TTD" style={{ width: "100%", height: "100%", objectFit: "contain" }} />
-                    </div>
-                  )}
-                </div>
-                <div className={styles.formGroup}>
-                  <label>Pembimbing Industri — Nama</label>
-                  <input type="text" value={prakerin.pembimbingIndustriNama} onChange={(e) => updatePrakerinField("pembimbingIndustriNama", e.target.value)} placeholder="Nama lengkap pembimbing industri" className={styles.inputDate} />
-                </div>
-                <div className={styles.formGroup}>
-                  <label>Pembimbing Industri — NIP</label>
-                  <input type="text" value={prakerin.pembimbingIndustriNip} onChange={(e) => updatePrakerinField("pembimbingIndustriNip", e.target.value)} placeholder="NIP pembimbing industri" className={styles.inputDate} />
-                </div>
-                <div className={styles.formGroup}>
-                  <label>Pembimbing Industri — Foto TTD</label>
-                  <input type="file" accept="image/*" onChange={(e) => {
-                    const file = e.target.files?.[0];
-                    if (file) { const r = new FileReader(); r.onload = () => updatePrakerinField("pembimbingIndustriTtd", r.result as string); r.readAsDataURL(file); }
-                  }} className={styles.inputDate} style={{ padding: "0.375rem" }} />
-                  {prakerin.pembimbingIndustriTtd && (
-                    <div style={{ marginTop: "0.375rem", borderRadius: "0.5rem", overflow: "hidden", border: "1px solid #E2E8F0", width: "120px", height: "60px", background: "#F8FAFC" }}>
-                      <img src={prakerin.pembimbingIndustriTtd} alt="TTD" style={{ width: "100%", height: "100%", objectFit: "contain" }} />
-                    </div>
-                  )}
+                <div style={{ padding: "0.75rem", border: "1px solid #E2E8F0", borderRadius: "0.5rem", background: "#FAFAFA" }}>
+                  <div style={{ fontSize: "0.8125rem", fontWeight: 700, color: "#0F172A", marginBottom: "0.625rem", paddingBottom: "0.375rem", borderBottom: "2px solid #0F172A" }}>PEMBIMBING INDUSTRI</div>
+                  <div className={styles.formGroup}><label>Nama</label><input type="text" value={prakerin.pembimbingIndustriNama} onChange={(e) => updatePrakerinField("pembimbingIndustriNama", e.target.value)} placeholder="Nama lengkap" className={styles.inputDate} /></div>
+                  <div className={styles.formGroup} style={{ marginTop: "0.5rem" }}><label>NIP</label><input type="text" value={prakerin.pembimbingIndustriNip} onChange={(e) => updatePrakerinField("pembimbingIndustriNip", e.target.value)} placeholder="NIP" className={styles.inputDate} /></div>
+                  <div className={styles.formGroup} style={{ marginTop: "0.5rem" }}>
+                    <label>Foto Tanda Tangan</label>
+                    <input type="file" accept="image/*" onChange={(e) => {
+                      const file = e.target.files?.[0]; if (file) { const r = new FileReader(); r.onload = () => updatePrakerinField("pembimbingIndustriTtd", r.result as string); r.readAsDataURL(file); }
+                    }} className={styles.inputDate} style={{ padding: "0.375rem" }} />
+                    {prakerin.pembimbingIndustriTtd && <div style={{ marginTop: "0.375rem", borderRadius: "0.375rem", overflow: "hidden", border: "1px solid #E2E8F0", width: "120px", height: "60px", background: "#F8FAFC" }}><img src={prakerin.pembimbingIndustriTtd} alt="TTD" style={{ width: "100%", height: "100%", objectFit: "contain" }} /></div>}
+                  </div>
                 </div>
               </div>
             </div>
