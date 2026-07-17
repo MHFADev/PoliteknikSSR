@@ -30,14 +30,22 @@ export default async function PembimbingOverviewPage() {
   sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 6);
   const sevenDaysAgoStr = sevenDaysAgo.toISOString().slice(0, 10);
 
-  // ─── Parallel Queries ──────────────────────────────────────────────
+  // ─── Ambil daftar siswa bimbingan dulu ────────────────────────────
+  const { data: mentorStudents } = await supabase
+    .from("student_mentors")
+    .select("student_id")
+    .eq("mentor_id", user!.id);
+
+  const mentorStudentIds = (mentorStudents ?? []).map((s) => s.student_id);
+  const mIds = mentorStudentIds.length > 0 ? mentorStudentIds : ["00000000-0000-0000-0000-000000000000"];
+
+  // ─── Parallel Queries (filtered by mentor's students) ──────────
   const [
     { count: studentCount },
     { data: todayRecords },
     { count: izinPendingCount },
     { data: weekRecords },
     { data: weekLeaves },
-    { data: mentorStudents },
     { data: studentProfiles },
   ] = await Promise.all([
     supabase
@@ -47,24 +55,24 @@ export default async function PembimbingOverviewPage() {
     supabase
       .from("attendance_records")
       .select("status, scanned_at, student_id")
+      .in("student_id", mIds)
       .gte("scanned_at", `${today}T00:00:00`),
     supabase
       .from("leave_requests")
       .select("*", { count: "exact", head: true })
+      .in("student_id", mIds)
       .eq("status", "pending"),
     supabase
       .from("attendance_records")
       .select("status, scanned_at, student_id")
+      .in("student_id", mIds)
       .gte("scanned_at", sevenDaysAgo.toISOString()),
     supabase
       .from("leave_requests")
-      .select("type, start_date, end_date, status")
+      .select("type, start_date, end_date, status, student_id")
+      .in("student_id", mIds)
       .gte("start_date", sevenDaysAgoStr)
       .lte("start_date", today),
-    supabase
-      .from("student_mentors")
-      .select("student_id")
-      .eq("mentor_id", user!.id),
     supabase
       .from("student_mentors")
       .select(
@@ -73,13 +81,8 @@ export default async function PembimbingOverviewPage() {
       .eq("mentor_id", user!.id),
   ]);
 
-  const mentorStudentIds = new Set(
-    mentorStudents?.map((s) => s.student_id) ?? [],
-  );
-  const myTodayRecords =
-    todayRecords?.filter((r) => mentorStudentIds.has(r.student_id)) ?? [];
-  const myWeekRecords =
-    weekRecords?.filter((r) => mentorStudentIds.has(r.student_id)) ?? [];
+  const myTodayRecords = todayRecords ?? [];
+  const myWeekRecords = weekRecords ?? [];
 
   const hadirToday = myTodayRecords.filter((r) => r.status === "hadir").length;
   const telatToday = myTodayRecords.filter((r) => r.status === "telat").length;
