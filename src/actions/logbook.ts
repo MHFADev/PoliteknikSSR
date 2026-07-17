@@ -6,7 +6,7 @@ import { z } from "zod";
 
 const entrySchema = z.object({
   entry_date: z.string(),
-  content: z.string().min(20, "Isi logbook minimal 20 karakter agar bermakna."),
+  content: z.string().min(50, "Isi minimal 50 karakter agar bermakna."),
   photoUrl: z.string().optional().nullable(),
 });
 

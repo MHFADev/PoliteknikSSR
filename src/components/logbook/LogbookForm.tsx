@@ -33,8 +33,8 @@ export function LogbookForm({ userId, existingContent, existingPhotoUrl }: { use
         
         // Compress image
         const options = {
-          maxSizeMB: 0.5,
-          maxWidthOrHeight: 1920,
+          maxSizeMB: 0.3,
+          maxWidthOrHeight: 1200,
           useWebWorker: true,
           fileType: "image/jpeg",
         };

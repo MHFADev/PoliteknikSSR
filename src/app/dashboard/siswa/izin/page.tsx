@@ -12,7 +12,7 @@ const STATUS_TONE = {
 } as const;
 
 export default async function SiswaIzinPage() {
-  const supabase = createClient();
+  const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();

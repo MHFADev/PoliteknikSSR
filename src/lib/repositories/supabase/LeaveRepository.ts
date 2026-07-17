@@ -116,7 +116,7 @@ export class SupabaseLeaveRepository implements ILeaveRepository {
    * @returns Array pengajuan
    */
   async getLeavesByStudent(studentId: string): Promise<LeaveRequest[]> {
-    const supabase = createClient();
+    const supabase = await createClient();
 
     const { data } = await supabase
       .from("leave_requests")
@@ -133,7 +133,7 @@ export class SupabaseLeaveRepository implements ILeaveRepository {
    * @returns Array pengajuan pending
    */
   async getPendingLeaves(): Promise<LeaveRequest[]> {
-    const supabase = createClient();
+    const supabase = await createClient();
 
     const { data } = await supabase
       .from("leave_requests")
@@ -151,7 +151,7 @@ export class SupabaseLeaveRepository implements ILeaveRepository {
    * @returns Array pengajuan siswa bimbingan
    */
   async getLeavesByMentor(mentorId: string): Promise<LeaveRequest[]> {
-    const supabase = createClient();
+    const supabase = await createClient();
 
     // --- Ambil daftar student_id yang dibimbing oleh mentor ini ---
     const { data: mentorships } = await supabase

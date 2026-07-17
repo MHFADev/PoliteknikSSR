@@ -5,7 +5,8 @@ import { Card, CardHeader } from "@/components/ui/Card";
 import { Select } from "@/components/ui/Select";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
-import { get30DayAttendanceStats, AttendanceStats } from "@/actions/admin";
+import { get30DayAttendanceStats } from "@/actions/admin";
+import type { AttendanceStats } from "@/lib/repositories";
 import { Badge } from "@/components/ui/Badge";
 import { RefreshCw } from "lucide-react";
 

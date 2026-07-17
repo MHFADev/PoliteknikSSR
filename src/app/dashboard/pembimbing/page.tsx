@@ -19,7 +19,7 @@ import { Users, CalendarCheck, FileClock, AlertCircle } from "lucide-react";
 import styles from "@/styles/pages/dashboard/pembimbing/Overview.module.css";
 
 export default async function PembimbingOverviewPage() {
-  const supabase = createClient();
+  const supabase = await createClient();
 
   const {
     data: { user },

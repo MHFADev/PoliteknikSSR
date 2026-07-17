@@ -19,7 +19,7 @@ import { BlockedWatcher } from "@/components/BlockedWatcher";
 import { StudentDocumentPopup } from "@/components/StudentDocumentPopup";
 
 export default async function SiswaLayout({ children }: { children: React.ReactNode }) {
-  const supabase = createClient();
+  const supabase = await createClient();
 
   const {
     data: { user },

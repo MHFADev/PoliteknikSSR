@@ -25,7 +25,7 @@
  */
 
 /** Role user dalam sistem */
-export type UserRole = "siswa" | "pembimbing" | "admin" | "owner";
+export type UserRole = "siswa" | "pembimbing" | "admin" | "owner" | "root";
 /** Status presensi — hanya "hadir" atau "telat" */
 export type AttendanceStatus = "hadir" | "telat";
 /** Jenis izin yang bisa diajukan siswa */
@@ -445,6 +445,18 @@ export type Database = {
           created_at?: string;
           updated_at?: string;
         };
+        Relationships: [];
+      };
+      classes: {
+        Row: { id: string; nama: string; created_at: string };
+        Insert: { id?: string; nama: string; created_at?: string };
+        Update: { id?: string; nama?: string; created_at?: string };
+        Relationships: [];
+      };
+      verification_codes: {
+        Row: { id: string; email: string; code: string; expires_at: string; used: boolean; created_at: string };
+        Insert: { id?: string; email: string; code: string; expires_at?: string; used?: boolean; created_at?: string };
+        Update: { id?: string; email?: string; code?: string; expires_at?: string; used?: boolean; created_at?: string };
         Relationships: [];
       };
     };

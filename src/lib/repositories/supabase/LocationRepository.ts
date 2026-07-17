@@ -63,7 +63,7 @@ export class SupabaseLocationRepository implements ILocationRepository {
    * @returns Array lokasi
    */
   async getAll(): Promise<AllowedLocation[]> {
-    const supabase = createClient();
+    const supabase = await createClient();
 
     const { data } = await supabase
       .from("allowed_locations")
@@ -156,7 +156,7 @@ export class SupabaseLocationRepository implements ILocationRepository {
     latitude: number,
     longitude: number
   ): Promise<{ allowed: boolean; locationName?: string }> {
-    const supabase = createClient();
+    const supabase = await createClient();
 
     const { data: locations } = await supabase
       .from("allowed_locations")
@@ -188,7 +188,7 @@ export class SupabaseLocationRepository implements ILocationRepository {
    * @returns true jika ada minimal 1 lokasi
    */
   async hasLocations(): Promise<boolean> {
-    const supabase = createClient();
+    const supabase = await createClient();
 
     const { count } = await supabase
       .from("allowed_locations")

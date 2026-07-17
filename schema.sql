@@ -13,7 +13,9 @@ create extension if not exists "pgcrypto";
 -- 1. ENUM TYPES
 -- ---------------------------------------------------------------------
 do $$ begin
-  create type public.user_role as enum ('siswa', 'pembimbing', 'admin');
+  create type public.user_role as enum ('siswa', 'pembimbing', 'admin', 'owner', 'root');
+-- After creation, if 'root' needs to be added later:
+-- ALTER TYPE public.user_role ADD VALUE IF NOT EXISTS 'root';
 exception when duplicate_object then null; end $$;
 
 do $$ begin
@@ -41,6 +43,7 @@ create table if not exists public.profiles (
   instansi text, -- nama perusahaan/instansi tempat PKL (khusus siswa)
   kelas text, -- kelas siswa
   avatar_url text,
+  approved boolean not null default false,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
@@ -54,11 +57,12 @@ language plpgsql
 security definer set search_path = public
 as $$
 begin
-  insert into public.profiles (id, full_name, role)
+  insert into public.profiles (id, full_name, role, approved)
   values (
     new.id,
     coalesce(new.raw_user_meta_data->>'full_name', 'Pengguna Baru'),
-    coalesce((new.raw_user_meta_data->>'role')::public.user_role, 'siswa')
+    coalesce((new.raw_user_meta_data->>'role')::public.user_role, 'siswa'),
+    coalesce((new.raw_user_meta_data->>'approved')::boolean, true)
   )
   on conflict (id) do nothing;
   return new;
@@ -700,6 +704,50 @@ drop policy if exists "storage: semua login lihat student-documents" on storage.
 create policy "storage: semua login lihat student-documents"
   on storage.objects for select
   using (bucket_id = 'student-documents' and auth.uid() is not null);
+
+-- =====================================================================
+-- 19. TABEL: classes
+-- Daftar kelas yang tersedia (10, 11, 12, dll)
+-- =====================================================================
+create table if not exists public.classes (
+  id uuid primary key default gen_random_uuid(),
+  nama text not null unique,
+  created_at timestamptz not null default now()
+);
+
+comment on table public.classes is 'Daftar kelas yang tersedia';
+
+insert into public.classes (nama) values ('10'), ('11'), ('12')
+on conflict (nama) do nothing;
+
+alter table public.classes enable row level security;
+
+drop policy if exists "classes: semua login boleh lihat" on public.classes;
+create policy "classes: semua login boleh lihat"
+  on public.classes for select
+  using (auth.uid() is not null);
+
+drop policy if exists "classes: admin/root/owner kelola" on public.classes;
+create policy "classes: admin/root/owner kelola"
+  on public.classes for all
+  using (public.current_role() in ('admin', 'owner', 'root'))
+  with check (public.current_role() in ('admin', 'owner', 'root'));
+
+-- =====================================================================
+-- 20. TABEL: verification_codes
+-- Kode verifikasi email untuk pendaftaran (expired 10 menit)
+-- =====================================================================
+create table if not exists public.verification_codes (
+  id uuid primary key default gen_random_uuid(),
+  email text not null,
+  code text not null,
+  expires_at timestamptz not null default (now() + interval '10 minutes'),
+  used boolean not null default false,
+  created_at timestamptz not null default now()
+);
+
+create index if not exists idx_verification_codes_email on public.verification_codes(email);
+create index if not exists idx_verification_codes_expires on public.verification_codes(expires_at);
 
 -- =====================================================================
 -- SELESAI. Langkah selanjutnya:

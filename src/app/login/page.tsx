@@ -17,7 +17,7 @@ import {
   Ban,
   X,
 } from "lucide-react";
-import { signInWithPassword } from "./actions";
+import { signInWithPassword, requestPasswordReset } from "./actions";
 import { checkLoginLocation, hasLocationsConfigured } from "@/actions/location";
 import { PasswordEye } from "@/components/ui/PasswordEye";
 import styles from "@/styles/pages/Login.module.css";
@@ -25,11 +25,8 @@ import styles from "@/styles/pages/Login.module.css";
 const GPS_ENABLED = false;
 
 const HERO_SLIDES = [
-  { src: "/hero/1.jpg", alt: "Kampus Politeknik SSR" },
-  { src: "/hero/2.jpg", alt: "Kegiatan PKL Siswa" },
-  { src: "/hero/3.jpg", alt: "Laboratorium Komputer" },
+  { src: "/hero/1.jpg", alt: "Politeknik SSR" },
 ];
-/* Ganti ekstensi sesuai format gambar: .jpg, .png, .webp, dll */
 
 function getCurrentPosition(): Promise<GeolocationPosition> {
   return new Promise((resolve, reject) => {
@@ -78,8 +75,12 @@ export default function LoginPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [gpsStep, setGpsStep] = useState(false);
   const [blockedPopup, setBlockedPopup] = useState(false);
+  const [forgotMode, setForgotMode] = useState(false);
+  const [resetEmail, setResetEmail] = useState("");
+  const [resetMsg, setResetMsg] = useState<string | null>(null);
 
   const [currentSlide, setCurrentSlide] = useState(0);
+  const hasMultipleSlides = HERO_SLIDES.length > 1;
   const [imageErrors, setImageErrors] = useState<Record<number, boolean>>({});
 
   useEffect(() => {
@@ -234,36 +235,32 @@ export default function LoginPage() {
 
           {/* Carousel Controls */}
           <div className={styles.heroCarouselControls}>
-            <button
-              type="button"
-              onClick={prevSlide}
-              className={styles.heroCarouselBtn}
-              aria-label="Sebelumnya"
-            >
-              <ChevronLeft />
-            </button>
-            <button
-              type="button"
-              onClick={nextSlide}
-              className={styles.heroCarouselBtn}
-              aria-label="Selanjutnya"
-            >
-              <ChevronRight />
-            </button>
+            {hasMultipleSlides && (
+              <>
+                <button type="button" onClick={prevSlide} className={styles.heroCarouselBtn} aria-label="Sebelumnya">
+                  <ChevronLeft />
+                </button>
+                <button type="button" onClick={nextSlide} className={styles.heroCarouselBtn} aria-label="Selanjutnya">
+                  <ChevronRight />
+                </button>
+              </>
+            )}
           </div>
 
           {/* Dots */}
-          <div className={styles.heroDots}>
-            {HERO_SLIDES.map((_, idx) => (
-              <button
-                key={idx}
-                type="button"
-                onClick={() => goToSlide(idx)}
-                className={`${styles.heroDot} ${idx === currentSlide ? styles.heroDotActive : ""}`}
-                aria-label={`Slide ${idx + 1}`}
-              />
-            ))}
-          </div>
+          {hasMultipleSlides && (
+            <div className={styles.heroDots}>
+              {HERO_SLIDES.map((_, idx) => (
+                <button
+                  key={idx}
+                  type="button"
+                  onClick={() => goToSlide(idx)}
+                  className={`${styles.heroDot} ${idx === currentSlide ? styles.heroDotActive : ""}`}
+                  aria-label={`Slide ${idx + 1}`}
+                />
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Content over carousel */}
@@ -272,8 +269,8 @@ export default function LoginPage() {
             <Image
               src="/logo.png"
               alt="Politeknik SSR"
-              width={140}
-              height={44}
+              width={210}
+              height={66}
               priority
             />
           </div>
@@ -333,92 +330,123 @@ export default function LoginPage() {
               <Image
                 src="/logo.png"
                 alt="Politeknik SSR"
-                width={140}
-                height={44}
+                width={210}
+                height={66}
                 priority
               />
             </div>
 
             <div className={styles.formHeader}>
-              <h1 className={styles.formTitle}>Selamat Datang</h1>
+              <h1 className={styles.formTitle}>Selamat Datang di Web Absensi PKL Politeknik SSR</h1>
               <p className={styles.formSubtitle}>
                 Silakan masuk ke akun anda
               </p>
             </div>
 
-            <form onSubmit={handleSubmit} className={styles.form}>
-              <div className={styles.field}>
-                <label className={styles.label}>Username</label>
-                <div className={styles.inputWrapper}>
-                  <Mail className={styles.inputIcon} />
-                  <input
-                    type="text"
-                    required
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                    placeholder="nama@sekolah.ac.id"
-                    className={`${styles.input} ${styles.inputWithIcon} ${error ? styles.inputError : styles.inputNormal}`}
-                  />
-                </div>
-              </div>
-
-              <div className={styles.field}>
-                <label className={styles.label}>Kata Sandi</label>
-                <div className={styles.inputWrapper}>
-                  <Lock className={styles.inputIcon} />
-                  <input
-                    type={showPassword ? "text" : "password"}
-                    required
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    placeholder="Masukkan kata sandi"
-                    className={`${styles.input} ${styles.inputWithIcon} ${styles.inputPassword} ${error ? styles.inputError : styles.inputNormal}`}
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className={styles.toggleBtn}
-                  >
-                    <PasswordEye show={showPassword} />
-                  </button>
-                </div>
-              </div>
-
-              <a href="#" className={styles.forgotLink}>
-                Lupa kata sandi?
-              </a>
-
-              {error && (
-                <motion.p
-                  initial={{ opacity: 0, x: -4 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  className={styles.errorBox}
-                >
-                  {error}
-                </motion.p>
-              )}
-
-              {GPS_ENABLED && gpsStep && (
-                <p className={styles.gpsInfo}>
-                  <MapPin className={styles.gpsIcon} />
-                  Browser akan meminta izin lokasi. Izinkan untuk verifikasi
-                  area kampus.
-                </p>
-              )}
-
-              <button
-                type="submit"
-                className={styles.submitBtn}
-                disabled={isSubmitting}
+            {forgotMode ? (
+              <form
+                onSubmit={async (e) => {
+                  e.preventDefault();
+                  setError(null);
+                  setResetMsg(null);
+                  setIsSubmitting(true);
+                  const result = await requestPasswordReset(resetEmail);
+                  if (result.error) {
+                    setError(result.error);
+                  } else {
+                    setResetMsg(result.message || "Cek email Anda untuk link reset password.");
+                  }
+                  setIsSubmitting(false);
+                }}
+                className={styles.form}
               >
-                {isSubmitting ? (
-                  <Loader2 className={styles.btnSpinner} />
-                ) : (
-                  <ArrowRight className={styles.btnIcon} />
+                <div className={styles.field}>
+                  <label className={styles.label}>Email</label>
+                  <div className={styles.inputWrapper}>
+                    <Mail className={styles.inputIcon} />
+                    <input
+                      type="email" required value={resetEmail}
+                      onChange={(e) => setResetEmail(e.target.value)}
+                      placeholder="nama@sekolah.ac.id"
+                      className={`${styles.input} ${styles.inputWithIcon} ${error ? styles.inputError : styles.inputNormal}`}
+                    />
+                  </div>
+                </div>
+
+                <a href="#" onClick={(e) => { e.preventDefault(); setForgotMode(false); setError(null); setResetMsg(null); }} className={styles.forgotLink}>
+                  Kembali ke login
+                </a>
+
+                {error && (
+                  <motion.p initial={{ opacity: 0, x: -4 }} animate={{ opacity: 1, x: 0 }} className={styles.errorBox}>
+                    {error}
+                  </motion.p>
                 )}
-                <span>Masuk</span>
-              </button>
-            </form>
+                {resetMsg && (
+                  <motion.p initial={{ opacity: 0, x: -4 }} animate={{ opacity: 1, x: 0 }} className={styles.successBox}>
+                    {resetMsg}
+                  </motion.p>
+                )}
+
+                <button type="submit" className={styles.submitBtn} disabled={isSubmitting}>
+                  {isSubmitting ? <Loader2 className={styles.btnSpinner} /> : <ArrowRight className={styles.btnIcon} />}
+                  <span>Kirim Link Reset</span>
+                </button>
+              </form>
+            ) : (
+              <form onSubmit={handleSubmit} className={styles.form}>
+                <div className={styles.field}>
+                  <label className={styles.label}>Username</label>
+                  <div className={styles.inputWrapper}>
+                    <Mail className={styles.inputIcon} />
+                    <input
+                      type="text" required value={username}
+                      onChange={(e) => setUsername(e.target.value)}
+                      placeholder="nama@sekolah.ac.id"
+                      className={`${styles.input} ${styles.inputWithIcon} ${error ? styles.inputError : styles.inputNormal}`}
+                    />
+                  </div>
+                </div>
+
+                <div className={styles.field}>
+                  <label className={styles.label}>Kata Sandi</label>
+                  <div className={styles.inputWrapper}>
+                    <Lock className={styles.inputIcon} />
+                    <input
+                      type={showPassword ? "text" : "password"} required value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      placeholder="Masukkan kata sandi"
+                      className={`${styles.input} ${styles.inputWithIcon} ${styles.inputPassword} ${error ? styles.inputError : styles.inputNormal}`}
+                    />
+                    <button type="button" onClick={() => setShowPassword(!showPassword)} className={styles.toggleBtn}>
+                      <PasswordEye show={showPassword} />
+                    </button>
+                  </div>
+                </div>
+
+                <a href="#" onClick={(e) => { e.preventDefault(); setForgotMode(true); setError(null); }} className={styles.forgotLink}>
+                  Lupa kata sandi?
+                </a>
+
+                {error && (
+                  <motion.p initial={{ opacity: 0, x: -4 }} animate={{ opacity: 1, x: 0 }} className={styles.errorBox}>
+                    {error}
+                  </motion.p>
+                )}
+
+                {GPS_ENABLED && gpsStep && (
+                  <p className={styles.gpsInfo}>
+                    <MapPin className={styles.gpsIcon} />
+                    Browser akan meminta izin lokasi. Izinkan untuk verifikasi area kampus.
+                  </p>
+                )}
+
+                <button type="submit" className={styles.submitBtn} disabled={isSubmitting}>
+                  {isSubmitting ? <Loader2 className={styles.btnSpinner} /> : <ArrowRight className={styles.btnIcon} />}
+                  <span>Masuk</span>
+                </button>
+              </form>
+            )}
 
             <p className={styles.footerText}>
               Belum punya akun?{" "}
@@ -427,7 +455,7 @@ export default function LoginPage() {
               </Link>
             </p>
             <p className={styles.footerSub}>
-              Hubungi Admin Jika Belum Memiliki Akses.
+              Akun dibuat oleh Admin / Pembimbing PKL. Hubungi Admin / Pembimbing PKL jika belum punya akun.
             </p>
           </div>
         </motion.div>

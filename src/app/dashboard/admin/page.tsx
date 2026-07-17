@@ -35,7 +35,7 @@ import Link from "next/link";
 import styles from "@/styles/pages/dashboard/admin/Overview.module.css";
 
 export default async function AdminOverviewPage() {
-  const supabase = createClient();
+  const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -75,7 +75,7 @@ export default async function AdminOverviewPage() {
       .eq("role", "pembimbing"),
     supabase
       .from("attendance_records")
-      .select("status, student_id")
+      .select("status, student_id, scanned_at")
       .gte("scanned_at", `${today}T00:00:00`),
     supabase
       .from("leave_requests")
@@ -156,11 +156,11 @@ export default async function AdminOverviewPage() {
     const hasAttendance = studentsWithAttendance.has(s.id);
     const hasLeave = studentsWithLeave.has(s.id);
     let status = "alfa";
+    let scannedAt: string | null = null;
     if (hasAttendance) {
-      status =
-        todayRecords?.find((r) => r.student_id === s.id)?.status === "hadir"
-          ? "hadir"
-          : "telat";
+      const record = todayRecords?.find((r) => r.student_id === s.id);
+      status = record?.status === "hadir" ? "hadir" : "telat";
+      scannedAt = record?.scanned_at ?? null;
     } else if (hasLeave) {
       const leave = todayLeaves?.find(
         (l) => l.student_id === s.id && l.status === "disetujui",
@@ -178,6 +178,7 @@ export default async function AdminOverviewPage() {
       avatar_url: s.avatar_url,
       kelas: s.kelas,
       status,
+      scannedAt,
     };
   });
 
@@ -355,6 +356,18 @@ export default async function AdminOverviewPage() {
                         <span className={styles.studentName}>
                           {s.full_name}
                         </span>
+                        {s.scannedAt &&
+                          (key === "hadir" || key === "telat") && (
+                            <span className={styles.studentTime}>
+                              {new Date(s.scannedAt).toLocaleTimeString(
+                                "id-ID",
+                                {
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                                },
+                              )}
+                            </span>
+                          )}
                       </div>
                     ))
                   ) : (

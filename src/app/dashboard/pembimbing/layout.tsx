@@ -18,7 +18,7 @@ import { RealtimeClock } from "@/components/RealtimeClock";
 import { BlockedWatcher } from "@/components/BlockedWatcher";
 
 export default async function PembimbingLayout({ children }: { children: React.ReactNode }) {
-  const supabase = createClient();
+  const supabase = await createClient();
 
   const {
     data: { user },

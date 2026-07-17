@@ -216,8 +216,6 @@ export function ProfileForm() {
         initialQuality: 0.6,       // Kualitas 60% — kompresi agresif
       });
 
-      // Langkah 2: Upload langsung ke Supabase Storage dari client
-      // (Tidak lewat Server Action karena File object tidak bisa dikirim)
       const supabase = createClient();
       const {
         data: { user: authUser },
@@ -228,36 +226,18 @@ export function ProfileForm() {
         return;
       }
 
-      // Hapus avatar lama jika ada
-      const { data: existingFiles } = await supabase.storage
-        .from("avatars")
-        .list(authUser.id);
-
-      if (existingFiles && existingFiles.length > 0) {
-        const pathsToDelete = existingFiles.map((f) => `${authUser.id}/${f.name}`);
-        await supabase.storage.from("avatars").remove(pathsToDelete);
-      }
-
-      // Upload avatar baru
-      const filePath = `${authUser.id}/avatar.jpg`;
-      const { error: uploadError } = await supabase.storage
-        .from("avatars")
-        .upload(filePath, compressedFile, {
-          upsert: true,
-          contentType: "image/jpeg",
-        });
-
-      if (uploadError) {
-        setError("Gagal upload foto: " + uploadError.message);
+      const fd = new FormData();
+      fd.append("file", compressedFile);
+      fd.append("bucket", "avatars");
+      fd.append("userId", authUser.id);
+      const res = await fetch("/api/upload", { method: "POST", body: fd });
+      const data = await res.json();
+      if (!res.ok) {
+        setError("Gagal upload foto: " + (data.error || "Unknown error"));
         return;
       }
 
-      // Dapatkan public URL
-      const { data: urlData } = supabase.storage
-        .from("avatars")
-        .getPublicUrl(filePath);
-
-      const avatarUrl = urlData.publicUrl;
+      const avatarUrl = data.url;
 
       // Langkah 3: Update avatar_url di database via server action
       const result = await updateProfile({ avatarUrl });

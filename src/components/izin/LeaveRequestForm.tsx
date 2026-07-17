@@ -44,28 +44,21 @@ export function LeaveRequestForm() {
       let proof_url: string | null = null;
 
       if (file) {
-        // Kompres di sisi client SEBELUM upload — mengurangi ukuran file secara signifikan
-        // (foto surat dokter/HP biasanya 3-8MB, dikompres ke <1MB) supaya hemat storage & bandwidth.
         const compressed = await imageCompression(file, {
-          maxSizeMB: 0.8,
-          maxWidthOrHeight: 1600,
+          maxSizeMB: 0.5,
+          maxWidthOrHeight: 1200,
           useWebWorker: true,
         });
 
-        const path = `${user.id}/${Date.now()}-${file.name.replace(/\s+/g, "-")}`;
-        const { error: uploadError } = await supabase.storage
-          .from("leave-proofs")
-          .upload(path, compressed, {
-            upsert: false,
-            contentType: compressed.type,
-          });
+        const fd = new FormData();
+        fd.append("file", compressed);
+        fd.append("bucket", "leave-proofs");
+        fd.append("userId", user.id);
+        const res = await fetch("/api/upload", { method: "POST", body: fd });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || "Gagal upload bukti");
 
-        if (uploadError)
-          throw new Error("Gagal upload bukti: " + uploadError.message);
-
-        proof_path = path;
-        proof_url = supabase.storage.from("leave-proofs").getPublicUrl(path)
-          .data.publicUrl;
+        proof_url = data.url;
       }
 
       const result = await createLeaveRequest({

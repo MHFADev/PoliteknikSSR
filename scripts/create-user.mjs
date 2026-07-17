@@ -26,8 +26,8 @@ if (!fullName || !email || !password) {
   process.exit(1);
 }
 
-if (!["siswa", "pembimbing", "admin"].includes(role)) {
-  console.error("Role tidak valid. Gunakan salah satu: siswa | pembimbing | admin");
+if (!["siswa", "pembimbing", "admin", "owner", "root"].includes(role)) {
+  console.error("Role tidak valid. Gunakan salah satu: siswa | pembimbing | admin | owner | root");
   process.exit(1);
 }
 

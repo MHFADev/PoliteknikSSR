@@ -1,221 +1,418 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useTransition, useMemo } from "react";
 import { Card, CardHeader } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
-import { getStudents, getSentDocuments, sendCertificate, sendGradeSummary, recalculateGrade, SIFAT_OPTIONS } from "@/actions/documents";
-import type { GradeSubject, GradeData } from "@/actions/documents";
-import { downloadGradePdf } from "@/lib/pdf/gradePdfGenerator";
-import { PDFViewerModal } from "@/components/PDFViewerModal";
+import { createClient } from "@/lib/supabase/client";
+import { Loader2, FileText, History, Search, ChevronDown, X, ClipboardList, Plus } from "lucide-react";
+import { getStudents, getSentDocuments, sendCertificate, sendPrakerinRecap } from "@/actions/documents";
+import { UNSUR_NILAI_LABELS, prakerinGradeFromScore, prakerinGradeLabel, createDefaultPrakerinData } from "@/lib/types";
+import type { PrakerinRecapData, UnsurNilai, BidangKeahlian } from "@/lib/types";
+import { downloadPrakerinPdf } from "@/lib/pdf/prakerinPdfGenerator";
 import { PDFEditor } from "@/components/PDFEditor";
-import { AnnotationCanvas } from "@/components/AnnotationCanvas";
 import styles from "@/styles/pages/dashboard/admin/SertifikatRekap.module.css";
 
-type Tab = "certificate" | "grade_summary" | "history";
+type Tab = "certificate" | "prakerin" | "history";
+
+function StudentSelect({
+  students,
+  value,
+  onChange,
+  placeholder,
+}: {
+  students: { id: string; fullName: string; kelas: string | null; identityNumber: string | null; instansi: string | null; jurusanId: string | null; studyProgramName: string | null }[];
+  value: string;
+  onChange: (id: string) => void;
+  placeholder?: string;
+}) {
+  const [open, setOpen] = useState(false);
+  const [search, setSearch] = useState("");
+  const filtered = useMemo(() => {
+    if (!search) return students;
+    const q = search.toLowerCase();
+    return students.filter(
+      (s) =>
+        s.fullName.toLowerCase().includes(q) ||
+        s.kelas?.toLowerCase().includes(q) ||
+        s.identityNumber?.toLowerCase().includes(q),
+    );
+  }, [students, search]);
+  const selected = students.find((s) => s.id === value);
+
+  return (
+    <div className={styles.selectWrapper}>
+      <button
+        type="button"
+        onClick={() => setOpen(!open)}
+        className={`${styles.selectTrigger} ${open ? styles.selectTriggerActive : ""}`}
+      >
+        {selected ? (
+          <span className={styles.selectValue}>
+            {selected.fullName}
+            {selected.kelas && <span className={styles.selectBadge}>{selected.kelas}</span>}
+          </span>
+        ) : (
+          <span className={styles.selectPlaceholder}>{placeholder || "Pilih siswa..."}</span>
+        )}
+        <ChevronDown className={`${styles.selectChevron} ${open ? styles.selectChevronOpen : ""}`} />
+      </button>
+      {open && (
+        <div className={styles.selectDropdown}>
+          <div className={styles.selectSearchWrapper}>
+            <Search className={styles.selectSearchIcon} />
+            <input
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Cari nama, kelas, atau NIS..."
+              className={styles.selectSearchInput}
+              autoFocus
+            />
+          </div>
+          <div className={styles.selectOptions}>
+            {filtered.length === 0 ? (
+              <div className={styles.selectEmpty}>Tidak ditemukan</div>
+            ) : (
+              filtered.map((s) => (
+                <button
+                  key={s.id}
+                  type="button"
+                  onClick={() => {
+                    onChange(s.id);
+                    setOpen(false);
+                    setSearch("");
+                  }}
+                  className={`${styles.selectOption} ${value === s.id ? styles.selectOptionActive : ""}`}
+                >
+                  <span>{s.fullName}</span>
+                  <span className={styles.selectOptionMeta}>
+                    {s.kelas && `${s.kelas}`}
+                    {s.identityNumber && ` · ${s.identityNumber}`}
+                  </span>
+                </button>
+              ))
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
 
 export default function SertifikatRekapPage() {
   const [tab, setTab] = useState<Tab>("certificate");
-  const [students, setStudents] = useState<{ id: string; fullName: string; kelas: string | null; identityNumber: string | null }[]>([]);
+  const [students, setStudents] = useState<{ id: string; fullName: string; kelas: string | null; identityNumber: string | null; instansi: string | null; jurusanId: string | null; studyProgramName: string | null }[]>([]);
   const [history, setHistory] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [sending, setSending] = useState(false);
+  const [sending, setSending] = useTransition();
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
+
+  const IMAGE_EXTS = [".jpg", ".jpeg", ".png", ".gif", ".webp", ".bmp"];
 
   // Certificate form
   const [certStudentId, setCertStudentId] = useState("");
   const [certFile, setCertFile] = useState<File | null>(null);
-
-  // Grade summary form
-  const [gradeStudentId, setGradeStudentId] = useState("");
-  const [gradeFile, setGradeFile] = useState<File | null>(null);
-  const [subjects, setSubjects] = useState<GradeSubject[]>([]);
-  const [notes, setNotes] = useState("");
-  const [pklStartDate, setPklStartDate] = useState("");
-  const [pklEndDate, setPklEndDate] = useState("");
-  const [showAnnotation, setShowAnnotation] = useState(false);
-  const [previewPdf, setPreviewPdf] = useState<string | null>(null);
-  const [annotationData, setAnnotationData] = useState<string | null>(null);
   const [pdfEditorUrl, setPdfEditorUrl] = useState<string | null>(null);
   const [pdfEditorTitle, setPdfEditorTitle] = useState("");
+  const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null);
+  const [imagePreviewTitle, setImagePreviewTitle] = useState("");
+
+  // Prakerin recap form
+  const [prakerinStudentId, setPrakerinStudentId] = useState("");
+  const [prakerin, setPrakerin] = useState<PrakerinRecapData>(createDefaultPrakerinData());
+  const [prakerinFile, setPrakerinFile] = useState<File | null>(null);
+  const [studentSearch, setStudentSearch] = useState("");
+
+  // Auto-fill identitas saat pilih siswa
+  const handlePrakerinStudentChange = useCallback((id: string) => {
+    setPrakerinStudentId(id);
+    const s = students.find(st => st.id === id);
+    if (s) {
+      setPrakerin(prev => ({
+        ...prev,
+        studentName: s.fullName,
+        nis: s.identityNumber || "",
+        kelas: s.kelas || "",
+        industri: s.instansi || "",
+        programKeahlian: s.studyProgramName || "",
+      }));
+    }
+  }, [students]);
 
   const loadData = useCallback(async () => {
     setLoading(true);
-    const [s, h] = await Promise.all([getStudents(), getSentDocuments()]);
-    setStudents(s);
-    setHistory(h);
-    setLoading(false);
+    try {
+      const [s, h] = await Promise.all([getStudents(), getSentDocuments()]);
+      setStudents(s);
+      setHistory(h);
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
-  useEffect(() => { loadData(); }, [loadData]);
+  useEffect(() => {
+    loadData();
+  }, [loadData]);
 
-  const showMessage = (type: "success" | "error", text: string) => {
+  // Realtime subscription — refresh stats when document sent/deleted
+  useEffect(() => {
+    const supabase = createClient();
+    const channel = supabase
+      .channel("student_documents_changes")
+      .on("postgres_changes", { event: "*", schema: "public", table: "student_documents" }, () => {
+        loadData();
+      })
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
+  }, [loadData]);
+
+  const showMessage = useCallback((type: "success" | "error", text: string) => {
     setMessage({ type, text });
-    setTimeout(() => setMessage(null), 5000);
-  };
+    setTimeout(() => setMessage(null), 4000);
+  }, []);
 
-  const handlePreviewCertificate = () => {
+  const handlePreviewCertificate = useCallback(() => {
     if (!certFile) {
       showMessage("error", "Pilih file sertifikat terlebih dahulu.");
       return;
     }
     const url = URL.createObjectURL(certFile);
-    setPdfEditorUrl(url);
-    setPdfEditorTitle(`Pratinjau Sertifikat - ${certFile.name}`);
-  };
+    const isImage = IMAGE_EXTS.some(ext => certFile.name.toLowerCase().endsWith(ext));
+    if (isImage) {
+      setImagePreviewUrl(url);
+      setImagePreviewTitle(`Pratinjau Sertifikat - ${certFile.name}`);
+    } else {
+      setPdfEditorUrl(url);
+      setPdfEditorTitle(`Pratinjau Sertifikat - ${certFile.name}`);
+    }
+  }, [certFile, showMessage]);
 
-  const handleClosePdfEditor = () => {
+  const handleClosePdfEditor = useCallback(() => {
     if (pdfEditorUrl) URL.revokeObjectURL(pdfEditorUrl);
     setPdfEditorUrl(null);
     setPdfEditorTitle("");
-  };
+  }, [pdfEditorUrl]);
 
-  const handleSendCertificate = async () => {
+  const handleCloseImagePreview = useCallback(() => {
+    if (imagePreviewUrl) URL.revokeObjectURL(imagePreviewUrl);
+    setImagePreviewUrl(null);
+    setImagePreviewTitle("");
+  }, [imagePreviewUrl]);
+
+  const handleSendCertificate = useCallback(() => {
     if (!certStudentId || !certFile) {
       showMessage("error", "Pilih siswa dan file sertifikat.");
       return;
     }
-    setSending(true);
+    setSending(() => {});
     const fd = new FormData();
     fd.append("file", certFile);
-    const result = await sendCertificate(certStudentId, fd);
-    setSending(false);
-    if (result.success) {
-      showMessage("success", "Sertifikat berhasil dikirim!");
-      setCertFile(null);
-      setCertStudentId("");
-      loadData();
-    } else {
-      showMessage("error", result.message);
-    }
-  };
+    sendCertificate(certStudentId, fd).then((result) => {
+      if (result.success) {
+        showMessage("success", "Sertifikat berhasil dikirim!");
+        setCertFile(null);
+        setCertStudentId("");
+        loadData();
+      } else {
+        showMessage("error", result.message);
+      }
+    });
+  }, [certStudentId, certFile, showMessage, loadData]);
 
-  const handleSendGrade = async () => {
-    if (!gradeStudentId) {
+  const formatDate = useCallback((d: string) => {
+    return new Date(d).toLocaleDateString("id-ID", {
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  }, []);
+
+  // ─── Prakerin Handlers ────────────────────────────────
+  const updatePrakerinField = useCallback((field: keyof PrakerinRecapData, value: string) => {
+    setPrakerin((prev) => ({ ...prev, [field]: value }));
+  }, []);
+
+  const updateUnsurNilai = useCallback((idx: number, score: number) => {
+    setPrakerin((prev) => {
+      const updated = [...prev.unsurNilai];
+      updated[idx] = { ...updated[idx], score: Math.min(100, Math.max(0, Math.round(score) || 0)) };
+      return { ...prev, unsurNilai: updated };
+    });
+  }, []);
+
+  const updateBidangKeahlian = useCallback((idx: number, field: keyof BidangKeahlian, value: string | number) => {
+    setPrakerin((prev) => {
+      const updated = [...prev.bidangKeahlian];
+      if (field === "score") {
+        const numValue = typeof value === "string" ? parseInt(value) || 0 : value;
+        updated[idx] = { ...updated[idx], score: Math.min(100, Math.max(0, numValue)) };
+      } else {
+        updated[idx] = { ...updated[idx], [field]: value } as any;
+      }
+      return { ...prev, bidangKeahlian: updated };
+    });
+  }, []);
+
+  const addBidangKeahlian = useCallback(() => {
+    setPrakerin((prev) => ({
+      ...prev,
+      bidangKeahlian: [...prev.bidangKeahlian, { name: "", score: 0 }],
+    }));
+  }, []);
+
+  const removeBidangKeahlian = useCallback((idx: number) => {
+    setPrakerin((prev) => {
+      const updated = [...prev.bidangKeahlian];
+      updated.splice(idx, 1);
+      return { ...prev, bidangKeahlian: updated };
+    });
+  }, []);
+
+  const addUnsurNilai = useCallback(() => {
+    setPrakerin((prev) => ({
+      ...prev,
+      unsurNilai: [...prev.unsurNilai, { name: "", score: 0 }],
+    }));
+  }, []);
+
+  const updateUnsurNilaiName = useCallback((idx: number, name: string) => {
+    setPrakerin((prev) => {
+      const updated = [...prev.unsurNilai];
+      updated[idx] = { ...updated[idx], name };
+      return { ...prev, unsurNilai: updated };
+    });
+  }, []);
+
+  const removeUnsurNilai = useCallback((idx: number) => {
+    setPrakerin((prev) => {
+      if (prev.unsurNilai.length <= 1) return prev;
+      const updated = [...prev.unsurNilai];
+      updated.splice(idx, 1);
+      return { ...prev, unsurNilai: updated };
+    });
+  }, []);
+
+  const prakerinActiveScores = useMemo(
+    () => prakerin.unsurNilai.filter((u) => u.score > 0),
+    [prakerin.unsurNilai],
+  );
+  const prakerinAvg = useMemo(
+    () =>
+      prakerinActiveScores.length > 0
+        ? prakerinActiveScores.reduce((s, u) => s + u.score, 0) / prakerinActiveScores.length
+        : 0,
+    [prakerinActiveScores],
+  );
+  const prakerinAvgGrade = prakerinAvg > 0 ? prakerinGradeFromScore(prakerinAvg) : "-";
+
+  const handleSendPrakerin = useCallback(() => {
+    if (!prakerinStudentId) {
       showMessage("error", "Pilih siswa terlebih dahulu.");
       return;
     }
-    if (subjects.length === 0 && !gradeFile) {
-      showMessage("error", "Tambah minimal 1 mata pelajaran atau upload file.");
+    if (prakerinActiveScores.length === 0) {
+      showMessage("error", "Isi minimal 1 unsur nilai.");
       return;
     }
-    setSending(true);
-    const gradeData: GradeData = { subjects, notes, pklStartDate, pklEndDate };
-    const result = await sendGradeSummary(gradeStudentId, gradeData, gradeFile);
-    setSending(false);
-    if (result.success) {
-      showMessage("success", "Rekap nilai berhasil dikirim!");
-      setGradeStudentId("");
-      setGradeFile(null);
-      setSubjects([]);
-      setNotes("");
-      setPklStartDate("");
-      setPklEndDate("");
-      loadData();
-    } else {
-      showMessage("error", result.message);
-    }
-  };
-
-  const handleGenerateGradePdf = async () => {
-    if (subjects.length === 0) {
-      showMessage("error", "Tambah minimal 1 unsur nilai terlebih dahulu.");
-      return;
-    }
-    const student = students.find((s) => s.id === gradeStudentId);
-    const studentName = student?.fullName || "Siswa";
-    const identityNumber = student?.identityNumber || "";
-    const kelas = student?.kelas || "";
-    const gradeData: GradeData = { subjects, notes, pklStartDate, pklEndDate };
-    try {
-      await downloadGradePdf(studentName, identityNumber, kelas, gradeData);
-    } catch {
-      showMessage("error", "Gagal generate PDF.");
-    }
-  };
-
-  const handlePreviewGrade = () => {
-    if (subjects.length === 0) {
-      showMessage("error", "Tambah minimal 1 unsur nilai.");
-      return;
-    }
-    setPreviewPdf("grade");
-  };
-
-  const handleAnnotationSave = (imageData: string) => {
-    setAnnotationData(imageData);
-    setShowAnnotation(false);
-    showMessage("success", "Anotasi tersimpan!");
-  };
-
-  const addSubject = () => {
-    setSubjects([...subjects, { name: "", score: 0, grade: "E", sifat: "Praktik" }]);
-  };
-
-  const removeSubject = (idx: number) => {
-    setSubjects(subjects.filter((_, i) => i !== idx));
-  };
-
-  const updateSubject = async (idx: number, field: keyof GradeSubject, value: string | number) => {
-    const updated = [...subjects];
-    if (field === "name") {
-      updated[idx].name = value as string;
-    } else if (field === "score") {
-      const score = Math.min(100, Math.max(0, Number(value) || 0));
-      updated[idx].score = score;
-      updated[idx].grade = await recalculateGrade(score);
-    } else if (field === "grade") {
-      updated[idx].grade = value as string;
-    } else if (field === "sifat") {
-      updated[idx].sifat = value as string;
-    }
-    setSubjects(updated);
-  };
-
-  const formatDate = (d: string) => {
-    return new Date(d).toLocaleDateString("id-ID", {
-      day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit",
+    setSending(() => {});
+    sendPrakerinRecap(prakerinStudentId, prakerin, prakerinFile).then((result) => {
+      if (result.success) {
+        showMessage("success", "Rekap prakerin berhasil dikirim!");
+        setPrakerinStudentId("");
+        setPrakerin(createDefaultPrakerinData());
+        setPrakerinFile(null);
+        loadData();
+      } else {
+        showMessage("error", result.message);
+      }
     });
-  };
+  }, [prakerinStudentId, prakerin, prakerinFile, prakerinActiveScores.length, showMessage, loadData]);
 
-  const selectedStudent = (id: string) => {
-    const s = students.find((st) => st.id === id);
-    return s ? `${s.fullName}${s.kelas ? ` (${s.kelas})` : ""}` : "Pilih siswa...";
-  };
+  const handleDownloadPrakerinPdf = useCallback(async () => {
+    if (prakerinActiveScores.length === 0) {
+      showMessage("error", "Isi minimal 1 unsur nilai.");
+      return;
+    }
+    try {
+      await downloadPrakerinPdf(prakerin);
+    } catch {
+      showMessage("error", "Gagal generate PDF prakerin.");
+    }
+  }, [prakerin, prakerinActiveScores.length, showMessage]);
 
+  // ─── Loading State ────────────────────────────────────
   if (loading) {
     return (
       <div className={styles.pageContainer}>
         <div className={styles.pageHeader}>
           <h1>Sertifikat & Rekap Nilai</h1>
-          <p>Kirim sertifikat PKL dan rekap nilai ke siswa</p>
+          <p>Kirim sertifikat, rekap nilai, dan penilaian prakerin</p>
         </div>
-        <Card><div className={styles.loading}>Memuat data...</div></Card>
+        <div className={styles.skeletonGrid}>
+          {[1, 2, 3].map((i) => (
+            <div key={i} className={styles.skeletonCard}>
+              <div className={styles.skeletonLine} style={{ width: "40%" }} />
+              <div className={styles.skeletonLine} style={{ width: "70%" }} />
+              <div className={styles.skeletonLine} style={{ width: "50%" }} />
+            </div>
+          ))}
+        </div>
       </div>
     );
   }
+
+  const getHistoryBadge = (type: string) => {
+    if (type === "certificate") return { tone: "warning" as const, label: "Sertifikat" };
+    if (type === "prakerin_recap") return { tone: "success" as const, label: "Rekap Prakerin" };
+    return { tone: "neutral" as const, label: type };
+  };
 
   return (
     <div className={styles.pageContainer}>
       <div className={styles.pageHeader}>
         <h1>Sertifikat & Rekap Nilai</h1>
-        <p>Kirim sertifikat PKL dan rekap nilai ke siswa</p>
+        <p>Kirim sertifikat dan penilaian prakerin ke siswa</p>
       </div>
 
       {message && (
         <div className={`${styles.toast} ${message.type === "success" ? styles.toastSuccess : styles.toastError}`}>
-          {message.text}
+          <span>{message.text}</span>
+          <button onClick={() => setMessage(null)} className={styles.toastClose}>
+            <X className="h-4 w-4" />
+          </button>
         </div>
       )}
 
+      <div className={styles.statsRow}>
+        <div className={styles.statCard}>
+          <FileText className={styles.statIcon} />
+          <div>
+            <span className={styles.statValue}>{history.filter((h) => h.type === "certificate").length}</span>
+            <span className={styles.statLabel}>Sertifikat</span>
+          </div>
+        </div>
+        <div className={styles.statCard}>
+          <ClipboardList className={styles.statIcon} />
+          <div>
+            <span className={styles.statValue}>{history.filter((h) => h.type === "prakerin_recap").length}</span>
+            <span className={styles.statLabel}>Rekap Prakerin</span>
+          </div>
+        </div>
+      </div>
+
       <div className={styles.tabs}>
         <button onClick={() => setTab("certificate")} className={`${styles.tab} ${tab === "certificate" ? styles.tabActive : ""}`}>
+          <FileText className="h-4 w-4" />
           Upload Sertifikat
         </button>
-        <button onClick={() => setTab("grade_summary")} className={`${styles.tab} ${tab === "grade_summary" ? styles.tabActive : ""}`}>
-          Rekap Nilai
+        <button onClick={() => setTab("prakerin")} className={`${styles.tab} ${tab === "prakerin" ? styles.tabActive : ""}`}>
+          <ClipboardList className="h-4 w-4" />
+          Rekap Prakerin
         </button>
         <button onClick={() => setTab("history")} className={`${styles.tab} ${tab === "history" ? styles.tabActive : ""}`}>
-          Riwayat Kirim
+          <History className="h-4 w-4" />
+          Riwayat
         </button>
       </div>
 
@@ -225,194 +422,353 @@ export default function SertifikatRekapPage() {
           <div className={styles.formBody}>
             <div className={styles.formGroup}>
               <label>Siswa Penerima</label>
-              <select value={certStudentId} onChange={(e) => setCertStudentId(e.target.value)} className={styles.select}>
-                <option value="">-- Pilih siswa --</option>
-                {students.map((s) => (
-                  <option key={s.id} value={s.id}>{s.fullName}{s.kelas ? ` (${s.kelas})` : ""}</option>
-                ))}
-              </select>
+              <StudentSelect
+                students={students}
+                value={certStudentId}
+                onChange={setCertStudentId}
+                placeholder="Pilih siswa penerima..."
+              />
             </div>
             <div className={styles.formGroup}>
-              <label>File Sertifikat (PDF)</label>
-              <input type="file" accept=".pdf,image/*" onChange={(e) => setCertFile(e.target.files?.[0] || null)} className={styles.fileInput} />
-              {certFile && <span className={styles.fileName}>{certFile.name}</span>}
+              <label>File Sertifikat (PDF/Gambar)</label>
+              <div className={styles.fileUploadArea}>
+                <input
+                  type="file"
+                  accept=".pdf,image/*"
+                  onChange={(e) => setCertFile(e.target.files?.[0] || null)}
+                  className={styles.fileInputHidden}
+                  id="cert-file"
+                />
+                <label htmlFor="cert-file" className={styles.fileUploadLabel}>
+                  {certFile ? (
+                    <div className={styles.fileSelected}>
+                      <FileText className="h-5 w-5" />
+                      <span>{certFile.name}</span>
+                      <button
+                        type="button"
+                        onClick={(e) => { e.preventDefault(); e.stopPropagation(); setCertFile(null); }}
+                        className={styles.fileRemoveBtn}
+                      >
+                        <X className="h-4 w-4" />
+                      </button>
+                    </div>
+                  ) : (
+                    <>
+                      <FileText className="h-8 w-8 opacity-40" />
+                      <span>Klik untuk pilih file</span>
+                      <span className={styles.fileHint}>PDF, JPG, PNG (maks. 10MB)</span>
+                    </>
+                  )}
+                </label>
+              </div>
             </div>
             <div className={styles.formActions}>
               <button onClick={handlePreviewCertificate} disabled={!certFile} className={styles.btnSecondary}>
                 Pratinjau & Anotasi
               </button>
-              <button onClick={handleSendCertificate} disabled={sending} className={styles.btnPrimary}>
-                {sending ? "Mengirim..." : "Kirim Sertifikat"}
+              <button onClick={handleSendCertificate} disabled={sending || !certStudentId || !certFile} className={styles.btnPrimary}>
+                {sending && <Loader2 className="h-4 w-4 animate-spin" />}
+                Kirim Sertifikat
               </button>
             </div>
           </div>
         </Card>
       )}
 
-      {tab === "grade_summary" && (
+      {tab === "prakerin" && (
         <Card>
-          <CardHeader title="Kirim Rekap Nilai PKL" />
+          <CardHeader title="Penilaian Prakerin" />
           <div className={styles.formBody}>
             <div className={styles.formGroup}>
               <label>Siswa Penerima</label>
-              <select value={gradeStudentId} onChange={(e) => setGradeStudentId(e.target.value)} className={styles.select}>
-                <option value="">-- Pilih siswa --</option>
-                {students.map((s) => (
-                  <option key={s.id} value={s.id}>{s.fullName}{s.kelas ? ` (${s.kelas})` : ""}</option>
-                ))}
-              </select>
+              <StudentSelect students={students} value={prakerinStudentId} onChange={handlePrakerinStudentChange} placeholder="Pilih siswa..." />
             </div>
 
-            <div className={styles.formGroup}>
-              <label>Upload File (opsional — PDF/Gambar)</label>
-              <input type="file" accept=".pdf,image/*" onChange={(e) => setGradeFile(e.target.files?.[0] || null)} className={styles.fileInput} />
-              {gradeFile && <span className={styles.fileName}>{gradeFile.name}</span>}
-            </div>
-
-            <div className={styles.formGroup}>
-              <label>Periode PKL</label>
-              <div style={{ display: "flex", gap: "0.75rem", alignItems: "center" }}>
-                <input
-                  type="date"
-                  value={pklStartDate}
-                  onChange={(e) => setPklStartDate(e.target.value)}
-                  className={styles.select}
-                  style={{ flex: 1 }}
-                />
-                <span style={{ color: "#64748B", fontSize: "0.8125rem" }}>sampai</span>
-                <input
-                  type="date"
-                  value={pklEndDate}
-                  onChange={(e) => setPklEndDate(e.target.value)}
-                  className={styles.select}
-                  style={{ flex: 1 }}
-                />
-              </div>
-            </div>
-
-            <div className={styles.sectionDivider}>
-              <span>Atau Edit Nilai Langsung</span>
-            </div>
-
-            <div className={styles.gradeEditor}>
-              <div className={styles.gradeHeader}>
-                <span className={styles.gradeColSubject}>Unsur Nilai</span>
-                <span className={styles.gradeColSifat}>Sifat</span>
-                <span className={styles.gradeColScore}>Skor</span>
-                <span className={styles.gradeColGrade}>Nilai</span>
-                <span className={styles.gradeColAction}></span>
-              </div>
-
-              {subjects.map((subj, idx) => (
-                <div key={idx} className={styles.gradeRow}>
-                  <input
-                    type="text"
-                    placeholder="Nama unsur nilai"
-                    value={subj.name}
-                    onChange={(e) => updateSubject(idx, "name", e.target.value)}
-                    className={styles.gradeInput}
-                  />
-                  <select
-                    value={subj.sifat}
-                    onChange={(e) => updateSubject(idx, "sifat", e.target.value)}
-                    className={styles.select}
-                    style={{ fontSize: "0.75rem", padding: "0.375rem 0.5rem" }}
-                  >
-                    {SIFAT_OPTIONS.map((opt) => (
-                      <option key={opt} value={opt}>{opt}</option>
-                    ))}
-                  </select>
-                  <input
-                    type="number"
-                    min={0} max={100}
-                    value={subj.score}
-                    onChange={(e) => updateSubject(idx, "score", e.target.value)}
-                    className={styles.scoreInput}
-                  />
-                  <input
-                    type="text"
-                    value={subj.grade}
-                    onChange={(e) => updateSubject(idx, "grade", e.target.value)}
-                    className={styles.gradeInput}
-                    style={{ width: 70, textAlign: "center", fontWeight: 600 }}
-                  />
-                  <button onClick={() => removeSubject(idx)} className={styles.btnDangerSmall}>Hapus</button>
+            {/* ─── Identity ──────────────────────────── */}
+            <div className={styles.prakerinSection}>
+              <div className={styles.prakerinSectionTitle}>Identitas Siswa</div>
+              <div className={styles.prakerinIdentityGrid}>
+                <div className={styles.formGroup}>
+                  <label>Nama Siswa</label>
+                  <input type="text" value={prakerin.studentName} onChange={(e) => updatePrakerinField("studentName", e.target.value)} placeholder="Nama lengkap siswa" className={styles.inputDate} />
                 </div>
-              ))}
-
-              <button onClick={addSubject} className={styles.btnOutline}>
-                + Tambah Unsur Nilai
-              </button>
+                <div className={styles.formGroup}>
+                  <label>NIS</label>
+                  <input type="text" value={prakerin.nis} onChange={(e) => updatePrakerinField("nis", e.target.value)} placeholder="NIS siswa" className={styles.inputDate} />
+                </div>
+                <div className={styles.formGroup}>
+                  <label>Kelas</label>
+                  <input type="text" value={prakerin.kelas} onChange={(e) => updatePrakerinField("kelas", e.target.value)} placeholder="Kelas" className={styles.inputDate} />
+                </div>
+                <div className={styles.formGroup}>
+                  <label>Program Keahlian</label>
+                  <input type="text" value={prakerin.programKeahlian} onChange={(e) => updatePrakerinField("programKeahlian", e.target.value)} placeholder="Program keahlian" className={styles.inputDate} />
+                </div>
+                <div className={styles.formGroup}>
+                  <label>Industri / Perusahaan</label>
+                  <input type="text" value={prakerin.industri} onChange={(e) => updatePrakerinField("industri", e.target.value)} placeholder="Nama industri/perusahaan" className={styles.inputDate} />
+                </div>
+                <div className={styles.formGroup}>
+                  <label>Periode Prakerin</label>
+                  <input type="text" value={prakerin.periode} onChange={(e) => updatePrakerinField("periode", e.target.value)} placeholder="Contoh: Januari - Maret 2025" className={styles.inputDate} />
+                </div>
+              </div>
             </div>
 
+            {/* ─── Unsur Nilai ────────────────────────── */}
+            <div className={styles.prakerinSection}>
+              <div className={styles.prakerinSectionTitle}>Tabel Unsur Nilai</div>
+              <div className={styles.prakerinTable}>
+                <div className={styles.prakerinTableHeaderBidang}>
+                  <span className={styles.prakerinColNo}>No</span>
+                  <span className={styles.prakerinColUnsur}>Unsur Penilaian</span>
+                  <span className={styles.prakerinColNilai}>Nilai Angka</span>
+                  <span className={styles.prakerinColHuruf}>Nilai Huruf</span>
+                  <span className={styles.prakerinColDesc}>Keterangan</span>
+                  <span className={styles.prakerinColAction}>Aksi</span>
+                </div>
+                {prakerin.unsurNilai.map((item, idx) => {
+                  const grade = item.score > 0 ? prakerinGradeFromScore(item.score) : "—";
+                  const label = item.score > 0 ? prakerinGradeLabel(item.score) : "";
+                  return (
+                    <div key={idx} className={styles.prakerinTableRowBidang}>
+                      <span className={styles.prakerinColNo}>{idx + 1}</span>
+                      <span className={styles.prakerinColUnsur}>
+                        <input
+                          type="text"
+                          value={item.name}
+                          onChange={(e) => updateUnsurNilaiName(idx, e.target.value)}
+                          placeholder="Nama unsur penilaian"
+                          className={styles.prakerinInput}
+                        />
+                      </span>
+                      <span className={styles.prakerinColNilai}>
+                        <input
+                          type="number"
+                          min={0}
+                          max={100}
+                          step={1}
+                          value={item.score || ""}
+                          onChange={(e) => updateUnsurNilai(idx, parseInt(e.target.value) || 0)}
+                          className={styles.prakerinInput}
+                          placeholder="0"
+                        />
+                      </span>
+                      <span className={styles.prakerinColHuruf}>
+                        <span className={`${styles.prakerinGrade} ${item.score >= 90 ? styles.gradeA : item.score >= 80 ? styles.gradeB : item.score >= 70 ? styles.gradeC : item.score > 0 ? styles.gradeD : ""}`}>
+                          {grade}
+                        </span>
+                      </span>
+                      <span className={styles.prakerinColDesc}>
+                        <span className={styles.prakerinLabel}>{label}</span>
+                      </span>
+                      <span className={styles.prakerinColAction}>
+                        <button
+                          type="button"
+                          onClick={() => removeUnsurNilai(idx)}
+                          className={styles.btnDangerSmall}
+                          aria-label="Hapus unsur nilai"
+                          disabled={prakerin.unsurNilai.length <= 1}
+                        >
+                          <X className="h-4 w-4" />
+                        </button>
+                      </span>
+                    </div>
+                  );
+                })}
+                <div className={styles.prakerinTableRowBidang}>
+                  <span className={styles.prakerinColNo}></span>
+                  <span className={styles.prakerinColUnsur} style={{ fontWeight: 700, textAlign: "right", paddingRight: "12px" }}>RATA-RATA</span>
+                  <span className={styles.prakerinColNilai} style={{ fontWeight: 700 }}>{prakerinAvg > 0 ? Math.round(prakerinAvg) : "—"}</span>
+                  <span className={styles.prakerinColHuruf}>
+                    <span className={`${styles.prakerinGrade} ${prakerinAvg >= 90 ? styles.gradeA : prakerinAvg >= 80 ? styles.gradeB : prakerinAvg >= 70 ? styles.gradeC : prakerinAvg > 0 ? styles.gradeD : ""}`}>
+                      {prakerinAvgGrade}
+                    </span>
+                  </span>
+                  <span className={styles.prakerinColDesc} style={{ fontWeight: 500 }}>{prakerinAvg > 0 ? prakerinGradeLabel(prakerinAvg) : ""}</span>
+                  <span className={styles.prakerinColAction}></span>
+                </div>
+              </div>
+              <div className="p-3 bg-slate-50 border-t border-slate-200">
+                <button type="button" onClick={addUnsurNilai} className={styles.btnOutline}>
+                  <Plus className="h-4 w-4" />
+                  Tambah Unsur Nilai
+                </button>
+              </div>
+            </div>
+
+            {/* ─── Bidang Keahlian ────────────────────── */}
+            <div className={styles.prakerinSection}>
+              <div className={styles.prakerinSectionTitle}>Bidang Keahlian Yang Dilatihkan</div>
+              <div className={styles.prakerinTable}>
+                <div className={styles.prakerinTableHeaderBidang}>
+                  <span className={styles.prakerinColNo}>No</span>
+                  <span className={styles.prakerinColUnsur}>Bidang Keahlian / Keterampilan</span>
+                  <span className={styles.prakerinColNilai}>Nilai Angka</span>
+                  <span className={styles.prakerinColHuruf}>Nilai Huruf</span>
+                  <span className={styles.prakerinColDesc}>Keterangan</span>
+                  <span className={styles.prakerinColAction}>Aksi</span>
+                </div>
+                {prakerin.bidangKeahlian.map((item, idx) => {
+                  const grade = item.score > 0 ? prakerinGradeFromScore(item.score) : "—";
+                  const label = item.score > 0 ? prakerinGradeLabel(item.score) : "";
+                  return (
+                    <div key={idx} className={styles.prakerinTableRowBidang}>
+                      <span className={styles.prakerinColNo}>{idx + 1}</span>
+                      <span className={styles.prakerinColUnsur}>
+                        <input
+                          type="text"
+                          value={item.name}
+                          onChange={(e) => updateBidangKeahlian(idx, "name", e.target.value)}
+                          placeholder="Contoh: Pemrograman Web"
+                          className={styles.prakerinInput}
+                        />
+                      </span>
+                      <span className={styles.prakerinColNilai}>
+                        <input
+                          type="number"
+                          min={0}
+                          max={100}
+                          step={1}
+                          value={item.score || ""}
+                          onChange={(e) => updateBidangKeahlian(idx, "score", e.target.value)}
+                          className={styles.prakerinInput}
+                          placeholder="0"
+                        />
+                      </span>
+                      <span className={styles.prakerinColHuruf}>
+                        <span className={`${styles.prakerinGrade} ${item.score >= 90 ? styles.gradeA : item.score >= 80 ? styles.gradeB : item.score >= 70 ? styles.gradeC : item.score > 0 ? styles.gradeD : ""}`}>
+                          {grade}
+                        </span>
+                      </span>
+                      <span className={styles.prakerinColDesc}>
+                        <span className={styles.prakerinLabel}>{label}</span>
+                      </span>
+                      <span className={styles.prakerinColAction}>
+                        <button
+                          type="button"
+                          onClick={() => removeBidangKeahlian(idx)}
+                          className={styles.btnDangerSmall}
+                          aria-label="Hapus bidang keahlian"
+                        >
+                          <X className="h-4 w-4" />
+                        </button>
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+              <div className="p-3 bg-slate-50 border-t border-slate-200">
+                <button
+                  type="button"
+                  onClick={addBidangKeahlian}
+                  className={styles.btnOutline}
+                >
+                  <Plus className="h-4 w-4" />
+                  Tambah Bidang Keahlian
+                </button>
+              </div>
+            </div>
+
+            {/* ─── Skala Penilaian ────────────────────── */}
+            <div className={styles.prakerinSkalaRow}>
+              <div className={styles.prakerinSkalaCard}>
+                <div className={styles.prakerinSkalaTitle}>Skala Penilaian Angka</div>
+                <div className={styles.prakerinSkalaList}>
+                  <div className={styles.prakerinSkalaItem}>
+                    <span className={styles.skalaRange} style={{ background: "#DCFCE7", color: "#16A34A" }}>90 – 100</span>
+                    <span>= Sangat Baik</span>
+                  </div>
+                  <div className={styles.prakerinSkalaItem}>
+                    <span className={styles.skalaRange} style={{ background: "#DBEAFE", color: "#2563EB" }}>80 – 89</span>
+                    <span>= Baik</span>
+                  </div>
+                  <div className={styles.prakerinSkalaItem}>
+                    <span className={styles.skalaRange} style={{ background: "#FEF3C7", color: "#D97706" }}>70 – 79</span>
+                    <span>= Cukup</span>
+                  </div>
+                  <div className={styles.prakerinSkalaItem}>
+                    <span className={styles.skalaRange} style={{ background: "#FEE2E2", color: "#DC2626" }}>0 – 69</span>
+                    <span>= Kurang (Lulus Minimal 70)</span>
+                  </div>
+                </div>
+              </div>
+              <div className={styles.prakerinSkalaCard}>
+                <div className={styles.prakerinSkalaTitle}>Skala Penilaian Huruf</div>
+                <div className={styles.prakerinSkalaList}>
+                  <div className={styles.prakerinSkalaItem}>
+                    <span className={styles.skalaRange} style={{ background: "#DCFCE7", color: "#16A34A" }}>A</span>
+                    <span>= Sangat Baik (90 – 100)</span>
+                  </div>
+                  <div className={styles.prakerinSkalaItem}>
+                    <span className={styles.skalaRange} style={{ background: "#DBEAFE", color: "#2563EB" }}>B</span>
+                    <span>= Baik (80 – 89)</span>
+                  </div>
+                  <div className={styles.prakerinSkalaItem}>
+                    <span className={styles.skalaRange} style={{ background: "#FEF3C7", color: "#D97706" }}>C</span>
+                    <span>= Cukup (70 – 79)</span>
+                  </div>
+                  <div className={styles.prakerinSkalaItem}>
+                    <span className={styles.skalaRange} style={{ background: "#FEE2E2", color: "#DC2626" }}>D</span>
+                    <span>= Kurang (0 – 69)</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* ─── Catatan & File ─────────────────────── */}
+            <div className={styles.formRow2}>
+              <div className={styles.formGroup}>
+                <label>Tanggal Mulai PKL</label>
+                <input type="date" value={prakerin.pklStartDate} onChange={(e) => updatePrakerinField("pklStartDate", e.target.value)} className={styles.inputDate} />
+              </div>
+              <div className={styles.formGroup}>
+                <label>Tanggal Selesai PKL</label>
+                <input type="date" value={prakerin.pklEndDate} onChange={(e) => updatePrakerinField("pklEndDate", e.target.value)} className={styles.inputDate} />
+              </div>
+            </div>
             <div className={styles.formGroup}>
               <label>Catatan (opsional)</label>
-              <textarea
-                value={notes}
-                onChange={(e) => setNotes(e.target.value)}
-                placeholder="Catatan tentang nilai siswa..."
-                rows={3}
-                className={styles.textarea}
-              />
+              <textarea value={prakerin.notes} onChange={(e) => updatePrakerinField("notes", e.target.value)} placeholder="Catatan tambahan..." rows={2} className={styles.textarea} />
+            </div>
+            <div className={styles.formGroup}>
+              <label>Upload File (opsional — PDF/Gambar)</label>
+              <div className={styles.fileUploadArea}>
+                <input type="file" accept=".pdf,image/*" onChange={(e) => setPrakerinFile(e.target.files?.[0] || null)} className={styles.fileInputHidden} id="prakerin-file" />
+                <label htmlFor="prakerin-file" className={styles.fileUploadLabel}>
+                  {prakerinFile ? (
+                    <div className={styles.fileSelected}>
+                      <FileText className="h-5 w-5" />
+                      <span>{prakerinFile.name}</span>
+                      <button type="button" onClick={(e) => { e.preventDefault(); e.stopPropagation(); setPrakerinFile(null); }} className={styles.fileRemoveBtn}><X className="h-4 w-4" /></button>
+                    </div>
+                  ) : (
+                    <><FileText className="h-8 w-8 opacity-40" /><span>Klik untuk pilih file</span><span className={styles.fileHint}>PDF, JPG, PNG (maks. 10MB)</span></>
+                  )}
+                </label>
+              </div>
+              {prakerinFile && IMAGE_EXTS.some(ext => prakerinFile.name.toLowerCase().endsWith(ext)) && (
+                <div style={{ marginTop: "0.75rem", borderRadius: "0.75rem", overflow: "hidden", border: "1px solid #E2E8F0" }}>
+                  <img
+                    src={URL.createObjectURL(prakerinFile)}
+                    alt="Preview"
+                    style={{ width: "100%", maxHeight: "300px", objectFit: "contain", background: "#F8FAFC" }}
+                  />
+                </div>
+              )}
             </div>
 
             <div className={styles.formActions}>
-              <button onClick={handlePreviewGrade} disabled={subjects.length === 0} className={styles.btnOutline}>
-                Pratinjau
-              </button>
-              <button onClick={handleGenerateGradePdf} disabled={subjects.length === 0} className={styles.btnSecondary}>
+              <button onClick={handleDownloadPrakerinPdf} disabled={prakerinActiveScores.length === 0} className={styles.btnSecondary}>
                 Download PDF
               </button>
-              <button onClick={() => setShowAnnotation(!showAnnotation)} className={styles.btnSecondary}>
-                {showAnnotation ? "Tutup Anotasi" : "Anotasi"}
-              </button>
-              <button onClick={handleSendGrade} disabled={sending} className={styles.btnPrimary}>
-                {sending ? "Mengirim..." : "Kirim Rekap Nilai"}
+              <button onClick={handleSendPrakerin} disabled={sending || !prakerinStudentId || prakerinActiveScores.length === 0} className={styles.btnPrimary}>
+                {sending && <Loader2 className="h-4 w-4 animate-spin" />}
+                Kirim Rekap Prakerin
               </button>
             </div>
-
-            {showAnnotation && gradeFile && (
-              <div className={styles.annotationSection}>
-                <div className={styles.sectionDivider}>
-                  <span>Anotasi PDF</span>
-                </div>
-                {gradeFile.type === "application/pdf" ? (
-                  <div className="text-sm text-slate-500 mb-2">
-                    <button
-                      onClick={() => {
-                        const url = URL.createObjectURL(gradeFile);
-                        setPdfEditorUrl(url);
-                        setPdfEditorTitle(`Anotasi - ${gradeFile.name}`);
-                      }}
-                      className="text-blue-600 underline hover:text-blue-800"
-                    >
-                      Buka PDF Editor untuk anotasi lanjutan &rarr;
-                    </button>
-                  </div>
-                ) : null}
-                <AnnotationCanvas
-                  width={700}
-                  height={500}
-                  onSave={handleAnnotationSave}
-                  pdfBackgroundUrl={gradeFile ? URL.createObjectURL(gradeFile) : null}
-                />
-                {annotationData && (
-                  <p className={styles.fileName}>Anotasi tersimpan ({Math.round(annotationData.length / 1024)} KB)</p>
-                )}
-              </div>
-            )}
           </div>
         </Card>
-      )}
-
-      {previewPdf && (
-        <PDFViewerModal
-          url={null}
-          title="Pratinjau Rekap Nilai"
-          gradeData={{ subjects, notes }}
-          studentName={students.find((s) => s.id === gradeStudentId)?.fullName}
-          onClose={() => setPreviewPdf(null)}
-        />
       )}
 
       {pdfEditorUrl && (
@@ -420,11 +776,7 @@ export default function SertifikatRekapPage() {
           pdfUrl={pdfEditorUrl}
           title={pdfEditorTitle}
           onClose={handleClosePdfEditor}
-          studentName={students.find((s) => s.id === gradeStudentId)?.fullName}
-          onExportAnnotation={(data) => {
-            setAnnotationData(data);
-            showMessage("success", "Anotasi tersimpan!");
-          }}
+          studentName={students.find((s) => s.id === certStudentId)?.fullName}
           onExportPdf={(bytes) => {
             const blob = new Blob([bytes as BlobPart], { type: "application/pdf" });
             const url = URL.createObjectURL(blob);
@@ -439,12 +791,41 @@ export default function SertifikatRekapPage() {
         />
       )}
 
+      {imagePreviewUrl && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40" onClick={handleCloseImagePreview}>
+          <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full mx-4 max-h-[90vh] flex flex-col" onClick={e => e.stopPropagation()}>
+            <div className="flex items-center justify-between px-5 py-3 border-b border-slate-200">
+              <h3 className="font-semibold text-slate-800 text-sm truncate">{imagePreviewTitle}</h3>
+              <button onClick={handleCloseImagePreview} className="text-slate-400 hover:text-slate-600 text-lg leading-none">&times;</button>
+            </div>
+            <div className="flex-1 overflow-auto p-4 bg-slate-50 flex items-center justify-center">
+              <img
+                src={imagePreviewUrl}
+                alt={imagePreviewTitle}
+                className="max-w-full max-h-[75vh] object-contain rounded-lg shadow-sm"
+              />
+            </div>
+          </div>
+        </div>
+      )}
+
       {tab === "history" && (
         <Card>
-          <CardHeader title="Riwayat Pengiriman" />
+          <CardHeader
+            title="Riwayat Pengiriman"
+            action={
+              <div className={styles.searchBox}>
+                <Search className="h-4 w-4" />
+                <input value={studentSearch} onChange={(e) => setStudentSearch(e.target.value)} placeholder="Cari siswa..." className={styles.searchInput} />
+              </div>
+            }
+          />
           <div className={styles.tableWrapper}>
             {history.length === 0 ? (
-              <div className={styles.empty}>Belum ada pengiriman.</div>
+              <div className={styles.empty}>
+                <History className="h-12 w-12 opacity-30" />
+                <p>Belum ada riwayat pengiriman.</p>
+              </div>
             ) : (
               <table className={styles.table}>
                 <thead>
@@ -458,28 +839,32 @@ export default function SertifikatRekapPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {history.map((doc) => (
-                    <tr key={doc.id}>
-                      <td>
-                        <Badge tone={doc.type === "certificate" ? "warning" : "sky"}>
-                          {doc.type === "certificate" ? "Sertifikat" : "Rekap Nilai"}
-                        </Badge>
-                      </td>
-                      <td>{doc.studentName}</td>
-                      <td>{doc.fileName || "-"}</td>
-                      <td>
-                        {doc.isKept ? (
-                          <Badge tone="success">Disimpan</Badge>
-                        ) : doc.isRead ? (
-                          <Badge tone="sky">Dibaca</Badge>
-                        ) : (
-                          <Badge tone="warning">Belum dibaca</Badge>
-                        )}
-                      </td>
-                      <td className={styles.dateCell}>{formatDate(doc.createdAt)}</td>
-                      <td className={styles.dateCell}>{formatDate(doc.expiresAt)}</td>
-                    </tr>
-                  ))}
+                  {history
+                    .filter((doc) => {
+                      if (!studentSearch) return true;
+                      return doc.studentName?.toLowerCase().includes(studentSearch.toLowerCase());
+                    })
+                    .map((doc) => {
+                      const badge = getHistoryBadge(doc.type);
+                      return (
+                        <tr key={doc.id}>
+                          <td><Badge tone={badge.tone}>{badge.label}</Badge></td>
+                          <td className={styles.tableCellName}>{doc.studentName}</td>
+                          <td className={styles.tableCellMuted}>{doc.fileName || "-"}</td>
+                          <td>
+                            {doc.isKept ? (
+                              <Badge tone="success">Disimpan</Badge>
+                            ) : doc.isRead ? (
+                              <Badge tone="sky">Dibaca</Badge>
+                            ) : (
+                              <Badge tone="warning">Belum dibaca</Badge>
+                            )}
+                          </td>
+                          <td className={styles.tableCellMuted}>{formatDate(doc.createdAt)}</td>
+                          <td className={styles.tableCellMuted}>{formatDate(doc.expiresAt)}</td>
+                        </tr>
+                      );
+                    })}
                 </tbody>
               </table>
             )}

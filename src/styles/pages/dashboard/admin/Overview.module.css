@@ -162,6 +162,15 @@
   white-space: nowrap;
 }
 
+.studentTime {
+  font-size: 0.625rem;
+  font-weight: 600;
+  color: var(--color-ink-muted, #475569);
+  margin-left: auto;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
 .noStudents {
   font-size: 0.6875rem;
   color: var(--color-ink-subtle, #94A3B8);

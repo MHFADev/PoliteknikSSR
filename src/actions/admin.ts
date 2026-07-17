@@ -18,7 +18,6 @@
 
 import { Repositories } from "@/lib/repositories";
 import type { AttendanceStats } from "@/lib/repositories";
-export type { AttendanceStats };
 import { createAdminClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 import { generatePermanentStudentToken } from "@/lib/qr-token";
@@ -269,10 +268,106 @@ export async function unblockUser(
  */
 export async function updateUserRole(
   userId: string,
-  role: "siswa" | "pembimbing" | "admin" | "owner"
+  role: "siswa" | "pembimbing" | "admin" | "owner" | "root"
 ): Promise<{ success: true } | { success: false; message: string }> {
   const result = await Repositories.users().updateUserRole(userId, role);
   if (result.error) return { success: false, message: result.error };
   revalidatePath("/dashboard/admin/pengguna");
   return { success: true };
+}
+
+/**
+ * resetUserPassword — Reset password user (admin/root only)
+ * 
+ * Pake REST API langsung biar pasti jalan.
+ */
+export async function resetUserPassword(
+  userId: string,
+  newPassword: string
+): Promise<{ success: true } | { success: false; message: string }> {
+  try {
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+    const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+
+    const res = await fetch(`${supabaseUrl}/auth/v1/admin/users/${userId}`, {
+      method: "PUT",
+      headers: {
+        "apikey": process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+        "Authorization": `Bearer ${serviceKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        password: newPassword,
+        email_confirm: true,
+      }),
+    });
+
+    if (!res.ok) {
+      const text = await res.text();
+      console.error("[resetPassword] Gagal:", res.status, text);
+      return { success: false, message: `Gagal reset password (${res.status})` };
+    }
+
+    return { success: true };
+  } catch (err: any) {
+    console.error("[resetPassword] Error:", err);
+    return { success: false, message: err.message || "Gagal reset password" };
+  }
+}
+
+/**
+ * forceLogoutUser — Paksa logout user dari semua sesi (root only)
+ *
+ * Hanya hapus session, TIDAK ubah password atau data apapun.
+ */
+export async function forceLogoutUser(
+  userId: string
+): Promise<{ success: true } | { success: false; message: string }> {
+  const supabase = createAdminClient();
+
+  const { data: profile } = await supabase.from("profiles").select("role").eq("id", userId).single();
+  if (profile?.role === "root" || profile?.role === "owner") {
+    return { success: false, message: "Tidak dapat logout akun root/owner." };
+  }
+
+  try {
+    // Hapus semua sessions user via Admin REST API — TIDAK ubah password atau data
+    const url = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/auth/v1/admin/users/${userId}/sessions`;
+    const res = await fetch(url, {
+      method: "DELETE",
+      headers: {
+        "apikey": process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+        "Authorization": `Bearer ${process.env.SUPABASE_SERVICE_ROLE_KEY!}`,
+      },
+    });
+
+    if (!res.ok) {
+      return { success: false, message: "Gagal menghapus session. Coba ulangi." };
+    }
+
+    return { success: true };
+  } catch (err: any) {
+    return { success: false, message: err.message || "Gagal logout user" };
+  }
+}
+
+/**
+ * getSessionCount — Ambil jumlah sesi aktif user (root only)
+ */
+export async function getSessionCount(
+  userId: string
+): Promise<{ count: number } | { success: false; message: string }> {
+  try {
+    const supabase = createAdminClient();
+    const { data, error } = await supabase.auth.admin.getUserById(userId);
+    if (error || !data?.user) return { success: false, message: "User tidak ditemukan" };
+
+    const lastSignIn = data.user.last_sign_in_at;
+    const createdAt = data.user.created_at;
+    const isActive = lastSignIn && new Date(lastSignIn).getTime() > Date.now() - 7 * 24 * 60 * 60 * 1000;
+
+    return { count: isActive ? 1 : 0 };
+  } catch {
+    return { success: false, message: "Gagal mendapatkan info sesi" };
+  }
 }

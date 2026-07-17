@@ -114,7 +114,7 @@ export class SupabaseLogbookRepository implements ILogbookRepository {
     start?: string,
     end?: string
   ): Promise<LogbookEntry[]> {
-    const supabase = createClient();
+    const supabase = await createClient();
 
     let query = supabase
       .from("logbook_entries")
@@ -140,7 +140,7 @@ export class SupabaseLogbookRepository implements ILogbookRepository {
    * @returns Array entri siswa bimbingan
    */
   async getEntriesByMentor(mentorId: string): Promise<LogbookEntry[]> {
-    const supabase = createClient();
+    const supabase = await createClient();
 
     // --- Ambil daftar student_id yang dibimbing oleh mentor ini ---
     const { data: mentorships } = await supabase
@@ -168,7 +168,7 @@ export class SupabaseLogbookRepository implements ILogbookRepository {
    * @returns Array entri tanpa nilai
    */
   async getPendingGrading(mentorId: string): Promise<LogbookEntry[]> {
-    const supabase = createClient();
+    const supabase = await createClient();
 
     // --- Ambil daftar student_id yang dibimbing oleh mentor ini ---
     const { data: mentorships } = await supabase

@@ -25,15 +25,15 @@ export async function register(
   }
 
   if (role === "siswa" && !kelas?.trim()) {
-    return { error: "Kelas wajib diisi untuk siswa." };
-  }
-
-  if (role === "siswa" && kelas && !/^\d+$/.test(kelas.trim())) {
-    return { error: "Kelas hanya boleh berisi angka (contoh: 10, 11, 12)." };
+    return { error: "Pilih kelas terlebih dahulu." };
   }
 
   if (role === "siswa" && !jurusanId) {
     return { error: "Program studi wajib dipilih untuk siswa." };
+  }
+
+  if (role === "pembimbing" && !jurusanId) {
+    return { error: "Jurusan yang dibimbing wajib dipilih untuk pembimbing." };
   }
 
   const result = await Repositories.users().signUp({

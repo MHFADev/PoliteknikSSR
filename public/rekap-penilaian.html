@@ -1,0 +1,1011 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rekap Penilaian Siswa Prakerin — Politeknik SSR</title>
+  <style>
+    /* ============================================================
+       Rekap Penilaian Prakerin — Print-Ready Professional Design
+       ============================================================ */
+
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+    :root {
+      --primary: #1a3a52;
+      --primary-light: #2a5a75;
+      --accent: #2563eb;
+      --accent-light: #dbeafe;
+      --success: #16a34a;
+      --success-light: #dcfce7;
+      --warning: #d97706;
+      --warning-light: #fef3c7;
+      --danger: #dc2626;
+      --danger-light: #fee2e2;
+      --text: #0f172a;
+      --text-secondary: #475569;
+      --text-muted: #64748b;
+      --border: #cbd5e1;
+      --border-light: #e2e8f0;
+      --bg: #ffffff;
+      --bg-alt: #f8fafc;
+      --bg-card: #ffffff;
+      --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+      --shadow: 0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.06);
+      --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+      --radius: 8px;
+      --radius-lg: 12px;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #f1f5f9;
+      color: var(--text);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ─── Page Container ──────────────────────── */
+    .page {
+      width: 210mm;
+      min-height: 297mm;
+      margin: 20px auto;
+      background: var(--bg);
+      box-shadow: var(--shadow-md);
+      padding: 25mm 20mm;
+      position: relative;
+    }
+
+    @media print {
+      body {
+        background: none;
+      }
+      .page {
+        margin: 0;
+        box-shadow: none;
+        padding: 15mm 15mm;
+        width: 100%;
+      }
+      .no-print {
+        display: none !important;
+      }
+    }
+
+    /* ─── Header ──────────────────────────────── */
+    .header {
+      text-align: center;
+      margin-bottom: 24px;
+      padding-bottom: 20px;
+      border-bottom: 3px solid var(--primary);
+      position: relative;
+    }
+
+    .header::after {
+      content: '';
+      position: absolute;
+      bottom: -6px;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: var(--primary);
+    }
+
+    .header-logo {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      margin-bottom: 12px;
+    }
+
+    .header-logo img {
+      height: 56px;
+      width: auto;
+    }
+
+    .header-text h1 {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--primary);
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+    }
+
+    .header-text p {
+      font-size: 11px;
+      color: var(--text-muted);
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-top: 2px;
+    }
+
+    .doc-title {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text);
+      text-align: center;
+      margin-top: 16px;
+      padding: 8px 0;
+      background: var(--bg-alt);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius);
+      letter-spacing: 0.02em;
+    }
+
+    /* ─── Student Identity ────────────────────── */
+    .identity-section {
+      margin-top: 20px;
+      margin-bottom: 20px;
+    }
+
+    .identity-grid {
+      display: grid;
+      grid-template-columns: 140px 1fr;
+      gap: 6px 12px;
+      font-size: 12px;
+    }
+
+    .identity-label {
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+
+    .identity-value {
+      color: var(--text);
+      font-weight: 500;
+      padding-bottom: 4px;
+      border-bottom: 1px dotted var(--border);
+      min-height: 20px;
+    }
+
+    /* ─── Section Title ───────────────────────── */
+    .section-title {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--primary);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin: 20px 0 10px;
+      padding: 6px 12px;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+      color: #fff;
+      border-radius: var(--radius) var(--radius) 0 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .section-title .icon {
+      width: 16px;
+      height: 16px;
+      opacity: 0.8;
+    }
+
+    /* ─── Tables ──────────────────────────────── */
+    .table-container {
+      overflow-x: auto;
+      margin-bottom: 20px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 11px;
+      table-layout: fixed;
+    }
+
+    th, td {
+      border: 1px solid var(--border);
+      padding: 6px 8px;
+      text-align: center;
+      vertical-align: middle;
+    }
+
+    thead th {
+      background: var(--primary);
+      color: #fff;
+      font-weight: 600;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 8px 6px;
+      white-space: nowrap;
+    }
+
+    thead th.section-header {
+      background: var(--primary-light);
+    }
+
+    tbody td {
+      background: var(--bg);
+      transition: background 0.15s;
+    }
+
+    tbody tr:nth-child(even) td {
+      background: var(--bg-alt);
+    }
+
+    tbody tr:hover td {
+      background: var(--accent-light);
+    }
+
+    /* ─── Unsur Nilai Table ───────────────────── */
+    .nilai-table .col-no {
+      width: 30px;
+    }
+
+    .nilai-table .col-unsur {
+      width: auto;
+      text-align: left;
+      padding-left: 12px;
+    }
+
+    .nilai-table .col-nilai {
+      width: 80px;
+    }
+
+    .nilai-table .col-huruf {
+      width: 70px;
+    }
+
+    .nilai-table .col-deskripsi {
+      width: auto;
+      text-align: left;
+      padding-left: 10px;
+      font-size: 10px;
+      color: var(--text-secondary);
+    }
+
+    .nilai-input {
+      width: 100%;
+      height: 24px;
+      border: 1px solid var(--border-light);
+      border-radius: 4px;
+      text-align: center;
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--text);
+      background: var(--bg);
+      padding: 0 4px;
+      outline: none;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+
+    .nilai-input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
+    }
+
+    .grade-badge {
+      display: inline-block;
+      padding: 2px 10px;
+      border-radius: 4px;
+      font-weight: 700;
+      font-size: 11px;
+      min-width: 32px;
+    }
+
+    .grade-A { background: var(--success-light); color: var(--success); }
+    .grade-B { background: var(--accent-light); color: var(--accent); }
+    .grade-C { background: var(--warning-light); color: var(--warning); }
+    .grade-D { background: var(--danger-light); color: var(--danger); }
+
+    /* ─── Bidang Keahlian Table ───────────────── */
+    .keahlian-table .col-no {
+      width: 30px;
+    }
+
+    .keahlian-table .col-keahlian {
+      width: auto;
+      text-align: left;
+      padding-left: 12px;
+    }
+
+    .keahlian-table .col-keterangan {
+      width: 120px;
+    }
+
+    .keahlian-table .col-nilai-angka {
+      width: 70px;
+    }
+
+    .keahlian-table .col-nilai-huruf {
+      width: 60px;
+    }
+
+    .add-row-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      margin-bottom: 12px;
+      transition: background 0.2s;
+    }
+
+    .add-row-btn:hover {
+      background: #1d4ed8;
+    }
+
+    .grade-badge-small {
+      display: inline-block;
+      padding: 1px 8px;
+      border-radius: 4px;
+      font-weight: 700;
+      font-size: 10px;
+      min-width: 24px;
+    }
+
+    .keahlian-input {
+      width: 100%;
+      height: 22px;
+      border: 1px solid var(--border-light);
+      border-radius: 4px;
+      padding: 0 6px;
+      font-size: 10.5px;
+      color: var(--text);
+      background: var(--bg);
+      outline: none;
+      transition: border-color 0.15s;
+    }
+
+    .keahlian-input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.12);
+    }
+
+    /* ─── Summary Row ─────────────────────────── */
+    .summary-row td {
+      background: var(--accent-light) !important;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    /* ─── Keterangan / Skala ──────────────────── */
+    .keterangan-section {
+      margin-top: 16px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .skala-card {
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .skala-card-title {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      padding: 6px 10px;
+      background: var(--bg-alt);
+      color: var(--text-secondary);
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    .skala-list {
+      padding: 8px 10px;
+    }
+
+    .skala-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 3px 0;
+      font-size: 10px;
+    }
+
+    .skala-range {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 52px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-weight: 600;
+      font-size: 9px;
+      white-space: nowrap;
+    }
+
+    .skala-range.sangat-baik { background: var(--success-light); color: var(--success); }
+    .skala-range.baik { background: var(--accent-light); color: var(--accent); }
+    .skala-range.cukup { background: var(--warning-light); color: var(--warning); }
+    .skala-range.kurang { background: var(--danger-light); color: var(--danger); }
+
+    .skala-label {
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    /* ─── Signature Section ───────────────────── */
+    .signature-section {
+      margin-top: 30px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+    }
+
+    .signature-block {
+      text-align: center;
+    }
+
+    .signature-label {
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 4px;
+    }
+
+    .signature-line {
+      width: 100%;
+      height: 1px;
+      background: var(--text);
+      margin: 40px 0 6px;
+    }
+
+    .signature-name {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .signature-nip {
+      font-size: 9px;
+      color: var(--text-muted);
+    }
+
+    /* ─── Footer ──────────────────────────────── */
+    .footer {
+      margin-top: 24px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border-light);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 9px;
+      color: var(--text-muted);
+    }
+
+    .footer-badge {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 8px;
+      background: var(--bg-alt);
+      border: 1px solid var(--border-light);
+      border-radius: 4px;
+    }
+
+    /* ─── Print Button ────────────────────────── */
+    .print-btn {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      padding: 12px 24px;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+      transition: all 0.2s;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .print-btn:hover {
+      background: #1d4ed8;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(37, 99, 235, 0.4);
+    }
+
+    /* ─── Responsive ──────────────────────────── */
+    @media (max-width: 1200px) {
+      .page {
+        width: 100%;
+        padding: 18px;
+        margin: 0;
+      }
+      .identity-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+      .signature-section {
+        grid-template-columns: 1fr;
+        gap: 24px;
+      }
+      .keterangan-section {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 992px) {
+      .page {
+        padding: 14px;
+      }
+      .header {
+        padding-bottom: 16px;
+        margin-bottom: 16px;
+      }
+      .identity-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .page {
+        width: 100%;
+        padding: 12px;
+        margin: 0;
+      }
+      .header-logo {
+        flex-direction: column;
+        gap: 8px;
+      }
+      .header-text h1 {
+        font-size: 16px;
+      }
+      .doc-title {
+        font-size: 14px;
+        padding: 6px 0;
+      }
+      .identity-grid {
+        grid-template-columns: 1fr;
+        gap: 4px 8px;
+      }
+      .identity-label {
+        font-size: 10px;
+      }
+      .identity-value {
+        font-size: 10px;
+        min-height: 18px;
+      }
+      table {
+        font-size: 9px;
+      }
+      thead th {
+        padding: 6px 4px;
+        font-size: 9px;
+      }
+      tbody td {
+        padding: 4px 6px;
+      }
+      .nilai-input {
+        height: 20px;
+        font-size: 9px;
+        padding: 0 3px;
+      }
+      .keahlian-input {
+        height: 18px;
+        font-size: 9px;
+        padding: 0 4px;
+      }
+      .section-title {
+        font-size: 10px;
+        padding: 4px 8px;
+        margin: 16px 0 8px;
+      }
+      .skala-item {
+        font-size: 8px;
+        gap: 4px;
+      }
+      .skala-range {
+        min-width: 40px;
+        padding: 1px 4px;
+        font-size: 8px;
+      }
+      .signature-line {
+        margin: 24px 0 4px;
+      }
+      .footer {
+        font-size: 7px;
+        flex-direction: column;
+        gap: 8px;
+        text-align: center;
+      }
+      .print-btn {
+        bottom: 12px;
+        right: 12px;
+        padding: 8px 16px;
+        font-size: 12px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .page {
+        padding: 8px;
+      }
+      .header {
+        padding-bottom: 12px;
+      }
+      .nilai-table .col-nilai,
+      .nilai-table .col-huruf {
+        width: 60px;
+      }
+      .nilai-table .col-deskripsi {
+        display: none;
+      }
+      .keahlian-table .col-keterangan {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="page" id="recap-page">
+
+    <!-- ═══ Header ═══════════════════════════════ -->
+    <div class="header">
+      <div class="header-logo">
+        <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="48" height="48" rx="10" fill="#1a3a52"/>
+          <path d="M24 8L12 16V24L24 32L36 24V16L24 8Z" fill="#fff" fill-opacity="0.9"/>
+          <path d="M18 28V22L24 18L30 22V28L24 32L18 28Z" fill="#2563eb"/>
+          <circle cx="24" cy="22" r="3" fill="#fff"/>
+        </svg>
+        <div class="header-text">
+          <h1>POLITEKNIK SSR</h1>
+          <p>Sistem Informasi Prakerin</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="doc-title">REKAP PENILAIAN SISWA PRAKERIN</div>
+
+    <!-- ═══ Identity ═════════════════════════════ -->
+    <div class="identity-section">
+      <div class="identity-grid">
+        <div class="identity-label">Nama Siswa</div>
+        <div class="identity-value" id="student-name"></div>
+
+        <div class="identity-label">NIS</div>
+        <div class="identity-value" id="student-nis"></div>
+
+        <div class="identity-label">Kelas</div>
+        <div class="identity-value" id="student-kelas"></div>
+
+        <div class="identity-label">Program Keahlian</div>
+        <div class="identity-value" id="student-prodi"></div>
+
+        <div class="identity-label">Industri / Perusahaan</div>
+        <div class="identity-value" id="student-industri"></div>
+
+        <div class="identity-label">Periode Prakerin</div>
+        <div class="identity-value" id="student-periode"></div>
+      </div>
+    </div>
+
+    <!-- ═══ Tabel 1: Unsur Nilai ═════════════════ -->
+    <div class="section-title">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+      </svg>
+      TABEL UNSUR NILAI
+    </div>
+
+    <div class="table-container">
+      <table class="nilai-table">
+        <thead>
+          <tr>
+            <th class="col-no">No</th>
+            <th class="col-unsur">Unsur Penilaian</th>
+            <th class="col-nilai">Nilai Angka</th>
+            <th class="col-huruf">Nilai Huruf</th>
+            <th class="col-deskripsi">Keterangan</th>
+          </tr>
+        </thead>
+        <tbody id="nilai-body">
+          <tr>
+            <td>1</td>
+            <td class="col-unsur">Disiplin</td>
+            <td><input type="number" class="nilai-input" min="0" max="10" step="0.1" data-idx="0" oninput="calcGrade(this)"></td>
+            <td><span class="grade-badge" id="grade-0">—</span></td>
+            <td class="col-deskripsi" id="desc-0"></td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td class="col-unsur">Kerja Sama</td>
+            <td><input type="number" class="nilai-input" min="0" max="10" step="0.1" data-idx="1" oninput="calcGrade(this)"></td>
+            <td><span class="grade-badge" id="grade-1">—</span></td>
+            <td class="col-deskripsi" id="desc-1"></td>
+          </tr>
+          <tr>
+            <td>3</td>
+            <td class="col-unsur">Inisiatif</td>
+            <td><input type="number" class="nilai-input" min="0" max="10" step="0.1" data-idx="2" oninput="calcGrade(this)"></td>
+            <td><span class="grade-badge" id="grade-2">—</span></td>
+            <td class="col-deskripsi" id="desc-2"></td>
+          </tr>
+          <tr>
+            <td>4</td>
+            <td class="col-unsur">Kerajinan</td>
+            <td><input type="number" class="nilai-input" min="0" max="10" step="0.1" data-idx="3" oninput="calcGrade(this)"></td>
+            <td><span class="grade-badge" id="grade-3">—</span></td>
+            <td class="col-deskripsi" id="desc-3"></td>
+          </tr>
+          <tr>
+            <td>5</td>
+            <td class="col-unsur">Tanggung Jawab</td>
+            <td><input type="number" class="nilai-input" min="0" max="10" step="0.1" data-idx="4" oninput="calcGrade(this)"></td>
+            <td><span class="grade-badge" id="grade-4">—</span></td>
+            <td class="col-deskripsi" id="desc-4"></td>
+          </tr>
+          <tr>
+            <td>6</td>
+            <td class="col-unsur">Kepribadian</td>
+            <td><input type="number" class="nilai-input" min="0" max="10" step="0.1" data-idx="5" oninput="calcGrade(this)"></td>
+            <td><span class="grade-badge" id="grade-5">—</span></td>
+            <td class="col-deskripsi" id="desc-5"></td>
+          </tr>
+          <tr>
+            <td>7</td>
+            <td class="col-unsur">Kehadiran</td>
+            <td><input type="number" class="nilai-input" min="0" max="10" step="0.1" data-idx="6" oninput="calcGrade(this)"></td>
+            <td><span class="grade-badge" id="grade-6">—</span></td>
+            <td class="col-deskripsi" id="desc-6"></td>
+          </tr>
+          <tr class="summary-row">
+            <td colspan="2" style="text-align:right; padding-right:12px;">RATA-RATA</td>
+            <td id="avg-score">—</td>
+            <td><span class="grade-badge" id="avg-grade">—</span></td>
+            <td id="avg-desc"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ═══ Tabel 2: Bidang Keahlian ═════════════ -->
+    <div class="section-title">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M12 14l9-5-9-5-9 5 9 5z"/>
+        <path d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/>
+      </svg>
+      BIDANG KEAHLIAN YANG DILATIHKAN
+    </div>
+
+    <button class="add-row-btn" onclick="addKeahlianRow()">+ Tambah Bidang Keahlian</button>
+
+    <div class="table-container">
+      <table class="keahlian-table">
+        <thead>
+          <tr>
+            <th class="col-no">No</th>
+            <th class="col-keahlian">Bidang Keahlian / Keterampilan</th>
+            <th class="col-nilai-angka">Nilai Angka</th>
+            <th class="col-nilai-huruf">Nilai Huruf</th>
+            <th class="col-keterangan">Keterangan</th>
+          </tr>
+        </thead>
+        <tbody id="keahlian-body">
+          <tr><td>1</td><td><input type="text" class="keahlian-input" placeholder="Contoh: Pemrograman Web"></td><td><input type="number" class="nilai-input keahlian-nilai" min="0" max="10" step="0.1"></td><td><span class="grade-badge-small" id="keahlian-grade-1">—</span></td><td><input type="text" class="keahlian-input" placeholder="Deskripsi singkat"></td></tr>
+          <tr><td>2</td><td><input type="text" class="keahlian-input" placeholder="Contoh: Desain UI/UX"></td><td><input type="number" class="nilai-input keahlian-nilai" min="0" max="10" step="0.1"></td><td><span class="grade-badge-small" id="keahlian-grade-2">—</span></td><td><input type="text" class="keahlian-input" placeholder="Deskripsi singkat"></td></tr>
+          <tr><td>3</td><td><input type="text" class="keahlian-input" placeholder="Contoh: Database Management"></td><td><input type="number" class="nilai-input keahlian-nilai" min="0" max="10" step="0.1"></td><td><span class="grade-badge-small" id="keahlian-grade-3">—</span></td><td><input type="text" class="keahlian-input" placeholder="Deskripsi singkat"></td></tr>
+          <tr><td>4</td><td><input type="text" class="keahlian-input" placeholder="Contoh: Jaringan Komputer"></td><td><input type="number" class="nilai-input keahlian-nilai" min="0" max="10" step="0.1"></td><td><span class="grade-badge-small" id="keahlian-grade-4">—</span></td><td><input type="text" class="keahlian-input" placeholder="Deskripsi singkat"></td></tr>
+          <tr><td>5</td><td><input type="text" class="keahlian-input" placeholder="Contoh: DevOps & Cloud"></td><td><input type="number" class="nilai-input keahlian-nilai" min="0" max="10" step="0.1"></td><td><span class="grade-badge-small" id="keahlian-grade-5">—</span></td><td><input type="text" class="keahlian-input" placeholder="Deskripsi singkat"></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ═══ Keterangan ═══════════════════════════ -->
+    <div class="keterangan-section">
+      <div class="skala-card">
+        <div class="skala-card-title">Skala Penilaian Angka</div>
+        <div class="skala-list">
+          <div class="skala-item">
+            <span class="skala-range sangat-baik">9 – 10</span>
+            <span class="skala-label">= Sangat Baik</span>
+          </div>
+          <div class="skala-item">
+            <span class="skala-range baik">8 – 8.9</span>
+            <span class="skala-label">= Baik</span>
+          </div>
+          <div class="skala-item">
+            <span class="skala-range cukup">7 – 7.9</span>
+            <span class="skala-label">= Cukup</span>
+          </div>
+          <div class="skala-item">
+            <span class="skala-range kurang">0 – 6.9</span>
+            <span class="skala-label">= Kurang (Lulus Minimal 7.0)</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="skala-card">
+        <div class="skala-card-title">Skala Penilaian Huruf</div>
+        <div class="skala-list">
+          <div class="skala-item">
+            <span class="skala-range sangat-baik">A</span>
+            <span class="skala-label">= Sangat Baik (9 – 10)</span>
+          </div>
+          <div class="skala-item">
+            <span class="skala-range baik">B</span>
+            <span class="skala-label">= Baik (8 – 8.9)</span>
+          </div>
+          <div class="skala-item">
+            <span class="skala-range cukup">C</span>
+            <span class="skala-label">= Cukup (7 – 7.9)</span>
+          </div>
+          <div class="skala-item">
+            <span class="skala-range kurang">D</span>
+            <span class="skala-label">= Kurang (0 – 6.9)</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ Tanda Tangan ═════════════════════════ -->
+    <div class="signature-section">
+      <div class="signature-block">
+        <div class="signature-label">Mengetahui,</div>
+        <div class="signature-label" style="margin-bottom:2px;">Pembimbing Sekolah</div>
+        <div class="signature-line"></div>
+        <div class="signature-name" id="pembimbing-name">_________________________</div>
+        <div class="signature-nip">NIP. _________________________</div>
+      </div>
+      <div class="signature-block">
+        <div class="signature-label">Mengetahui,</div>
+        <div class="signature-label" style="margin-bottom:2px;">Pembimbing Industri</div>
+        <div class="signature-line"></div>
+        <div class="signature-name" id="industri-name">_________________________</div>
+        <div class="signature-nip">NIP. _________________________</div>
+      </div>
+    </div>
+
+    <!-- ═══ Footer ═══════════════════════════════ -->
+    <div class="footer">
+      <span>Dicetak pada: <span id="print-date"></span></span>
+      <div class="footer-badge">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+        Dokumen Resmi Politeknik SSR
+      </div>
+    </div>
+  </div>
+
+  <!-- Print Button -->
+  <button class="print-btn no-print" onclick="window.print()">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/>
+      <rect x="6" y="14" width="12" height="8"/>
+    </svg>
+    Cetak Dokumen
+  </button>
+
+  <script>
+    let keahlianCount = 5;
+
+    function addKeahlianRow() {
+      keahlianCount++;
+      const tbody = document.getElementById('keahlian-body');
+      const newRow = document.createElement('tr');
+      newRow.innerHTML = `
+        <td>${keahlianCount}</td>
+        <td><input type="text" class="keahlian-input" placeholder="Contoh: Bidang Keahlian"></td>
+        <td><input type="number" class="nilai-input keahlian-nilai" min="0" max="10" step="0.1"></td>
+        <td><span class="grade-badge-small" id="keahlian-grade-${keahlianCount}">—</span></td>
+        <td><input type="text" class="keahlian-input" placeholder="Deskripsi singkat"></td>
+      `;
+      tbody.appendChild(newRow);
+    }
+
+    function calcKeahlianGrade(input) {
+      const row = input.closest('tr');
+      const idx = row.querySelector('.keahlian-input').value || keahlianCount;
+      const val = parseFloat(input.value);
+      const badge = row.querySelector('.grade-badge-small');
+
+      if (isNaN(val) || input.value === '') {
+        badge.textContent = '—';
+        badge.className = 'grade-badge-small';
+        return;
+      }
+
+      const clamped = Math.min(10, Math.max(0, val));
+      const info = getGradeInfo(clamped);
+      badge.textContent = info.letter;
+      badge.className = `grade-badge-small ${info.cls}`;
+    }
+
+    document.querySelectorAll('.keahlian-nilai').forEach(input => {
+      input.addEventListener('input', function() { calcKeahlianGrade(this); });
+    });
+
+    // ─── Grade Calculation ────────────────────────
+    function getGradeInfo(score) {
+      if (score >= 9) return { letter: 'A', label: 'Sangat Baik', cls: 'grade-A' };
+      if (score >= 8) return { letter: 'B', label: 'Baik', cls: 'grade-B' };
+      if (score >= 7) return { letter: 'C', label: 'Cukup', cls: 'grade-C' };
+      return { letter: 'D', label: 'Kurang', cls: 'grade-D' };
+    }
+
+    function calcGrade(input) {
+      const idx = input.dataset.idx;
+      const val = parseFloat(input.value);
+      const badge = document.getElementById(`grade-${idx}`);
+      const desc = document.getElementById(`desc-${idx}`);
+
+      if (isNaN(val) || input.value === '') {
+        badge.textContent = '—';
+        badge.className = 'grade-badge';
+        desc.textContent = '';
+        updateAverage();
+        return;
+      }
+
+      const clamped = Math.min(10, Math.max(0, val));
+      const info = getGradeInfo(clamped);
+      badge.textContent = info.letter;
+      badge.className = `grade-badge ${info.cls}`;
+      desc.textContent = info.label;
+
+      updateAverage();
+    }
+
+    function updateAverage() {
+      const inputs = document.querySelectorAll('.nilai-input');
+      let total = 0;
+      let count = 0;
+
+      inputs.forEach(input => {
+        const val = parseFloat(input.value);
+        if (!isNaN(val)) {
+          total += Math.min(10, Math.max(0, val));
+          count++;
+        }
+      });
+
+      const avgEl = document.getElementById('avg-score');
+      const avgGradeEl = document.getElementById('avg-grade');
+      const avgDescEl = document.getElementById('avg-desc');
+
+      if (count === 0) {
+        avgEl.textContent = '—';
+        avgGradeEl.textContent = '—';
+        avgGradeEl.className = 'grade-badge';
+        avgDescEl.textContent = '';
+        return;
+      }
+
+      const avg = (total / count).toFixed(1);
+      const info = getGradeInfo(parseFloat(avg));
+
+      avgEl.textContent = avg;
+      avgGradeEl.textContent = info.letter;
+      avgGradeEl.className = `grade-badge ${info.cls}`;
+      avgDescEl.textContent = info.label;
+    }
+
+    // ─── Print Date ──────────────────────────────
+    document.getElementById('print-date').textContent =
+      new Date().toLocaleDateString('id-ID', {
+        day: 'numeric', month: 'long', year: 'numeric',
+        hour: '2-digit', minute: '2-digit'
+      });
+  </script>
+
+</body>
+</html>

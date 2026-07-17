@@ -44,7 +44,7 @@ export class SupabaseAnnouncementRepository implements IAnnouncementRepository {
    * @returns Array pengumuman
    */
   async getAll(): Promise<Announcement[]> {
-    const supabase = createClient();
+    const supabase = await createClient();
 
     const { data } = await supabase
       .from("announcements")
@@ -68,7 +68,7 @@ export class SupabaseAnnouncementRepository implements IAnnouncementRepository {
    * @returns Array pengumuman (broadcast + spesifik jurusan)
    */
   async getForStudent(studentId: string, jurusanId: string): Promise<Announcement[]> {
-    const supabase = createClient();
+    const supabase = await createClient();
 
     const { data } = await supabase
       .from("announcements")

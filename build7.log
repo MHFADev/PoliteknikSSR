@@ -1,0 +1,362 @@
+﻿
+> politeknik-ssr@1.0.0 build
+> next build
+
+  Γû▓ Next.js 14.2.35
+  - Environments: .env.local
+
+   Creating an optimized production build ...
+ Γ£ô Compiled successfully
+   Linting and checking validity of types ...
+
+./src/app/dashboard/admin/absensi/page.tsx
+208:29  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+./src/app/dashboard/admin/izin/page.tsx
+78:23  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+./src/app/dashboard/admin/page.tsx
+344:29  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+./src/app/dashboard/admin/pengguna/page.tsx
+113:31  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+./src/app/dashboard/pembimbing/page.tsx
+248:23  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+./src/components/izin/LeaveApprovalModal.tsx
+108:17  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+./src/components/layout/MobileNav.tsx
+60:17  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+./src/components/layout/Sidebar.tsx
+66:17  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+./src/components/logbook/LogbookGradeModal.tsx
+80:17  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+./src/components/profile/ProfileForm.tsx
+367:15  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+info  - Need to disable some ESLint rules? Learn more here: https://nextjs.org/docs/basic-features/eslint#disabling-rules
+   Collecting page data ...
+   Generating static pages (0/38) ...
+node.exe : Error fetching locations: n [Error]: Dynamic server usage: Route /api/locations couldn't be rendered 
+statically because it used `cookies`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error
+At line:1 char:1
++ & "C:\nvm4w\nodejs/node.exe" "C:\nvm4w\nodejs/node_modules/npm/bin/np ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (Error fetching ...ic-server-error:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+    at l (C:\Users\USER\Downloads\politeknik-ssr\.next\server\chunks\8948.js:1:37220)
+    at d (C:\Users\USER\Downloads\politeknik-ssr\.next\server\chunks\5971.js:23:9650)
+    at t (C:\Users\USER\Downloads\politeknik-ssr\.next\server\chunks\506.js:1:16303)
+    at u (C:\Users\USER\Downloads\politeknik-ssr\.next\server\app\api\locations\route.js:1:830)
+    at 
+C:\Users\USER\Downloads\politeknik-ssr\node_modules\next\dist\compiled\next-server\app-route.runtime.prod.js:6:38417
+    at C:\Users\USER\Downloads\politeknik-ssr\node_modules\next\dist\server\lib\trace\tracer.js:140:36
+    at NoopContextManager.with 
+(C:\Users\USER\Downloads\politeknik-ssr\node_modules\next\dist\compiled\@opentelemetry\api\index.js:1:7062)
+    at ContextAPI.with 
+(C:\Users\USER\Downloads\politeknik-ssr\node_modules\next\dist\compiled\@opentelemetry\api\index.js:1:518)
+    at NoopTracer.startActiveSpan 
+(C:\Users\USER\Downloads\politeknik-ssr\node_modules\next\dist\compiled\@opentelemetry\api\index.js:1:18093)
+    at ProxyTracer.startActiveSpan 
+(C:\Users\USER\Downloads\politeknik-ssr\node_modules\next\dist\compiled\@opentelemetry\api\index.js:1:18854) {
+  description: "Route /api/locations couldn't be rendered statically because it used `cookies`. See more info here: 
+https://nextjs.org/docs/messages/dynamic-server-error",
+  digest: 'DYNAMIC_SERVER_USAGE'
+}
+   Generating static pages (9/38) 
+
+Error occurred prerendering page "/dashboard/admin/absensi". Read more: 
+https://nextjs.org/docs/messages/prerender-error
+
+Error: Cannot find module 'C:\Users\USER\Downloads\politeknik-ssr\.next\server\app\dashboard\admin\absensi\page.js'
+Require stack:
+- C:\Users\USER\Downloads\politeknik-ssr\node_modules\next\dist\server\require.js
+- C:\Users\USER\Downloads\politeknik-ssr\node_modules\next\dist\server\load-components.js
+- C:\Users\USER\Downloads\politeknik-ssr\node_modules\next\dist\build\utils.js
+- C:\Users\USER\Downloads\politeknik-ssr\node_modules\next\dist\build\worker.js
+- C:\Users\USER\Downloads\politeknik-ssr\node_modules\next\dist\compiled\jest-worker\processChild.js
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1517:15)
+    at C:\Users\USER\Downloads\politeknik-ssr\node_modules\next\dist\server\require-hook.js:55:36
+    at wrapResolveFilename (node:internal/modules/cjs/loader:1071:27)
+    at defaultResolveImplForCJSLoading (node:internal/modules/cjs/loader:1095:10)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1122:12)
+    at Module._load (node:internal/modules/cjs/loader:1294:5)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1617:12)
+    at mod.require (C:\Users\USER\Downloads\politeknik-ssr\node_modules\next\dist\server\require-hook.js:65:28)
+    at require (node:internal/modules/helpers:153:16)
+
+Error occurred prerendering page "/dashboard/admin/export". Read more: https://nextjs.org/docs/messages/prerender-error
+
+Error: Cannot find module 'C:\Users\USER\Downloads\politeknik-ssr\.next\server\app\dashboard\admin\export\page.js'
+Require stack:
+- C:\Users\USER\Downloads\politeknik-ssr\node_modules\next\dist\server\require.js
+- C:\Users\USER\Downloads\politeknik-ssr\node_modules\next\dist\server\load-components.js
+- C:\Users\USER\Downloads\politeknik-ssr\node_modules\next\dist\build\utils.js
+- C:\Users\USER\Downloads\politeknik-ssr\node_modules\next\dist\build\worker.js
+- C:\Users\USER\Downloads\politeknik-ssr\node_modules\next\dist\compiled\jest-worker\processChild.js
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1517:15)
+    at C:\Users\USER\Downloads\politeknik-ssr\node_modules\next\dist\server\require-hook.js:55:36
+    at wrapResolveFilename (node:internal/modules/cjs/loader:1071:27)
+    at defaultResolveImplForCJSLoading (node:internal/modules/cjs/loader:1095:10)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1122:12)
+    at Module._load (node:internal/modules/cjs/loader:1294:5)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1617:12)
+    at mod.require (C:\Users\USER\Downloads\politeknik-ssr\node_modules\next\dist\server\require-hook.js:65:28)
+    at require (node:internal/modules/helpers:153:16)
+
+Error occurred prerendering page "/dashboard/pembimbing/profile". Read more: 
+https://nextjs.org/docs/messages/prerender-error
+
+Error: Cannot find module 
+'C:\Users\USER\Downloads\politeknik-ssr\.next\server\app\dashboard\pembimbing\profile\page.js'
+Require stack:
+- C:\Users\USER\Downloads\politeknik-ssr\node_modules\next\dist\server\require.js
+- C:\Users\USER\Downloads\politeknik-ssr\node_modules\next\dist\server\load-components.js
+- C:\Users\USER\Downloads\politeknik-ssr\node_modules\next\dist\build\utils.js
+- C:\Users\USER\Downloads\politeknik-ssr\node_modules\next\dist\build\worker.js
+- C:\Users\USER\Downloads\politeknik-ssr\node_modules\next\dist\compiled\jest-worker\processChild.js
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1517:15)
+    at C:\Users\USER\Downloads\politeknik-ssr\node_modules\next\dist\server\require-hook.js:55:36
+    at wrapResolveFilename (node:internal/modules/cjs/loader:1071:27)
+    at defaultResolveImplForCJSLoading (node:internal/modules/cjs/loader:1095:10)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1122:12)
+    at Module._load (node:internal/modules/cjs/loader:1294:5)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1617:12)
+    at mod.require (C:\Users\USER\Downloads\politeknik-ssr\node_modules\next\dist\server\require-hook.js:65:28)
+    at require (node:internal/modules/helpers:153:16)
+
+Error occurred prerendering page "/dashboard/admin/kegiatan-harian". Read more: 
+https://nextjs.org/docs/messages/prerender-error
+
+Error: Cannot find module 
+'C:\Users\USER\Downloads\politeknik-ssr\.next\server\app\dashboard\admin\kegiatan-harian\page.js'
+Require stack:
+- C:\Users\USER\Downloads\politeknik-ssr\node_modules\next\dist\server\require.js
+- C:\Users\USER\Downloads\politeknik-ssr\node_modules\next\dist\server\load-components.js
+- C:\Users\USER\Downloads\politeknik-ssr\node_modules\next\dist\build\utils.js
+- C:\Users\USER\Downloads\politeknik-ssr\node_modules\next\dist\build\worker.js
+- C:\Users\USER\Downloads\politeknik-ssr\node_modules\next\dist\compiled\jest-worker\processChild.js
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1517:15)
+    at C:\Users\USER\Downloads\politeknik-ssr\node_modules\next\dist\server\require-hook.js:55:36
+    at wrapResolveFilename (node:internal/modules/cjs/loader:1071:27)
+    at defaultResolveImplForCJSLoading (node:internal/modules/cjs/loader:1095:10)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1122:12)
+    at Module._load (node:internal/modules/cjs/loader:1294:5)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1617:12)
+    at mod.require (C:\Users\USER\Downloads\politeknik-ssr\node_modules\next\dist\server\require-hook.js:65:28)
+    at require (node:internal/modules/helpers:153:16)
+   Generating static pages (18/38) 
+
+Error occurred prerendering page "/dashboard/admin/sertifikat-rekap". Read more: 
+https://nextjs.org/docs/messages/prerender-error
+
+Error: Cannot find module 
+'C:\Users\USER\Downloads\politeknik-ssr\.next\server\app\dashboard\admin\sertifikat-rekap\page.js'
+Require stack:
+- C:\Users\USER\Downloads\politeknik-ssr\node_modules\next\dist\server\require.js
+- C:\Users\USER\Downloads\politeknik-ssr\node_modules\next\dist\server\load-components.js
+- C:\Users\USER\Downloads\politeknik-ssr\node_modules\next\dist\build\utils.js
+- C:\Users\USER\Downloads\politeknik-ssr\node_modules\next\dist\build\worker.js
+- C:\Users\USER\Downloads\politeknik-ssr\node_modules\next\dist\compiled\jest-worker\processChild.js
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1517:15)
+    at C:\Users\USER\Downloads\politeknik-ssr\node_modules\next\dist\server\require-hook.js:55:36
+    at wrapResolveFilename (node:internal/modules/cjs/loader:1071:27)
+    at defaultResolveImplForCJSLoading (node:internal/modules/cjs/loader:1095:10)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1122:12)
+    at Module._load (node:internal/modules/cjs/loader:1294:5)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1617:12)
+    at mod.require (C:\Users\USER\Downloads\politeknik-ssr\node_modules\next\dist\server\require-hook.js:65:28)
+    at require (node:internal/modules/helpers:153:16)
+
+Error occurred prerendering page "/dashboard/siswa/absensi". Read more: 
+https://nextjs.org/docs/messages/prerender-error
+
+Error: Cannot find module 'C:\Users\USER\Downloads\politeknik-ssr\.next\server\app\dashboard\siswa\absensi\page.js'
+Require stack:
+- C:\Users\USER\Downloads\politeknik-ssr\node_modules\next\dist\server\require.js
+- C:\Users\USER\Downloads\politeknik-ssr\node_modules\next\dist\server\load-components.js
+- C:\Users\USER\Downloads\politeknik-ssr\node_modules\next\dist\build\utils.js
+- C:\Users\USER\Downloads\politeknik-ssr\node_modules\next\dist\build\worker.js
+- C:\Users\USER\Downloads\politeknik-ssr\node_modules\next\dist\compiled\jest-worker\processChild.js
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1517:15)
+    at C:\Users\USER\Downloads\politeknik-ssr\node_modules\next\dist\server\require-hook.js:55:36
+    at wrapResolveFilename (node:internal/modules/cjs/loader:1071:27)
+    at defaultResolveImplForCJSLoading (node:internal/modules/cjs/loader:1095:10)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1122:12)
+    at Module._load (node:internal/modules/cjs/loader:1294:5)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1617:12)
+    at mod.require (C:\Users\USER\Downloads\politeknik-ssr\node_modules\next\dist\server\require-hook.js:65:28)
+    at require (node:internal/modules/helpers:153:16)
+
+Error occurred prerendering page "/dashboard/siswa/izin". Read more: https://nextjs.org/docs/messages/prerender-error
+
+Error: Cannot find module 'C:\Users\USER\Downloads\politeknik-ssr\.next\server\app\dashboard\siswa\izin\page.js'
+Require stack:
+- C:\Users\USER\Downloads\politeknik-ssr\node_modules\next\dist\server\require.js
+- C:\Users\USER\Downloads\politeknik-ssr\node_modules\next\dist\server\load-components.js
+- C:\Users\USER\Downloads\politeknik-ssr\node_modules\next\dist\build\utils.js
+- C:\Users\USER\Downloads\politeknik-ssr\node_modules\next\dist\build\worker.js
+- C:\Users\USER\Downloads\politeknik-ssr\node_modules\next\dist\compiled\jest-worker\processChild.js
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1517:15)
+    at C:\Users\USER\Downloads\politeknik-ssr\node_modules\next\dist\server\require-hook.js:55:36
+    at wrapResolveFilename (node:internal/modules/cjs/loader:1071:27)
+    at defaultResolveImplForCJSLoading (node:internal/modules/cjs/loader:1095:10)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1122:12)
+    at Module._load (node:internal/modules/cjs/loader:1294:5)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1617:12)
+    at mod.require (C:\Users\USER\Downloads\politeknik-ssr\node_modules\next\dist\server\require-hook.js:65:28)
+    at require (node:internal/modules/helpers:153:16)
+
+Error occurred prerendering page "/dashboard/siswa/kalender". Read more: 
+https://nextjs.org/docs/messages/prerender-error
+
+Error: Cannot find module 'C:\Users\USER\Downloads\politeknik-ssr\.next\server\app\dashboard\siswa\kalender\page.js'
+Require stack:
+- C:\Users\USER\Downloads\politeknik-ssr\node_modules\next\dist\server\require.js
+- C:\Users\USER\Downloads\politeknik-ssr\node_modules\next\dist\server\load-components.js
+- C:\Users\USER\Downloads\politeknik-ssr\node_modules\next\dist\build\utils.js
+- C:\Users\USER\Downloads\politeknik-ssr\node_modules\next\dist\build\worker.js
+- C:\Users\USER\Downloads\politeknik-ssr\node_modules\next\dist\compiled\jest-worker\processChild.js
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1517:15)
+    at C:\Users\USER\Downloads\politeknik-ssr\node_modules\next\dist\server\require-hook.js:55:36
+    at wrapResolveFilename (node:internal/modules/cjs/loader:1071:27)
+    at defaultResolveImplForCJSLoading (node:internal/modules/cjs/loader:1095:10)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1122:12)
+    at Module._load (node:internal/modules/cjs/loader:1294:5)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1617:12)
+    at mod.require (C:\Users\USER\Downloads\politeknik-ssr\node_modules\next\dist\server\require-hook.js:65:28)
+    at require (node:internal/modules/helpers:153:16)
+   Generating static pages (28/38) 
+
+Error occurred prerendering page "/dashboard/admin/qr". Read more: https://nextjs.org/docs/messages/prerender-error
+
+Error: Cannot find module 'C:\Users\USER\Downloads\politeknik-ssr\.next\server\app\dashboard\admin\qr\page.js'
+Require stack:
+- C:\Users\USER\Downloads\politeknik-ssr\node_modules\next\dist\server\require.js
+- C:\Users\USER\Downloads\politeknik-ssr\node_modules\next\dist\server\load-components.js
+- C:\Users\USER\Downloads\politeknik-ssr\node_modules\next\dist\build\utils.js
+- C:\Users\USER\Downloads\politeknik-ssr\node_modules\next\dist\build\worker.js
+- C:\Users\USER\Downloads\politeknik-ssr\node_modules\next\dist\compiled\jest-worker\processChild.js
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1517:15)
+    at C:\Users\USER\Downloads\politeknik-ssr\node_modules\next\dist\server\require-hook.js:55:36
+    at wrapResolveFilename (node:internal/modules/cjs/loader:1071:27)
+    at defaultResolveImplForCJSLoading (node:internal/modules/cjs/loader:1095:10)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1122:12)
+    at Module._load (node:internal/modules/cjs/loader:1294:5)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1617:12)
+    at mod.require (C:\Users\USER\Downloads\politeknik-ssr\node_modules\next\dist\server\require-hook.js:65:28)
+    at require (node:internal/modules/helpers:153:16)
+
+Error occurred prerendering page "/dashboard/siswa/pengumuman". Read more: 
+https://nextjs.org/docs/messages/prerender-error
+
+Error: Cannot find module 'C:\Users\USER\Downloads\politeknik-ssr\.next\server\app\dashboard\siswa\pengumuman\page.js'
+Require stack:
+- C:\Users\USER\Downloads\politeknik-ssr\node_modules\next\dist\server\require.js
+- C:\Users\USER\Downloads\politeknik-ssr\node_modules\next\dist\server\load-components.js
+- C:\Users\USER\Downloads\politeknik-ssr\node_modules\next\dist\build\utils.js
+- C:\Users\USER\Downloads\politeknik-ssr\node_modules\next\dist\build\worker.js
+- C:\Users\USER\Downloads\politeknik-ssr\node_modules\next\dist\compiled\jest-worker\processChild.js
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1517:15)
+    at C:\Users\USER\Downloads\politeknik-ssr\node_modules\next\dist\server\require-hook.js:55:36
+    at wrapResolveFilename (node:internal/modules/cjs/loader:1071:27)
+    at defaultResolveImplForCJSLoading (node:internal/modules/cjs/loader:1095:10)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1122:12)
+    at Module._load (node:internal/modules/cjs/loader:1294:5)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1617:12)
+    at mod.require (C:\Users\USER\Downloads\politeknik-ssr\node_modules\next\dist\server\require-hook.js:65:28)
+    at require (node:internal/modules/helpers:153:16)
+
+Error occurred prerendering page "/dashboard/pembimbing/izin". Read more: 
+https://nextjs.org/docs/messages/prerender-error
+
+Error: Cannot find module 'C:\Users\USER\Downloads\politeknik-ssr\.next\server\app\dashboard\pembimbing\izin\page.js'
+Require stack:
+- C:\Users\USER\Downloads\politeknik-ssr\node_modules\next\dist\server\require.js
+- C:\Users\USER\Downloads\politeknik-ssr\node_modules\next\dist\server\load-components.js
+- C:\Users\USER\Downloads\politeknik-ssr\node_modules\next\dist\build\utils.js
+- C:\Users\USER\Downloads\politeknik-ssr\node_modules\next\dist\build\worker.js
+- C:\Users\USER\Downloads\politeknik-ssr\node_modules\next\dist\compiled\jest-worker\processChild.js
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1517:15)
+    at C:\Users\USER\Downloads\politeknik-ssr\node_modules\next\dist\server\require-hook.js:55:36
+    at wrapResolveFilename (node:internal/modules/cjs/loader:1071:27)
+    at defaultResolveImplForCJSLoading (node:internal/modules/cjs/loader:1095:10)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1122:12)
+    at Module._load (node:internal/modules/cjs/loader:1294:5)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1617:12)
+    at mod.require (C:\Users\USER\Downloads\politeknik-ssr\node_modules\next\dist\server\require-hook.js:65:28)
+    at require (node:internal/modules/helpers:153:16)
+
+Error occurred prerendering page "/dashboard/siswa". Read more: https://nextjs.org/docs/messages/prerender-error
+
+Error: Cannot find module 'C:\Users\USER\Downloads\politeknik-ssr\.next\server\app\dashboard\siswa\page.js'
+Require stack:
+- C:\Users\USER\Downloads\politeknik-ssr\node_modules\next\dist\server\require.js
+- C:\Users\USER\Downloads\politeknik-ssr\node_modules\next\dist\server\load-components.js
+- C:\Users\USER\Downloads\politeknik-ssr\node_modules\next\dist\build\utils.js
+- C:\Users\USER\Downloads\politeknik-ssr\node_modules\next\dist\build\worker.js
+- C:\Users\USER\Downloads\politeknik-ssr\node_modules\next\dist\compiled\jest-worker\processChild.js
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1517:15)
+    at C:\Users\USER\Downloads\politeknik-ssr\node_modules\next\dist\server\require-hook.js:55:36
+    at wrapResolveFilename (node:internal/modules/cjs/loader:1071:27)
+    at defaultResolveImplForCJSLoading (node:internal/modules/cjs/loader:1095:10)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1122:12)
+    at Module._load (node:internal/modules/cjs/loader:1294:5)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1617:12)
+    at mod.require (C:\Users\USER\Downloads\politeknik-ssr\node_modules\next\dist\server\require-hook.js:65:28)
+    at require (node:internal/modules/helpers:153:16)
+
+Error occurred prerendering page "/dashboard/admin/pengguna". Read more: 
+https://nextjs.org/docs/messages/prerender-error
+
+Error: Cannot find module 'C:\Users\USER\Downloads\politeknik-ssr\.next\server\app\dashboard\admin\pengguna\page.js'
+Require stack:
+- C:\Users\USER\Downloads\politeknik-ssr\node_modules\next\dist\server\require.js
+- C:\Users\USER\Downloads\politeknik-ssr\node_modules\next\dist\server\load-components.js
+- C:\Users\USER\Downloads\politeknik-ssr\node_modules\next\dist\build\utils.js
+- C:\Users\USER\Downloads\politeknik-ssr\node_modules\next\dist\build\worker.js
+- C:\Users\USER\Downloads\politeknik-ssr\node_modules\next\dist\compiled\jest-worker\processChild.js
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1517:15)
+    at C:\Users\USER\Downloads\politeknik-ssr\node_modules\next\dist\server\require-hook.js:55:36
+    at wrapResolveFilename (node:internal/modules/cjs/loader:1071:27)
+    at defaultResolveImplForCJSLoading (node:internal/modules/cjs/loader:1095:10)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1122:12)
+    at Module._load (node:internal/modules/cjs/loader:1294:5)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1617:12)
+    at mod.require (C:\Users\USER\Downloads\politeknik-ssr\node_modules\next\dist\server\require-hook.js:65:28)
+    at require (node:internal/modules/helpers:153:16)
+ Γ£ô Generating static pages (38/38)
+
+> Export encountered errors on following paths:
+	/dashboard/admin/absensi/page: /dashboard/admin/absensi
+	/dashboard/admin/export/page: /dashboard/admin/export
+	/dashboard/admin/kegiatan-harian/page: /dashboard/admin/kegiatan-harian
+	/dashboard/admin/pengguna/page: /dashboard/admin/pengguna
+	/dashboard/admin/qr/page: /dashboard/admin/qr
+	/dashboard/admin/sertifikat-rekap/page: /dashboard/admin/sertifikat-rekap
+	/dashboard/pembimbing/izin/page: /dashboard/pembimbing/izin
+	/dashboard/pembimbing/profile/page: /dashboard/pembimbing/profile
+	/dashboard/siswa/absensi/page: /dashboard/siswa/absensi
+	/dashboard/siswa/izin/page: /dashboard/siswa/izin
+	/dashboard/siswa/kalender/page: /dashboard/siswa/kalender
+	/dashboard/siswa/page: /dashboard/siswa
+	/dashboard/siswa/pengumuman/page: /dashboard/siswa/pengumuman

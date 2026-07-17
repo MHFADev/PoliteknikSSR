@@ -10,10 +10,9 @@ export class PDFViewerEngine {
   async load(url: string): Promise<PDFPageInfo[]> {
     const pdfjsLib = await import("pdfjs-dist");
     
-    // ✅ Worker path yang benar
-    pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
+    pdfjsLib.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjsLib.version}/build/pdf.worker.min.mjs`;
     
-    const loadingTask = pdfjsLib.getDocument(url);
+    const loadingTask = pdfjsLib.getDocument(url as any);
     this.doc = await loadingTask.promise;
     
     const pages: PDFPageInfo[] = [];

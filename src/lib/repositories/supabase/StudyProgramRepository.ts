@@ -36,7 +36,7 @@ export class SupabaseStudyProgramRepository implements IStudyProgramRepository {
    * @returns Array program studi
    */
   async getAll(): Promise<StudyProgram[]> {
-    const supabase = createClient();
+    const supabase = await createClient();
 
     const { data } = await supabase
       .from("study_programs")
@@ -96,7 +96,7 @@ export class SupabaseStudyProgramRepository implements IStudyProgramRepository {
    * @returns Array relasi (studentId, mentorId)
    */
   async getStudentMentors(): Promise<StudentMentor[]> {
-    const supabase = createClient();
+    const supabase = await createClient();
 
     const { data } = await supabase
       .from("student_mentors")

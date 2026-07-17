@@ -9,7 +9,7 @@ import { revalidatePath } from "next/cache";
  * Mengembalikan objek User dari repository, atau null jika belum login.
  */
 export async function getProfile() {
-  const supabase = createClient();
+  const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return null;
 
@@ -31,7 +31,7 @@ export async function updateProfile(data: {
   kelas?: string;
   avatarUrl?: string;
 }) {
-  const supabase = createClient();
+  const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return { error: "Tidak terautentikasi." };
 
@@ -56,7 +56,7 @@ export async function updateProfile(data: {
  * @returns { success: true } jika berhasil, atau { error: string } jika gagal
  */
 export async function changePassword(currentPassword: string, newPassword: string) {
-  const supabase = createClient();
+  const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user?.email) return { error: "Tidak terautentikasi." };
 
@@ -80,7 +80,7 @@ export async function changePassword(currentPassword: string, newPassword: strin
  * Default value berbeda-beda tergantung role user.
  */
 export async function getSettings() {
-  const supabase = createClient();
+  const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return null;
 
@@ -96,7 +96,8 @@ export async function getSettings() {
     defaults.pklStartDate = "";
     defaults.pklEndDate = "";
     defaults.qrExpiryHours = 12;
-    defaults.attendanceCutoffHour = 8;
+    defaults.entryTime = "07:00";
+    defaults.lateTime = "08:00";
     defaults.defaultLocationRadius = 100;
   }
 
@@ -124,7 +125,7 @@ export async function getSettings() {
  * @returns { success: true } jika berhasil, atau { error: string } jika gagal
  */
 export async function updateSettings(settings: Record<string, any>) {
-  const supabase = createClient();
+  const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return { error: "Tidak terautentikasi." };
 

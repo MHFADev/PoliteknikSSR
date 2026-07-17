@@ -21,7 +21,7 @@ export const dynamic = "force-dynamic";
 
 export async function GET() {
   try {
-    const supabase = createClient();
+    const supabase = await createClient();
     const { data: locations } = await supabase
       .from("allowed_locations")
       .select("id, nama, latitude, longitude, radius_meters")

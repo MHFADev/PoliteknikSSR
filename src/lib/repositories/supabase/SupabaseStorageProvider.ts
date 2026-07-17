@@ -30,8 +30,8 @@ export class SupabaseStorageProvider implements IStorageProvider {
     return { url: urlData.publicUrl };
   }
 
-  getPublicUrl(bucket: string, path: string): string {
-    const supabase = createClient();
+  async getPublicUrl(bucket: string, path: string): Promise<string> {
+    const supabase = await createClient();
     const { data } = supabase.storage
       .from(bucket)
       .getPublicUrl(path);
@@ -59,7 +59,7 @@ export class SupabaseStorageProvider implements IStorageProvider {
   }
 
   async list(bucket: string, folder?: string): Promise<{ files: StorageFile[]; error?: string }> {
-    const supabase = createClient();
+    const supabase = await createClient();
     const { data, error } = await supabase.storage
       .from(bucket)
       .list(folder);

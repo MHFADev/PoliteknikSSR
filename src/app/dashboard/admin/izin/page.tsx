@@ -12,7 +12,7 @@ const STATUS_TONE = {
 } as const;
 
 export default async function AdminIzinPage() {
-  const supabase = createClient();
+  const supabase = await createClient();
 
   const [{ data: pending }, { data: allRequests }] = await Promise.all([
     supabase

@@ -77,8 +77,15 @@ export function PendingApprovals({ pendingUsers }: { pendingUsers: PendingUser[]
     }
   }
 
+  // --- Filter out garbage names (random strings, UUIDs) ---
+  const cleanUsers = pendingUsers.filter((u) => {
+    const name = u.fullName;
+    const isClean = name !== "—" && name.length < 30 && !/^[A-Za-z0-9+/=_-]{20,}$/.test(name);
+    return isClean;
+  });
+
   // --- Empty state ---
-  if (pendingUsers.length === 0) {
+  if (cleanUsers.length === 0) {
     return <p className={styles.empty}>Tidak ada pendaftaran menunggu persetujuan.</p>;
   }
 
@@ -88,7 +95,7 @@ export function PendingApprovals({ pendingUsers }: { pendingUsers: PendingUser[]
       {error && <p className={styles.error}>{error}</p>}
 
       {/* Daftar user menunggu persetujuan */}
-      {pendingUsers.map((user) => {
+      {cleanUsers.map((user) => {
         const isLoading = submittingId === user.id;
         const isDisabled = submittingId !== null;
 

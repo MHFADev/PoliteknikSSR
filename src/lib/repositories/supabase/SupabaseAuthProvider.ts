@@ -7,7 +7,7 @@ import { createClient, createAdminClient } from "@/lib/supabase/server";
 
 export class SupabaseAuthProvider implements IAuthProvider {
   async signIn(email: string, password: string): Promise<{ user: AuthUser | null; error?: string }> {
-    const supabase = createClient();
+    const supabase = await createClient();
     const { data, error } = await supabase.auth.signInWithPassword({ email, password });
     if (error) {
       console.error("[SupabaseAuthProvider.signIn] Error:", error.message);
@@ -51,12 +51,12 @@ export class SupabaseAuthProvider implements IAuthProvider {
   }
 
   async signOut(): Promise<void> {
-    const supabase = createClient();
+    const supabase = await createClient();
     await supabase.auth.signOut();
   }
 
   async getCurrentUser(): Promise<AuthUser | null> {
-    const supabase = createClient();
+    const supabase = await createClient();
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return null;
     return {

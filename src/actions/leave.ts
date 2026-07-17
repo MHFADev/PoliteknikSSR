@@ -7,7 +7,7 @@ import { z } from "zod";
 const createSchema = z
   .object({
     type: z.enum(["izin", "sakit", "cuti"]),
-    reason: z.string().min(10, "Alasan minimal 10 karakter."),
+    reason: z.string().min(50, "Alasan minimal 50 karakter."),
     start_date: z.string(),
     end_date: z.string(),
     proof_path: z.string().nullable(),

@@ -3,7 +3,7 @@ import { PendingLeaveApprovals } from "@/components/izin/LeaveApprovalModal";
 import styles from "@/styles/pages/dashboard/pembimbing/Izin.module.css";
 
 export default async function PembimbingIzinPage() {
-  const supabase = createClient();
+  const supabase = await createClient();
 
   // RLS (is_mentor_of) otomatis membatasi hasil hanya ke siswa bimbingan pembimbing ini.
   const { data } = await supabase

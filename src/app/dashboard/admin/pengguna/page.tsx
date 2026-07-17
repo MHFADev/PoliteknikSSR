@@ -13,6 +13,11 @@ const ROLE_BADGES: Record<
   string,
   { label: string; tone: string; className: string }
 > = {
+  root: {
+    label: "Root",
+    tone: "danger",
+    className: "bg-[#FEF3C7] text-[#D97706] border border-[#FDE68A] ring-1 ring-[#F59E0B]",
+  },
   owner: {
     label: "Owner",
     tone: "warning",
@@ -36,7 +41,7 @@ const ROLE_BADGES: Record<
 };
 
 export default async function AdminUsersPage() {
-  const supabase = createClient();
+  const supabase = await createClient();
 
   const { data: profiles } = await supabase
     .from("profiles")
@@ -44,6 +49,7 @@ export default async function AdminUsersPage() {
       "id, full_name, identity_number, kelas, instansi, role, approved, created_at, jurusan_id, avatar_url, study_programs!left(nama)",
     )
     .neq("role", "owner")
+    .neq("role", "root")
     .order("created_at", { ascending: false });
 
   const pendingUsers = await getPendingUsers();

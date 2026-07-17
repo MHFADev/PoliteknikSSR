@@ -113,7 +113,7 @@ export class SupabaseCalendarRepository implements ICalendarRepository {
     month: number,
     studentId?: string | null
   ): Promise<CalendarEvent[]> {
-    const supabase = createClient();
+    const supabase = await createClient();
     const [start, end] = this.getMonthRange(year, month);
 
     let query = supabase
@@ -155,7 +155,7 @@ export class SupabaseCalendarRepository implements ICalendarRepository {
    * @returns Array CalendarEvent
    */
   async getAllEvents(search?: string): Promise<CalendarEvent[]> {
-    const supabase = createClient();
+    const supabase = await createClient();
 
     let query = supabase
       .from("calendar_events")
@@ -192,7 +192,8 @@ export class SupabaseCalendarRepository implements ICalendarRepository {
    */
   async createEvent(input: CreateEventInput): Promise<{ id?: string; error?: string }> {
     // Dapatkan user yang sedang login (dari session cookie)
-    const { data: { user }, error: authError } = await createClient().auth.getUser();
+    const client = await createClient();
+    const { data: { user }, error: authError } = await client.auth.getUser();
 
     if (authError || !user) {
       return { error: "Unauthorized — Silakan login terlebih dahulu" };
@@ -311,7 +312,7 @@ export class SupabaseCalendarRepository implements ICalendarRepository {
     upcomingEvents: number;
     totalSiswa: number;
   }> {
-    const supabase = createClient();
+    const supabase = await createClient();
     const today = new Date().toISOString().slice(0, 10);
 
     const [
@@ -353,7 +354,7 @@ export class SupabaseCalendarRepository implements ICalendarRepository {
    * @returns Array CalendarEvent — event mendatang
    */
   async getUpcomingEvents(limit: number): Promise<CalendarEvent[]> {
-    const supabase = createClient();
+    const supabase = await createClient();
     const today = new Date().toISOString().slice(0, 10);
 
     const { data, error } = await supabase
@@ -397,7 +398,7 @@ export class SupabaseCalendarRepository implements ICalendarRepository {
     year: number,
     month: number
   ): Promise<MonthlyAttendance> {
-    const supabase = createClient();
+    const supabase = await createClient();
     const [start, end] = this.getMonthRange(year, month);
 
     // -------------------------------------------------------

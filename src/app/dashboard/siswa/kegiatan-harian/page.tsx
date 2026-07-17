@@ -7,7 +7,7 @@ import { formatDate, todayISODate } from "@/lib/utils";
 import styles from "@/styles/pages/dashboard/siswa/Logbook.module.css";
 
 export default async function SiswaLogbookPage() {
-  const supabase = createClient();
+  const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();

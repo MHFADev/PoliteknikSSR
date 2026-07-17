@@ -3,7 +3,7 @@ import { LogbookReviewList } from "@/components/logbook/LogbookGradeModal";
 import styles from "@/styles/pages/dashboard/pembimbing/Logbook.module.css";
 
 export default async function PembimbingLogbookPage() {
-  const supabase = createClient();
+  const supabase = await createClient();
 
   const { data } = await supabase
     .from("logbook_entries")
