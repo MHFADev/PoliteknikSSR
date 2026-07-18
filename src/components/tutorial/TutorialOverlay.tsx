@@ -22,19 +22,19 @@ function useMediaQuery(q: string): boolean {
   return m
 }
 
-function waitForEl(sel: string, timeout = 6000): Promise<boolean> {
+function waitForEl(sel: string, timeout = 2000): Promise<boolean> {
   return new Promise((resolve) => {
     if (document.querySelector(sel)) { resolve(true); return }
     const obs = new MutationObserver(() => {
       if (document.querySelector(sel)) { obs.disconnect(); resolve(true) }
     })
-    obs.observe(document.body, { childList: true, subtree: true, attributes: true })
+    obs.observe(document.body, { childList: true, subtree: true })
     let elapsed = 0
     const iv = setInterval(() => {
-      elapsed += 200
+      elapsed += 80
       if (document.querySelector(sel)) { clearInterval(iv); obs.disconnect(); resolve(true); return }
       if (elapsed >= timeout) { clearInterval(iv); obs.disconnect(); resolve(false) }
-    }, 200)
+    }, 80)
   })
 }
 
@@ -80,21 +80,21 @@ export function TutorialOverlay({ role, onComplete }: Props) {
             if (window.location.pathname === step.navigateTo) {
               clearInterval(check); resolve()
             }
-          }, 100)
-          setTimeout(() => { clearInterval(check); resolve() }, 5000)
+          }, 50)
+          setTimeout(() => { clearInterval(check); resolve() }, 2000)
         })
-        await new Promise((r) => setTimeout(r, 500))
+        await new Promise((r) => setTimeout(r, 150))
       }
 
       if (cancelled || !mountedRef.current) return
 
-      if (!isMobile && step.expandSidebar) { clickEl("[data-tour='expand-sidebar']"); await new Promise((r) => setTimeout(r, 300)) }
-      if (isMobile && step.expandMobileMore) { clickEl("[data-tour='expand-more']"); await new Promise((r) => setTimeout(r, 300)) }
+      if (!isMobile && step.expandSidebar) { clickEl("[data-tour='expand-sidebar']"); await new Promise((r) => setTimeout(r, 100)) }
+      if (isMobile && step.expandMobileMore) { clickEl("[data-tour='expand-more']"); await new Promise((r) => setTimeout(r, 100)) }
 
       if (step.target) {
-        const elFound = await waitForEl(step.waitFor || step.target, 4000)
+        const elFound = await waitForEl(step.waitFor || step.target, 2000)
         if (!mountedRef.current || cancelled) return
-        if (!elFound) { setFound(false) } else { await new Promise((r) => setTimeout(r, 200)) }
+        if (!elFound) { setFound(false) } else { await new Promise((r) => setTimeout(r, 80)) }
       }
 
       if (!cancelled && mountedRef.current) setUiState("ready")
@@ -135,8 +135,8 @@ export function TutorialOverlay({ role, onComplete }: Props) {
     updatePos()
     window.addEventListener("resize", updatePos)
     window.addEventListener("scroll", updatePos, true)
-    const t1 = setTimeout(updatePos, 300)
-    const t2 = setTimeout(updatePos, 1000)
+    const t1 = setTimeout(updatePos, 100)
+    const t2 = setTimeout(updatePos, 400)
     return () => {
       window.removeEventListener("resize", updatePos)
       window.removeEventListener("scroll", updatePos, true)
