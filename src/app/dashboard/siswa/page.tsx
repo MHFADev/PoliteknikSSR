@@ -190,6 +190,7 @@ export default async function SiswaOverviewPage() {
               {new Date(todayRecord.scanned_at).toLocaleTimeString("id-ID", {
                 hour: "2-digit",
                 minute: "2-digit",
+                timeZone: "Asia/Jakarta",
               })}
             </p>
           </div>

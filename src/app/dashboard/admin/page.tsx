@@ -361,6 +361,7 @@ export default async function AdminOverviewPage() {
                             {new Date(s.scannedAt).toLocaleTimeString("id-ID", {
                               hour: "2-digit",
                               minute: "2-digit",
+                              timeZone: "Asia/Jakarta",
                             })}
                           </span>
                         )}
