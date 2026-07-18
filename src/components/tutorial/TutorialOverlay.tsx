@@ -22,23 +22,21 @@ function useMediaQuery(q: string): boolean {
   return m
 }
 
-function waitForEl(sel: string, timeout = 2000): Promise<boolean> {
+function q(sel: string): HTMLElement | null { return document.querySelector(sel) }
+
+function waitForEl(sel: string, timeout = 1500): Promise<boolean> {
   return new Promise((resolve) => {
-    if (document.querySelector(sel)) { resolve(true); return }
-    const obs = new MutationObserver(() => {
-      if (document.querySelector(sel)) { obs.disconnect(); resolve(true) }
-    })
+    if (q(sel)) { resolve(true); return }
+    const obs = new MutationObserver(() => { if (q(sel)) { obs.disconnect(); resolve(true) } })
     obs.observe(document.body, { childList: true, subtree: true })
     let elapsed = 0
     const iv = setInterval(() => {
-      elapsed += 80
-      if (document.querySelector(sel)) { clearInterval(iv); obs.disconnect(); resolve(true); return }
+      elapsed += 60
+      if (q(sel)) { clearInterval(iv); obs.disconnect(); resolve(true); return }
       if (elapsed >= timeout) { clearInterval(iv); obs.disconnect(); resolve(false) }
-    }, 80)
+    }, 60)
   })
 }
-
-function clickEl(sel: string) { (document.querySelector(sel) as HTMLElement)?.click() }
 
 export function TutorialOverlay({ role, onComplete }: Props) {
   const steps = useMemo(() => TUTORIAL_STEPS[role] || [], [role])
@@ -48,9 +46,8 @@ export function TutorialOverlay({ role, onComplete }: Props) {
 
   const [stepIdx, setStepIdx] = useState(0)
   const [rect, setRect] = useState<DOMRect | null>(null)
-  const [tooltipPos, setTooltipPos] = useState({ top: 0, left: 0 })
   const [uiState, setUiState] = useState<"loading" | "ready">("loading")
-  const [found, setFound] = useState(true)
+  const [found, setFound] = useState(false)
   const mountedRef = useRef(true)
   const stepRef = useRef(stepIdx)
   stepRef.current = stepIdx
@@ -68,33 +65,35 @@ export function TutorialOverlay({ role, onComplete }: Props) {
     async function prepare() {
       setUiState("loading")
       setRect(null)
-      setFound(true)
+      setFound(false)
 
       const needNav = step.navigateTo && step.navigateTo !== window.location.pathname
 
       if (needNav) {
         router.push(step.navigateTo!)
-        await new Promise<void>((resolve) => {
-          const check = setInterval(() => {
-            if (cancelled) { clearInterval(check); resolve(); return }
-            if (window.location.pathname === step.navigateTo) {
-              clearInterval(check); resolve()
-            }
-          }, 50)
-          setTimeout(() => { clearInterval(check); resolve() }, 2000)
-        })
-        await new Promise((r) => setTimeout(r, 150))
+        let waited = 0
+        while (waited < 1500) {
+          if (cancelled) return
+          if (window.location.pathname === step.navigateTo) break
+          await new Promise((r) => setTimeout(r, 40))
+          waited += 40
+        }
+        await new Promise((r) => setTimeout(r, 100))
       }
 
       if (cancelled || !mountedRef.current) return
 
-      if (!isMobile && step.expandSidebar) { clickEl("[data-tour='expand-sidebar']"); await new Promise((r) => setTimeout(r, 100)) }
-      if (isMobile && step.expandMobileMore) { clickEl("[data-tour='expand-more']"); await new Promise((r) => setTimeout(r, 100)) }
+      if (!isMobile && step.expandSidebar) { q("[data-tour='expand-sidebar']")?.click(); await new Promise((r) => setTimeout(r, 80)) }
+      if (isMobile && step.expandMobileMore) { q("[data-tour='expand-more']")?.click(); await new Promise((r) => setTimeout(r, 80)) }
 
       if (step.target) {
-        const elFound = await waitForEl(step.waitFor || step.target, 2000)
+        const exists = await waitForEl(step.waitFor || step.target, 1500)
         if (!mountedRef.current || cancelled) return
-        if (!elFound) { setFound(false) } else { await new Promise((r) => setTimeout(r, 80)) }
+        if (exists) {
+          setFound(true)
+          const el = q(step.target!)
+          if (el) setRect(el.getBoundingClientRect())
+        }
       }
 
       if (!cancelled && mountedRef.current) setUiState("ready")
@@ -102,47 +101,25 @@ export function TutorialOverlay({ role, onComplete }: Props) {
 
     prepare()
     return () => { cancelled = true }
-  }, [stepIdx, isMobile, router, current])
+  }, [stepIdx, isMobile, router])
 
-  // ── Position tooltip ──
-  const updatePos = useCallback(() => {
-    if (!current?.target || uiState !== "ready" || !found) { setRect(null); return }
-    const el = document.querySelector(current.target) as HTMLElement | null
-    if (!el) { setRect(null); return }
-
-    const r = el.getBoundingClientRect()
-    setRect(r)
-
-    if (isMobile) { setTooltipPos({ top: 0, left: 0 }); return }
-
-    const gap = 14, vw = window.innerWidth, vh = window.innerHeight
-    const placement = current.placement || "right"
-    let top = 0, left = 0, tw = 320
-
-    if (placement === "right") {
-      left = Math.min(r.right + gap, vw - tw - gap)
-      top = Math.max(gap, Math.min(r.top + r.height / 2 - 80, vh - 240))
-    } else if (placement === "bottom") {
-      left = Math.max(gap, Math.min(r.left + r.width / 2 - tw / 2, vw - tw - gap))
-      top = Math.min(r.bottom + gap, vh - 240)
-    }
-
-    setTooltipPos({ top, left })
-  }, [current?.target, current?.placement, isMobile, uiState, found])
-
+  // ── Recalc rect on resize/scroll ──
   useEffect(() => {
-    if (uiState !== "ready") return
-    updatePos()
-    window.addEventListener("resize", updatePos)
-    window.addEventListener("scroll", updatePos, true)
-    const t1 = setTimeout(updatePos, 100)
-    const t2 = setTimeout(updatePos, 400)
-    return () => {
-      window.removeEventListener("resize", updatePos)
-      window.removeEventListener("scroll", updatePos, true)
-      clearTimeout(t1); clearTimeout(t2)
+    if (uiState !== "ready" || !found || !current?.target) return
+    const update = () => {
+      const el = q(current.target!)
+      if (el) setRect(el.getBoundingClientRect())
     }
-  }, [updatePos, uiState, stepIdx])
+    update()
+    window.addEventListener("resize", update)
+    window.addEventListener("scroll", update, true)
+    const t = setTimeout(update, 300)
+    return () => {
+      window.removeEventListener("resize", update)
+      window.removeEventListener("scroll", update, true)
+      clearTimeout(t)
+    }
+  }, [uiState, found, current?.target, stepIdx])
 
   if (!steps.length || !current) return null
 
@@ -154,7 +131,7 @@ export function TutorialOverlay({ role, onComplete }: Props) {
 
   const isFirst = stepIdx === 0
   const isLast = stepIdx === steps.length - 1
-  const hasTarget = !!current.target && found && !!rect
+  const hasHighlight = found && !!rect
 
   // Page label
   let pageLabel = current.pageLabel || ""
@@ -166,6 +143,34 @@ export function TutorialOverlay({ role, onComplete }: Props) {
 
   const needsNav = current.navigateTo && current.navigateTo !== (typeof window !== "undefined" ? window.location.pathname : "")
 
+  const tooltipContent = (
+    <>
+      <div className={styles.header}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 8 }}>
+          <div className={styles.dots}>
+            {steps.map((_, i) => (
+              <span key={i} className={`${styles.dot} ${i === stepIdx ? styles.dotActive : styles.dotInactive}`} />
+            ))}
+          </div>
+          <button onClick={onComplete} className={styles.closeBtn}><X className="h-4 w-4" /></button>
+        </div>
+      </div>
+      <div className={styles.body}>
+        {pageLabel && <div className={styles.pageLabel}>{pageLabel}</div>}
+        <h3 className={styles.title}>{current.title}</h3>
+        <p className={styles.desc}>{current.description}</p>
+        <div className={styles.counter}>{stepIdx + 1} / {steps.length}</div>
+      </div>
+      <div className={styles.actions}>
+        <button onClick={onComplete} className={styles.skipBtn}><SkipForward className="h-3.5 w-3.5" /> Skip</button>
+        <div style={{ display: "flex", gap: 8 }}>
+          {!isFirst && <button onClick={goPrev} className={styles.prevBtn}><ChevronLeft className="h-3.5 w-3.5" /> Prev</button>}
+          <button onClick={goNext} className={styles.nextBtn}>{isLast ? "Selesai" : "Next"}{!isLast && <ChevronRight className="h-3.5 w-3.5" />}</button>
+        </div>
+      </div>
+    </>
+  )
+
   return (
     <AnimatePresence mode="wait">
       {uiState === "loading" && needsNav && (
@@ -174,11 +179,10 @@ export function TutorialOverlay({ role, onComplete }: Props) {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.2 }}
+          transition={{ duration: 0.15 }}
           className={styles.loadingOverlay}
         >
           <div className={styles.spinner} />
-          <span className={styles.loadingText}>Membuka halaman...</span>
         </motion.div>
       )}
 
@@ -188,11 +192,11 @@ export function TutorialOverlay({ role, onComplete }: Props) {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.2 }}
+          transition={{ duration: 0.15 }}
           className={styles.overlay}
         >
           {/* Backdrop */}
-          {hasTarget && rect ? (
+          {hasHighlight && rect ? (
             <>
               <div key="top" className={styles.backdrop} style={{ top: 0, left: 0, right: 0, height: rect.top }} onClick={onComplete} />
               <div key="bottom" className={styles.backdrop} style={{ top: rect.bottom, left: 0, right: 0, height: `calc(100vh - ${rect.bottom}px)` }} onClick={onComplete} />
@@ -203,87 +207,32 @@ export function TutorialOverlay({ role, onComplete }: Props) {
             <div className={styles.backdrop} style={{ inset: 0 }} onClick={onComplete} />
           )}
 
-          {/* Highlight */}
-          {hasTarget && rect && (
+          {/* Highlight ring only when element found */}
+          {hasHighlight && rect && (
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
-              transition={{ type: "spring", stiffness: 300, damping: 22 }}
+              transition={{ type: "spring", stiffness: 350, damping: 24 }}
               className={styles.highlight}
               style={{ top: rect.top - 4, left: rect.left - 4, width: rect.width + 8, height: rect.height + 8 }}
             />
           )}
 
-          {/* Tooltip */}
-          {isMobile ? (
-            <motion.div
-              initial={{ opacity: 0, y: 40 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ type: "spring", stiffness: 300, damping: 28, delay: 0.08 }}
-              className={`${styles.tooltip} ${styles.tooltipMobile}`}
-            >
-              <div className={styles.header}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 8 }}>
-                  <div className={styles.dots}>
-                    {steps.map((_, i) => (
-                      <span key={i} className={`${styles.dot} ${i === stepIdx ? styles.dotActive : styles.dotInactive}`} />
-                    ))}
-                  </div>
-                  <button onClick={onComplete} className={styles.closeBtn}><X className="h-4 w-4" /></button>
-                </div>
-              </div>
-              <div className={styles.body}>
-                {pageLabel && <div className={styles.pageLabel}>{pageLabel}</div>}
-                <h3 className={styles.title}>{current.title}</h3>
-                <p className={styles.desc}>{current.description}</p>
-                <div className={styles.counter}>{stepIdx + 1} / {steps.length}</div>
-              </div>
-              <div className={styles.actions}>
-                <button onClick={onComplete} className={styles.skipBtn}><SkipForward className="h-3.5 w-3.5" /> Skip</button>
-                <div style={{ display: "flex", gap: 8 }}>
-                  {!isFirst && <button onClick={goPrev} className={styles.prevBtn}><ChevronLeft className="h-3.5 w-3.5" /> Prev</button>}
-                  <button onClick={goNext} className={styles.nextBtn}>{isLast ? "Selesai" : "Next"}{!isLast && <ChevronRight className="h-3.5 w-3.5" />}</button>
-                </div>
-              </div>
-              {/* Drag handle */}
-              <div style={{ width: 36, height: 4, borderRadius: 2, background: "#CBD5E1", margin: "0 auto 8px" }} />
-            </motion.div>
-          ) : (
-            <motion.div
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ type: "spring", stiffness: 300, damping: 26, delay: 0.08 }}
-              className={`${styles.tooltip} ${styles.tooltipDesktop}`}
-              style={isFirst ? { top: "50%", left: "50%", transform: "translate(-50%,-50%)" } : { top: tooltipPos.top, left: tooltipPos.left, width: 320 }}
-            >
-              {!isFirst && current.placement === "right" && rect && (
-                <div className={styles.arrow} style={{ left: -7, top: Math.min(80, rect.height / 2) - 7 }} />
-              )}
-              <div className={styles.header}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 8 }}>
-                  <div className={styles.dots}>
-                    {steps.map((_, i) => (
-                      <span key={i} className={`${styles.dot} ${i === stepIdx ? styles.dotActive : styles.dotInactive}`} />
-                    ))}
-                  </div>
-                  <button onClick={onComplete} className={styles.closeBtn}><X className="h-4 w-4" /></button>
-                </div>
-              </div>
-              <div className={styles.body}>
-                {pageLabel && <div className={styles.pageLabel}>{pageLabel}</div>}
-                <h3 className={styles.title}>{current.title}</h3>
-                <p className={styles.desc}>{current.description}</p>
-                <div className={styles.counter}>{stepIdx + 1} / {steps.length}</div>
-              </div>
-              <div className={styles.actions}>
-                <button onClick={onComplete} className={styles.skipBtn}><SkipForward className="h-3.5 w-3.5" /> Skip</button>
-                <div style={{ display: "flex", gap: 8 }}>
-                  {!isFirst && <button onClick={goPrev} className={styles.prevBtn}><ChevronLeft className="h-3.5 w-3.5" /> Prev</button>}
-                  <button onClick={goNext} className={styles.nextBtn}>{isLast ? "Selesai" : "Next"}{!isLast && <ChevronRight className="h-3.5 w-3.5" />}</button>
-                </div>
-              </div>
-            </motion.div>
-          )}
+          {/* Tooltip - centered always, reliable */}
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ type: "spring", stiffness: 350, damping: 26, delay: 0.05 }}
+            style={{
+              position: "fixed",
+              pointerEvents: "auto",
+              zIndex: 10000,
+            }}
+            className={isMobile ? styles.tooltipMobileCard : styles.tooltipDesktopCard}
+          >
+            {tooltipContent}
+            {isMobile && <div style={{ width: 36, height: 4, borderRadius: 2, background: "#CBD5E1", margin: "0 auto 8px" }} />}
+          </motion.div>
         </motion.div>
       )}
     </AnimatePresence>

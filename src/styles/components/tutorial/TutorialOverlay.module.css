@@ -7,10 +7,9 @@
 
 .backdrop {
   position: fixed;
-  background: rgba(15, 23, 42, 0.6);
+  background: rgba(15, 23, 42, 0.55);
   backdrop-filter: blur(2px);
   pointer-events: auto;
-  transition: all 0.3s ease;
 }
 
 .highlight {
@@ -18,51 +17,38 @@
   border: 2.5px solid #fff;
   border-radius: 10px;
   pointer-events: none;
-  box-shadow:
-    0 0 0 1px rgba(59, 130, 246, 0.3),
-    0 0 24px rgba(59, 130, 246, 0.5),
-    inset 0 0 12px rgba(59, 130, 246, 0.08);
+  box-shadow: 0 0 0 1px rgba(59,130,246,0.3), 0 0 24px rgba(59,130,246,0.5);
   animation: pulse 2s ease-in-out infinite;
 }
 
 @keyframes pulse {
-  0%, 100% { box-shadow: 0 0 0 1px rgba(59,130,246,0.3), 0 0 24px rgba(59,130,246,0.5), inset 0 0 12px rgba(59,130,246,0.08); }
-  50% { box-shadow: 0 0 0 1px rgba(59,130,246,0.4), 0 0 32px rgba(59,130,246,0.65), inset 0 0 16px rgba(59,130,246,0.12); }
+  0%, 100% { box-shadow: 0 0 0 1px rgba(59,130,246,0.3), 0 0 24px rgba(59,130,246,0.5); }
+  50% { box-shadow: 0 0 0 1px rgba(59,130,246,0.4), 0 0 32px rgba(59,130,246,0.65); }
 }
 
-.tooltip {
-  position: fixed;
-  pointer-events: auto;
+.tooltipDesktopCard {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 380px;
+  max-width: 88vw;
   background: #fff;
-  z-index: 10000;
+  border-radius: 16px;
+  box-shadow: 0 12px 48px rgba(0,0,0,0.2), 0 2px 8px rgba(0,0,0,0.06);
   overflow: hidden;
 }
 
-.tooltipDesktop {
-  border-radius: 14px;
-  box-shadow: 0 8px 40px rgba(0,0,0,0.18), 0 2px 8px rgba(0,0,0,0.06);
-}
-
-.tooltipMobile {
-  bottom: 0;
-  left: 0;
-  right: 0;
-  border-radius: 20px 20px 0 0;
-  box-shadow: 0 -4px 30px rgba(0,0,0,0.12);
-}
-
-.arrow {
-  position: absolute;
-  width: 14px;
-  height: 14px;
+.tooltipMobileCard {
+  bottom: 24px;
+  left: 16px;
+  right: 16px;
   background: #fff;
-  transform: rotate(45deg);
-  border-radius: 2px;
+  border-radius: 18px;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.15);
+  overflow: hidden;
 }
 
-.header {
-  padding: 1.25rem 1.25rem 0.5rem;
-}
+.header { padding: 1.25rem 1.25rem 0.5rem; }
 
 .dots {
   display: flex;
@@ -71,8 +57,8 @@
 }
 
 .dot {
-  width: 7px;
-  height: 7px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
   transition: all 0.3s ease;
 }
@@ -80,12 +66,10 @@
 .dotActive {
   background: #2563eb;
   transform: scale(1.15);
-  box-shadow: 0 0 6px rgba(37, 99, 235, 0.4);
+  box-shadow: 0 0 6px rgba(37,99,235,0.4);
 }
 
-.dotInactive {
-  background: #cbd5e1;
-}
+.dotInactive { background: #cbd5e1; }
 
 .closeBtn {
   background: none;
@@ -98,14 +82,9 @@
   line-height: 1;
 }
 
-.closeBtn:hover {
-  background: #f1f5f9;
-  color: #475569;
-}
+.closeBtn:hover { background: #f1f5f9; color: #475569; }
 
-.body {
-  padding: 0 1.25rem;
-}
+.body { padding: 0 1.25rem; }
 
 .pageLabel {
   font-size: 0.65rem;
@@ -159,11 +138,7 @@
   transition: all 0.15s;
 }
 
-.skipBtn:hover {
-  background: #f8fafc;
-  color: #64748b;
-  border-color: #cbd5e1;
-}
+.skipBtn:hover { background: #f8fafc; color: #64748b; border-color: #cbd5e1; }
 
 .prevBtn {
   display: flex;
@@ -180,10 +155,7 @@
   transition: all 0.15s;
 }
 
-.prevBtn:hover {
-  background: #f8fafc;
-  border-color: #cbd5e1;
-}
+.prevBtn:hover { background: #f8fafc; border-color: #cbd5e1; }
 
 .nextBtn {
   display: flex;
@@ -198,17 +170,16 @@
   color: #fff;
   cursor: pointer;
   transition: all 0.2s;
+  margin-left: auto;
 }
 
 .nextBtn:hover {
   background: #1d4ed8;
   transform: translateY(-1px);
-  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+  box-shadow: 0 4px 14px rgba(37,99,235,0.35);
 }
 
-.nextBtn:active {
-  transform: translateY(0);
-}
+.nextBtn:active { transform: translateY(0); }
 
 .loadingOverlay {
   position: fixed;
@@ -217,28 +188,18 @@
   backdrop-filter: blur(4px);
   z-index: 9999;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 16px;
   pointer-events: auto;
 }
 
 .spinner {
-  width: 32px;
-  height: 32px;
+  width: 28px;
+  height: 28px;
   border: 3px solid rgba(255,255,255,0.15);
   border-top-color: #fff;
   border-radius: 50%;
-  animation: spin 0.7s linear infinite;
+  animation: spin 0.6s linear infinite;
 }
 
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-
-.loadingText {
-  color: rgba(255,255,255,0.85);
-  font-size: 0.875rem;
-  font-weight: 500;
-}
+@keyframes spin { to { transform: rotate(360deg); } }
