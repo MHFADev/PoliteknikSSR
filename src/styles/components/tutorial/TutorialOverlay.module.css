@@ -7,22 +7,27 @@
 
 .backdrop {
   position: fixed;
-  background: rgba(0, 0, 0, 0.6);
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(2px);
   pointer-events: auto;
+  transition: all 0.3s ease;
 }
 
 .highlight {
   position: fixed;
-  border: 2px solid #fff;
+  border: 2.5px solid #fff;
   border-radius: 10px;
   pointer-events: none;
-  box-shadow: 0 0 24px rgba(59, 130, 246, 0.45), inset 0 0 12px rgba(59, 130, 246, 0.1);
-  animation: pulse-highlight 2s ease-in-out infinite;
+  box-shadow:
+    0 0 0 1px rgba(59, 130, 246, 0.3),
+    0 0 24px rgba(59, 130, 246, 0.5),
+    inset 0 0 12px rgba(59, 130, 246, 0.08);
+  animation: pulse 2s ease-in-out infinite;
 }
 
-@keyframes pulse-highlight {
-  0%, 100% { box-shadow: 0 0 24px rgba(59, 130, 246, 0.45), inset 0 0 12px rgba(59, 130, 246, 0.1); }
-  50% { box-shadow: 0 0 32px rgba(59, 130, 246, 0.65), inset 0 0 16px rgba(59, 130, 246, 0.15); }
+@keyframes pulse {
+  0%, 100% { box-shadow: 0 0 0 1px rgba(59,130,246,0.3), 0 0 24px rgba(59,130,246,0.5), inset 0 0 12px rgba(59,130,246,0.08); }
+  50% { box-shadow: 0 0 0 1px rgba(59,130,246,0.4), 0 0 32px rgba(59,130,246,0.65), inset 0 0 16px rgba(59,130,246,0.12); }
 }
 
 .tooltip {
@@ -30,11 +35,12 @@
   pointer-events: auto;
   background: #fff;
   z-index: 10000;
+  overflow: hidden;
 }
 
 .tooltipDesktop {
   border-radius: 14px;
-  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.2), 0 2px 8px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 8px 40px rgba(0,0,0,0.18), 0 2px 8px rgba(0,0,0,0.06);
 }
 
 .tooltipMobile {
@@ -42,15 +48,7 @@
   left: 0;
   right: 0;
   border-radius: 20px 20px 0 0;
-  box-shadow: 0 -4px 32px rgba(0, 0, 0, 0.15);
-}
-
-.tooltipCenter {
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 360px;
-  max-width: 90vw;
+  box-shadow: 0 -4px 30px rgba(0,0,0,0.12);
 }
 
 .arrow {
@@ -59,6 +57,7 @@
   height: 14px;
   background: #fff;
   transform: rotate(45deg);
+  border-radius: 2px;
 }
 
 .header {
@@ -75,12 +74,13 @@
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  transition: all 0.3s;
+  transition: all 0.3s ease;
 }
 
 .dotActive {
   background: #2563eb;
-  transform: scale(1.2);
+  transform: scale(1.15);
+  box-shadow: 0 0 6px rgba(37, 99, 235, 0.4);
 }
 
 .dotInactive {
@@ -94,7 +94,8 @@
   padding: 4px;
   color: #94a3b8;
   border-radius: 6px;
-  transition: background 0.15s;
+  transition: all 0.15s;
+  line-height: 1;
 }
 
 .closeBtn:hover {
@@ -116,11 +117,11 @@
 }
 
 .title {
-  font-size: 1.05rem;
+  font-size: 1rem;
   font-weight: 700;
   color: #0f172a;
   margin-bottom: 6px;
-  line-height: 1.3;
+  line-height: 1.35;
 }
 
 .desc {
@@ -161,6 +162,7 @@
 .skipBtn:hover {
   background: #f8fafc;
   color: #64748b;
+  border-color: #cbd5e1;
 }
 
 .prevBtn {
@@ -180,6 +182,7 @@
 
 .prevBtn:hover {
   background: #f8fafc;
+  border-color: #cbd5e1;
 }
 
 .nextBtn {
@@ -194,38 +197,37 @@
   font-weight: 600;
   color: #fff;
   cursor: pointer;
-  transition: all 0.15s;
-  margin-left: auto;
+  transition: all 0.2s;
 }
 
 .nextBtn:hover {
   background: #1d4ed8;
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
 }
 
 .nextBtn:active {
   transform: translateY(0);
 }
 
-/* Loading state when navigating */
 .loadingOverlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.6);
+  background: rgba(15, 23, 42, 0.7);
+  backdrop-filter: blur(4px);
   z-index: 9999;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 12px;
+  gap: 16px;
   pointer-events: auto;
 }
 
 .spinner {
   width: 32px;
   height: 32px;
-  border: 3px solid rgba(255, 255, 255, 0.2);
+  border: 3px solid rgba(255,255,255,0.15);
   border-top-color: #fff;
   border-radius: 50%;
   animation: spin 0.7s linear infinite;
@@ -236,7 +238,7 @@
 }
 
 .loadingText {
-  color: #fff;
+  color: rgba(255,255,255,0.85);
   font-size: 0.875rem;
   font-weight: 500;
 }
