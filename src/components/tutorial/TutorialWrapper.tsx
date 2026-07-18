@@ -13,11 +13,17 @@ export function TutorialWrapper({ role }: TutorialWrapperProps) {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    if (role !== "siswa" && role !== "pembimbing") {
+      setLoading(false)
+      return
+    }
     checkTutorialNeeded()
       .then((needed) => {
-        if (role === "siswa" || role === "pembimbing") {
-          setShow(needed)
-        }
+        console.log("[TutorialWrapper] role:", role, "needed:", needed)
+        setShow(needed)
+      })
+      .catch((err) => {
+        console.error("[TutorialWrapper] error:", err)
       })
       .finally(() => setLoading(false))
   }, [role])

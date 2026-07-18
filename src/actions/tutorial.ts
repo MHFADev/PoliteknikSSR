@@ -1,16 +1,22 @@
 "use server"
 
-import { createClient, createAdminClient } from "@/lib/supabase/server"
-import { Repositories } from "@/lib/repositories"
+import { createClient } from "@/lib/supabase/server"
 
 export async function checkTutorialNeeded(): Promise<boolean> {
-  const user = await Repositories.users().getCurrentUser()
-  if (!user) return false
-  const supabase = createClient()
-  const { data: { user: authUser } } = await supabase.auth.getUser()
-  if (!authUser) return false
-  const settings = authUser.user_metadata?.settings || {}
-  return !settings.tutorialCompleted
+  try {
+    const supabase = createClient()
+    const { data: { user: authUser } } = await supabase.auth.getUser()
+    if (!authUser) {
+      console.warn("[tutorial] No auth user found")
+      return false
+    }
+    const settings = authUser.user_metadata?.settings || {}
+    console.log("[tutorial] authUser.user_metadata:", JSON.stringify(authUser.user_metadata))
+    return !settings.tutorialCompleted
+  } catch (err) {
+    console.error("[tutorial] checkTutorialNeeded error:", err)
+    return false
+  }
 }
 
 export async function completeTutorial(): Promise<void> {
