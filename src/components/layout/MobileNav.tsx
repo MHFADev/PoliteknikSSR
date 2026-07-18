@@ -111,10 +111,12 @@ export function MobileNav({ role, fullName, avatarUrl }: Props) {
         {mainItems.map((item) => {
           const active = pathname === item.href;
           const Icon = item.icon;
+          const tourAttr = `${role}-${item.href.split("/").pop() || "dashboard"}`
           return (
             <Link
               key={item.href}
               href={item.href}
+              data-tour={tourAttr}
               className={cn(styles.navItem, active && styles.navItemActive)}
             >
               <Icon className={cn(styles.navIcon, active && styles.navIconActive)} />

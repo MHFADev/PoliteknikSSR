@@ -12,28 +12,28 @@
  *   file ini bisa digantikan dengan hasil generate tsb.
  *
  * TABEL:
- * - profiles → Data user (siswa, pembimbing, admin)
- * - student_mentors → Relasi pembimbing-siswa
- * - attendance_sessions → Sesi QR presensi harian
- * - attendance_records → Record presensi per siswa per sesi
- * - leave_requests → Pengajuan izin/cuti/sakit siswa
- * - logbook_entries → Catatan kegiatan harian siswa
- * - study_programs → Program studi / jurusan
- * - calendar_events → Event kalender akademik
- * - announcements & announcement_recipients → Pengumuman
- * - allowed_locations → Geofence lokasi presensi
+ * - profiles -> Data user (siswa, pembimbing, admin)
+ * - student_mentors -> Relasi pembimbing-siswa
+ * - attendance_sessions -> Sesi QR presensi harian
+ * - attendance_records -> Record presensi per siswa per sesi
+ * - leave_requests -> Pengajuan izin/cuti/sakit siswa
+ * - logbook_entries -> Catatan kegiatan harian siswa
+ * - study_programs -> Program studi / jurusan
+ * - calendar_events -> Event kalender akademik
+ * - announcements & announcement_recipients -> Pengumuman
+ * - allowed_locations -> Geofence lokasi presensi
  */
 
 /** Role user dalam sistem */
 export type UserRole = "siswa" | "pembimbing" | "admin" | "owner" | "root";
-/** Status presensi — hanya "hadir" atau "telat" */
+/** Status presensi -- hanya "hadir" atau "telat" */
 export type AttendanceStatus = "hadir" | "telat";
 /** Jenis izin yang bisa diajukan siswa */
 export type LeaveType = "izin" | "sakit" | "cuti";
 /** Status pengajuan izin */
 export type LeaveStatus = "pending" | "disetujui" | "ditolak";
 
-/** Profil user — data inti untuk semua role (siswa, pembimbing, admin) */
+/** Profil user -- data inti untuk semua role (siswa, pembimbing, admin) */
 export type Profile = {
   id: string;
   full_name: string;
@@ -48,7 +48,7 @@ export type Profile = {
   updated_at: string;
 };
 
-/** Sesi presensi QR — dibuat oleh admin per hari, berlaku 12 jam */
+/** Sesi presensi QR -- dibuat oleh admin per hari, berlaku 12 jam */
 export type AttendanceSession = {
   id: string;
   session_date: string;
@@ -58,7 +58,7 @@ export type AttendanceSession = {
   created_at: string;
 };
 
-/** Record presensi — 1 record per siswa per sesi (unique: student_id + session_date) */
+/** Record presensi -- 1 record per siswa per sesi (unique: student_id + session_date) */
 export type AttendanceRecord = {
   id: string;
   session_id: string;
@@ -68,7 +68,7 @@ export type AttendanceRecord = {
   device_info: string | null;
 };
 
-/** Pengajuan izin/cuti/sakit — diajukan siswa, direview pembimbing/admin */
+/** Pengajuan izin/cuti/sakit -- diajukan siswa, direview pembimbing/admin */
 export type LeaveRequest = {
   id: string;
   student_id: string;
@@ -85,7 +85,7 @@ export type LeaveRequest = {
   created_at: string;
 };
 
-/** Entri logbook — catatan kegiatan harian siswa, bisa dinilai pembimbing */
+/** Entri logbook -- catatan kegiatan harian siswa, bisa dinilai pembimbing */
 export type LogbookEntry = {
   id: string;
   student_id: string;
@@ -107,7 +107,7 @@ export type StudyProgram = {
   created_at: string;
 };
 
-/** Event kalender — bisa event umum atau spesifik per siswa */
+/** Event kalender -- bisa event umum atau spesifik per siswa */
 export type CalendarEvent = {
   id: string;
   title: string;
@@ -120,7 +120,7 @@ export type CalendarEvent = {
   created_at: string;
 };
 
-/** Pengumuman — bisa dikirim ke semua siswa atau per program studi */
+/** Pengumuman -- bisa dikirim ke semua siswa atau per program studi */
 export type Announcement = {
   id: string;
   title: string;
@@ -149,7 +149,7 @@ export type AllowedLocation = {
 };
 
 /**
- * Database — Tipe utama untuk SupabaseClient<Database>
+ * Database -- Tipe utama untuk SupabaseClient<Database>
  * Berisi semua tabel, view, fungsi, enum, dan composite types.
  */
 export type Database = {
@@ -186,7 +186,7 @@ export type Database = {
         };
         Relationships: [];
       };
-      /** Relasi pembimbing ↔ siswa (many-to-many) */
+      /** Relasi pembimbing <-> siswa (many-to-many) */
       student_mentors: {
         Row: { student_id: string; mentor_id: string; assigned_at: string };
         Insert: { student_id: string; mentor_id: string; assigned_at?: string };
@@ -214,7 +214,7 @@ export type Database = {
         };
         Relationships: [];
       };
-      /** Record presensi — 1 entry per siswa per sesi */
+      /** Record presensi -- 1 entry per siswa per sesi */
       attendance_records: {
         Row: AttendanceRecord;
         Insert: {
@@ -451,6 +451,7 @@ export type Database = {
         Row: {
           id: number;
           late_time: string;
+          entry_time: string;
           qr_expiry_hours: number;
           updated_at: string;
           updated_by: string | null;
@@ -458,6 +459,7 @@ export type Database = {
         Insert: {
           id?: number;
           late_time?: string;
+          entry_time?: string;
           qr_expiry_hours?: number;
           updated_at?: string;
           updated_by?: string | null;
@@ -465,6 +467,7 @@ export type Database = {
         Update: {
           id?: number;
           late_time?: string;
+          entry_time?: string;
           qr_expiry_hours?: number;
           updated_at?: string;
           updated_by?: string | null;
@@ -485,7 +488,7 @@ export type Database = {
         Update: { id?: string; nama?: string; created_at?: string };
         Relationships: [];
       };
-      };
+    };
     Views: Record<string, never>;
     Functions: Record<string, never>;
     Enums: {

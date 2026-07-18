@@ -230,11 +230,12 @@ export class SupabaseAttendanceRepository implements IAttendanceRepository {
     const isOnTime = isOnTimeByScanTime(lateTime, clientTime);
     const status: AttendanceStatus = isOnTime ? "hadir" : "telat";
 
-    // --- Simpan record presensi ---
+    // --- Simpan record presensi dengan timestamp client ---
     const { error } = await adminSupabase.from("attendance_records").insert({
       session_id: sessionId,
       student_id: studentId,
       status,
+      scanned_at: clientTime?.toISOString(),
     });
 
     if (error) {

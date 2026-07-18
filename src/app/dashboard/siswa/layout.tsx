@@ -18,6 +18,7 @@ import { RealtimeClock } from "@/components/RealtimeClock";
 import { BlockedWatcher } from "@/components/BlockedWatcher";
 import { StudentDocumentPopup } from "@/components/StudentDocumentPopup";
 import { AutoCheckinBanner } from "@/components/AutoCheckinBanner";
+import { TutorialWrapper } from "@/components/tutorial/TutorialWrapper";
 
 export default async function SiswaLayout({ children }: { children: React.ReactNode }) {
   const supabase = createClient();
@@ -40,6 +41,7 @@ export default async function SiswaLayout({ children }: { children: React.ReactN
       <StudentDocumentPopup />
       <Sidebar role="siswa" fullName={profile?.full_name ?? "Siswa"} avatarUrl={profile?.avatar_url ?? null} />
       <MobileNav role="siswa" fullName={profile?.full_name ?? "Siswa"} avatarUrl={profile?.avatar_url ?? null} />
+      <TutorialWrapper role="siswa" />
 
       <main className="flex-1 overflow-x-hidden overflow-y-auto max-w-full" style={{ backgroundColor: "var(--bg-muted, #F0F0F0)" }}>
         <div className="flex items-center justify-between px-4 sm:px-6 lg:px-8 py-2 mb-2">

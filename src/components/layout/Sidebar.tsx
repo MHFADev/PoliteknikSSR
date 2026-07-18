@@ -46,8 +46,9 @@ export function Sidebar({ role, fullName, avatarUrl }: SidebarProps) {
       );
     }
 
+    const tourAttr = `${role}-${item.href.split("/").pop() || "dashboard"}`
     rendered.push(
-      <Link key={item.href} href={item.href} className={styles.link}>
+      <Link key={item.href} href={item.href} className={styles.link} data-tour={tourAttr}>
         {active && (
           <motion.div
             layoutId="sidebar-active"

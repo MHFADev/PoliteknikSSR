@@ -18,7 +18,7 @@ export async function submitAttendance(scannedToken: string, clientTimestamp?: s
   if (result.error) return { success: false, message: result.error };
 
   const displayTime = clientDate || new Date();
-  const timeStr = displayTime.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" });
+  const timeStr = displayTime.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit", timeZone: "Asia/Jakarta" });
   const name = user.fullName || "Siswa";
 
   revalidatePath("/dashboard/siswa");
@@ -33,21 +33,23 @@ export async function submitAttendance(scannedToken: string, clientTimestamp?: s
   };
 }
 
-export async function saveAttendanceSettings(lateTime: string, qrDuration: number) {
+export async function saveAttendanceSettings(lateTime: string, qrDuration: number, entryTime?: string) {
   const user = await Repositories.users().getCurrentUser();
   if (!user) return { error: "Sesi tidak ditemukan." };
   if (!["admin", "owner", "root"].includes(user.role)) return { error: "Hanya admin dan root yang dapat mengubah pengaturan." };
 
   const supabase = createAdminClient();
+  const data: Record<string, any> = {
+    id: 1,
+    late_time: lateTime,
+    qr_expiry_hours: qrDuration,
+    updated_by: user.id,
+    updated_at: new Date().toISOString(),
+  };
+  if (entryTime !== undefined) data.entry_time = entryTime;
   const { error } = await supabase
     .from("app_settings")
-    .upsert({
-      id: 1,
-      late_time: lateTime,
-      qr_expiry_hours: qrDuration,
-      updated_by: user.id,
-      updated_at: new Date().toISOString(),
-    });
+    .upsert(data);
   if (error) return { error: error.message };
   return { success: true };
 }
@@ -107,10 +109,10 @@ export async function autoCheckinByGps(latitude: number, longitude: number, clie
   const isOnTime = checkTime.getHours() * 60 + checkTime.getMinutes() < h * 60 + m;
   const status = isOnTime ? "hadir" : "telat";
 
-  const { error } = await adminSupabase.from("attendance_records").insert({ session_id: session.id, student_id: user.id, status });
+  const { error } = await adminSupabase.from("attendance_records").insert({ session_id: session.id, student_id: user.id, status, scanned_at: clientDate?.toISOString() });
   if (error) return { success: false, message: "Gagal menyimpan presensi." };
 
-  const timeStr = checkTime.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" });
+  const timeStr = checkTime.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit", timeZone: "Asia/Jakarta" });
   const name = user.fullName || "Siswa";
   revalidatePath("/dashboard/siswa");
   return {
@@ -129,11 +131,12 @@ export async function getAttendanceSettings() {
   const supabase = createClient();
   const { data } = await supabase
     .from("app_settings")
-    .select("late_time, qr_expiry_hours")
+    .select("late_time, qr_expiry_hours, entry_time")
     .eq("id", 1)
     .maybeSingle();
   return {
     lateTime: data?.late_time || "08:00",
     qrDuration: data?.qr_expiry_hours || 12,
+    entryTime: data?.entry_time || "07:00",
   };
 }

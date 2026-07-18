@@ -1595,3 +1595,298 @@ UU src/styles/pages/dashboard/siswa/Kalender.module.css
  M src/lib/repositories/supabase/SupabaseAuthProvider.ts
 ?? .auto-pull.lock
 [2026-07-16 16:02:10] Commit atau stash dulu sebelum auto-pull bisa jalan.
+[2026-07-17 07:47:02] === Auto-pull dimulai ===
+[2026-07-17 07:47:02] DIBATALKAN: Ada perubahan lokal yang belum di-commit:
+[2026-07-17 07:47:02] M auto-pull.log
+?? .auto-pull.lock
+[2026-07-17 07:47:02] Commit atau stash dulu sebelum auto-pull bisa jalan.
+[2026-07-17 08:02:02] === Auto-pull dimulai ===
+[2026-07-17 08:02:02] DIBATALKAN: Ada perubahan lokal yang belum di-commit:
+[2026-07-17 08:02:02] M auto-pull.log
+ M skills-lock.json
+?? .auto-pull.lock
+[2026-07-17 08:02:02] Commit atau stash dulu sebelum auto-pull bisa jalan.
+[2026-07-17 08:17:01] === Auto-pull dimulai ===
+[2026-07-17 08:17:01] DIBATALKAN: Ada perubahan lokal yang belum di-commit:
+[2026-07-17 08:17:01] M auto-pull.log
+ M skills-lock.json
+ M src/actions/attendance.ts
+ M src/actions/qr.ts
+ M src/app/dashboard/admin/sertifikat-rekap/page.tsx
+ M src/app/dashboard/siswa/absensi/page.tsx
+ M src/app/login/page.tsx
+ M src/components/qr/QRScanner.tsx
+ M src/lib/repositories/supabase/AttendanceRepository.ts
+ M src/styles/pages/dashboard/siswa/Absensi.module.css
+ M src/types/database.ts
+ M tsconfig.tsbuildinfo
+?? .auto-pull.lock
+?? src/actions/settings.ts
+?? supabase/migrations/20250717_app_settings.sql
+[2026-07-17 08:17:01] Commit atau stash dulu sebelum auto-pull bisa jalan.
+[2026-07-17 08:32:01] === Auto-pull dimulai ===
+[2026-07-17 08:32:01] DIBATALKAN: Ada perubahan lokal yang belum di-commit:
+[2026-07-17 08:32:01] M auto-pull.log
+ M tsconfig.tsbuildinfo
+?? .auto-pull.lock
+[2026-07-17 08:32:01] Commit atau stash dulu sebelum auto-pull bisa jalan.
+[2026-07-17 08:47:01] === Auto-pull dimulai ===
+[2026-07-17 08:47:02] DIBATALKAN: Ada perubahan lokal yang belum di-commit:
+[2026-07-17 08:47:02] M auto-pull.log
+ M src/app/dashboard/admin/sertifikat-rekap/page.tsx
+ M src/components/PDFViewerModal.tsx
+ M src/lib/pdf/prakerinPdfGenerator.ts
+ M src/lib/types.ts
+ M tsconfig.tsbuildinfo
+?? .auto-pull.lock
+[2026-07-17 08:47:02] Commit atau stash dulu sebelum auto-pull bisa jalan.
+[2026-07-17 09:02:02] === Auto-pull dimulai ===
+[2026-07-17 09:02:02] DIBATALKAN: Ada perubahan lokal yang belum di-commit:
+[2026-07-17 09:02:02] M auto-pull.log
+ M src/app/dashboard/admin/sertifikat-rekap/page.tsx
+ M src/components/PDFViewerModal.tsx
+ M src/components/StudentDocuments.tsx
+ M src/lib/pdf/prakerinPdfGenerator.ts
+ M src/lib/types.ts
+ M tsconfig.tsbuildinfo
+?? .auto-pull.lock
+?? masalah.png
+[2026-07-17 09:02:02] Commit atau stash dulu sebelum auto-pull bisa jalan.
+[2026-07-17 09:17:01] === Auto-pull dimulai ===
+[2026-07-17 09:17:01] DIBATALKAN: Ada perubahan lokal yang belum di-commit:
+[2026-07-17 09:17:01] M auto-pull.log
+ M tsconfig.tsbuildinfo
+?? .auto-pull.lock
+?? "Screenshot 2026-07-17 090224.png"
+?? masalah.png
+[2026-07-17 09:17:01] Commit atau stash dulu sebelum auto-pull bisa jalan.
+[2026-07-17 09:32:01] === Auto-pull dimulai ===
+[2026-07-17 09:32:01] DIBATALKAN: Ada perubahan lokal yang belum di-commit:
+[2026-07-17 09:32:01] M auto-pull.log
+ M src/actions/attendance.ts
+ M src/actions/qr.ts
+ M src/actions/student-mentors.ts
+ M src/app/register/actions.ts
+ M src/app/register/page.tsx
+ M src/components/qr/QRGeneratorCard.tsx
+ M src/lib/navigation.ts
+ M src/lib/repositories/supabase/UserRepository.ts
+ M src/lib/repositories/types.ts
+ M tsconfig.tsbuildinfo
+?? .auto-pull.lock
+?? "Screenshot 2026-07-17 090224.png"
+?? masalah.png
+?? src/app/dashboard/pembimbing/qr/
+?? src/app/dashboard/pembimbing/sertifikat-rekap/
+[2026-07-17 09:32:02] Commit atau stash dulu sebelum auto-pull bisa jalan.
+[2026-07-17 09:47:01] === Auto-pull dimulai ===
+[2026-07-17 09:47:01] DIBATALKAN: Ada perubahan lokal yang belum di-commit:
+[2026-07-17 09:47:02] M auto-pull.log
+ M tsconfig.tsbuildinfo
+?? .auto-pull.lock
+?? "Screenshot 2026-07-17 090224.png"
+?? masalah.png
+[2026-07-17 09:47:02] Commit atau stash dulu sebelum auto-pull bisa jalan.
+[2026-07-17 10:02:01] === Auto-pull dimulai ===
+[2026-07-17 10:02:02] DIBATALKAN: Ada perubahan lokal yang belum di-commit:
+[2026-07-17 10:02:02] M auto-pull.log
+ M tsconfig.tsbuildinfo
+?? .auto-pull.lock
+?? "Screenshot 2026-07-17 090224.png"
+?? masalah.png
+[2026-07-17 10:02:02] Commit atau stash dulu sebelum auto-pull bisa jalan.
+[2026-07-17 10:17:02] === Auto-pull dimulai ===
+[2026-07-17 10:17:02] DIBATALKAN: Ada perubahan lokal yang belum di-commit:
+[2026-07-17 10:17:02] M auto-pull.log
+ M tsconfig.tsbuildinfo
+?? .auto-pull.lock
+?? "Screenshot 2026-07-17 090224.png"
+?? masalah.png
+[2026-07-17 10:17:02] Commit atau stash dulu sebelum auto-pull bisa jalan.
+[2026-07-17 10:32:01] === Auto-pull dimulai ===
+[2026-07-17 10:32:01] DIBATALKAN: Ada perubahan lokal yang belum di-commit:
+[2026-07-17 10:32:01] M auto-pull.log
+ M tsconfig.tsbuildinfo
+?? .auto-pull.lock
+?? "Screenshot 2026-07-17 090224.png"
+?? masalah.png
+[2026-07-17 10:32:02] Commit atau stash dulu sebelum auto-pull bisa jalan.
+[2026-07-17 10:47:02] === Auto-pull dimulai ===
+[2026-07-17 10:47:02] DIBATALKAN: Ada perubahan lokal yang belum di-commit:
+[2026-07-17 10:47:02] M auto-pull.log
+ M tsconfig.tsbuildinfo
+?? .auto-pull.lock
+?? "Screenshot 2026-07-17 090224.png"
+?? masalah.png
+[2026-07-17 10:47:02] Commit atau stash dulu sebelum auto-pull bisa jalan.
+[2026-07-17 11:02:01] === Auto-pull dimulai ===
+[2026-07-17 11:02:02] DIBATALKAN: Ada perubahan lokal yang belum di-commit:
+[2026-07-17 11:02:02] M auto-pull.log
+ M tsconfig.tsbuildinfo
+?? .auto-pull.lock
+?? "Screenshot 2026-07-17 090224.png"
+?? masalah.png
+[2026-07-17 11:02:02] Commit atau stash dulu sebelum auto-pull bisa jalan.
+[2026-07-17 13:02:02] === Auto-pull dimulai ===
+[2026-07-17 13:02:03] DIBATALKAN: Ada perubahan lokal yang belum di-commit:
+[2026-07-17 13:02:03] M auto-pull.log
+ M tsconfig.tsbuildinfo
+?? .auto-pull.lock
+?? "Screenshot 2026-07-17 090224.png"
+?? masalah.png
+[2026-07-17 13:02:03] Commit atau stash dulu sebelum auto-pull bisa jalan.
+[2026-07-17 13:17:02] === Auto-pull dimulai ===
+[2026-07-17 13:17:02] DIBATALKAN: Ada perubahan lokal yang belum di-commit:
+[2026-07-17 13:17:02] M auto-pull.log
+ M tsconfig.tsbuildinfo
+?? .auto-pull.lock
+?? "Screenshot 2026-07-17 090224.png"
+?? masalah.png
+[2026-07-17 13:17:02] Commit atau stash dulu sebelum auto-pull bisa jalan.
+[2026-07-17 13:32:02] === Auto-pull dimulai ===
+[2026-07-17 13:32:02] DIBATALKAN: Ada perubahan lokal yang belum di-commit:
+[2026-07-17 13:32:02] M auto-pull.log
+ M tsconfig.tsbuildinfo
+?? .auto-pull.lock
+?? "Screenshot 2026-07-17 090224.png"
+?? "Screenshot 2026-07-17 132111.png"
+?? masalah.png
+[2026-07-17 13:32:02] Commit atau stash dulu sebelum auto-pull bisa jalan.
+[2026-07-17 13:47:02] === Auto-pull dimulai ===
+[2026-07-17 13:47:02] DIBATALKAN: Ada perubahan lokal yang belum di-commit:
+[2026-07-17 13:47:02] M auto-pull.log
+ M tsconfig.tsbuildinfo
+?? .auto-pull.lock
+?? "Screenshot 2026-07-17 090224.png"
+?? "Screenshot 2026-07-17 132111.png"
+?? masalah.png
+[2026-07-17 13:47:02] Commit atau stash dulu sebelum auto-pull bisa jalan.
+[2026-07-17 14:02:02] === Auto-pull dimulai ===
+[2026-07-17 14:02:02] DIBATALKAN: Ada perubahan lokal yang belum di-commit:
+[2026-07-17 14:02:02] M auto-pull.log
+ M tsconfig.tsbuildinfo
+?? .auto-pull.lock
+?? "Screenshot 2026-07-17 090224.png"
+?? "Screenshot 2026-07-17 132111.png"
+?? masalah.png
+[2026-07-17 14:02:02] Commit atau stash dulu sebelum auto-pull bisa jalan.
+[2026-07-17 14:17:02] === Auto-pull dimulai ===
+[2026-07-17 14:17:02] DIBATALKAN: Ada perubahan lokal yang belum di-commit:
+[2026-07-17 14:17:02] M auto-pull.log
+ M tsconfig.tsbuildinfo
+?? .auto-pull.lock
+?? "Screenshot 2026-07-17 090224.png"
+?? "Screenshot 2026-07-17 132111.png"
+?? masalah.png
+[2026-07-17 14:17:02] Commit atau stash dulu sebelum auto-pull bisa jalan.
+[2026-07-17 14:32:02] === Auto-pull dimulai ===
+[2026-07-17 14:32:02] DIBATALKAN: Ada perubahan lokal yang belum di-commit:
+[2026-07-17 14:32:02] M auto-pull.log
+ M tsconfig.tsbuildinfo
+?? .auto-pull.lock
+?? "Screenshot 2026-07-17 090224.png"
+?? "Screenshot 2026-07-17 132111.png"
+?? masalah.png
+[2026-07-17 14:32:02] Commit atau stash dulu sebelum auto-pull bisa jalan.
+[2026-07-17 14:47:02] === Auto-pull dimulai ===
+[2026-07-17 14:47:02] DIBATALKAN: Ada perubahan lokal yang belum di-commit:
+[2026-07-17 14:47:02] M auto-pull.log
+ M tsconfig.tsbuildinfo
+?? .auto-pull.lock
+?? "Screenshot 2026-07-17 090224.png"
+?? "Screenshot 2026-07-17 132111.png"
+?? masalah.png
+[2026-07-17 14:47:02] Commit atau stash dulu sebelum auto-pull bisa jalan.
+[2026-07-17 15:02:02] === Auto-pull dimulai ===
+[2026-07-17 15:02:02] DIBATALKAN: Ada perubahan lokal yang belum di-commit:
+[2026-07-17 15:02:02] M auto-pull.log
+ M tsconfig.tsbuildinfo
+?? .auto-pull.lock
+?? "Screenshot 2026-07-17 090224.png"
+?? "Screenshot 2026-07-17 132111.png"
+?? masalah.png
+[2026-07-17 15:02:02] Commit atau stash dulu sebelum auto-pull bisa jalan.
+[2026-07-17 15:17:02] === Auto-pull dimulai ===
+[2026-07-17 15:17:02] DIBATALKAN: Ada perubahan lokal yang belum di-commit:
+[2026-07-17 15:17:02] M auto-pull.log
+ D build.log
+ D build2.log
+ D build3.log
+ D build4.log
+ D build5.log
+ D build6.log
+ D build7.log
+ D build_continue.log
+ D build_final.log
+ D build_latest.log
+ M src/app/dashboard/admin/sertifikat-rekap/page.tsx
+ M src/app/dashboard/pembimbing/sertifikat-rekap/page.tsx
+ M src/components/layout/Sidebar.tsx
+ M src/lib/types.ts
+ M src/styles/components/layout/Sidebar.module.css
+ M tsconfig.tsbuildinfo
+?? .auto-pull.lock
+?? "Screenshot 2026-07-17 090224.png"
+?? "Screenshot 2026-07-17 132111.png"
+?? masalah.png
+[2026-07-17 15:17:02] Commit atau stash dulu sebelum auto-pull bisa jalan.
+[2026-07-17 15:32:02] === Auto-pull dimulai ===
+[2026-07-17 15:32:02] DIBATALKAN: Ada perubahan lokal yang belum di-commit:
+[2026-07-17 15:32:02] M auto-pull.log
+ M tsconfig.tsbuildinfo
+?? .auto-pull.lock
+?? "Screenshot 2026-07-17 090224.png"
+?? "Screenshot 2026-07-17 132111.png"
+?? masalah.png
+[2026-07-17 15:32:02] Commit atau stash dulu sebelum auto-pull bisa jalan.
+[2026-07-17 15:47:02] === Auto-pull dimulai ===
+[2026-07-17 15:47:02] DIBATALKAN: Ada perubahan lokal yang belum di-commit:
+[2026-07-17 15:47:02] M auto-pull.log
+ M tsconfig.tsbuildinfo
+?? .auto-pull.lock
+?? "Screenshot 2026-07-17 090224.png"
+?? "Screenshot 2026-07-17 132111.png"
+?? masalah.png
+[2026-07-17 15:47:02] Commit atau stash dulu sebelum auto-pull bisa jalan.
+[2026-07-18 07:47:02] === Auto-pull dimulai ===
+[2026-07-18 07:47:02] DIBATALKAN: Ada perubahan lokal yang belum di-commit:
+[2026-07-18 07:47:02] M auto-pull.log
+ M tsconfig.tsbuildinfo
+?? .auto-pull.lock
+?? "Screenshot 2026-07-17 090224.png"
+?? "Screenshot 2026-07-17 132111.png"
+?? masalah.png
+[2026-07-18 07:47:02] Commit atau stash dulu sebelum auto-pull bisa jalan.
+[2026-07-18 08:02:01] === Auto-pull dimulai ===
+[2026-07-18 08:02:02] DIBATALKAN: Ada perubahan lokal yang belum di-commit:
+[2026-07-18 08:02:02] M auto-pull.log
+ M src/actions/attendance.ts
+ M src/actions/profile.ts
+ M src/lib/repositories/supabase/AttendanceRepository.ts
+ M tsconfig.tsbuildinfo
+?? .auto-pull.lock
+?? "Screenshot 2026-07-17 090224.png"
+?? "Screenshot 2026-07-17 132111.png"
+?? masalah.png
+[2026-07-18 08:02:02] Commit atau stash dulu sebelum auto-pull bisa jalan.
+[2026-07-18 08:17:02] === Auto-pull dimulai ===
+[2026-07-18 08:17:02] DIBATALKAN: Ada perubahan lokal yang belum di-commit:
+[2026-07-18 08:17:02] M auto-pull.log
+ M src/actions/attendance.ts
+ M src/actions/profile.ts
+ M src/app/dashboard/pembimbing/layout.tsx
+ M src/app/dashboard/siswa/layout.tsx
+ M src/components/layout/MobileNav.tsx
+ M src/components/layout/Sidebar.tsx
+ M src/lib/repositories/supabase/AttendanceRepository.ts
+ M src/types/database.ts
+ M tsconfig.tsbuildinfo
+?? .auto-pull.lock
+?? "Screenshot 2026-07-17 090224.png"
+?? "Screenshot 2026-07-17 132111.png"
+?? masalah.png
+?? src/actions/tutorial.ts
+?? src/components/tutorial/
+?? src/lib/tutorial/
+?? supabase/migrations/20250718_add_entry_time.sql
+[2026-07-18 08:17:02] Commit atau stash dulu sebelum auto-pull bisa jalan.

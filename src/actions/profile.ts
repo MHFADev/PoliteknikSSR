@@ -1,7 +1,7 @@
 "use server";
 
 import { Repositories } from "@/lib/repositories";
-import { createClient } from "@/lib/supabase/server";
+import { createClient, createAdminClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 
 /**
@@ -91,14 +91,20 @@ export async function getSettings() {
     notifications: true,
   };
 
-  // Default khusus admin
-  if (user.user_metadata?.role === "admin") {
+  // Default khusus admin — baca dari app_settings agar konsisten
+  if (user.user_metadata?.role === "admin" || user.user_metadata?.role === "owner" || user.user_metadata?.role === "root") {
     defaults.pklStartDate = "";
     defaults.pklEndDate = "";
-    defaults.qrExpiryHours = 12;
-    defaults.entryTime = "07:00";
-    defaults.lateTime = "08:00";
     defaults.defaultLocationRadius = 100;
+    // Baca nilai aktual dari app_settings
+    const { data: appCfg } = await supabase
+      .from("app_settings")
+      .select("late_time, qr_expiry_hours, entry_time")
+      .eq("id", 1)
+      .maybeSingle();
+    defaults.qrExpiryHours = appCfg?.qr_expiry_hours ?? 12;
+    defaults.entryTime = appCfg?.entry_time ?? "07:00";
+    defaults.lateTime = appCfg?.late_time ?? "08:00";
   }
 
   // Default khusus pembimbing
@@ -141,6 +147,21 @@ export async function updateSettings(settings: Record<string, any>) {
   });
 
   if (error) return { error: "Gagal menyimpan pengaturan: " + error.message };
+
+  // Sync attendance settings ke app_settings jika admin
+  const role = currentMetadata.role || user.user_metadata?.role;
+  if (role === "admin" || role === "owner" || role === "root") {
+    const adminSupabase = createAdminClient();
+    const syncData: Record<string, any> = {};
+    if (settings.lateTime !== undefined) syncData.late_time = settings.lateTime;
+    if (settings.entryTime !== undefined) syncData.entry_time = settings.entryTime;
+    if (settings.qrExpiryHours !== undefined) syncData.qr_expiry_hours = settings.qrExpiryHours;
+    if (Object.keys(syncData).length > 0) {
+      syncData.updated_by = user.id;
+      syncData.updated_at = new Date().toISOString();
+      await adminSupabase.from("app_settings").upsert({ id: 1, ...syncData });
+    }
+  }
 
   revalidatePath("/dashboard/siswa/settings");
   revalidatePath("/dashboard/pembimbing/settings");
