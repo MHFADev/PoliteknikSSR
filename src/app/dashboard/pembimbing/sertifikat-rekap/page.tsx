@@ -4,12 +4,13 @@ import { useState, useEffect, useCallback, useTransition, useMemo } from "react"
 import { Card, CardHeader } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { createClient } from "@/lib/supabase/client";
-import { Loader2, FileText, History, Search, ChevronDown, X, ClipboardList, Plus, Image } from "lucide-react";
+import { Loader2, FileText, History, Search, ChevronDown, X, ClipboardList, Plus, Users } from "lucide-react";
 import { getSentDocuments, sendCertificate, sendPrakerinRecap } from "@/actions/documents";
-import { UNSUR_NILAI_LABELS, prakerinGradeFromScore, prakerinGradeLabel, createDefaultPrakerinData, RECAP_THEMES } from "@/lib/types";
-import type { PrakerinRecapData, UnsurNilai, BidangKeahlian } from "@/lib/types";
-import { downloadPrakerinPdf } from "@/lib/pdf/prakerinPdfGenerator";
 import { getMyStudents } from "@/actions/student-mentors";
+import { UNSUR_NILAI_LABELS, prakerinGradeFromScore, prakerinGradeLabel, createDefaultPrakerinData, RECAP_THEMES } from "@/lib/types";
+import type { PrakerinRecapData, UnsurNilai, BidangKeahlian, ThemeColors } from "@/lib/types";
+import { downloadPrakerinPdf } from "@/lib/pdf/prakerinPdfGenerator";
+import { PDFEditor } from "@/components/PDFEditor";
 import { PDFViewerModal } from "@/components/PDFViewerModal";
 import styles from "@/styles/pages/dashboard/admin/SertifikatRekap.module.css";
 
@@ -100,7 +101,7 @@ function StudentSelect({
 }
 
 export default function PembimbingSertifikatRekapPage() {
-  const [tab, setTab] = useState<Tab>("prakerin");
+  const [tab, setTab] = useState<Tab>("certificate");
   const [students, setStudents] = useState<{ id: string; fullName: string; kelas: string | null; identityNumber: string | null; instansi: string | null; jurusanId: string | null; studyProgramName: string | null }[]>([]);
   const [history, setHistory] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -112,6 +113,10 @@ export default function PembimbingSertifikatRekapPage() {
   // Certificate form
   const [certStudentId, setCertStudentId] = useState("");
   const [certFile, setCertFile] = useState<File | null>(null);
+  const [pdfEditorUrl, setPdfEditorUrl] = useState<string | null>(null);
+  const [pdfEditorTitle, setPdfEditorTitle] = useState("");
+  const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null);
+  const [imagePreviewTitle, setImagePreviewTitle] = useState("");
 
   // Prakerin recap form
   const [prakerinStudentId, setPrakerinStudentId] = useState("");
@@ -140,15 +145,15 @@ export default function PembimbingSertifikatRekapPage() {
   const loadData = useCallback(async () => {
     setLoading(true);
     try {
-      const [s, h] = await Promise.all([getMyStudents(), getSentDocuments()]);
-      setStudents(s.map((st: any) => ({
-        id: st.id,
-        fullName: st.fullName,
-        kelas: st.kelas,
-        identityNumber: st.identityNumber,
-        instansi: st.instansi || null,
+      const [mentees, h] = await Promise.all([getMyStudents(), getSentDocuments()]);
+      setStudents(mentees.map((m: any) => ({
+        id: m.id,
+        fullName: m.fullName,
+        kelas: m.kelas,
+        identityNumber: m.identityNumber,
+        instansi: m.instansi,
         jurusanId: null,
-        studyProgramName: st.studyProgramName || null,
+        studyProgramName: null,
       })));
       setHistory(h);
     } finally {
@@ -160,11 +165,11 @@ export default function PembimbingSertifikatRekapPage() {
     loadData();
   }, [loadData]);
 
-  // Realtime subscription
+  // Realtime subscription — refresh when document sent/deleted
   useEffect(() => {
     const supabase = createClient();
     const channel = supabase
-      .channel("student_documents_changes")
+      .channel("student_documents_changes_pembimbing")
       .on("postgres_changes", { event: "*", schema: "public", table: "student_documents" }, () => {
         loadData();
       })
@@ -177,9 +182,61 @@ export default function PembimbingSertifikatRekapPage() {
     setTimeout(() => setMessage(null), 4000);
   }, []);
 
+  const handlePreviewCertificate = useCallback(() => {
+    if (!certFile) {
+      showMessage("error", "Pilih file sertifikat terlebih dahulu.");
+      return;
+    }
+    const url = URL.createObjectURL(certFile);
+    const isImage = IMAGE_EXTS.some(ext => certFile.name.toLowerCase().endsWith(ext));
+    if (isImage) {
+      setImagePreviewUrl(url);
+      setImagePreviewTitle(`Pratinjau Sertifikat - ${certFile.name}`);
+    } else {
+      setPdfEditorUrl(url);
+      setPdfEditorTitle(`Pratinjau Sertifikat - ${certFile.name}`);
+    }
+  }, [certFile, showMessage]);
+
+  const handleClosePdfEditor = useCallback(() => {
+    if (pdfEditorUrl) URL.revokeObjectURL(pdfEditorUrl);
+    setPdfEditorUrl(null);
+    setPdfEditorTitle("");
+  }, [pdfEditorUrl]);
+
+  const handleCloseImagePreview = useCallback(() => {
+    if (imagePreviewUrl) URL.revokeObjectURL(imagePreviewUrl);
+    setImagePreviewUrl(null);
+    setImagePreviewTitle("");
+  }, [imagePreviewUrl]);
+
+  const handleSendCertificate = useCallback(() => {
+    if (!certStudentId || !certFile) {
+      showMessage("error", "Pilih siswa dan file sertifikat.");
+      return;
+    }
+    setSending(() => {});
+    const fd = new FormData();
+    fd.append("file", certFile);
+    sendCertificate(certStudentId, fd).then((result) => {
+      if (result.success) {
+        showMessage("success", "Sertifikat berhasil dikirim!");
+        setCertFile(null);
+        setCertStudentId("");
+        loadData();
+      } else {
+        showMessage("error", result.message);
+      }
+    });
+  }, [certStudentId, certFile, showMessage, loadData]);
+
   const formatDate = useCallback((d: string) => {
     return new Date(d).toLocaleDateString("id-ID", {
-      day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit",
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
     });
   }, []);
 
@@ -296,7 +353,7 @@ export default function PembimbingSertifikatRekapPage() {
     } catch {
       showMessage("error", "Gagal generate PDF prakerin.");
     }
-  }, [prakerin, prakerinActiveScores.length, showMessage, recapTheme]);
+  }, [prakerin, prakerinActiveScores.length, showMessage]);
 
   // ─── Loading State ────────────────────────────────────
   if (loading) {
@@ -304,7 +361,7 @@ export default function PembimbingSertifikatRekapPage() {
       <div className={styles.pageContainer}>
         <div className={styles.pageHeader}>
           <h1>Sertifikat & Rekap Nilai</h1>
-          <p>Kirim rekap penilaian prakerin ke siswa bimbingan</p>
+          <p>Kirim sertifikat, rekap nilai, dan penilaian prakerin ke siswa bimbingan</p>
         </div>
         <div className={styles.skeletonGrid}>
           {[1, 2, 3].map((i) => (
@@ -329,7 +386,7 @@ export default function PembimbingSertifikatRekapPage() {
     <div className={styles.pageContainer}>
       <div className={styles.pageHeader}>
         <h1>Sertifikat & Rekap Nilai</h1>
-        <p>Kirim rekap penilaian prakerin ke siswa bimbingan</p>
+        <p>Kirim sertifikat dan penilaian prakerin ke siswa bimbingan</p>
       </div>
 
       {message && (
@@ -343,24 +400,24 @@ export default function PembimbingSertifikatRekapPage() {
 
       <div className={styles.statsRow}>
         <div className={styles.statCard}>
+          <Users className={styles.statIcon} />
+          <div>
+            <span className={styles.statValue}>{students.length}</span>
+            <span className={styles.statLabel}>Siswa Bimbingan</span>
+          </div>
+        </div>
+        <div className={styles.statCard}>
           <ClipboardList className={styles.statIcon} />
           <div>
             <span className={styles.statValue}>{history.filter((h) => h.type === "prakerin_recap").length}</span>
             <span className={styles.statLabel}>Rekap Prakerin</span>
           </div>
         </div>
-        <div className={styles.statCard}>
-          <FileText className={styles.statIcon} />
-          <div>
-            <span className={styles.statValue}>{students.length}</span>
-            <span className={styles.statLabel}>Siswa Bimbingan</span>
-          </div>
-        </div>
       </div>
 
       <div className={styles.tabs}>
         <button onClick={() => setTab("certificate")} className={`${styles.tab} ${tab === "certificate" ? styles.tabActive : ""}`}>
-          <Image className="h-4 w-4" />
+          <FileText className="h-4 w-4" />
           Upload Sertifikat
         </button>
         <button onClick={() => setTab("prakerin")} className={`${styles.tab} ${tab === "prakerin" ? styles.tabActive : ""}`}>
@@ -379,40 +436,51 @@ export default function PembimbingSertifikatRekapPage() {
           <div className={styles.formBody}>
             <div className={styles.formGroup}>
               <label>Siswa Penerima</label>
-              <StudentSelect students={students} value={certStudentId} onChange={setCertStudentId} placeholder="Pilih siswa penerima..." />
+              <StudentSelect
+                students={students}
+                value={certStudentId}
+                onChange={setCertStudentId}
+                placeholder="Pilih siswa penerima..."
+              />
             </div>
             <div className={styles.formGroup}>
               <label>File Sertifikat (PDF/Gambar)</label>
               <div className={styles.fileUploadArea}>
-                <input type="file" accept=".pdf,image/*" onChange={(e) => setCertFile(e.target.files?.[0] || null)} className={styles.fileInputHidden} id="cert-file" />
-                <label htmlFor="cert-file" className={styles.fileUploadLabel}>
+                <input
+                  type="file"
+                  accept=".pdf,image/*"
+                  onChange={(e) => setCertFile(e.target.files?.[0] || null)}
+                  className={styles.fileInputHidden}
+                  id="pembimbing-cert-file"
+                />
+                <label htmlFor="pembimbing-cert-file" className={styles.fileUploadLabel}>
                   {certFile ? (
                     <div className={styles.fileSelected}>
                       <FileText className="h-5 w-5" />
                       <span>{certFile.name}</span>
-                      <button type="button" onClick={(e) => { e.preventDefault(); e.stopPropagation(); setCertFile(null); }} className={styles.fileRemoveBtn}><X className="h-4 w-4" /></button>
+                      <button
+                        type="button"
+                        onClick={(e) => { e.preventDefault(); e.stopPropagation(); setCertFile(null); }}
+                        className={styles.fileRemoveBtn}
+                      >
+                        <X className="h-4 w-4" />
+                      </button>
                     </div>
                   ) : (
-                    <><FileText className="h-8 w-8 opacity-40" /><span>Klik untuk pilih file</span><span className={styles.fileHint}>PDF, JPG, PNG (maks. 10MB)</span></>
+                    <>
+                      <FileText className="h-8 w-8 opacity-40" />
+                      <span>Klik untuk pilih file</span>
+                      <span className={styles.fileHint}>PDF, JPG, PNG (maks. 10MB)</span>
+                    </>
                   )}
                 </label>
               </div>
             </div>
             <div className={styles.formActions}>
-              <button onClick={() => {
-                if (!certFile) { showMessage("error", "Pilih file sertifikat terlebih dahulu."); return; }
-                setSending(() => {});
-                const fd = new FormData();
-                fd.append("file", certFile);
-                sendCertificate(certStudentId, fd).then((result) => {
-                  if (result.success) {
-                    showMessage("success", "Sertifikat berhasil dikirim!");
-                    setCertFile(null);
-                    setCertStudentId("");
-                    loadData();
-                  } else { showMessage("error", result.message); }
-                });
-              }} disabled={sending || !certStudentId || !certFile} className={styles.btnPrimary}>
+              <button onClick={handlePreviewCertificate} disabled={!certFile} className={styles.btnSecondary}>
+                Pratinjau & Anotasi
+              </button>
+              <button onClick={handleSendCertificate} disabled={sending || !certStudentId || !certFile} className={styles.btnPrimary}>
                 {sending && <Loader2 className="h-4 w-4 animate-spin" />}
                 Kirim Sertifikat
               </button>
@@ -427,10 +495,10 @@ export default function PembimbingSertifikatRekapPage() {
           <div className={styles.formBody}>
             <div className={styles.formGroup}>
               <label>Siswa Penerima</label>
-              <StudentSelect students={students} value={prakerinStudentId} onChange={handlePrakerinStudentChange} placeholder="Pilih siswa bimbingan..." />
+              <StudentSelect students={students} value={prakerinStudentId} onChange={handlePrakerinStudentChange} placeholder="Pilih siswa..." />
             </div>
 
-            {/* Identity */}
+            {/* ─── Identity ──────────────────────────── */}
             <div className={styles.prakerinSection}>
               <div className={styles.prakerinSectionTitle}>Identitas Siswa</div>
               <div className={styles.prakerinIdentityGrid}>
@@ -461,7 +529,7 @@ export default function PembimbingSertifikatRekapPage() {
               </div>
             </div>
 
-            {/* Unsur Nilai */}
+            {/* ─── Unsur Nilai ────────────────────────── */}
             <div className={styles.prakerinSection}>
               <div className={styles.prakerinSectionTitle}>Tabel Unsur Nilai</div>
               <div className={styles.prakerinTable}>
@@ -480,17 +548,44 @@ export default function PembimbingSertifikatRekapPage() {
                     <div key={idx} className={styles.prakerinTableRowBidang}>
                       <span className={styles.prakerinColNo}>{idx + 1}</span>
                       <span className={styles.prakerinColUnsur}>
-                        <input type="text" value={item.name} onChange={(e) => updateUnsurNilaiName(idx, e.target.value)} placeholder="Nama unsur penilaian" className={styles.prakerinInput} />
+                        <input
+                          type="text"
+                          value={item.name}
+                          onChange={(e) => updateUnsurNilaiName(idx, e.target.value)}
+                          placeholder="Nama unsur penilaian"
+                          className={styles.prakerinInput}
+                        />
                       </span>
                       <span className={styles.prakerinColNilai}>
-                        <input type="number" min={0} max={100} step={1} value={item.score || ""} onChange={(e) => updateUnsurNilai(idx, parseInt(e.target.value) || 0)} className={styles.prakerinInput} placeholder="0" />
+                        <input
+                          type="number"
+                          min={0}
+                          max={100}
+                          step={1}
+                          value={item.score || ""}
+                          onChange={(e) => updateUnsurNilai(idx, parseInt(e.target.value) || 0)}
+                          className={styles.prakerinInput}
+                          placeholder="0"
+                        />
                       </span>
                       <span className={styles.prakerinColHuruf}>
-                        <span className={`${styles.prakerinGrade} ${item.score >= 90 ? styles.gradeA : item.score >= 80 ? styles.gradeB : item.score >= 70 ? styles.gradeC : item.score > 0 ? styles.gradeD : ""}`}>{grade}</span>
+                        <span className={`${styles.prakerinGrade} ${item.score >= 90 ? styles.gradeA : item.score >= 80 ? styles.gradeB : item.score >= 70 ? styles.gradeC : item.score > 0 ? styles.gradeD : ""}`}>
+                          {grade}
+                        </span>
                       </span>
-                      <span className={styles.prakerinColDesc}><span className={styles.prakerinLabel}>{label}</span></span>
+                      <span className={styles.prakerinColDesc}>
+                        <span className={styles.prakerinLabel}>{label}</span>
+                      </span>
                       <span className={styles.prakerinColAction}>
-                        <button type="button" onClick={() => removeUnsurNilai(idx)} className={styles.btnDangerSmall} aria-label="Hapus" disabled={prakerin.unsurNilai.length <= 1}><X className="h-4 w-4" /></button>
+                        <button
+                          type="button"
+                          onClick={() => removeUnsurNilai(idx)}
+                          className={styles.btnDangerSmall}
+                          aria-label="Hapus unsur nilai"
+                          disabled={prakerin.unsurNilai.length <= 1}
+                        >
+                          <X className="h-4 w-4" />
+                        </button>
                       </span>
                     </div>
                   );
@@ -500,24 +595,29 @@ export default function PembimbingSertifikatRekapPage() {
                   <span className={styles.prakerinColUnsur} style={{ fontWeight: 700, textAlign: "right", paddingRight: "12px" }}>RATA-RATA</span>
                   <span className={styles.prakerinColNilai} style={{ fontWeight: 700 }}>{prakerinAvg > 0 ? Math.round(prakerinAvg) : "—"}</span>
                   <span className={styles.prakerinColHuruf}>
-                    <span className={`${styles.prakerinGrade} ${prakerinAvg >= 90 ? styles.gradeA : prakerinAvg >= 80 ? styles.gradeB : prakerinAvg >= 70 ? styles.gradeC : prakerinAvg > 0 ? styles.gradeD : ""}`}>{prakerinAvgGrade}</span>
+                    <span className={`${styles.prakerinGrade} ${prakerinAvg >= 90 ? styles.gradeA : prakerinAvg >= 80 ? styles.gradeB : prakerinAvg >= 70 ? styles.gradeC : prakerinAvg > 0 ? styles.gradeD : ""}`}>
+                      {prakerinAvgGrade}
+                    </span>
                   </span>
                   <span className={styles.prakerinColDesc} style={{ fontWeight: 500 }}>{prakerinAvg > 0 ? prakerinGradeLabel(prakerinAvg) : ""}</span>
                   <span className={styles.prakerinColAction}></span>
                 </div>
               </div>
               <div className="p-3 bg-slate-50 border-t border-slate-200">
-                <button type="button" onClick={addUnsurNilai} className={styles.btnOutline}><Plus className="h-4 w-4" /> Tambah Unsur Nilai</button>
+                <button type="button" onClick={addUnsurNilai} className={styles.btnOutline}>
+                  <Plus className="h-4 w-4" />
+                  Tambah Unsur Nilai
+                </button>
               </div>
             </div>
 
-            {/* Bidang Keahlian */}
+            {/* ─── Bidang Keahlian ────────────────────── */}
             <div className={styles.prakerinSection}>
               <div className={styles.prakerinSectionTitle}>Bidang Keahlian Yang Dilatihkan</div>
               <div className={styles.prakerinTable}>
                 <div className={styles.prakerinTableHeaderBidang}>
                   <span className={styles.prakerinColNo}>No</span>
-                  <span className={styles.prakerinColUnsur}>Bidang Keahlian</span>
+                  <span className={styles.prakerinColUnsur}>Bidang Keahlian / Keterampilan</span>
                   <span className={styles.prakerinColNilai}>Nilai Angka</span>
                   <span className={styles.prakerinColHuruf}>Nilai Huruf</span>
                   <span className={styles.prakerinColDesc}>Keterangan</span>
@@ -530,74 +630,122 @@ export default function PembimbingSertifikatRekapPage() {
                     <div key={idx} className={styles.prakerinTableRowBidang}>
                       <span className={styles.prakerinColNo}>{idx + 1}</span>
                       <span className={styles.prakerinColUnsur}>
-                        <input type="text" value={item.name} onChange={(e) => updateBidangKeahlian(idx, "name", e.target.value)} placeholder="Contoh: Pemrograman Web" className={styles.prakerinInput} />
+                        <input
+                          type="text"
+                          value={item.name}
+                          onChange={(e) => updateBidangKeahlian(idx, "name", e.target.value)}
+                          placeholder="Contoh: Pemrograman Web"
+                          className={styles.prakerinInput}
+                        />
                       </span>
                       <span className={styles.prakerinColNilai}>
-                        <input type="number" min={0} max={100} step={1} value={item.score || ""} onChange={(e) => updateBidangKeahlian(idx, "score", e.target.value)} className={styles.prakerinInput} placeholder="0" />
+                        <input
+                          type="number"
+                          min={0}
+                          max={100}
+                          step={1}
+                          value={item.score || ""}
+                          onChange={(e) => updateBidangKeahlian(idx, "score", e.target.value)}
+                          className={styles.prakerinInput}
+                          placeholder="0"
+                        />
                       </span>
                       <span className={styles.prakerinColHuruf}>
-                        <span className={`${styles.prakerinGrade} ${item.score >= 90 ? styles.gradeA : item.score >= 80 ? styles.gradeB : item.score >= 70 ? styles.gradeC : item.score > 0 ? styles.gradeD : ""}`}>{grade}</span>
+                        <span className={`${styles.prakerinGrade} ${item.score >= 90 ? styles.gradeA : item.score >= 80 ? styles.gradeB : item.score >= 70 ? styles.gradeC : item.score > 0 ? styles.gradeD : ""}`}>
+                          {grade}
+                        </span>
                       </span>
-                      <span className={styles.prakerinColDesc}><span className={styles.prakerinLabel}>{label}</span></span>
+                      <span className={styles.prakerinColDesc}>
+                        <span className={styles.prakerinLabel}>{label}</span>
+                      </span>
                       <span className={styles.prakerinColAction}>
-                        <button type="button" onClick={() => removeBidangKeahlian(idx)} className={styles.btnDangerSmall} aria-label="Hapus"><X className="h-4 w-4" /></button>
+                        <button
+                          type="button"
+                          onClick={() => removeBidangKeahlian(idx)}
+                          className={styles.btnDangerSmall}
+                          aria-label="Hapus bidang keahlian"
+                        >
+                          <X className="h-4 w-4" />
+                        </button>
                       </span>
                     </div>
                   );
                 })}
               </div>
               <div className="p-3 bg-slate-50 border-t border-slate-200">
-                <button type="button" onClick={addBidangKeahlian} className={styles.btnOutline}><Plus className="h-4 w-4" /> Tambah Bidang Keahlian</button>
+                <button
+                  type="button"
+                  onClick={addBidangKeahlian}
+                  className={styles.btnOutline}
+                >
+                  <Plus className="h-4 w-4" />
+                  Tambah Bidang Keahlian
+                </button>
               </div>
             </div>
 
-            {/* Skala */}
+            {/* ─── Skala Penilaian ────────────────────── */}
             <div className={styles.prakerinSkalaRow}>
               <div className={styles.prakerinSkalaCard}>
                 <div className={styles.prakerinSkalaTitle}>Skala Penilaian Angka</div>
                 <div className={styles.prakerinSkalaList}>
-                  {[
-                    ["90 – 100", "#DCFCE7", "#16A34A", "Sangat Baik"],
-                    ["80 – 89", "#DBEAFE", "#2563EB", "Baik"],
-                    ["70 – 79", "#FEF3C7", "#D97706", "Cukup"],
-                    ["0 – 69", "#FEE2E2", "#DC2626", "Kurang"],
-                  ].map(([range, bg, color, label]) => (
-                    <div key={range} className={styles.prakerinSkalaItem}>
-                      <span className={styles.skalaRange} style={{ background: bg as string, color: color as string }}>{range}</span>
-                      <span>= {label}</span>
-                    </div>
-                  ))}
+                  <div className={styles.prakerinSkalaItem}>
+                    <span className={styles.skalaRange} style={{ background: "#DCFCE7", color: "#16A34A" }}>90 – 100</span>
+                    <span>= Sangat Baik</span>
+                  </div>
+                  <div className={styles.prakerinSkalaItem}>
+                    <span className={styles.skalaRange} style={{ background: "#DBEAFE", color: "#2563EB" }}>80 – 89</span>
+                    <span>= Baik</span>
+                  </div>
+                  <div className={styles.prakerinSkalaItem}>
+                    <span className={styles.skalaRange} style={{ background: "#FEF3C7", color: "#D97706" }}>70 – 79</span>
+                    <span>= Cukup</span>
+                  </div>
+                  <div className={styles.prakerinSkalaItem}>
+                    <span className={styles.skalaRange} style={{ background: "#FEE2E2", color: "#DC2626" }}>0 – 69</span>
+                    <span>= Kurang (Lulus Minimal 70)</span>
+                  </div>
                 </div>
               </div>
               <div className={styles.prakerinSkalaCard}>
                 <div className={styles.prakerinSkalaTitle}>Skala Penilaian Huruf</div>
                 <div className={styles.prakerinSkalaList}>
-                  {[
-                    ["A", "#DCFCE7", "#16A34A", "Sangat Baik (90 – 100)"],
-                    ["B", "#DBEAFE", "#2563EB", "Baik (80 – 89)"],
-                    ["C", "#FEF3C7", "#D97706", "Cukup (70 – 79)"],
-                    ["D", "#FEE2E2", "#DC2626", "Kurang (0 – 69)"],
-                  ].map(([grade, bg, color, label]) => (
-                    <div key={grade} className={styles.prakerinSkalaItem}>
-                      <span className={styles.skalaRange} style={{ background: bg as string, color: color as string }}>{grade}</span>
-                      <span>= {label}</span>
-                    </div>
-                  ))}
+                  <div className={styles.prakerinSkalaItem}>
+                    <span className={styles.skalaRange} style={{ background: "#DCFCE7", color: "#16A34A" }}>A</span>
+                    <span>= Sangat Baik (90 – 100)</span>
+                  </div>
+                  <div className={styles.prakerinSkalaItem}>
+                    <span className={styles.skalaRange} style={{ background: "#DBEAFE", color: "#2563EB" }}>B</span>
+                    <span>= Baik (80 – 89)</span>
+                  </div>
+                  <div className={styles.prakerinSkalaItem}>
+                    <span className={styles.skalaRange} style={{ background: "#FEF3C7", color: "#D97706" }}>C</span>
+                    <span>= Cukup (70 – 79)</span>
+                  </div>
+                  <div className={styles.prakerinSkalaItem}>
+                    <span className={styles.skalaRange} style={{ background: "#FEE2E2", color: "#DC2626" }}>D</span>
+                    <span>= Kurang (0 – 69)</span>
+                  </div>
                 </div>
               </div>
             </div>
 
-            {/* Tema */}
+            {/* ─── Tema Warna ────────────────────────── */}
             <div className={styles.prakerinSection}>
               <div className={styles.prakerinSectionTitle}>Tema Warna Tabel</div>
               <div style={{ padding: "1rem", display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>
                 {Object.entries(RECAP_THEMES).map(([key, theme]) => (
-                  <button key={key} type="button" onClick={() => setRecapTheme(key)} style={{
-                    display: "flex", alignItems: "center", gap: "0.5rem", padding: "0.5rem 0.75rem", borderRadius: "0.5rem",
-                    border: recapTheme === key ? `2px solid ${theme.colors.accent}` : "1px solid #CBD5E1",
-                    background: recapTheme === key ? "#F8FAFC" : "#fff", cursor: "pointer", fontSize: "0.8125rem", fontWeight: 500, color: "#1E293B",
-                    transition: "all 0.15s", minHeight: "36px",
-                  }}>
+                  <button
+                    key={key}
+                    type="button"
+                    onClick={() => setRecapTheme(key)}
+                    style={{
+                      display: "flex", alignItems: "center", gap: "0.5rem",
+                      padding: "0.5rem 0.75rem", borderRadius: "0.5rem", border: recapTheme === key ? `2px solid ${theme.colors.accent}` : "1px solid #CBD5E1",
+                      background: recapTheme === key ? "#F8FAFC" : "#fff", cursor: "pointer", fontSize: "0.8125rem", fontWeight: 500, color: "#1E293B",
+                      transition: "all 0.15s", minHeight: "36px",
+                    }}
+                  >
                     <span style={{ display: "flex", gap: "2px" }}>
                       <span style={{ width: "16px", height: "16px", borderRadius: "3px", background: theme.colors.headerBg }} />
                       <span style={{ width: "16px", height: "16px", borderRadius: "3px", background: theme.colors.rowEven }} />
@@ -608,7 +756,7 @@ export default function PembimbingSertifikatRekapPage() {
               </div>
             </div>
 
-            {/* Catatan & File */}
+            {/* ─── Catatan & File ─────────────────────── */}
             <div className={styles.formRow2}>
               <div className={styles.formGroup}>
                 <label>Tanggal Mulai PKL</label>
@@ -623,33 +771,54 @@ export default function PembimbingSertifikatRekapPage() {
               <label>Catatan (opsional)</label>
               <textarea value={prakerin.notes} onChange={(e) => updatePrakerinField("notes", e.target.value)} placeholder="Catatan tambahan..." rows={2} className={styles.textarea} />
             </div>
-
-            {/* TTD & NIP */}
+            {/* ─── TTD & NIP ──────────────────────────── */}
             <div className={styles.prakerinSection}>
               <div className={styles.prakerinSectionTitle}>Tanda Tangan & NIP</div>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem", padding: "1rem" }}>
                 <div style={{ padding: "0.75rem", border: "1px solid #E2E8F0", borderRadius: "0.5rem", background: "#FAFAFA" }}>
                   <div style={{ fontSize: "0.8125rem", fontWeight: 700, color: "#0F172A", marginBottom: "0.625rem", paddingBottom: "0.375rem", borderBottom: "2px solid #0F172A" }}>PEMBIMBING SEKOLAH</div>
-                  <div className={styles.formGroup}><label>Nama</label><input type="text" value={prakerin.pembimbingSekolahNama} onChange={(e) => updatePrakerinField("pembimbingSekolahNama", e.target.value)} placeholder="Nama lengkap" className={styles.inputDate} /></div>
-                  <div className={styles.formGroup} style={{ marginTop: "0.5rem" }}><label>NIP</label><input type="text" value={prakerin.pembimbingSekolahNip} onChange={(e) => updatePrakerinField("pembimbingSekolahNip", e.target.value)} placeholder="NIP" className={styles.inputDate} /></div>
+                  <div className={styles.formGroup}>
+                    <label>Nama</label>
+                    <input type="text" value={prakerin.pembimbingSekolahNama} onChange={(e) => updatePrakerinField("pembimbingSekolahNama", e.target.value)} placeholder="Nama lengkap" className={styles.inputDate} />
+                  </div>
+                  <div className={styles.formGroup} style={{ marginTop: "0.5rem" }}>
+                    <label>NIP</label>
+                    <input type="text" value={prakerin.pembimbingSekolahNip} onChange={(e) => updatePrakerinField("pembimbingSekolahNip", e.target.value)} placeholder="NIP" className={styles.inputDate} />
+                  </div>
                   <div className={styles.formGroup} style={{ marginTop: "0.5rem" }}>
                     <label>Foto Tanda Tangan</label>
                     <input type="file" accept="image/*" onChange={(e) => {
-                      const file = e.target.files?.[0]; if (file) { const r = new FileReader(); r.onload = () => updatePrakerinField("pembimbingSekolahTtd", r.result as string); r.readAsDataURL(file); }
+                      const file = e.target.files?.[0];
+                      if (file) { const r = new FileReader(); r.onload = () => updatePrakerinField("pembimbingSekolahTtd", r.result as string); r.readAsDataURL(file); }
                     }} className={styles.inputDate} style={{ padding: "0.375rem" }} />
-                    {prakerin.pembimbingSekolahTtd && <div style={{ marginTop: "0.375rem", borderRadius: "0.375rem", overflow: "hidden", border: "1px solid #E2E8F0", width: "120px", height: "60px", background: "#F8FAFC" }}><img src={prakerin.pembimbingSekolahTtd} alt="TTD" style={{ width: "100%", height: "100%", objectFit: "contain" }} /></div>}
+                    {prakerin.pembimbingSekolahTtd && (
+                      <div style={{ marginTop: "0.375rem", borderRadius: "0.375rem", overflow: "hidden", border: "1px solid #E2E8F0", width: "120px", height: "60px", background: "#F8FAFC" }}>
+                        <img src={prakerin.pembimbingSekolahTtd} alt="TTD" style={{ width: "100%", height: "100%", objectFit: "contain" }} />
+                      </div>
+                    )}
                   </div>
                 </div>
                 <div style={{ padding: "0.75rem", border: "1px solid #E2E8F0", borderRadius: "0.5rem", background: "#FAFAFA" }}>
                   <div style={{ fontSize: "0.8125rem", fontWeight: 700, color: "#0F172A", marginBottom: "0.625rem", paddingBottom: "0.375rem", borderBottom: "2px solid #0F172A" }}>PEMBIMBING INDUSTRI</div>
-                  <div className={styles.formGroup}><label>Nama</label><input type="text" value={prakerin.pembimbingIndustriNama} onChange={(e) => updatePrakerinField("pembimbingIndustriNama", e.target.value)} placeholder="Nama lengkap" className={styles.inputDate} /></div>
-                  <div className={styles.formGroup} style={{ marginTop: "0.5rem" }}><label>NIP</label><input type="text" value={prakerin.pembimbingIndustriNip} onChange={(e) => updatePrakerinField("pembimbingIndustriNip", e.target.value)} placeholder="NIP" className={styles.inputDate} /></div>
+                  <div className={styles.formGroup}>
+                    <label>Nama</label>
+                    <input type="text" value={prakerin.pembimbingIndustriNama} onChange={(e) => updatePrakerinField("pembimbingIndustriNama", e.target.value)} placeholder="Nama lengkap" className={styles.inputDate} />
+                  </div>
+                  <div className={styles.formGroup} style={{ marginTop: "0.5rem" }}>
+                    <label>NIP</label>
+                    <input type="text" value={prakerin.pembimbingIndustriNip} onChange={(e) => updatePrakerinField("pembimbingIndustriNip", e.target.value)} placeholder="NIP" className={styles.inputDate} />
+                  </div>
                   <div className={styles.formGroup} style={{ marginTop: "0.5rem" }}>
                     <label>Foto Tanda Tangan</label>
                     <input type="file" accept="image/*" onChange={(e) => {
-                      const file = e.target.files?.[0]; if (file) { const r = new FileReader(); r.onload = () => updatePrakerinField("pembimbingIndustriTtd", r.result as string); r.readAsDataURL(file); }
+                      const file = e.target.files?.[0];
+                      if (file) { const r = new FileReader(); r.onload = () => updatePrakerinField("pembimbingIndustriTtd", r.result as string); r.readAsDataURL(file); }
                     }} className={styles.inputDate} style={{ padding: "0.375rem" }} />
-                    {prakerin.pembimbingIndustriTtd && <div style={{ marginTop: "0.375rem", borderRadius: "0.375rem", overflow: "hidden", border: "1px solid #E2E8F0", width: "120px", height: "60px", background: "#F8FAFC" }}><img src={prakerin.pembimbingIndustriTtd} alt="TTD" style={{ width: "100%", height: "100%", objectFit: "contain" }} /></div>}
+                    {prakerin.pembimbingIndustriTtd && (
+                      <div style={{ marginTop: "0.375rem", borderRadius: "0.375rem", overflow: "hidden", border: "1px solid #E2E8F0", width: "120px", height: "60px", background: "#F8FAFC" }}>
+                        <img src={prakerin.pembimbingIndustriTtd} alt="TTD" style={{ width: "100%", height: "100%", objectFit: "contain" }} />
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -658,8 +827,8 @@ export default function PembimbingSertifikatRekapPage() {
             <div className={styles.formGroup}>
               <label>Upload File (opsional — PDF/Gambar)</label>
               <div className={styles.fileUploadArea}>
-                <input type="file" accept=".pdf,image/*" onChange={(e) => setPrakerinFile(e.target.files?.[0] || null)} className={styles.fileInputHidden} id="prakerin-file" />
-                <label htmlFor="prakerin-file" className={styles.fileUploadLabel}>
+                <input type="file" accept=".pdf,image/*" onChange={(e) => setPrakerinFile(e.target.files?.[0] || null)} className={styles.fileInputHidden} id="pembimbing-prakerin-file" />
+                <label htmlFor="pembimbing-prakerin-file" className={styles.fileUploadLabel}>
                   {prakerinFile ? (
                     <div className={styles.fileSelected}>
                       <FileText className="h-5 w-5" />
@@ -671,11 +840,24 @@ export default function PembimbingSertifikatRekapPage() {
                   )}
                 </label>
               </div>
+              {prakerinFile && IMAGE_EXTS.some(ext => prakerinFile.name.toLowerCase().endsWith(ext)) && (
+                <div style={{ marginTop: "0.75rem", borderRadius: "0.75rem", overflow: "hidden", border: "1px solid #E2E8F0" }}>
+                  <img
+                    src={URL.createObjectURL(prakerinFile)}
+                    alt="Preview"
+                    style={{ width: "100%", maxHeight: "300px", objectFit: "contain", background: "#F8FAFC" }}
+                  />
+                </div>
+              )}
             </div>
 
             <div className={styles.formActions}>
-              <button onClick={() => setPreviewData(prakerin)} disabled={prakerinActiveScores.length === 0} className={styles.btnSecondary}>Pratinjau Nilai</button>
-              <button onClick={handleDownloadPrakerinPdf} disabled={prakerinActiveScores.length === 0} className={styles.btnSecondary}>Download PDF</button>
+              <button onClick={() => setPreviewData(prakerin)} disabled={prakerinActiveScores.length === 0} className={styles.btnSecondary}>
+                Pratinjau Nilai
+              </button>
+              <button onClick={handleDownloadPrakerinPdf} disabled={prakerinActiveScores.length === 0} className={styles.btnSecondary}>
+                Download PDF
+              </button>
               <button onClick={handleSendPrakerin} disabled={sending || !prakerinStudentId || prakerinActiveScores.length === 0} className={styles.btnPrimary}>
                 {sending && <Loader2 className="h-4 w-4 animate-spin" />}
                 Kirim Rekap Prakerin
@@ -683,6 +865,44 @@ export default function PembimbingSertifikatRekapPage() {
             </div>
           </div>
         </Card>
+      )}
+
+      {pdfEditorUrl && (
+        <PDFEditor
+          pdfUrl={pdfEditorUrl}
+          title={pdfEditorTitle}
+          onClose={handleClosePdfEditor}
+          studentName={students.find((s) => s.id === certStudentId)?.fullName}
+          onExportPdf={(bytes) => {
+            const blob = new Blob([bytes as BlobPart], { type: "application/pdf" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "annotated-document.pdf";
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+          }}
+        />
+      )}
+
+      {imagePreviewUrl && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40" onClick={handleCloseImagePreview}>
+          <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full mx-4 max-h-[90vh] flex flex-col" onClick={e => e.stopPropagation()}>
+            <div className="flex items-center justify-between px-5 py-3 border-b border-slate-200">
+              <h3 className="font-semibold text-slate-800 text-sm truncate">{imagePreviewTitle}</h3>
+              <button onClick={handleCloseImagePreview} className="text-slate-400 hover:text-slate-600 text-lg leading-none">&times;</button>
+            </div>
+            <div className="flex-1 overflow-auto p-4 bg-slate-50 flex items-center justify-center">
+              <img
+                src={imagePreviewUrl}
+                alt={imagePreviewTitle}
+                className="max-w-full max-h-[75vh] object-contain rounded-lg shadow-sm"
+              />
+            </div>
+          </div>
+        </div>
       )}
 
       {previewData && (
@@ -727,7 +947,10 @@ export default function PembimbingSertifikatRekapPage() {
                 </thead>
                 <tbody>
                   {history
-                    .filter((doc) => !studentSearch || doc.studentName?.toLowerCase().includes(studentSearch.toLowerCase()))
+                    .filter((doc) => {
+                      if (!studentSearch) return true;
+                      return doc.studentName?.toLowerCase().includes(studentSearch.toLowerCase());
+                    })
                     .map((doc) => {
                       const badge = getHistoryBadge(doc.type);
                       return (
@@ -736,7 +959,13 @@ export default function PembimbingSertifikatRekapPage() {
                           <td className={styles.tableCellName}>{doc.studentName}</td>
                           <td className={styles.tableCellMuted}>{doc.fileName || "-"}</td>
                           <td>
-                            {doc.isKept ? <Badge tone="success">Disimpan</Badge> : doc.isRead ? <Badge tone="sky">Dibaca</Badge> : <Badge tone="warning">Belum dibaca</Badge>}
+                            {doc.isKept ? (
+                              <Badge tone="success">Disimpan</Badge>
+                            ) : doc.isRead ? (
+                              <Badge tone="sky">Dibaca</Badge>
+                            ) : (
+                              <Badge tone="warning">Belum dibaca</Badge>
+                            )}
                           </td>
                           <td className={styles.tableCellMuted}>{formatDate(doc.createdAt)}</td>
                           <td className={styles.tableCellMuted}>{formatDate(doc.expiresAt)}</td>
