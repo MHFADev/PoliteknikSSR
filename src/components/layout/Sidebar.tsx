@@ -81,12 +81,12 @@ export function Sidebar({ role, fullName, avatarUrl }: SidebarProps) {
         <nav className={styles.nav}>
           {rendered}
           {collapsed && (
-            <button onClick={() => setShowAll(true)} className={styles.showAllBtn}>
+            <button onClick={() => setShowAll(true)} className={styles.showAllBtn} data-tour="expand-sidebar">
               Show all <ChevronDown className="h-4 w-4" />
             </button>
           )}
           {showAll && items.length > MAX_VISIBLE && (
-            <button onClick={() => setShowAll(false)} className={styles.showAllBtn}>
+            <button onClick={() => setShowAll(false)} className={styles.showAllBtn} data-tour="expand-sidebar">
               Show less <ChevronDown className="h-4 w-4 rotate-180" />
             </button>
           )}

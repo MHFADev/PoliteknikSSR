@@ -132,6 +132,7 @@ export function MobileNav({ role, fullName, avatarUrl }: Props) {
           <div className={styles.moreWrapper}>
             <button
               onClick={() => setShowMore(!showMore)}
+              data-tour="expand-more"
               className={cn(styles.navItem, showMore && styles.navItemActive)}
             >
               <MoreHorizontal className={cn(styles.navIcon, showMore && styles.navIconActive)} />
@@ -150,10 +151,12 @@ export function MobileNav({ role, fullName, avatarUrl }: Props) {
                     {moreItems.map((item) => {
                       const active = pathname === item.href;
                       const Icon = item.icon;
+                      const tourAttr = `${role}-${item.href.split("/").pop() || "dashboard"}`
                       return (
                         <Link
                           key={item.href}
                           href={item.href}
+                          data-tour={tourAttr}
                           onClick={() => setShowMore(false)}
                           className={cn(styles.moreItem, active && styles.moreItemActive)}
                         >

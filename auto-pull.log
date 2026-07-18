@@ -1890,3 +1890,13 @@ UU src/styles/pages/dashboard/siswa/Kalender.module.css
 ?? src/lib/tutorial/
 ?? supabase/migrations/20250718_add_entry_time.sql
 [2026-07-18 08:17:02] Commit atau stash dulu sebelum auto-pull bisa jalan.
+[2026-07-18 08:32:02] === Auto-pull dimulai ===
+[2026-07-18 08:32:02] DIBATALKAN: Ada perubahan lokal yang belum di-commit:
+[2026-07-18 08:32:02] M auto-pull.log
+?? .auto-pull.lock
+[2026-07-18 08:32:02] Commit atau stash dulu sebelum auto-pull bisa jalan.
+[2026-07-18 08:47:02] === Auto-pull dimulai ===
+[2026-07-18 08:47:02] DIBATALKAN: Ada perubahan lokal yang belum di-commit:
+[2026-07-18 08:47:02] M auto-pull.log
+?? .auto-pull.lock
+[2026-07-18 08:47:02] Commit atau stash dulu sebelum auto-pull bisa jalan.
