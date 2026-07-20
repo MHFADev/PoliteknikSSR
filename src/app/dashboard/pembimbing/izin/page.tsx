@@ -21,7 +21,9 @@ export default async function PembimbingIzinPage() {
         <p>Tinjau dan proses pengajuan izin siswa bimbinganmu.</p>
       </div>
 
-      <PendingLeaveApprovals initialRequests={(data as any) ?? []} />
+      <div data-tour="pizin-list">
+        <PendingLeaveApprovals initialRequests={(data as any) ?? []} />
+      </div>
     </div>
   );
 }

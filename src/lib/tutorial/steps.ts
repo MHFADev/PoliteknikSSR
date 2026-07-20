@@ -1,9 +1,9 @@
-﻿export type TutorialStep = {
+export type TutorialStep = {
   navigateTo?: string
   target?: string
   title: string
   description: string
-  placement?: "right" | "bottom"
+  placement?: "right" | "bottom" | "left" | "top"
   pageLabel?: string
   expandSidebar?: boolean
   expandMobileMore?: boolean
@@ -15,13 +15,22 @@ type PageGroup = {
   steps: TutorialStep[]
 }
 
+// ============================================================
+// SISWA
+// ============================================================
+// Setiap halaman dipecah jadi beberapa langkah: 1 langkah untuk
+// menunjukkan menu di sidebar, lalu beberapa langkah lanjutan yang
+// masing-masing meng-highlight SATU bagian nyata di halaman itu
+// (seperti tutorial game) — bukan cuma satu kartu teks generik.
+// ============================================================
+
 const SISWA_GROUPS: PageGroup[] = [
   {
     label: "Selamat Datang",
     steps: [
       {
         title: "Selamat Datang di PKL Dashboard!",
-        description: "Panduan singkat ini akan mengajak kamu berkeliling semua fitur. Klik Lanjut untuk memulai, atau Lewati kapan saja.",
+        description: "Panduan singkat ini akan mengajak kamu berkeliling semua fitur, halaman per halaman. Tiap bagian penting akan disorot langsung di layar. Klik Lanjut untuk memulai, atau Lewati kapan saja.",
       },
     ],
   },
@@ -32,15 +41,49 @@ const SISWA_GROUPS: PageGroup[] = [
         navigateTo: "/dashboard/siswa",
         target: "a[href='/dashboard/siswa']",
         pageLabel: "Dashboard",
-        title: "Sidebar — Navigasi Utama",
-        description: "Seluruh halaman bisa diakses dari sini. Menu yang sedang aktif ditandai dengan warna biru.",
+        title: "Menu Dashboard",
+        description: "Ini halaman utama kamu. Sidebar di sini berisi semua menu — menu yang sedang aktif ditandai warna biru.",
         placement: "right",
       },
       {
         navigateTo: "/dashboard/siswa",
+        target: "[data-tour='dash-reminder']",
+        waitFor: "[data-tour='dash-stats']",
         pageLabel: "Dashboard",
-        title: "Ringkasan Cepat",
-        description: "Halaman utama menampilkan: total kehadiran bulan ini, izin pending, status kegiatan hari ini, pengumuman terbaru, dan kalender PKL.",
+        title: "Pengingat Kegiatan Harian",
+        description: "Kalau muncul, kartu ini mengingatkan kamu untuk mengisi kegiatan hari ini. Tekan \"Isi Sekarang\" untuk langsung menuju form logbook.",
+        placement: "bottom",
+      },
+      {
+        navigateTo: "/dashboard/siswa",
+        target: "[data-tour='dash-stats']",
+        pageLabel: "Dashboard",
+        title: "Ringkasan Statistik",
+        description: "Tiga angka penting: total hadir bulan ini, izin yang masih pending, dan status kegiatan hari ini (sudah/belum diisi).",
+        placement: "bottom",
+      },
+      {
+        navigateTo: "/dashboard/siswa",
+        target: "[data-tour='dash-mentor']",
+        pageLabel: "Dashboard",
+        title: "Pilih Pembimbing",
+        description: "Pilih pembimbing PKL kamu di sini jika belum ditentukan. Pembimbing inilah yang akan menilai kegiatan dan menyetujui izin kamu.",
+        placement: "bottom",
+      },
+      {
+        navigateTo: "/dashboard/siswa",
+        target: "[data-tour='dash-activity']",
+        pageLabel: "Dashboard",
+        title: "Aktivitas Terbaru",
+        description: "Gabungan event mendatang dan riwayat kegiatan harian kamu, diurutkan dari yang terbaru. Badge di kanan menunjukkan jenis atau nilai.",
+        placement: "bottom",
+      },
+      {
+        navigateTo: "/dashboard/siswa",
+        target: "[data-tour='dash-calendar']",
+        pageLabel: "Dashboard",
+        title: "Kalender Ringkas",
+        description: "Cuplikan kalender PKL kamu. Untuk tampilan lengkap dengan filter dan statistik, buka menu Kalender di sidebar.",
         placement: "bottom",
       },
     ],
@@ -58,16 +101,26 @@ const SISWA_GROUPS: PageGroup[] = [
       },
       {
         navigateTo: "/dashboard/siswa/absensi",
+        target: "[data-tour='absensi-clock']",
         pageLabel: "Absensi QR",
-        title: "Jam Real-Time & GPS",
-        description: "Jam di pojok kanan atas berjalan real-time. Pastikan GPS aktif dan banner lokasi hijau sebelum scan.",
+        title: "Jam Real-Time",
+        description: "Jam ini berjalan real-time mengikuti waktu WIB, jadi kamu bisa memastikan kamu scan tepat waktu sebelum batas telat.",
         placement: "bottom",
       },
       {
         navigateTo: "/dashboard/siswa/absensi",
+        target: "[data-tour='absensi-gps']",
+        pageLabel: "Absensi QR",
+        title: "Status Lokasi GPS",
+        description: "Banner ini menunjukkan status verifikasi lokasi kamu. Pastikan berwarna hijau (lokasi terverifikasi) sebelum memulai scan.",
+        placement: "bottom",
+      },
+      {
+        navigateTo: "/dashboard/siswa/absensi",
+        target: "[data-tour='absensi-scan']",
         pageLabel: "Absensi QR",
         title: "Scan QR Code",
-        description: "Tekan tombol Mulai Scan QR untuk mengaktifkan kamera. Arahkan ke QR Code dari pembimbing. Kehadiran langsung tercatat.",
+        description: "Tekan tombol Mulai Scan QR untuk mengaktifkan kamera, lalu arahkan ke QR Code yang ditampilkan pembimbing. Kehadiran langsung tercatat otomatis.",
         placement: "bottom",
       },
     ],
@@ -85,9 +138,18 @@ const SISWA_GROUPS: PageGroup[] = [
       },
       {
         navigateTo: "/dashboard/siswa/izin",
+        target: "[data-tour='izin-form']",
         pageLabel: "Pengajuan Izin",
-        title: "Form & Riwayat",
-        description: "Isi form: pilih jenis izin, tanggal, alasan, dan bukti. Riwayat dengan status Pending/Disetujui/Ditolak tampil di bawah.",
+        title: "Form Pengajuan",
+        description: "Pilih jenis izin (Izin/Sakit/Cuti), tanggal mulai–selesai, tulis alasan, dan lampirkan bukti pendukung (surat dokter, dll) jika ada.",
+        placement: "right",
+      },
+      {
+        navigateTo: "/dashboard/siswa/izin",
+        target: "[data-tour='izin-history']",
+        pageLabel: "Pengajuan Izin",
+        title: "Riwayat Pengajuan",
+        description: "Semua pengajuan izin kamu tampil di sini lengkap dengan statusnya: Pending (menunggu), Disetujui, atau Ditolak beserta catatan dari pembimbing.",
         placement: "bottom",
       },
     ],
@@ -105,9 +167,18 @@ const SISWA_GROUPS: PageGroup[] = [
       },
       {
         navigateTo: "/dashboard/siswa/kegiatan-harian",
+        target: "[data-tour='logbook-form']",
         pageLabel: "Kegiatan Harian",
-        title: "Catat & Kirim",
-        description: "Tulis kegiatan hari ini, upload foto jika ada. Nilai 0-100 dan feedback dari pembimbing muncul di riwayat.",
+        title: "Catat Kegiatan Hari Ini",
+        description: "Tulis aktivitas PKL kamu hari ini, dan upload foto sebagai bukti kalau perlu. Isi setiap hari sebelum batas waktu.",
+        placement: "right",
+      },
+      {
+        navigateTo: "/dashboard/siswa/kegiatan-harian",
+        target: "[data-tour='logbook-history']",
+        pageLabel: "Kegiatan Harian",
+        title: "Riwayat & Penilaian",
+        description: "Riwayat kegiatan yang sudah kamu catat. Nilai 0-100 dan feedback dari pembimbing akan muncul di sini setelah dinilai.",
         placement: "bottom",
       },
     ],
@@ -126,10 +197,35 @@ const SISWA_GROUPS: PageGroup[] = [
       },
       {
         navigateTo: "/dashboard/siswa/kalender",
+        target: "[data-tour='kalender-stats']",
+        pageLabel: "Kalender",
+        title: "Statistik Kehadiran",
+        description: "Rekap jumlah Hadir, Sakit, Izin, dan Alfa bulan ini, lengkap dengan progress bar perbandingannya.",
+        placement: "bottom",
+      },
+      {
+        navigateTo: "/dashboard/siswa/kalender",
+        target: "[data-tour='kalender-grid']",
         pageLabel: "Kalender",
         title: "Navigasi Kalender",
-        description: "Geser antar bulan. Hari libur dan event ditandai warna berbeda. Status presensi bisa dicek per tanggal.",
-        placement: "bottom",
+        description: "Geser antar bulan pakai tombol panah. Setiap tanggal diberi warna sesuai status presensi — lihat legenda warna di bawah kalender.",
+        placement: "right",
+      },
+      {
+        navigateTo: "/dashboard/siswa/kalender",
+        target: "[data-tour='kalender-events']",
+        pageLabel: "Kalender",
+        title: "Event Mendatang",
+        description: "Daftar hari libur dan event akademik terdekat, lengkap dengan hitung mundur harinya.",
+        placement: "left",
+      },
+      {
+        navigateTo: "/dashboard/siswa/kalender",
+        target: "[data-tour='kalender-summary']",
+        pageLabel: "Kalender",
+        title: "Ringkasan Bulan",
+        description: "Total hari efektif, hari libur, total event, dan persentase kehadiran kamu bulan ini dalam satu tempat.",
+        placement: "left",
       },
     ],
   },
@@ -148,9 +244,10 @@ const SISWA_GROUPS: PageGroup[] = [
       },
       {
         navigateTo: "/dashboard/siswa/pengumuman",
+        target: "[data-tour='pengumuman-list']",
         pageLabel: "Pengumuman",
         title: "Daftar Pengumuman",
-        description: "Semua pengumuman diurutkan dari yang terbaru. Klik untuk baca detail lengkap.",
+        description: "Semua pengumuman diurutkan dari yang terbaru. Pengumuman bisa dari admin untuk semua jurusan, atau khusus jurusanmu.",
         placement: "bottom",
       },
     ],
@@ -170,14 +267,35 @@ const SISWA_GROUPS: PageGroup[] = [
       },
       {
         navigateTo: "/dashboard/siswa/profile",
+        target: "[data-tour='profile-photo']",
         pageLabel: "Profil",
-        title: "Data Diri & Pengaturan",
-        description: "Lengkapi profil: nama, NIS, instansi PKL, kelas, foto profil. Bisa juga ganti password dari sini.",
-        placement: "bottom",
+        title: "Foto Profil",
+        description: "Upload foto profil kamu di sini. Foto otomatis dikompres agar tetap ringan dan langsung tampil tanpa perlu refresh.",
+        placement: "right",
+      },
+      {
+        navigateTo: "/dashboard/siswa/profile",
+        target: "[data-tour='profile-data']",
+        pageLabel: "Profil",
+        title: "Data Diri",
+        description: "Lengkapi nama, NIS, instansi PKL, dan kelas kamu. Email dan Role bersifat readonly dan tidak bisa diubah sendiri.",
+        placement: "right",
+      },
+      {
+        navigateTo: "/dashboard/siswa/profile",
+        target: "[data-tour='profile-password']",
+        pageLabel: "Profil",
+        title: "Ubah Password",
+        description: "Ganti password akun kamu di sini. Masukkan password lama untuk verifikasi, lalu password baru minimal 6 karakter.",
+        placement: "right",
       },
     ],
   },
 ]
+
+// ============================================================
+// PEMBIMBING
+// ============================================================
 
 const PEMBIMBING_GROUPS: PageGroup[] = [
   {
@@ -185,7 +303,7 @@ const PEMBIMBING_GROUPS: PageGroup[] = [
     steps: [
       {
         title: "Selamat Datang, Pembimbing!",
-        description: "Panduan ini akan mengajak kamu berkeliling semua halaman bimbingan PKL. Klik Lanjut untuk memulai.",
+        description: "Panduan ini akan mengajak kamu berkeliling semua halaman bimbingan PKL. Setiap bagian penting akan disorot langsung di layar. Klik Lanjut untuk memulai.",
       },
     ],
   },
@@ -196,16 +314,33 @@ const PEMBIMBING_GROUPS: PageGroup[] = [
         navigateTo: "/dashboard/pembimbing",
         target: "a[href='/dashboard/pembimbing']",
         pageLabel: "Dashboard",
-        title: "Sidebar — Navigasi Utama",
-        description: "Seluruh fitur bimbingan bisa diakses dari sidebar. Menu aktif ditandai warna biru.",
+        title: "Menu Dashboard",
+        description: "Halaman utama bimbingan kamu. Seluruh fitur bisa diakses dari sidebar — menu aktif ditandai warna biru.",
         placement: "right",
       },
       {
         navigateTo: "/dashboard/pembimbing",
+        target: "[data-tour='pdash-stats']",
         pageLabel: "Dashboard",
         title: "Ringkasan Bimbingan",
-        description: "Lihat jumlah siswa bimbingan, kehadiran hari ini, izin pending, dan grafik tren 7 hari terakhir.",
+        description: "Jumlah siswa bimbingan, yang hadir hari ini, izin pending, dan yang alfa — semua dalam satu baris.",
         placement: "bottom",
+      },
+      {
+        navigateTo: "/dashboard/pembimbing",
+        target: "[data-tour='pdash-chart']",
+        pageLabel: "Dashboard",
+        title: "Grafik Tren 7 Hari",
+        description: "Grafik ini menunjukkan tren kehadiran, keterlambatan, izin, dan alfa siswa bimbinganmu selama 7 hari terakhir.",
+        placement: "right",
+      },
+      {
+        navigateTo: "/dashboard/pembimbing",
+        target: "[data-tour='pdash-students']",
+        pageLabel: "Dashboard",
+        title: "Daftar Siswa Bimbingan",
+        description: "Lihat status kehadiran hari ini untuk setiap siswa bimbinganmu — Hadir, Telat, atau Alfa.",
+        placement: "left",
       },
     ],
   },
@@ -222,9 +357,10 @@ const PEMBIMBING_GROUPS: PageGroup[] = [
       },
       {
         navigateTo: "/dashboard/pembimbing/izin",
+        target: "[data-tour='pizin-list']",
         pageLabel: "Persetujuan Izin",
         title: "Tinjau & Putuskan",
-        description: "Semua pengajuan tampil berurutan dari yang terbaru. Klik untuk lihat detail lalu Setujui atau Tolak.",
+        description: "Semua pengajuan yang masih pending tampil berurutan. Klik untuk lihat detail lengkap dan bukti pendukung, lalu Setujui atau Tolak.",
         placement: "bottom",
       },
     ],
@@ -242,9 +378,10 @@ const PEMBIMBING_GROUPS: PageGroup[] = [
       },
       {
         navigateTo: "/dashboard/pembimbing/kegiatan-harian",
+        target: "[data-tour='plogbook-list']",
         pageLabel: "Penilaian Kegiatan",
         title: "Nilai & Feedback",
-        description: "Pilih siswa, baca kegiatan yang dikirim, beri nilai 0-100 dan feedback. Kegiatan belum dinilai ditandai khusus.",
+        description: "Baca kegiatan yang dikirim tiap siswa, beri nilai 0-100 dan feedback. Kegiatan yang belum dinilai ditandai khusus supaya mudah dicari.",
         placement: "bottom",
       },
     ],
@@ -263,9 +400,10 @@ const PEMBIMBING_GROUPS: PageGroup[] = [
       },
       {
         navigateTo: "/dashboard/pembimbing/qr",
+        target: "[data-tour='pqr-card']",
         pageLabel: "Generate QR",
         title: "Buat Sesi Presensi",
-        description: "Tekan Generate QR untuk sesi baru. Atur jam batas telat dan durasi. Tampilkan QR di layar agar siswa bisa scan.",
+        description: "Tekan Generate QR untuk membuat sesi baru. Atur jam batas telat dan durasi berlaku, lalu tampilkan QR di layar agar siswa bisa scan.",
         placement: "bottom",
       },
     ],
@@ -284,10 +422,27 @@ const PEMBIMBING_GROUPS: PageGroup[] = [
       },
       {
         navigateTo: "/dashboard/pembimbing/sertifikat-rekap",
+        target: "[data-tour='sert-stats']",
         pageLabel: "Sertifikat & Nilai",
-        title: "Upload & Kirim",
-        description: "Upload sertifikat PDF/Gambar dan rekap nilai prakerin. Siswa bisa lihat dan download dari dashboard mereka.",
+        title: "Ringkasan",
+        description: "Jumlah siswa bimbingan dan berapa rekap prakerin yang sudah dikirim.",
         placement: "bottom",
+      },
+      {
+        navigateTo: "/dashboard/pembimbing/sertifikat-rekap",
+        target: "[data-tour='sert-tabs']",
+        pageLabel: "Sertifikat & Nilai",
+        title: "3 Tab Utama",
+        description: "Pindah antar tab: Upload Sertifikat, Rekap Prakerin (form penilaian lengkap), dan Riwayat pengiriman.",
+        placement: "bottom",
+      },
+      {
+        navigateTo: "/dashboard/pembimbing/sertifikat-rekap",
+        target: "[data-tour='sert-cert-form']",
+        pageLabel: "Sertifikat & Nilai",
+        title: "Kirim Sertifikat PKL",
+        description: "Pilih siswa penerima, upload file PDF atau gambar sertifikat (maks 10MB), pratinjau/anotasi jika perlu, lalu kirim.",
+        placement: "top",
       },
     ],
   },
@@ -306,10 +461,27 @@ const PEMBIMBING_GROUPS: PageGroup[] = [
       },
       {
         navigateTo: "/dashboard/pembimbing/profile",
+        target: "[data-tour='profile-photo']",
+        pageLabel: "Profil",
+        title: "Foto Profil",
+        description: "Upload foto profil kamu di sini. Foto otomatis dikompres dan langsung tampil tanpa refresh.",
+        placement: "right",
+      },
+      {
+        navigateTo: "/dashboard/pembimbing/profile",
+        target: "[data-tour='profile-data']",
         pageLabel: "Profil",
         title: "Data Diri",
-        description: "Lengkapi profil: nama, NIP/NIDN, foto. Cek Pengaturan untuk notifikasi.",
-        placement: "bottom",
+        description: "Lengkapi nama, NIP/NIDN, dan data lain. Email dan Role bersifat readonly.",
+        placement: "right",
+      },
+      {
+        navigateTo: "/dashboard/pembimbing/profile",
+        target: "[data-tour='profile-password']",
+        pageLabel: "Profil",
+        title: "Ubah Password",
+        description: "Ganti password akun kamu di sini dengan verifikasi password lama terlebih dahulu.",
+        placement: "right",
       },
     ],
   },

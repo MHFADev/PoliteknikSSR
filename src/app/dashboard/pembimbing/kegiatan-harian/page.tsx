@@ -20,7 +20,9 @@ export default async function PembimbingLogbookPage() {
         <p>Review dan beri nilai logbook siswa bimbinganmu.</p>
       </div>
 
-      <LogbookReviewList initialEntries={(data as any) ?? []} />
+      <div data-tour="plogbook-list">
+        <LogbookReviewList initialEntries={(data as any) ?? []} />
+      </div>
     </div>
   );
 }

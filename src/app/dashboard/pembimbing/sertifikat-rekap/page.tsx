@@ -398,7 +398,7 @@ export default function PembimbingSertifikatRekapPage() {
         </div>
       )}
 
-      <div className={styles.statsRow}>
+      <div className={styles.statsRow} data-tour="sert-stats">
         <div className={styles.statCard}>
           <Users className={styles.statIcon} />
           <div>
@@ -415,7 +415,7 @@ export default function PembimbingSertifikatRekapPage() {
         </div>
       </div>
 
-      <div className={styles.tabs}>
+      <div className={styles.tabs} data-tour="sert-tabs">
         <button onClick={() => setTab("certificate")} className={`${styles.tab} ${tab === "certificate" ? styles.tabActive : ""}`}>
           <FileText className="h-4 w-4" />
           Upload Sertifikat
@@ -431,7 +431,7 @@ export default function PembimbingSertifikatRekapPage() {
       </div>
 
       {tab === "certificate" && (
-        <Card>
+        <Card data-tour="sert-cert-form">
           <CardHeader title="Kirim Sertifikat PKL" />
           <div className={styles.formBody}>
             <div className={styles.formGroup}>

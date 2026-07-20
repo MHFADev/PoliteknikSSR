@@ -42,9 +42,11 @@ export default async function SiswaLogbookPage() {
       </div>
 
       <div className={styles.formGrid}>
-        <LogbookForm userId={user!.id} existingContent={todayEntry?.content} existingPhotoUrl={todayEntry?.photo_url ?? undefined} />
+        <div data-tour="logbook-form">
+          <LogbookForm userId={user!.id} existingContent={todayEntry?.content} existingPhotoUrl={todayEntry?.photo_url ?? undefined} />
+        </div>
 
-        <Card>
+        <Card data-tour="logbook-history">
           <CardHeader title="Riwayat Kegiatan" />
           <div className={styles.historyList}>
             {history && history.length > 0 ? (

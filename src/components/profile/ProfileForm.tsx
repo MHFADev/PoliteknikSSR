@@ -313,7 +313,7 @@ export function ProfileForm() {
           - Upload gambar yang dikompres agresif (max 150KB)
           - Preview langsung tanpa refresh halaman
           ========================================== */}
-      <Card variant="skylearn">
+      <Card variant="skylearn" data-tour="profile-photo">
         <div className={styles.formSectionTitle}>
           <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
             <Camera className="h-5 w-5 text-sky" />
@@ -388,7 +388,7 @@ export function ProfileForm() {
           - Form edit nama, NIS/NIP, instansi, kelas
           - Email dan role hanya ditampilkan (readonly)
           ========================================== */}
-      <Card variant="skylearn">
+      <Card variant="skylearn" data-tour="profile-data">
         <div className={styles.formSectionTitle}>
           <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
             <User className="h-5 w-5 text-sky" />
@@ -499,7 +499,7 @@ export function ProfileForm() {
           - Verifikasi password lama sebelum ganti
           - Password baru minimal 6 karakter
           ========================================== */}
-      <Card variant="skylearn">
+      <Card variant="skylearn" data-tour="profile-password">
         <div className={styles.formSectionTitle}>
           <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
             <Key className="h-5 w-5 text-sky" />

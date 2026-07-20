@@ -31,9 +31,11 @@ export default async function SiswaIzinPage() {
       </div>
 
       <div className={styles.formGrid}>
-        <LeaveRequestForm />
+        <div data-tour="izin-form">
+          <LeaveRequestForm />
+        </div>
 
-        <Card>
+        <Card data-tour="izin-history">
           <CardHeader title="Riwayat Pengajuan" />
           <div className={styles.historyList}>
             {history && history.length > 0 ? (

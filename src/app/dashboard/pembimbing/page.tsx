@@ -168,7 +168,7 @@ export default async function PembimbingOverviewPage() {
       </div>
 
       {/* ─── Stat Ringkas — 4 kartu compact ──────────────────── */}
-      <div className={styles.statRow}>
+      <div className={styles.statRow} data-tour="pdash-stats">
         <StatCard
           label="Siswa Bimbingan"
           value={studentCount ?? 0}
@@ -198,7 +198,7 @@ export default async function PembimbingOverviewPage() {
       {/* ─── 2 Kolom: Chart + Daftar Siswa ───────────────────── */}
       <div className={styles.twoCol}>
         {/* Chart tren kehadiran */}
-        <Card className={styles.flipCard}>
+        <Card className={styles.flipCard} data-tour="pdash-chart">
           <CardHeader
             title="Tren 7 Hari"
             subtitle="Hadir · Telat · Izin · Alfa"
@@ -207,7 +207,7 @@ export default async function PembimbingOverviewPage() {
         </Card>
 
         {/* Daftar siswa bimbingan */}
-        <Card className={styles.flipCard}>
+        <Card className={styles.flipCard} data-tour="pdash-students">
           <CardHeader
             title="Siswa Bimbingan"
             subtitle={`${studentsWithStatus.length} siswa — hari ini`}

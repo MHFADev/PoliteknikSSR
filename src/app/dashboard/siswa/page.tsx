@@ -129,7 +129,7 @@ export default async function SiswaOverviewPage() {
     <div className={styles.pageContainer}>
       {/* ─── Reminder Banner ─────────────────────────────────── */}
       {!todayEntry && (
-        <div className={styles.reminderBanner}>
+        <div className={styles.reminderBanner} data-tour="dash-reminder">
           <NotebookPen className="h-5 w-5 text-sky shrink-0" />
           <div className="min-w-0 flex-1">
             <h3>Jangan Lupa Isi Kegiatan Hari Ini!</h3>
@@ -145,7 +145,7 @@ export default async function SiswaOverviewPage() {
       )}
 
       {/* ─── Stat Ringkas — 3 kartu compact ──────────────────── */}
-      <div className={styles.statRow}>
+      <div className={styles.statRow} data-tour="dash-stats">
         <StatCard
           label="Hadir Bulan Ini"
           value={hadirCount ?? 0}
@@ -198,7 +198,9 @@ export default async function SiswaOverviewPage() {
       )}
 
       {/* ─── Pilih Pembimbing ─────────────────────────────── */}
-      <MentorSelector studentJurusanId={profile?.jurusan_id} />
+      <div data-tour="dash-mentor">
+        <MentorSelector studentJurusanId={profile?.jurusan_id} />
+      </div>
 
       {/* ─── Pengumuman ──────────────────────────────────────── */}
       {announcements && announcements.length > 0 && (
@@ -232,7 +234,7 @@ export default async function SiswaOverviewPage() {
       )}
 
       {/* ─── Aktivitas — Event + Logbook dalam 1 card ────────── */}
-      <Card className={styles.flipCard}>
+      <Card className={styles.flipCard} data-tour="dash-activity">
         <CardHeader
           title="Aktivitas Terbaru"
           subtitle="Event mendatang & riwayat kegiatan"
@@ -287,7 +289,7 @@ export default async function SiswaOverviewPage() {
       </Card>
 
       {/* ─── Kalender ────────────────────────────────────────── */}
-      <Card className={styles.flipCard}>
+      <Card className={styles.flipCard} data-tour="dash-calendar">
         <StudentCalendar
           events={allEvents || []}
           records={attendanceRecords || []}

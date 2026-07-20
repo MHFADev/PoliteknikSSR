@@ -13,7 +13,7 @@ export default async function PembimbingQRPage() {
       </div>
 
       <div className={styles.qrCentered}>
-        <div className={styles.qrWrapper}>
+        <div className={styles.qrWrapper} data-tour="pqr-card">
           <QRGeneratorCard initialSession={session ?? null} showSettings={false} />
         </div>
       </div>

@@ -47,7 +47,7 @@ export default function SiswaPengumumanPage() {
       ) : announcements.length === 0 ? (
         <p className={styles.emptyState}>Belum ada pengumuman.</p>
       ) : (
-        <div className={styles.announcementList}>
+        <div className={styles.announcementList} data-tour="pengumuman-list">
           {announcements.map((ann) => (
             <Card key={ann.id}>
               <div className={styles.announcementInner}>

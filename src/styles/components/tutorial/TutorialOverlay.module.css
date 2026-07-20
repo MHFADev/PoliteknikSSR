@@ -184,6 +184,13 @@
   border-radius: 6px;
 }
 
+.pageLabelSub {
+  font-weight: 600;
+  color: #64748b;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
 .title {
   font-size: 1.05rem;
   font-weight: 700;

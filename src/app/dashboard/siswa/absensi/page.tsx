@@ -17,7 +17,7 @@ function LiveClock() {
     return () => clearInterval(t);
   }, []);
   return (
-    <div style={{ textAlign: "center", padding: "0.75rem 1rem", background: "linear-gradient(135deg, #0F172A 0%, #1E293B 100%)", borderRadius: "1rem", color: "#fff" }}>
+    <div data-tour="absensi-clock" style={{ textAlign: "center", padding: "0.75rem 1rem", background: "linear-gradient(135deg, #0F172A 0%, #1E293B 100%)", borderRadius: "1rem", color: "#fff" }}>
       <div style={{ fontSize: "0.75rem", opacity: 0.6, marginBottom: "0.15rem" }}>
         {DAYS[now.getDay()]}, {now.getDate()} {MONTHS[now.getMonth()]} {now.getFullYear()}
       </div>
@@ -148,9 +148,9 @@ export default function SiswaAbsensiPage() {
 
       <LiveClock />
 
-      {renderGpsBanner()}
+      <div data-tour="absensi-gps">{renderGpsBanner()}</div>
 
-      <Card className={styles.scannerCard}>
+      <Card className={styles.scannerCard} data-tour="absensi-scan">
         <QRScanner gpsReady={gpsReady} />
       </Card>
     </div>

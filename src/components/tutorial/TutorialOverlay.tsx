@@ -155,6 +155,19 @@ export function TutorialOverlay({ role, onComplete }: Props) {
         }
 
         if (el) {
+          // Bring the target into view first (in case it's below the fold),
+          // then measure — otherwise the spotlight can land off-screen.
+          const preRect = el.getBoundingClientRect()
+          const outOfView =
+            preRect.top < 80 ||
+            preRect.bottom > window.innerHeight - 80 ||
+            preRect.left < 0 ||
+            preRect.right > window.innerWidth
+          if (outOfView) {
+            el.scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" })
+            await new Promise((r) => setTimeout(r, 350))
+          }
+          if (!mountedRef.current || cancelled) return
           setFound(true)
           setRect(el.getBoundingClientRect())
         } else {
@@ -216,11 +229,20 @@ export function TutorialOverlay({ role, onComplete }: Props) {
   const hasHighlight = found && !!rect
   const progress = ((stepIdx + 1) / steps.length) * 100
 
-  // Page label
+  // Page label + posisi di dalam grup halaman (mis. "Dashboard — bagian 2/6")
   let pageLabel = current.pageLabel || ""
-  if (!pageLabel) {
-    for (const g of groups) {
-      if (g.steps.includes(current) && g.label !== "Selamat Datang") { pageLabel = g.label; break }
+  let groupLocalIdx = -1
+  let groupLocalLen = 0
+  let groupOrdinal = -1
+  const realGroups = groups.filter((g) => g.label !== "Selamat Datang")
+  for (const g of groups) {
+    const idxInG = g.steps.indexOf(current)
+    if (idxInG !== -1) {
+      if (!pageLabel && g.label !== "Selamat Datang") pageLabel = g.label
+      groupLocalIdx = idxInG
+      groupLocalLen = g.steps.length
+      groupOrdinal = realGroups.indexOf(g)
+      break
     }
   }
 
@@ -252,8 +274,12 @@ export function TutorialOverlay({ role, onComplete }: Props) {
       <div className={styles.header}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
           <div className={styles.dots}>
-            {steps.map((_, i) => (
-              <span key={i} className={`${styles.dot} ${i === stepIdx ? styles.dotActive : i < stepIdx ? styles.dotDone : styles.dotInactive}`} />
+            {realGroups.map((g, i) => (
+              <span
+                key={g.label}
+                className={`${styles.dot} ${i === groupOrdinal ? styles.dotActive : i < groupOrdinal ? styles.dotDone : styles.dotInactive}`}
+                title={g.label}
+              />
             ))}
           </div>
           <button onClick={onComplete} className={styles.closeBtn} aria-label="Skip tutorial"><X className="h-4 w-4" /></button>
@@ -264,6 +290,12 @@ export function TutorialOverlay({ role, onComplete }: Props) {
           <div className={styles.pageLabel}>
             <Sparkles className="h-3 w-3" />
             {pageLabel}
+            {groupOrdinal !== -1 && (
+              <span className={styles.pageLabelSub}>
+                {" "}· Halaman {groupOrdinal + 1}/{realGroups.length}
+                {groupLocalLen > 1 ? ` · bagian ${groupLocalIdx + 1}/${groupLocalLen}` : ""}
+              </span>
+            )}
           </div>
         )}
         <h3 className={styles.title}>{current.title}</h3>
@@ -296,7 +328,9 @@ export function TutorialOverlay({ role, onComplete }: Props) {
         >
           <div className={styles.loadingContent}>
             <div className={styles.spinner} />
-            <span className={styles.loadingText}>Memuat halaman...</span>
+            <span className={styles.loadingText}>
+              {pageLabel ? `Membuka ${pageLabel}...` : "Memuat halaman..."}
+            </span>
           </div>
         </motion.div>
       )}

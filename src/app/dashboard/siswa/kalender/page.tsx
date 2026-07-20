@@ -318,7 +318,7 @@ export default function SiswaKalenderPage() {
         )}
       </div>
 
-      <div className={styles.statGrid}>
+      <div className={styles.statGrid} data-tour="kalender-stats">
         <div className={styles.statCard}>
           <div className={`${styles.statIcon} ${styles.statIconGreen}`}>
             <CalendarCheck className="h-5 w-5" />
@@ -423,7 +423,7 @@ export default function SiswaKalenderPage() {
 
       <div className={styles.contentLayout}>
         <div className={styles.calendarSection}>
-          <Card>
+          <Card data-tour="kalender-grid">
             <div className={styles.calendarNav}>
               <button onClick={prevMonth} className={styles.calendarNavBtn}>
                 <ChevronLeft className="h-5 w-5" />
@@ -483,7 +483,7 @@ export default function SiswaKalenderPage() {
 
         <div className={styles.sidebar}>
           {/* Upcoming Events */}
-          <Card className={styles.sidebarCard}>
+          <Card className={styles.sidebarCard} data-tour="kalender-events">
             <CardHeader
               title="Event Mendatang"
               action={
@@ -534,7 +534,7 @@ export default function SiswaKalenderPage() {
           </Card>
 
           {/* Quick Stats */}
-          <Card className={styles.sidebarCard}>
+          <Card className={styles.sidebarCard} data-tour="kalender-summary">
             <CardHeader title="Ringkasan Bulan" />
             <div className={styles.quickStats}>
               <div className={styles.quickStatItem}>
