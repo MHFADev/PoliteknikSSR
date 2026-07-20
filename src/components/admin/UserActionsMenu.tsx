@@ -11,6 +11,7 @@ import {
   updateUserRole, deleteUser, blockUser, unblockUser,
   resetUserPassword, forceLogoutUser,
 } from "@/actions/admin";
+import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 
 interface UserActionsMenuProps {
   userId: string;
@@ -34,6 +35,7 @@ export function UserActionsMenu({ userId, userName, currentRole, isApproved }: U
   const [showResetPw, setShowResetPw] = useState(false);
   const [newPassword, setNewPassword] = useState("");
   const [actionMsg, setActionMsg] = useState<{ type: "success" | "error"; text: string } | null>(null);
+  const [confirmDelete, setConfirmDelete] = useState(false);
   const [myRole, setMyRole] = useState<"admin" | "root">("admin");
   const btnRef = useRef<HTMLButtonElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -171,11 +173,7 @@ export function UserActionsMenu({ userId, userName, currentRole, isApproved }: U
   );
 
   actionItems.push(
-    <button key="hapus" onClick={() => {
-      if (confirm(`Yakin ingin menghapus akun ${userName}? Tindakan ini tidak dapat dibatalkan.`)) {
-        doAction(() => deleteUser(userId));
-      }
-    }}
+    <button key="hapus" onClick={() => setConfirmDelete(true)}
       className="w-full text-left px-3 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center gap-2.5 transition-colors disabled:opacity-50 font-medium"
       disabled={isPending}
     >
@@ -290,6 +288,16 @@ export function UserActionsMenu({ userId, userName, currentRole, isApproved }: U
           </div>
         </div>
       )}
+
+      <ConfirmDialog
+        open={confirmDelete}
+        onClose={() => setConfirmDelete(false)}
+        onConfirm={() => doAction(() => deleteUser(userId))}
+        title="Hapus Akun"
+        message={`Yakin ingin menghapus akun ${userName}? Tindakan ini tidak dapat dibatalkan.`}
+        confirmLabel="Hapus"
+        variant="danger"
+      />
     </div>
   );
 }

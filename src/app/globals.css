@@ -150,6 +150,10 @@ body {
   animation: loading-bar 1.4s ease-in-out infinite;
 }
 
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
 @layer utilities {
   .scrollbar-thin {
     scrollbar-width: thin;

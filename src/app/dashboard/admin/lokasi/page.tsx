@@ -6,6 +6,7 @@ import { Loader2, Plus, MapPin, Trash2, Edit } from "lucide-react";
 import { Card, CardHeader } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Modal } from "@/components/ui/Modal";
+import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import {
   getLocations,
   addLocation,
@@ -30,6 +31,7 @@ export default function AdminLokasiPage() {
   const [editing, setEditing] = useState<Location | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
   const [tempLocation, setTempLocation] = useState({
     latitude: -6.2088,
     longitude: 106.8456,
@@ -120,10 +122,15 @@ export default function AdminLokasiPage() {
   }
 
   async function handleDelete(id: string) {
-    if (!confirm("Hapus lokasi ini?")) return;
-    await deleteLocation(id);
-    loadLocations();
+    setConfirmDeleteId(id);
   }
+
+  const confirmDeleteAction = async () => {
+    if (!confirmDeleteId) return;
+    await deleteLocation(confirmDeleteId);
+    setConfirmDeleteId(null);
+    loadLocations();
+  };
 
   return (
     <div className={styles.pageContainer}>
@@ -289,6 +296,16 @@ export default function AdminLokasiPage() {
           </div>
         </form>
       </Modal>
+
+      <ConfirmDialog
+        open={!!confirmDeleteId}
+        onClose={() => setConfirmDeleteId(null)}
+        onConfirm={confirmDeleteAction}
+        title="Hapus Lokasi"
+        message="Hapus lokasi ini?"
+        confirmLabel="Hapus"
+        variant="danger"
+      />
     </div>
   );
 }

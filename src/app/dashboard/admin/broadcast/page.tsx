@@ -7,6 +7,7 @@ import { Card, CardHeader } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Modal } from "@/components/ui/Modal";
 import { Badge } from "@/components/ui/Badge";
+import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import {
   getStudyPrograms,
   getAnnouncements,
@@ -33,6 +34,7 @@ export default function AdminBroadcastPage() {
   const [modalOpen, setModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [broadcastToAll, setBroadcastToAll] = useState(true);
@@ -103,10 +105,15 @@ export default function AdminBroadcastPage() {
   }
 
   async function handleDelete(id: string) {
-    if (!confirm("Hapus pengumuman ini?")) return;
-    await deleteAnnouncement(id);
-    loadData();
+    setConfirmDeleteId(id);
   }
+
+  const confirmDeleteAction = async () => {
+    if (!confirmDeleteId) return;
+    await deleteAnnouncement(confirmDeleteId);
+    setConfirmDeleteId(null);
+    loadData();
+  };
 
   return (
     <div className={styles.pageContainer}>
@@ -258,6 +265,16 @@ export default function AdminBroadcastPage() {
           </div>
         </form>
       </Modal>
+
+      <ConfirmDialog
+        open={!!confirmDeleteId}
+        onClose={() => setConfirmDeleteId(null)}
+        onConfirm={confirmDeleteAction}
+        title="Hapus Pengumuman"
+        message="Hapus pengumuman ini?"
+        confirmLabel="Hapus"
+        variant="danger"
+      />
     </div>
   );
 }

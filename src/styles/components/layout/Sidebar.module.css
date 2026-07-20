@@ -58,7 +58,7 @@
 .logoText {
   font-size: 0.65rem;
   font-weight: 600;
-  color: #64748B;
+  color: var(--color-mist-dim, #64748B);
   text-align: center;
   margin-top: 4px;
   letter-spacing: 0.04em;
@@ -90,10 +90,10 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  color: #94A3B8;
+  color: var(--color-ink-subtle, #94A3B8);
   padding: 1rem 0.75rem 0.25rem;
   margin-top: 0.25rem;
-  border-top: 1px solid #F1F5F9;
+  border-top: 1px solid var(--color-outline, #F1F5F9);
 }
 
 .groupLabel:first-of-type {

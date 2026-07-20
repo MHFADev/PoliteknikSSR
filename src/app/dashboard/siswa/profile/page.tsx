@@ -8,18 +8,31 @@
 // halaman, sedangkan logika form ada di ProfileForm.
 // ============================================================
 
+import { createClient } from "@/lib/supabase/server";
 import { ProfileForm } from "@/components/profile/ProfileForm";
+import { MentorSelector } from "@/components/siswa/MentorSelector";
+import styles from "@/styles/components/profile/Profile.module.css";
 
-export default function SiswaProfilePage() {
+export default async function SiswaProfilePage() {
+  const supabase = createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("jurusan_id")
+    .eq("id", user!.id)
+    .single();
+
   return (
-    <div style={{ padding: "1.5rem" }}>
-      {/* 🔥 HEADER: warna pake var(--color-deep) biar otomatis ngikut mode gelap/terang */}
-      <div style={{ marginBottom: "1.5rem" }}>
-        <h1 style={{ fontSize: "1.5rem", fontWeight: 700, color: "var(--color-deep, #1E293B)" }}>Profil Saya</h1>
-        <p style={{ fontSize: "0.875rem", color: "var(--color-mist-dim, #94A3B8)" }}>
-          Kelola data diri dan password akun kamu.
-        </p>
+    <div className={styles.pageContainer}>
+      <div className={styles.pageHeader}>
+        <h1>Profil Saya</h1>
+        <p>Kelola data diri, pembimbing, dan password akun kamu.</p>
       </div>
+
+      <div data-tour="profile-mentor">
+        <MentorSelector studentJurusanId={profile?.jurusan_id} profileMode />
+      </div>
+
       <ProfileForm />
     </div>
   );

@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { Card, CardHeader } from "@/components/ui/Card";
 import { Plus, Pencil, Trash2, X, Check } from "lucide-react";
 import { getClasses, addClass, renameClass, deleteClass } from "@/actions/classes";
+import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import styles from "@/styles/pages/dashboard/admin/Kelas.module.css";
 
 export default function KelasPage() {
@@ -14,6 +15,7 @@ export default function KelasPage() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editNama, setEditNama] = useState("");
   const [msg, setMsg] = useState<{ type: "success" | "error"; text: string } | null>(null);
+  const [confirmDelete, setConfirmDelete] = useState<{ id: string; nama: string } | null>(null);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -46,9 +48,14 @@ export default function KelasPage() {
   };
 
   const handleDelete = async (id: string, nama: string) => {
-    if (!confirm(`Hapus kelas ${nama}?`)) return;
-    const result = await deleteClass(id);
-    if (result.error) { show("error", result.error); return; }
+    setConfirmDelete({ id, nama });
+  };
+
+  const confirmDeleteAction = async () => {
+    if (!confirmDelete) return;
+    const result = await deleteClass(confirmDelete.id);
+    if (result.error) { show("error", result.error); }
+    setConfirmDelete(null);
     load();
   };
 
@@ -122,6 +129,16 @@ export default function KelasPage() {
           )}
         </div>
       </Card>
+
+      <ConfirmDialog
+        open={!!confirmDelete}
+        onClose={() => setConfirmDelete(null)}
+        onConfirm={confirmDeleteAction}
+        title="Hapus Kelas"
+        message={`Hapus kelas ${confirmDelete?.nama}? Tindakan ini tidak dapat dibatalkan.`}
+        confirmLabel="Hapus"
+        variant="danger"
+      />
     </div>
   );
 }

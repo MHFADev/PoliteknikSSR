@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { MapPin, LocateFixed } from "lucide-react";
+import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import styles from "@/styles/components/shared/LocationPicker.module.css";
 
 type Location = {
@@ -16,9 +17,11 @@ type LocationPickerProps = {
 };
 
 export function LocationPicker({ value, onChange }: LocationPickerProps) {
+  const [geoError, setGeoError] = useState<string | null>(null);
+
   const autoLocateUser = async () => {
     if (!navigator.geolocation) {
-      alert("Geolocation tidak didukung browser ini");
+      setGeoError("Geolocation tidak didukung browser ini.");
       return;
     }
 
@@ -34,7 +37,7 @@ export function LocationPicker({ value, onChange }: LocationPickerProps) {
             : error.code === 2
               ? "Tidak dapat menemukan lokasi. Pastikan GPS aktif."
               : "Gagal mendapatkan lokasi. Coba lagi.";
-        alert(msg);
+        setGeoError(msg);
       },
       { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 },
     );
@@ -91,6 +94,16 @@ export function LocationPicker({ value, onChange }: LocationPickerProps) {
           Radius: {value.radius_meters}m
         </span>
       </div>
+
+      <ConfirmDialog
+        open={!!geoError}
+        onClose={() => setGeoError(null)}
+        onConfirm={() => setGeoError(null)}
+        title="Error Lokasi"
+        message={geoError || ""}
+        confirmLabel="OK"
+        variant="warning"
+      />
     </div>
   );
 }

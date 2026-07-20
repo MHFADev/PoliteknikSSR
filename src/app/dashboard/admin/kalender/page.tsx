@@ -34,6 +34,7 @@ import type { CalendarEvent, User } from "@/lib/repositories";
 import { createClient } from "@/lib/supabase/client";
 import { formatDate } from "@/lib/utils";
 import styles from "@/styles/pages/dashboard/admin/Kalender.module.css";
+import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 
 interface EventTypeConfig {
   id: string;
@@ -140,6 +141,7 @@ export default function AdminKalenderPage() {
   const [eventTypes, setEventTypes] = useState<EventTypeConfig[]>([]);
   const [showTypeManager, setShowTypeManager] = useState(false);
   const [editingType, setEditingType] = useState<EventTypeConfig | null>(null);
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
   const [newTypeLabel, setNewTypeLabel] = useState("");
   const [newTypeColor, setNewTypeColor] = useState(COLOR_PRESETS[0]);
 
@@ -305,8 +307,13 @@ export default function AdminKalenderPage() {
   }
 
   async function handleDelete(id: string) {
-    if (!confirm("Hapus event ini?")) return;
-    await deleteEvent(id);
+    setConfirmDeleteId(id);
+  }
+
+  const confirmDeleteAction = async () => {
+    if (!confirmDeleteId) return;
+    await deleteEvent(confirmDeleteId);
+    setConfirmDeleteId(null);
     loadData();
   }
 
@@ -867,6 +874,16 @@ export default function AdminKalenderPage() {
           </div>
         </div>
       </Modal>
+
+      <ConfirmDialog
+        open={!!confirmDeleteId}
+        onClose={() => setConfirmDeleteId(null)}
+        onConfirm={confirmDeleteAction}
+        title="Hapus Event"
+        message="Hapus event ini?"
+        confirmLabel="Hapus"
+        variant="danger"
+      />
     </div>
   );
 }

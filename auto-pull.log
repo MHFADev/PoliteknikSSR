@@ -2007,3 +2007,46 @@ UU src/styles/pages/dashboard/siswa/Kalender.module.css
  M src/styles/components/tutorial/TutorialOverlay.module.css
 ?? .auto-pull.lock
 [2026-07-20 09:32:01] Commit atau stash dulu sebelum auto-pull bisa jalan.
+[2026-07-20 09:47:01] === Auto-pull dimulai ===
+[2026-07-20 09:47:02] DIBATALKAN: Ada perubahan lokal yang belum di-commit:
+[2026-07-20 09:47:02] M auto-pull.log
+?? .auto-pull.lock
+[2026-07-20 09:47:02] Commit atau stash dulu sebelum auto-pull bisa jalan.
+[2026-07-20 10:02:01] === Auto-pull dimulai ===
+[2026-07-20 10:02:02] DIBATALKAN: Ada perubahan lokal yang belum di-commit:
+[2026-07-20 10:02:02] M auto-pull.log
+?? .auto-pull.lock
+[2026-07-20 10:02:02] Commit atau stash dulu sebelum auto-pull bisa jalan.
+[2026-07-20 10:17:02] === Auto-pull dimulai ===
+[2026-07-20 10:17:02] DIBATALKAN: Ada perubahan lokal yang belum di-commit:
+[2026-07-20 10:17:02] M auto-pull.log
+?? .auto-pull.lock
+[2026-07-20 10:17:02] Commit atau stash dulu sebelum auto-pull bisa jalan.
+[2026-07-20 10:32:01] === Auto-pull dimulai ===
+[2026-07-20 10:32:02] DIBATALKAN: Ada perubahan lokal yang belum di-commit:
+[2026-07-20 10:32:02] M auto-pull.log
+?? .auto-pull.lock
+[2026-07-20 10:32:02] Commit atau stash dulu sebelum auto-pull bisa jalan.
+[2026-07-20 10:47:02] === Auto-pull dimulai ===
+[2026-07-20 10:47:02] DIBATALKAN: Ada perubahan lokal yang belum di-commit:
+[2026-07-20 10:47:02] M auto-pull.log
+?? .auto-pull.lock
+[2026-07-20 10:47:02] Commit atau stash dulu sebelum auto-pull bisa jalan.
+[2026-07-20 11:02:01] === Auto-pull dimulai ===
+[2026-07-20 11:02:02] DIBATALKAN: Ada perubahan lokal yang belum di-commit:
+[2026-07-20 11:02:02] M auto-pull.log
+ M src/app/dashboard/admin/broadcast/page.tsx
+ M src/app/dashboard/admin/kalender/page.tsx
+ M src/app/dashboard/admin/kelas/page.tsx
+ M src/app/dashboard/admin/lokasi/page.tsx
+ M src/app/dashboard/siswa/profile/page.tsx
+ M src/app/globals.css
+ M src/components/LocationPicker.tsx
+ M src/components/admin/UserActionsMenu.tsx
+ M src/components/siswa/MentorSelector.tsx
+ M src/styles/components/layout/Sidebar.module.css
+ M src/styles/components/ui/Modal.module.css
+ M tsconfig.tsbuildinfo
+?? .auto-pull.lock
+?? src/components/ui/ConfirmDialog.tsx
+[2026-07-20 11:02:02] Commit atau stash dulu sebelum auto-pull bisa jalan.
