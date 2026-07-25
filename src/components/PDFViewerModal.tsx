@@ -284,7 +284,7 @@ export function PDFViewerModal({ url, title, onClose, gradeData, studentName, fi
                       {/* Header */}
                       <div style={{ background: tc.primary, color: tc.headerText, padding: "1.25rem 1.5rem", borderRadius: "0.5rem 0.5rem 0 0", margin: "-1.5rem -1.5rem 1.25rem -1.5rem" }}>
                         <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
-                          <img src="/logo.png" alt="Politeknik SSR" style={{ height: 28, width: "auto", filter: "brightness(0) invert(1)", objectFit: "contain" }} />
+                          <img src="/favicon.png" alt="Politeknik SSR" style={{ height: 40, width: "auto", filter: "brightness(0) invert(1)", objectFit: "contain" }} />
                           <div>
                             <div style={{ fontSize: "0.7rem", opacity: 0.7, marginBottom: "0.25rem" }}>POLITEKNIK SSR — SISTEM INFORMASI PRAKERIN</div>
                             <div style={{ fontSize: "1.1rem", fontWeight: 700 }}>REKAP PENILAIAN PRAKERIN</div>
