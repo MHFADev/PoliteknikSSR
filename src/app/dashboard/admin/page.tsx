@@ -430,7 +430,7 @@ export default async function AdminOverviewPage() {
 
       {/* ─── Kalender ────────────────────────────────────────── */}
       <Card className={styles.flipCard}>
-        <Calendar events={allEvents || []} />
+        <Calendar events={(allEvents || []) as { id: string; title: string; event_date: string; tipe: "libur" | "event" }[]} />
       </Card>
     </div>
   );

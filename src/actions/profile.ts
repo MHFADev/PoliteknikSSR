@@ -96,15 +96,12 @@ export async function getSettings() {
     defaults.pklStartDate = "";
     defaults.pklEndDate = "";
     defaults.defaultLocationRadius = 100;
-    // Baca nilai aktual dari app_settings
     const { data: appCfg } = await supabase
       .from("app_settings")
-      .select("late_time, qr_expiry_hours, entry_time")
+      .select("qr_expiry_hours")
       .eq("id", 1)
       .maybeSingle();
     defaults.qrExpiryHours = appCfg?.qr_expiry_hours ?? 12;
-    defaults.entryTime = appCfg?.entry_time ?? "07:00";
-    defaults.lateTime = appCfg?.late_time ?? "08:00";
   }
 
   // Default khusus pembimbing
@@ -153,8 +150,6 @@ export async function updateSettings(settings: Record<string, any>) {
   if (role === "admin" || role === "owner" || role === "root") {
     const adminSupabase = createAdminClient();
     const syncData: Record<string, any> = {};
-    if (settings.lateTime !== undefined) syncData.late_time = settings.lateTime;
-    if (settings.entryTime !== undefined) syncData.entry_time = settings.entryTime;
     if (settings.qrExpiryHours !== undefined) syncData.qr_expiry_hours = settings.qrExpiryHours;
     if (Object.keys(syncData).length > 0) {
       syncData.updated_by = user.id;

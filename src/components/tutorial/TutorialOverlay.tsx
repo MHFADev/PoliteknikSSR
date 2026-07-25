@@ -8,7 +8,7 @@ import { TUTORIAL_STEPS, TUTORIAL_GROUPS } from "@/lib/tutorial/steps"
 import type { TutorialStep } from "@/lib/tutorial/steps"
 import styles from "@/styles/components/tutorial/TutorialOverlay.module.css"
 
-type Props = { role: "siswa" | "pembimbing"; onComplete: () => void }
+type Props = { role: string; onComplete: () => void }
 
 function q(sel: string): HTMLElement | null { return document.querySelector(sel) }
 

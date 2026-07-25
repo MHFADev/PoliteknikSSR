@@ -5,7 +5,7 @@ import { checkTutorialNeeded, completeTutorial } from "@/actions/tutorial"
 import { TutorialOverlay } from "./TutorialOverlay"
 
 type TutorialWrapperProps = {
-  role: "siswa" | "pembimbing"
+  role: string
 }
 
 export function TutorialWrapper({ role }: TutorialWrapperProps) {
@@ -13,7 +13,7 @@ export function TutorialWrapper({ role }: TutorialWrapperProps) {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    if (role !== "siswa" && role !== "pembimbing") {
+    if (role !== "siswa" && role !== "pembimbing" && role !== "admin") {
       setLoading(false)
       return
     }

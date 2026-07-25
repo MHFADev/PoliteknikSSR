@@ -28,7 +28,34 @@ import type {
 } from "../types";
 import type { IAttendanceRepository } from "../interfaces/IAttendanceRepository";
 
-async function getSettings(): Promise<{ lateTime: string; qrExpiryHours: number }> {
+async function getSettings(studentId?: string): Promise<{ lateTime: string; qrExpiryHours: number }> {
+  let lateTime = "08:00";
+  let qrExpiryHours = 12;
+
+  // Check mentor-specific settings first
+  if (studentId) {
+    try {
+      const adminSupabase = createAdminClient();
+      const { data: mentor } = await adminSupabase
+        .from("student_mentors")
+        .select("mentor_id")
+        .eq("student_id", studentId)
+        .maybeSingle();
+
+      if (mentor) {
+        const { data: ms } = await adminSupabase
+          .from("mentor_settings")
+          .select("late_time")
+          .eq("mentor_id", mentor.mentor_id)
+          .maybeSingle();
+        if (ms?.late_time) {
+          lateTime = ms.late_time;
+        }
+      }
+    } catch {}
+  }
+
+  // Fallback to global app_settings
   try {
     const supabase = createClient();
     const { data } = await supabase
@@ -36,13 +63,11 @@ async function getSettings(): Promise<{ lateTime: string; qrExpiryHours: number 
       .select("late_time, qr_expiry_hours")
       .eq("id", 1)
       .maybeSingle();
-    return {
-      lateTime: data?.late_time || "08:00",
-      qrExpiryHours: data?.qr_expiry_hours || 12,
-    };
-  } catch {
-    return { lateTime: "08:00", qrExpiryHours: 12 };
-  }
+    if (data?.late_time) lateTime = data.late_time;
+    if (data?.qr_expiry_hours) qrExpiryHours = data.qr_expiry_hours;
+  } catch {}
+
+  return { lateTime, qrExpiryHours };
 }
 
 /**
@@ -191,7 +216,7 @@ export class SupabaseAttendanceRepository implements IAttendanceRepository {
 
       if (!todaySession) {
         const newSessionId = randomUUID();
-        const { qrExpiryHours: durationHours } = await getSettings();
+        const { qrExpiryHours: durationHours } = await getSettings(studentId);
         const expiresAt = new Date(Date.now() + durationHours * 60 * 60 * 1000);
         const token = await generateDailyToken(
           {
@@ -225,8 +250,8 @@ export class SupabaseAttendanceRepository implements IAttendanceRepository {
       return { status: "hadir", error: "Jenis QR tidak dikenali." };
     }
 
-    // --- Tentukan status hadir/telat berdasarkan jam batas telat admin ---
-    const { lateTime } = await getSettings();
+    // --- Tentukan status hadir/telat berdasarkan jam batas telat pembimbing/admin ---
+    const { lateTime } = await getSettings(studentId);
     const isOnTime = isOnTimeByScanTime(lateTime, clientTime);
     const status: AttendanceStatus = isOnTime ? "hadir" : "telat";
 

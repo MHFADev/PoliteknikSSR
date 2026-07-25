@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import { RefreshCw, Settings } from "lucide-react";
 import { generateTodaySession } from "@/actions/qr";
 import { saveAttendanceSettings, getAttendanceSettings } from "@/actions/attendance";
+import { getCurrentPembimbingSettings } from "@/actions/mentor-settings";
 import { Button } from "@/components/ui/Button";
 import { Card, CardHeader } from "@/components/ui/Card";
 import { formatDate } from "@/lib/utils";
@@ -33,7 +34,12 @@ export function QRGeneratorCard({
       setLateTime(s.lateTime);
       setQrDuration(s.qrDuration);
     });
-  }, []);
+    if (!showSettings) {
+      getCurrentPembimbingSettings().then((s) => {
+        if (s) setLateTime(s.lateTime);
+      });
+    }
+  }, [showSettings]);
 
   useEffect(() => {
     if (!session) return setQrImage(null);

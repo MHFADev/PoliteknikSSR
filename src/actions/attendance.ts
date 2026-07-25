@@ -78,14 +78,32 @@ export async function autoCheckinByGps(latitude: number, longitude: number, clie
   const locResult = await Repositories.location().verifyLocation(latitude, longitude);
   if (!locResult.allowed) return { success: false, message: "Berada di luar area yang diizinkan." };
 
-  // Ambil settings
-  const { data: settings } = await supabase
-    .from("app_settings")
-    .select("late_time, qr_expiry_hours")
-    .eq("id", 1)
+  // Ambil settings — cek mentor settings dulu
+  const adminSupabase2 = createAdminClient();
+  let lateTime = "08:00";
+
+  const { data: mentorRel } = await adminSupabase2
+    .from("student_mentors")
+    .select("mentor_id")
+    .eq("student_id", user.id)
     .maybeSingle();
-  const qrExpiryHours = settings?.qr_expiry_hours || 12;
-  const lateTime = settings?.late_time || "08:00";
+  if (mentorRel) {
+    const { data: ms } = await adminSupabase2
+      .from("mentor_settings")
+      .select("late_time")
+      .eq("mentor_id", mentorRel.mentor_id)
+      .maybeSingle();
+    if (ms?.late_time) lateTime = ms.late_time;
+  }
+  if (!mentorRel || !lateTime) {
+    const { data: settings } = await supabase
+      .from("app_settings")
+      .select("late_time, qr_expiry_hours")
+      .eq("id", 1)
+      .maybeSingle();
+    lateTime = settings?.late_time || "08:00";
+  }
+  const qrExpiryHours = 12;
 
   // Cari sesi hari ini; buat otomatis jika belum ada
   let { data: session } = await supabase

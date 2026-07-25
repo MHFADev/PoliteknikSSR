@@ -38,10 +38,11 @@
 // ============================================================
 
 import { useState, useEffect, useCallback } from "react";
-import { Save, Loader2, CheckCircle2, AlertCircle, Settings, FileText } from "lucide-react";
+import { Save, Loader2, CheckCircle2, AlertCircle, Settings, FileText, Clock } from "lucide-react";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { getSettings, updateSettings } from "@/actions/profile";
+import { getCurrentPembimbingSettings, saveMentorSettings } from "@/actions/mentor-settings";
 import { StudentDocuments } from "@/components/StudentDocuments";
 import { useTheme } from "@/components/ThemeProvider";
 import styles from "@/styles/components/profile/Settings.module.css";
@@ -74,6 +75,12 @@ export function SettingsForm({ role }: SettingsFormProps) {
   const [success, setSuccess] = useState<string | null>(null);        // Pesan sukses
   const [error, setError] = useState<string | null>(null);            // Pesan error
 
+  // Mentor-specific settings (entry_time & late_time)
+  const [mentorEntryTime, setMentorEntryTime] = useState("07:00");
+  const [mentorLateTime, setMentorLateTime] = useState("08:00");
+  const [mentorSaving, setMentorSaving] = useState(false);
+  const [mentorMsg, setMentorMsg] = useState<string | null>(null);
+
   // ----------------------------------------------------------
   // Fetch data settings saat komponen dimount
   // ----------------------------------------------------------
@@ -99,7 +106,15 @@ export function SettingsForm({ role }: SettingsFormProps) {
 
   useEffect(() => {
     fetchSettings();
-  }, [fetchSettings]);
+    if (role === "pembimbing") {
+      getCurrentPembimbingSettings().then((data) => {
+        if (data) {
+          setMentorEntryTime(data.entryTime);
+          setMentorLateTime(data.lateTime);
+        }
+      });
+    }
+  }, [fetchSettings, role]);
 
   // ----------------------------------------------------------
   // Handler
@@ -386,6 +401,78 @@ export function SettingsForm({ role }: SettingsFormProps) {
               </select>
             </div>
           </Card>
+
+          {/* Jam Presensi — khusus pembimbing */}
+          <Card variant="skylearn" data-tour="pembimbing-jam-presensi">
+            <div className={styles.formSectionTitle}>
+              <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                <Clock className="h-5 w-5 text-sky" />
+                <span>Jam Presensi</span>
+              </div>
+            </div>
+            <p className={styles.formSectionDesc}>
+              Atur jam masuk dan batas telat untuk siswa bimbinganmu. Siswa yang memilihmu sebagai pembimbing akan mengikuti pengaturan ini.
+            </p>
+
+            {mentorMsg && (
+              <div className={mentorMsg.includes("Gagal") ? styles.errorMsg : styles.successMsg}>
+                {mentorMsg.includes("Gagal") ? <AlertCircle className="h-5 w-5 shrink-0" /> : <CheckCircle2 className="h-5 w-5 shrink-0" />}
+                <span>{mentorMsg}</span>
+              </div>
+            )}
+
+            <div className={styles.formField}>
+              <label className={styles.formLabel} htmlFor="mentorEntryTime">
+                Jam Masuk
+              </label>
+              <input
+                id="mentorEntryTime"
+                type="time"
+                className={styles.dateInput}
+                value={mentorEntryTime}
+                onChange={(e) => setMentorEntryTime(e.target.value)}
+              />
+              <div className={styles.toggleDesc}>
+                Jam resmi masuk PKL untuk siswa bimbinganmu. Siswa yang scan sebelum jam ini dianggap &ldquo;Hadir&rdquo;.
+              </div>
+            </div>
+
+            <div className={styles.formField}>
+              <label className={styles.formLabel} htmlFor="mentorLateTime">
+                Jam Batas Telat
+              </label>
+              <input
+                id="mentorLateTime"
+                type="time"
+                className={styles.dateInput}
+                value={mentorLateTime}
+                onChange={(e) => setMentorLateTime(e.target.value)}
+              />
+              <div className={styles.toggleDesc}>
+                Siswa yang scan setelah jam ini dianggap &ldquo;Telat&rdquo;. Default: 08:00.
+              </div>
+            </div>
+
+            <div style={{ marginTop: "0.75rem" }}>
+              <Button
+                variant="primary"
+                size="sm"
+                isLoading={mentorSaving}
+                onClick={async () => {
+                  setMentorSaving(true);
+                  setMentorMsg(null);
+                  const result = await saveMentorSettings(mentorEntryTime, mentorLateTime);
+                  if (result.error) setMentorMsg(result.error);
+                  else setMentorMsg("Pengaturan jam presensi berhasil disimpan!");
+                  setTimeout(() => setMentorMsg(null), 3000);
+                  setMentorSaving(false);
+                }}
+              >
+                <Save className="h-4 w-4" />
+                Simpan Jam Presensi
+              </Button>
+            </div>
+          </Card>
         </>
       )}
 
@@ -462,40 +549,6 @@ export function SettingsForm({ role }: SettingsFormProps) {
                 max={24}
               />
               <div className={styles.toggleDesc}>Berapa lama QR code berlaku sebelum kadaluarsa.</div>
-            </div>
-
-            {/* Jam Masuk */}
-            <div className={styles.formField}>
-              <label className={styles.formLabel} htmlFor="entryTime">
-                Jam Masuk
-              </label>
-              <input
-                id="entryTime"
-                type="time"
-                className={styles.dateInput}
-                value={settings.entryTime || "07:00"}
-                onChange={(e) => handleChange("entryTime", e.target.value)}
-              />
-              <div className={styles.toggleDesc}>
-                Jam resmi masuk PKL. Siswa yang scan sebelum jam ini dianggap &ldquo;Hadir&rdquo;.
-              </div>
-            </div>
-
-            {/* Jam Batas Telat */}
-            <div className={styles.formField}>
-              <label className={styles.formLabel} htmlFor="lateTime">
-                Jam Batas Telat
-              </label>
-              <input
-                id="lateTime"
-                type="time"
-                className={styles.dateInput}
-                value={settings.lateTime || "08:00"}
-                onChange={(e) => handleChange("lateTime", e.target.value)}
-              />
-              <div className={styles.toggleDesc}>
-                Siswa yang scan setelah jam ini dianggap &ldquo;Telat&rdquo;. Default: 08:00.
-              </div>
             </div>
           </Card>
 

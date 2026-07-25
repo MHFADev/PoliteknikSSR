@@ -447,6 +447,29 @@ const PEMBIMBING_GROUPS: PageGroup[] = [
     ],
   },
   {
+    label: "Pengaturan Jam Presensi",
+    steps: [
+      {
+        navigateTo: "/dashboard/pembimbing/settings",
+        target: "a[href='/dashboard/pembimbing/settings']",
+        pageLabel: "Pengaturan",
+        title: "Menu Pengaturan",
+        description: "Atur jam masuk dan batas telat untuk siswa bimbinganmu di sini.",
+        placement: "right",
+        expandSidebar: true,
+        expandMobileMore: true,
+      },
+      {
+        navigateTo: "/dashboard/pembimbing/settings",
+        target: "[data-tour='pembimbing-jam-presensi']",
+        pageLabel: "Pengaturan",
+        title: "Jam Presensi",
+        description: "Atur Jam Masuk (default 07:00) dan Jam Batas Telat (default 08:00). Siswa yang memilihmu sebagai pembimbing akan otomatis mengikuti jam ini saat presensi. Klik Simpan Jam Presensi untuk menyimpan.",
+        placement: "bottom",
+      },
+    ],
+  },
+  {
     label: "Profil",
     steps: [
       {
@@ -487,6 +510,66 @@ const PEMBIMBING_GROUPS: PageGroup[] = [
   },
 ]
 
+// ============================================================
+// ADMIN
+// ============================================================
+
+const ADMIN_GROUPS: PageGroup[] = [
+  {
+    label: "Selamat Datang",
+    steps: [
+      {
+        title: "Selamat Datang, Admin!",
+        description: "Panduan ini akan mengajak kamu berkeliling semua halaman admin PKL. Setiap bagian penting akan disorot langsung di layar. Klik Lanjut untuk memulai.",
+      },
+    ],
+  },
+  {
+    label: "Dashboard",
+    steps: [
+      {
+        navigateTo: "/dashboard/admin",
+        target: "a[href='/dashboard/admin']",
+        pageLabel: "Dashboard",
+        title: "Menu Dashboard",
+        description: "Halaman utama admin. Semua fitur bisa diakses dari sidebar — menu aktif ditandai warna biru.",
+        placement: "right",
+      },
+      {
+        navigateTo: "/dashboard/admin",
+        target: "[data-tour='adash-stats']",
+        pageLabel: "Dashboard",
+        title: "Statistik Keseluruhan",
+        description: "Total siswa, pembimbing, dan data kehadiran keseluruhan dalam satu tampilan.",
+        placement: "bottom",
+      },
+    ],
+  },
+  {
+    label: "Pengaturan",
+    steps: [
+      {
+        navigateTo: "/dashboard/admin/settings",
+        target: "a[href='/dashboard/admin/settings']",
+        pageLabel: "Pengaturan",
+        title: "Menu Pengaturan",
+        description: "Atur konfigurasi aplikasi seperti periode PKL, QR expiry, radius lokasi, dan notifikasi.",
+        placement: "right",
+        expandSidebar: true,
+        expandMobileMore: true,
+      },
+      {
+        navigateTo: "/dashboard/admin/settings",
+        target: "[data-tour='admin-presensi-settings']",
+        pageLabel: "Pengaturan",
+        title: "Presensi QR",
+        description: "Atur berapa lama QR code berlaku sebelum kadaluarsa. Pengaturan jam masuk dan batas telat kini dikelola oleh masing-masing pembimbing di halaman Pengaturan mereka.",
+        placement: "bottom",
+      },
+    ],
+  },
+]
+
 function flatten(groups: PageGroup[]): TutorialStep[] {
   return groups.flatMap((g) => g.steps)
 }
@@ -494,9 +577,11 @@ function flatten(groups: PageGroup[]): TutorialStep[] {
 export const TUTORIAL_STEPS: Record<string, TutorialStep[]> = {
   siswa: flatten(SISWA_GROUPS),
   pembimbing: flatten(PEMBIMBING_GROUPS),
+  admin: flatten(ADMIN_GROUPS),
 }
 
 export const TUTORIAL_GROUPS: Record<string, PageGroup[]> = {
   siswa: SISWA_GROUPS,
   pembimbing: PEMBIMBING_GROUPS,
+  admin: ADMIN_GROUPS,
 }
