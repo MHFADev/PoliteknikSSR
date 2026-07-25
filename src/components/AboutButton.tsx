@@ -101,8 +101,8 @@ const badgeStyle: React.CSSProperties = {
 }
 
 const fabStyle: React.CSSProperties = {
-  position: "fixed", bottom: 24, right: 24, zIndex: 40,
-  width: 48, height: 48, borderRadius: "50%",
+  position: "fixed", bottom: 88, right: 20, zIndex: 40,
+  width: 44, height: 44, borderRadius: "50%",
   border: "none", cursor: "pointer",
   background: "linear-gradient(135deg, #2563EB, #4F46E5)",
   color: "#fff", display: "flex", alignItems: "center",
@@ -115,9 +115,14 @@ export function AboutButton() {
 
   return (
     <>
+      <style>{`@media (max-width: 1023px) { .about-fab { bottom: 80px !important; } }`}</style>
       <button
         onClick={() => setOpen(true)}
-        style={fabStyle}
+        className="about-fab"
+        style={{
+          ...fabStyle,
+          bottom: 24,
+        }}
         aria-label="Tentang Aplikasi"
         title="Tentang Aplikasi"
       >
