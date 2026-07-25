@@ -123,6 +123,10 @@ export default function SertifikatRekapPage() {
   const [prakerinFile, setPrakerinFile] = useState<File | null>(null);
   const [previewData, setPreviewData] = useState<PrakerinRecapData | null>(null);
   const [recapTheme, setRecapTheme] = useState<string>("navy");
+  const [customColors, setCustomColors] = useState({ primary: "#1E293B", headerBg: "#1E293B", accent: "#6366F1", rowEven: "#F8FAFC" });
+  const updateCustomTheme = () => {
+    RECAP_THEMES.custom.colors = { ...RECAP_THEMES.custom.colors, ...customColors, primaryLight: customColors.primary, headerText: "#FFFFFF", border: "#CBD5E1" };
+  };
   const [studentSearch, setStudentSearch] = useState("");
 
   // Auto-fill identitas saat pilih siswa
@@ -744,6 +748,17 @@ export default function SertifikatRekapPage() {
                     {theme.label}
                   </button>
                 ))}
+                {/* Color picker */}
+                <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", padding: "0.5rem 0.75rem", borderRadius: "0.5rem", border: recapTheme === "custom" ? "2px solid #6366F1" : "1px solid #CBD5E1", background: recapTheme === "custom" ? "#F8FAFC" : "#fff" }}>
+                  <span style={{ fontSize: "0.8125rem", fontWeight: 500, color: "#64748B" }}>Pilih Warna:</span>
+                  {(["primary", "headerBg", "accent", "rowEven"] as const).map((f) => (
+                    <label key={f} style={{ display: "flex", alignItems: "center", gap: "2px", fontSize: "0.625rem", color: "#94A3B8" }}>
+                      <input type="color" value={customColors[f]} onChange={(e) => setCustomColors((p: any) => ({ ...p, [f]: e.target.value }))} style={{ width: 28, height: 28, padding: 0, border: "none", borderRadius: 4, cursor: "pointer" }} />
+                      {f === "headerBg" ? "Head" : f === "rowEven" ? "Row" : f.charAt(0).toUpperCase() + f.slice(1)}
+                    </label>
+                  ))}
+                  <button type="button" onClick={() => { setRecapTheme("custom"); updateCustomTheme(); }} style={{ padding: "4px 10px", borderRadius: 6, border: "none", background: "#6366F1", color: "#fff", fontSize: "0.75rem", fontWeight: 600, cursor: "pointer" }}>Terapkan</button>
+                </div>
               </div>
             </div>
 

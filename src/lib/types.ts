@@ -124,6 +124,10 @@ export const RECAP_THEMES: Record<string, { label: string; colors: ThemeColors }
     label: "Slate",
     colors: { primary: "#1E293B", primaryLight: "#334155", headerBg: "#1E293B", headerText: "#FFFFFF", rowEven: "#F8FAFC", border: "#CBD5E1", accent: "#475569" },
   },
+  custom: {
+    label: "Kustom",
+    colors: { primary: "#1E293B", primaryLight: "#334155", headerBg: "#1E293B", headerText: "#FFFFFF", rowEven: "#F8FAFC", border: "#CBD5E1", accent: "#6366F1" },
+  },
 };
 
 export function createDefaultPrakerinData(): PrakerinRecapData {

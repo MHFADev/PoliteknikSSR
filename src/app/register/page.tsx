@@ -17,6 +17,7 @@ import {
   ArrowRight,
   ChevronLeft,
   ChevronRight,
+  Calendar,
 } from "lucide-react";
 import { register, getStudyPrograms } from "./actions";
 import { getClasses } from "@/actions/classes";
@@ -48,10 +49,10 @@ export default function RegisterPage() {
   const [kelas, setKelas] = useState("");
   const [jurusanId, setJurusanId] = useState("");
   const [instansi, setInstansi] = useState("");
-  const [periodePkl, setPeriodePkl] = useState("");
+  const [pklStartDate, setPklStartDate] = useState("");
+  const [pklEndDate, setPklEndDate] = useState("");
   const [role, setRole] = useState<Role>("siswa");
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [showPasswords, setShowPasswords] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [emailWarning, setEmailWarning] = useState<string | null>(null);
@@ -174,7 +175,7 @@ export default function RegisterPage() {
         identityNumber.trim(),
         role === "siswa" ? instansi.trim() : undefined,
         jurusanId || undefined,
-        role === "siswa" ? periodePkl.trim() : undefined,
+        role === "siswa" && pklStartDate && pklEndDate ? `${pklStartDate} — ${pklEndDate}` : undefined,
       );
       if (result.error) {
         setError(result.error);
@@ -430,7 +431,7 @@ export default function RegisterPage() {
                     <Lock className={styles.inputIcon} />
                     <input
                       id="password"
-                      type={showPassword ? "text" : "password"}
+                      type={showPasswords ? "text" : "password"}
                       required
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
@@ -439,10 +440,10 @@ export default function RegisterPage() {
                     />
                     <button
                       type="button"
-                      onClick={() => setShowPassword(!showPassword)}
+                      onClick={() => setShowPasswords(!showPasswords)}
                       className={styles.toggleBtn}
                     >
-                      <PasswordEye show={showPassword} />
+                      <PasswordEye show={showPasswords} />
                     </button>
                   </div>
                   {fieldErrors.password && (
@@ -460,7 +461,7 @@ export default function RegisterPage() {
                     <Lock className={styles.inputIcon} />
                     <input
                       id="confirmPassword"
-                      type={showConfirmPassword ? "text" : "password"}
+                      type={showPasswords ? "text" : "password"}
                       required
                       value={confirmPassword}
                       onChange={(e) => setConfirmPassword(e.target.value)}
@@ -470,11 +471,11 @@ export default function RegisterPage() {
                     <button
                       type="button"
                       onClick={() =>
-                        setShowConfirmPassword(!showConfirmPassword)
+                        setShowPasswords(!showPasswords)
                       }
                       className={styles.toggleBtn}
                     >
-                      <PasswordEye show={showConfirmPassword} />
+                      <PasswordEye show={showPasswords} />
                     </button>
                   </div>
                   {fieldErrors.confirmPassword && (
@@ -585,22 +586,18 @@ export default function RegisterPage() {
                   </div>
 
                   <div className={styles.field}>
-                    <label className={styles.label} htmlFor="periodePkl">
-                      Periode PKL
-                    </label>
-                    <input
-                      id="periodePkl"
-                      type="text"
-                      value={periodePkl}
-                      onChange={(e) => setPeriodePkl(e.target.value)}
-                      placeholder="Contoh: Januari - Maret 2026"
-                      className={`${styles.input} ${fieldErrors.periodePkl ? styles.inputError : styles.inputNormal}`}
-                    />
-                    {fieldErrors.periodePkl && (
-                      <span className={styles.fieldError}>
-                        {fieldErrors.periodePkl}
-                      </span>
-                    )}
+                    <label className={styles.label}>Tanggal Mulai PKL</label>
+                    <div className={styles.inputWrapper}>
+                      <Calendar className={styles.inputIcon} />
+                      <input type="date" value={pklStartDate} onChange={(e) => setPklStartDate(e.target.value)} className={styles.input} />
+                    </div>
+                  </div>
+                  <div className={styles.field}>
+                    <label className={styles.label}>Tanggal Selesai PKL</label>
+                    <div className={styles.inputWrapper}>
+                      <Calendar className={styles.inputIcon} />
+                      <input type="date" value={pklEndDate} onChange={(e) => setPklEndDate(e.target.value)} className={styles.input} />
+                    </div>
                   </div>
                 </>
               )}
