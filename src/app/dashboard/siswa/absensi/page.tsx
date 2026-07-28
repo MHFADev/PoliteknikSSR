@@ -48,6 +48,12 @@ export default function SiswaAbsensiPage() {
   }, []);
 
   useEffect(() => {
+    if (mentorCheck === "no-mentor") {
+      setGpsState("unavailable");
+      setGpsReady(true);
+      return;
+    }
+
     let cancelled = false;
     async function check() {
       try {
@@ -155,16 +161,18 @@ export default function SiswaAbsensiPage() {
           <p>Scan QR yang ditampilkan admin untuk mencatat kehadiran hari ini.</p>
         </div>
 
-        <div className="rounded-xl border-2 border-dashed border-amber-200 bg-amber-50/50 p-6 text-center">
-          <div className="w-14 h-14 rounded-full bg-amber-100 flex items-center justify-center mx-auto mb-4">
-            <GraduationCap className="h-7 w-7 text-amber-600" />
+        <LiveClock />
+
+        <div data-tour="absensi-gps">
+          <div className={styles.gpsBanner + " " + styles.gpsWarning}>
+            <AlertTriangle className="h-4 w-4" />
+            <span>Verifikasi lokasi tidak aktif (belum punya pembimbing) — Silakan scan QR langsung</span>
           </div>
-          <h3 className="text-base font-bold text-amber-800 mb-2">Belum Memilih Pembimbing</h3>
-          <p className="text-sm text-amber-700 leading-relaxed max-w-md mx-auto">
-            Anda harus memilih pembimbing PKL terlebih dahulu sebelum bisa melakukan absensi.
-            Silakan pilih pembimbing di halaman Dashboard atau Pengaturan.
-          </p>
         </div>
+
+        <Card className={styles.scannerCard} data-tour="absensi-scan">
+          <QRScanner gpsReady={true} />
+        </Card>
       </div>
     );
   }
