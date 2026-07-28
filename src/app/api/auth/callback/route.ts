@@ -45,7 +45,7 @@ export async function GET(request: Request) {
     }
 
     const meta = user.user_metadata || {}
-    const role = meta.role || "siswa"
+    const role = searchParams.get("role") || meta.role || "siswa"
     await admin.from("profiles").insert({
       id: user.id,
       full_name: meta.full_name || meta.name || user.email?.split("@")[0] || "User",
