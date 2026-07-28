@@ -100,13 +100,19 @@ export async function selectMentor(mentorId: string): Promise<{ success: boolean
       return { success: false, message: "Pembimbing tidak ditemukan." };
     }
 
-    // Upsert the student_mentors record (one student = one mentor)
+    // Delete existing mentor first, then insert (one student = one mentor)
+    const { error: delError } = await adminSupabase
+      .from("student_mentors")
+      .delete()
+      .eq("student_id", user.id);
+
+    if (delError) {
+      return { success: false, message: delError.message };
+    }
+
     const { error } = await adminSupabase
       .from("student_mentors")
-      .upsert(
-        { student_id: user.id, mentor_id: mentorId },
-        { onConflict: "student_id,mentor_id" }
-      );
+      .insert({ student_id: user.id, mentor_id: mentorId });
 
     if (error) {
       return { success: false, message: error.message };
