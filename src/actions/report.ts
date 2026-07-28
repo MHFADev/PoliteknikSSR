@@ -6,7 +6,7 @@ function generateInitialAvatar(name: string): string {
   const initial = (name || "?").charAt(0).toUpperCase()
   const colors = ["#6366F1", "#3B82F6", "#8B5CF6", "#EC4899", "#F59E0B", "#10B981"]
   const bg = colors[name.length % colors.length]
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 80 80"><rect width="80" height="80" rx="40" fill="${bg}"/><text x="40" y="46" text-anchor="middle" fill="#fff" font-size="32" font-weight="700" font-family="sans-serif">${initial}</text></svg>`
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 120 120"><rect width="120" height="120" rx="60" fill="${bg}"/><text x="60" y="68" text-anchor="middle" fill="#fff" font-size="48" font-weight="700" font-family="sans-serif">${initial}</text></svg>`
   return `data:image/svg+xml;base64,${Buffer.from(svg).toString("base64")}`
 }
 
