@@ -19,12 +19,12 @@ export async function GET(request: Request) {
 
   try {
     const supabase = createClient()
-    const { error } = await supabase.auth.exchangeCodeForSession(code)
-    if (error) {
+    const { data, error } = await supabase.auth.exchangeCodeForSession(code)
+    if (error || !data.session) {
       return NextResponse.redirect(`${origin}/login?error=Gagal autentikasi Google`)
     }
 
-    const { data: { user } } = await supabase.auth.getUser()
+    const { user, session } = data
     if (!user) {
       return NextResponse.redirect(`${origin}/login?error=User tidak ditemukan`)
     }
@@ -36,27 +36,47 @@ export async function GET(request: Request) {
       .eq("id", user.id)
       .maybeSingle()
 
+    let redirectPath: string
+
     if (profile) {
       if (profile.approved !== true) {
         await admin.from("profiles").update({ approved: true }).eq("id", user.id)
       }
-      const redirectPath = dashboardForRole(profile.role)
-      return NextResponse.redirect(`${origin}${redirectPath}`)
+      redirectPath = dashboardForRole(profile.role)
+    } else {
+      const meta = user.user_metadata || {}
+      const role = searchParams.get("role") || meta.role || "siswa"
+      await admin.from("profiles").insert({
+        id: user.id,
+        full_name: "Pengguna Baru",
+        role,
+        approved: true,
+        avatar_url: meta.avatar_url || meta.picture || null,
+        created_at: user.created_at,
+      })
+      await admin.auth.admin.updateUserById(user.id, { user_metadata: { role, approved: true } })
+      redirectPath = "/complete-profile"
     }
 
-    const meta = user.user_metadata || {}
-    const role = searchParams.get("role") || meta.role || "siswa"
-    await admin.from("profiles").insert({
-      id: user.id,
-      full_name: "Pengguna Baru",
-      role,
-      approved: true,
-      avatar_url: meta.avatar_url || meta.picture || null,
-      created_at: user.created_at,
-    })
-    await admin.auth.admin.updateUserById(user.id, { user_metadata: { role, approved: true } })
+    const response = NextResponse.redirect(`${origin}${redirectPath}`)
+    const projectRef = process.env.NEXT_PUBLIC_SUPABASE_URL?.match(/https:\/\/(.+)\.supabase/)?.[1]
+    if (projectRef) {
+      response.cookies.set(`sb-${projectRef}-auth-token`, JSON.stringify({
+        access_token: session.access_token,
+        refresh_token: session.refresh_token,
+        expires_in: session.expires_in,
+        expires_at: session.expires_at,
+        token_type: session.token_type,
+      }), {
+        path: "/",
+        httpOnly: true,
+        sameSite: "lax",
+        secure: process.env.NODE_ENV === "production",
+        maxAge: 60 * 60 * 24 * 365,
+      })
+    }
 
-    return NextResponse.redirect(`${origin}/complete-profile`)
+    return response
   } catch (err) {
     console.error("[auth/callback] error:", err)
     return NextResponse.redirect(`${origin}/login?error=Terjadi kesalahan saat autentikasi`)
