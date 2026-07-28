@@ -33,60 +33,41 @@ export function ReportDialog({ open, onClose }: Props) {
     }
   }
 
-  const overlayStyle: React.CSSProperties = {
-    position: "fixed", inset: 0, zIndex: 9999,
-    display: "flex", alignItems: "center", justifyContent: "center", padding: 16,
-  }
-  const backdropStyle: React.CSSProperties = {
-    position: "absolute", inset: 0, background: "rgba(15,23,42,0.5)", backdropFilter: "blur(4px)",
-  }
-  const dialogStyle: React.CSSProperties = {
-    position: "relative", width: "100%", maxWidth: 480,
-    borderRadius: 20, border: "1px solid #E2E8F0",
-    background: "#fff", boxShadow: "0 16px 48px rgba(0,0,0,0.12)",
-    padding: "24px", maxHeight: "90vh", overflowY: "auto",
-  }
+  const s = (obj: Record<string, string>) => obj as React.CSSProperties
 
   return (
     <AnimatePresence>
       {open && (
-        <motion.div style={overlayStyle} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-          <div style={backdropStyle} onClick={onClose} />
-          <motion.div role="dialog" aria-modal="true" aria-label="Lapor" style={dialogStyle}
+        <motion.div style={s({ position: "fixed", inset: "0", zIndex: "9999", display: "flex", alignItems: "center", justifyContent: "center", padding: "16px" })} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+          <div style={s({ position: "absolute", inset: "0", background: "rgba(15,23,42,0.5)", backdropFilter: "blur(4px)" })} onClick={onClose} />
+          <motion.div role="dialog" aria-modal="true" aria-label="Lapor"
+            style={s({ position: "relative", width: "100%", maxWidth: "480px", borderRadius: "20px", border: "1px solid var(--color-outline)", background: "var(--bg-card)", boxShadow: "0 16px 48px rgba(0,0,0,0.12)", padding: "24px", maxHeight: "90vh", overflowY: "auto" })}
             initial={{ opacity: 0, y: 24, scale: 0.97 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 16, scale: 0.98 }}
             transition={{ type: "spring", damping: 26, stiffness: 300 }}
           >
-            {/* Header */}
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 20 }}>
-              <h3 style={{ fontSize: 18, fontWeight: 700, color: "#0F172A", display: "flex", alignItems: "center", gap: 8, margin: 0 }}>
+            <div style={s({ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "20px" })}>
+              <h3 style={s({ fontSize: "18px", fontWeight: "700", color: "var(--color-deep)", display: "flex", alignItems: "center", gap: "8px", margin: "0" })}>
                 <Bug className="h-5 w-5 text-indigo-500" />
                 Lapor
               </h3>
-              <button onClick={onClose} style={{ borderRadius: 9999, padding: 6, color: "#94A3B8", background: "none", border: "none", cursor: "pointer" }}>
+              <button onClick={onClose} style={s({ borderRadius: "9999px", padding: "6px", color: "var(--color-ink-subtle)", background: "none", border: "none", cursor: "pointer" })}>
                 <X className="h-4 w-4" />
               </button>
             </div>
 
-            <p style={{ fontSize: "0.8125rem", color: "#64748B", margin: "0 0 16px", lineHeight: 1.6 }}>
+            <p style={s({ fontSize: "0.8125rem", color: "var(--color-mist-dim)", margin: "0 0 16px", lineHeight: "1.6" })}>
               Temukan bug? Punya saran? Lapor langsung ke developer. Laporan akan dikirim ke Discord dan ditindaklanjuti secepatnya.
             </p>
 
-            {/* Type Selector */}
-            <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 16 }}>
+            <div style={s({ display: "flex", gap: "6px", flexWrap: "wrap", marginBottom: "16px" })}>
               {REPORT_TYPES.map((t) => {
                 const active = type === t.value
                 const Icon = t.icon
                 return (
                   <button key={t.value} type="button" onClick={() => setType(t.value)}
-                    style={{
-                      display: "flex", alignItems: "center", gap: 5, padding: "6px 12px",
-                      borderRadius: 8, border: active ? `2px solid ${t.color}` : "1px solid #E2E8F0",
-                      background: active ? `${t.color}10` : "#fff", cursor: "pointer",
-                      fontSize: "0.75rem", fontWeight: 600, color: active ? t.color : "#64748B",
-                      transition: "all 0.15s",
-                    }}
+                    style={s({ display: "flex", alignItems: "center", gap: "5px", padding: "6px 12px", borderRadius: "8px", border: active ? `2px solid ${t.color}` : "1px solid var(--color-outline)", background: active ? `${t.color}10` : "var(--bg-card)", cursor: "pointer", fontSize: "0.75rem", fontWeight: "600", color: active ? t.color : "var(--color-ink-muted)", transition: "all 0.15s" })}
                   >
                     <Icon className="h-3.5 w-3.5" />
                     {t.label}
@@ -95,40 +76,27 @@ export function ReportDialog({ open, onClose }: Props) {
               })}
             </div>
 
-            {/* Message */}
-            <label style={{ fontSize: "0.8125rem", fontWeight: 600, color: "#0F172A", marginBottom: 6, display: "block" }}>
+            <label style={s({ fontSize: "0.8125rem", fontWeight: "600", color: "var(--color-deep)", marginBottom: "6px", display: "block" })}>
               Deskripsi Laporan
             </label>
             <textarea value={message} onChange={(e) => setMessage(e.target.value)} rows={5}
               placeholder="Jelaskan secara detail apa yang terjadi..."
-              style={{
-                width: "100%", padding: "10px 12px", borderRadius: 10, border: "1px solid #E2E8F0",
-                fontSize: "0.8125rem", lineHeight: 1.6, resize: "vertical", outline: "none",
-                boxSizing: "border-box", fontFamily: "inherit",
-              }}
+              style={s({ width: "100%", padding: "10px 12px", borderRadius: "10px", border: "1px solid var(--color-outline)", fontSize: "0.8125rem", lineHeight: "1.6", resize: "vertical", outline: "none", boxSizing: "border-box", fontFamily: "inherit", background: "var(--bg-input)", color: "var(--color-ink)" })}
             />
 
-            {/* Status */}
             {status && (
-              <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "8px 12px", borderRadius: 8, marginTop: 12,
-                background: status.ok ? "#F0FDF4" : "#FEF2F2", color: status.ok ? "#166534" : "#991B1B", fontSize: "0.8125rem", fontWeight: 500 }}>
+              <div style={s({ display: "flex", alignItems: "center", gap: "8px", padding: "8px 12px", borderRadius: "8px", marginTop: "12px", background: status.ok ? "#F0FDF4" : "#FEF2F2", color: status.ok ? "#166534" : "#991B1B", fontSize: "0.8125rem", fontWeight: "500" })}>
                 {status.ok ? <CheckCircle className="h-4 w-4 shrink-0" /> : <AlertCircle className="h-4 w-4 shrink-0" />}
                 {status.msg}
               </div>
             )}
 
-            {/* Submit */}
-            <div style={{ display: "flex", justifyContent: "flex-end", gap: 8, marginTop: 16 }}>
-              <button onClick={onClose} style={{ padding: "8px 16px", borderRadius: 10, border: "1px solid #E2E8F0", background: "#fff", fontSize: "0.8125rem", fontWeight: 600, color: "#475569", cursor: "pointer" }}>
+            <div style={s({ display: "flex", justifyContent: "flex-end", gap: "8px", marginTop: "16px" })}>
+              <button onClick={onClose} style={s({ padding: "8px 16px", borderRadius: "10px", border: "1px solid var(--color-outline)", background: "var(--bg-card)", fontSize: "0.8125rem", fontWeight: "600", color: "var(--color-ink-muted)", cursor: "pointer" })}>
                 Batal
               </button>
               <button onClick={handleSend} disabled={sending || !message.trim()}
-                style={{
-                  display: "flex", alignItems: "center", gap: 6, padding: "8px 18px", borderRadius: 10,
-                  border: "none", background: !message.trim() ? "#94A3B8" : "linear-gradient(135deg, #6366F1, #4F46E5)",
-                  color: "#fff", fontSize: "0.8125rem", fontWeight: 600, cursor: sending || !message.trim() ? "not-allowed" : "pointer",
-                  transition: "all 0.15s",
-                }}
+                style={s({ display: "flex", alignItems: "center", gap: "6px", padding: "8px 18px", borderRadius: "10px", border: "none", background: !message.trim() ? "var(--color-ink-subtle)" : "linear-gradient(135deg, #6366F1, #4F46E5)", color: "#fff", fontSize: "0.8125rem", fontWeight: "600", cursor: sending || !message.trim() ? "not-allowed" : "pointer", transition: "all 0.15s" })}
               >
                 {sending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
                 {sending ? "Mengirim..." : "Kirim Laporan"}

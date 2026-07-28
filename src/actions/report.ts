@@ -21,13 +21,11 @@ export async function sendReport(type: string, message: string) {
     const mention = devRoleId ? `<@&${devRoleId}>` : "@here"
 
     const embed = {
-      title: `🐛 Laporan Baru: ${type}`,
+      title: `🚨 Laporan Bug Baru Masuk!`,
       color: 0x6366F1,
       fields: [
-        { name: "Dari", value: profile?.full_name || "Tidak dikenal", inline: true },
-        { name: "Role", value: profile?.role || "-", inline: true },
-        { name: "Email", value: user.email || "-", inline: true },
-        { name: "Pesan", value: message },
+        { name: "Informasi Pelapor", value: `\`\`\`👤 Nama: ${profile?.full_name || "Tidak dikenal"}\n🎓 Role: ${profile?.role || "-"}\n📧 Email: ${user.email || "-"}\`\`\``, inline: false },
+        { name: "📝 Pesan / Deskripsi Bug", value: message },
       ],
       timestamp: new Date().toISOString(),
       footer: { text: "Sistem Laporan PKL" },
@@ -37,7 +35,7 @@ export async function sendReport(type: string, message: string) {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        content: `${mention} **Laporan Baru Masuk!**`,
+        content: `${mention} Laporan Baru Masuk!`,
         embeds: [embed],
       }),
     })
