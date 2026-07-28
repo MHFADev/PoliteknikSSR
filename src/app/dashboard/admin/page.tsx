@@ -50,6 +50,10 @@ export default async function AdminOverviewPage() {
   const sevenDaysAgo = new Date();
   sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 6);
   const sevenDaysAgoStr = sevenDaysAgo.toISOString().slice(0, 10);
+  const yearAgo = new Date();
+  yearAgo.setFullYear(yearAgo.getFullYear() - 1);
+  const yearAhead = new Date();
+  yearAhead.setFullYear(yearAhead.getFullYear() + 1);
 
   // ─── Parallel Queries ──────────────────────────────────────────────
   const [
@@ -94,10 +98,13 @@ export default async function AdminOverviewPage() {
     supabase
       .from("calendar_events")
       .select("id, title, event_date, tipe")
+      .gte("event_date", yearAgo.toISOString().slice(0, 10))
+      .lte("event_date", yearAhead.toISOString().slice(0, 10))
       .order("event_date", { ascending: true }),
     supabase
       .from("calendar_events")
-      .select("id", { count: "exact", head: true }),
+      .select("id", { count: "exact", head: true })
+      .gte("event_date", yearAgo.toISOString().slice(0, 10)),
     supabase
       .from("leave_requests")
       .select("type, start_date, end_date, status, student_id")

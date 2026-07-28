@@ -32,39 +32,24 @@ async function getSettings(studentId?: string): Promise<{ lateTime: string; qrEx
   let lateTime = "08:00";
   let qrExpiryHours = 12;
 
-  // Check mentor-specific settings first
-  if (studentId) {
-    try {
-      const adminSupabase = createAdminClient();
-      const { data: mentor } = await adminSupabase
-        .from("student_mentors")
-        .select("mentor_id")
-        .eq("student_id", studentId)
-        .maybeSingle();
-
-      if (mentor) {
-        const { data: ms } = await adminSupabase
-          .from("mentor_settings")
-          .select("late_time")
-          .eq("mentor_id", mentor.mentor_id)
-          .maybeSingle();
-        if (ms?.late_time) {
-          lateTime = ms.late_time;
-        }
-      }
-    } catch {}
-  }
-
-  // Fallback to global app_settings
   try {
     const supabase = createClient();
-    const { data } = await supabase
-      .from("app_settings")
-      .select("late_time, qr_expiry_hours")
-      .eq("id", 1)
-      .maybeSingle();
-    if (data?.late_time) lateTime = data.late_time;
-    if (data?.qr_expiry_hours) qrExpiryHours = data.qr_expiry_hours;
+    const [{ data: appCfg }, { data: mentor }] = await Promise.all([
+      supabase.from("app_settings").select("late_time, qr_expiry_hours").eq("id", 1).maybeSingle(),
+      studentId
+        ? createAdminClient().from("student_mentors").select("mentor_id").eq("student_id", studentId).maybeSingle()
+        : Promise.resolve({ data: null }),
+    ]);
+
+    let mentorLate: string | null = null;
+    if (mentor) {
+      const { data: ms } = await createAdminClient().from("mentor_settings").select("late_time").eq("mentor_id", mentor.mentor_id).maybeSingle();
+      mentorLate = ms?.late_time || null;
+    }
+
+    if (mentorLate) lateTime = mentorLate;
+    else if (appCfg?.late_time) lateTime = appCfg.late_time;
+    if (appCfg?.qr_expiry_hours) qrExpiryHours = appCfg.qr_expiry_hours;
   } catch {}
 
   return { lateTime, qrExpiryHours };

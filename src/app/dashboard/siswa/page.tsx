@@ -43,6 +43,10 @@ export default async function SiswaOverviewPage() {
   const startOfMonth = new Date();
   startOfMonth.setDate(1);
   const today = new Date().toISOString().slice(0, 10);
+  const yearAgo = new Date();
+  yearAgo.setFullYear(yearAgo.getFullYear() - 1);
+  const yearAhead = new Date();
+  yearAhead.setFullYear(yearAhead.getFullYear() + 1);
 
   // ─── Parallel Queries ──────────────────────────────────────────────
   const [
@@ -84,11 +88,14 @@ export default async function SiswaOverviewPage() {
       .from("calendar_events")
       .select("id, title, event_date, tipe")
       .or(`student_id.eq.${user!.id},student_id.is.null`)
+      .gte("event_date", yearAgo.toISOString().slice(0, 10))
+      .lte("event_date", yearAhead.toISOString().slice(0, 10))
       .order("event_date", { ascending: true }),
     supabase
       .from("attendance_records")
       .select("status, scanned_at")
-      .eq("student_id", user!.id),
+      .eq("student_id", user!.id)
+      .gte("scanned_at", yearAgo.toISOString()),
     supabase
       .from("leave_requests")
       .select("type, start_date, end_date")

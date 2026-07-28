@@ -64,46 +64,37 @@ export async function autoCheckinByGps(latitude: number, longitude: number, clie
   const today = new Date().toISOString().slice(0, 10);
   const clientDate = clientTimestamp ? new Date(clientTimestamp) : undefined;
 
-  // Cek sudah absen hari ini
-  const { data: existing } = await supabase
-    .from("attendance_records")
-    .select("id, status")
-    .eq("student_id", user.id)
-    .gte("scanned_at", `${today}T00:00:00`)
-    .lte("scanned_at", `${today}T23:59:59`)
-    .maybeSingle();
+  // Parallel: cek absen hari ini + verifikasi lokasi + ambil settings
+  const [{ data: existing }, locResult, { data: mentorRel }] = await Promise.all([
+    supabase
+      .from("attendance_records")
+      .select("id, status")
+      .eq("student_id", user.id)
+      .gte("scanned_at", `${today}T00:00:00`)
+      .lte("scanned_at", `${today}T23:59:59`)
+      .maybeSingle(),
+    Repositories.location().verifyLocation(latitude, longitude),
+    adminSupabase
+      .from("student_mentors")
+      .select("mentor_id")
+      .eq("student_id", user.id)
+      .maybeSingle(),
+  ]);
+
   if (existing) return { success: false, message: `Kamu sudah absen hari ini (${existing.status === "hadir" ? "Hadir" : "Telat"}).` };
 
-  // Verifikasi lokasi
-  const locResult = await Repositories.location().verifyLocation(latitude, longitude);
   if (!locResult.allowed) return { success: false, message: "Berada di luar area yang diizinkan." };
 
-  // Ambil settings — cek mentor settings dulu
-  const adminSupabase2 = createAdminClient();
+  // Cek mentor settings + global settings parallel
   let lateTime = "08:00";
-
-  const { data: mentorRel } = await adminSupabase2
-    .from("student_mentors")
-    .select("mentor_id")
-    .eq("student_id", user.id)
-    .maybeSingle();
-  if (mentorRel) {
-    const { data: ms } = await adminSupabase2
-      .from("mentor_settings")
-      .select("late_time")
-      .eq("mentor_id", mentorRel.mentor_id)
-      .maybeSingle();
-    if (ms?.late_time) lateTime = ms.late_time;
-  }
-  if (!mentorRel || !lateTime) {
-    const { data: settings } = await supabase
-      .from("app_settings")
-      .select("late_time, qr_expiry_hours")
-      .eq("id", 1)
-      .maybeSingle();
-    lateTime = settings?.late_time || "08:00";
-  }
-  const qrExpiryHours = 12;
+  const [{ data: ms }, { data: appCfg }] = await Promise.all([
+    mentorRel
+      ? adminSupabase.from("mentor_settings").select("late_time").eq("mentor_id", mentorRel.mentor_id).maybeSingle()
+      : Promise.resolve({ data: null }),
+    supabase.from("app_settings").select("late_time, qr_expiry_hours").eq("id", 1).maybeSingle(),
+  ]);
+  lateTime = ms?.late_time || appCfg?.late_time || "08:00";
+  const qrExpiryHours = appCfg?.qr_expiry_hours || 12;
 
   // Cari sesi hari ini; buat otomatis jika belum ada
   let { data: session } = await supabase

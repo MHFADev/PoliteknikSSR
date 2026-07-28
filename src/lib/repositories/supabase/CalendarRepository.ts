@@ -400,60 +400,18 @@ export class SupabaseCalendarRepository implements ICalendarRepository {
     const supabase = createClient();
     const [start, end] = this.getMonthRange(year, month);
 
-    // -------------------------------------------------------
-    // 1. Ambil tanggal pendaftaran siswa (studentSince)
-    // -------------------------------------------------------
-    // Digunakan untuk memfilter tanggal sebelum siswa terdaftar
-    const { data: profile, error: profileError } = await supabase
-      .from("profiles")
-      .select("created_at")
-      .eq("id", studentId)
-      .single();
+    // Parallel: profile + attendance_records + leave_requests
+    const results = await Promise.allSettled([
+      supabase.from("profiles").select("created_at").eq("id", studentId).single(),
+      supabase.from("attendance_records").select("scanned_at, status").eq("student_id", studentId).gte("scanned_at", start).lte("scanned_at", end),
+      supabase.from("leave_requests").select("start_date, end_date, type, status").eq("student_id", studentId).eq("status", "disetujui").lte("start_date", end).gte("end_date", start),
+    ]);
 
-    if (profileError) {
-      console.error(
-        "[SupabaseCalendarRepository] getStudentAttendanceByMonth — Gagal ambil profile:",
-        profileError.message
-      );
-    }
+    const profile = results[0].status === "fulfilled" ? results[0].value.data : null;
+    const records = results[1].status === "fulfilled" ? results[1].value.data : [];
+    const leaves = results[2].status === "fulfilled" ? results[2].value.data : [];
 
     const studentSince = profile?.created_at ?? null;
-
-    // -------------------------------------------------------
-    // 2. Ambil attendance_records dalam rentang bulan
-    // -------------------------------------------------------
-    const { data: records, error: recordsError } = await supabase
-      .from("attendance_records")
-      .select("scanned_at, status")
-      .eq("student_id", studentId)
-      .gte("scanned_at", start)
-      .lte("scanned_at", end);
-
-    if (recordsError) {
-      console.error(
-        "[SupabaseCalendarRepository] getStudentAttendanceByMonth — Gagal ambil records:",
-        recordsError.message
-      );
-    }
-
-    // -------------------------------------------------------
-    // 3. Ambil leave_requests yang disetujui dan overlap bulan
-    // -------------------------------------------------------
-    // Overlap: leave.start_date <= end && leave.end_date >= start
-    const { data: leaves, error: leavesError } = await supabase
-      .from("leave_requests")
-      .select("start_date, end_date, type, status")
-      .eq("student_id", studentId)
-      .eq("status", "disetujui")
-      .lte("start_date", end)
-      .gte("end_date", start);
-
-    if (leavesError) {
-      console.error(
-        "[SupabaseCalendarRepository] getStudentAttendanceByMonth — Gagal ambil leaves:",
-        leavesError.message
-      );
-    }
 
     // Map snake_case → camelCase untuk records
     const mappedRecords = (records ?? []).map((r) => ({
