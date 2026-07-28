@@ -17,6 +17,9 @@ export async function sendReport(type: string, message: string) {
     const webhookUrl = process.env.DISCORD_REPORT_WEBHOOK
     if (!webhookUrl) return { error: "Webhook tidak dikonfigurasi." }
 
+    const devRoleId = process.env.DISCORD_DEV_ROLE_ID
+    const mention = devRoleId ? `<@&${devRoleId}>` : "@here"
+
     const embed = {
       title: `🐛 Laporan Baru: ${type}`,
       color: 0x6366F1,
@@ -34,7 +37,7 @@ export async function sendReport(type: string, message: string) {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        content: "<@&1345759569394143302> **Laporan Baru Masuk!**",
+        content: `${mention} **Laporan Baru Masuk!**`,
         embeds: [embed],
       }),
     })
