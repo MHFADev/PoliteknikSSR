@@ -40,7 +40,8 @@ export async function GET(request: Request) {
       if (profile.approved !== true) {
         await admin.from("profiles").update({ approved: true }).eq("id", user.id)
       }
-      return NextResponse.redirect(`${origin}${dashboardForRole(profile.role)}`)
+      const redirectPath = dashboardForRole(profile.role)
+      return NextResponse.redirect(`${origin}${redirectPath}`)
     }
 
     const meta = user.user_metadata || {}
@@ -53,8 +54,10 @@ export async function GET(request: Request) {
       avatar_url: meta.avatar_url || meta.picture || null,
       created_at: user.created_at,
     })
+    await admin.auth.admin.updateUserById(user.id, { user_metadata: { role, approved: true } })
 
-    return NextResponse.redirect(`${origin}${dashboardForRole(role)}`)
+    const redirectPath = dashboardForRole(role)
+    return NextResponse.redirect(`${origin}${redirectPath}`)
   } catch (err) {
     console.error("[auth/callback] error:", err)
     return NextResponse.redirect(`${origin}/login?error=Terjadi kesalahan saat autentikasi`)

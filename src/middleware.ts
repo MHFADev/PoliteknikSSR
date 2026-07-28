@@ -18,7 +18,15 @@ function dashboardPathFor(role: string | undefined) {
 }
 
 export async function middleware(request: NextRequest) {
-  const { response, user } = await updateSession(request);
+  let response: NextResponse;
+  let user: any = null;
+  try {
+    const result = await updateSession(request);
+    response = result.response;
+    user = result.user;
+  } catch {
+    response = NextResponse.next();
+  }
   const { pathname } = request.nextUrl;
 
   const isAuthRoute = pathname === "/login";
@@ -33,7 +41,7 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(redirectUrl);
   }
 
-  const role = user?.user_metadata?.role as string | undefined;
+  const role = (user?.user_metadata?.role as string | undefined) || "siswa";
 
   if (user && isAuthRoute) {
     return NextResponse.redirect(new URL(dashboardPathFor(role), request.url));
