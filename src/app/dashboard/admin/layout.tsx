@@ -15,7 +15,6 @@ import { createClient } from "@/lib/supabase/server";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { MobileNav } from "@/components/layout/MobileNav";
 import { RealtimeClock } from "@/components/RealtimeClock";
-import { BlockedWatcher } from "@/components/BlockedWatcher";
 import { TutorialWrapper } from "@/components/tutorial/TutorialWrapper";
 import { AboutButton } from "@/components/AboutButton";
 

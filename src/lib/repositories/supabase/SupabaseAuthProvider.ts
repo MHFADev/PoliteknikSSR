@@ -20,18 +20,6 @@ export class SupabaseAuthProvider implements IAuthProvider {
       return { user: null, error: "Gagal login: " + error.message };
     }
 
-    // Cek status approved — handle both false AND undefined
-    const meta = data.user?.user_metadata || {};
-    const isApproved = meta.approved;
-    const isBlocked = meta.blocked === true;
-    if (isApproved !== true) {
-      await supabase.auth.signOut();
-      if (isBlocked) {
-        return { user: null, error: "AKUN_DIBLOKIR" };
-      }
-      return { user: null, error: "Akun Anda belum disetujui oleh admin. Silakan tunggu persetujuan." };
-    }
-
     return {
       user: {
         id: data.user.id,
@@ -48,7 +36,7 @@ export class SupabaseAuthProvider implements IAuthProvider {
       email: input.email,
       password: input.password,
       email_confirm: true,
-      user_metadata: { approved: false, ...(input.metadata || {}) },
+      user_metadata: { approved: true, ...(input.metadata || {}) },
     });
 
     if (error) return { error: "Gagal membuat akun: " + error.message };
