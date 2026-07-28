@@ -17,7 +17,7 @@ import {
 } from "lucide-react";
 import { signInWithPassword, requestPasswordReset } from "./actions";
 import { signInWithGoogle } from "@/actions/auth";
-import { checkLoginLocation, hasLocationsConfigured } from "@/actions/location";
+import { checkLoginLocation, hasLocationsConfigured, needsGpsCheck } from "@/actions/location";
 import { PasswordEye } from "@/components/ui/PasswordEye";
 import styles from "@/styles/pages/Login.module.css";
 
@@ -122,6 +122,13 @@ export default function LoginPage() {
     }
 
     if (GPS_ENABLED) {
+      const needsGps = await needsGpsCheck();
+      if (!needsGps) {
+        router.replace("/");
+        router.refresh();
+        return;
+      }
+
       const hasLocations = await hasLocationsConfigured();
       if (!hasLocations) {
         router.replace("/");

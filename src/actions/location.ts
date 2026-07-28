@@ -1,6 +1,7 @@
 "use server";
 
 import { Repositories } from "@/lib/repositories";
+import { createClient } from "@/lib/supabase/server";
 
 export async function checkLoginLocation(latitude: number, longitude: number) {
   const result = await Repositories.location().verifyLocation(latitude, longitude);
@@ -50,4 +51,26 @@ export async function deleteLocation(id: string) {
   const result = await Repositories.location().delete(id);
   if (result.error) return { success: false, message: result.error };
   return { success: true };
+}
+
+export async function needsGpsCheck(): Promise<boolean> {
+  try {
+    const supabase = createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return false
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("role")
+      .eq("id", user.id)
+      .single()
+    if (profile?.role !== "siswa") return false
+    const { data: mentor } = await supabase
+      .from("student_mentors")
+      .select("mentor_id")
+      .eq("student_id", user.id)
+      .maybeSingle()
+    return !!mentor
+  } catch {
+    return false
+  }
 }

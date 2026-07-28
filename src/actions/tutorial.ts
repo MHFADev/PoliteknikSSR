@@ -11,8 +11,24 @@ export async function checkTutorialNeeded(): Promise<boolean> {
       return false
     }
     const settings = authUser.user_metadata?.settings || {}
-    console.log("[tutorial] authUser.user_metadata:", JSON.stringify(authUser.user_metadata))
-    return !settings.tutorialCompleted
+    if (settings.tutorialCompleted) return false
+
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("role")
+      .eq("id", authUser.id)
+      .single()
+
+    if (profile?.role === "siswa") {
+      const { data: mentor } = await supabase
+        .from("student_mentors")
+        .select("mentor_id")
+        .eq("student_id", authUser.id)
+        .maybeSingle()
+      if (!mentor) return false
+    }
+
+    return true
   } catch (err) {
     console.error("[tutorial] checkTutorialNeeded error:", err)
     return false
