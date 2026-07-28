@@ -651,7 +651,7 @@ export function SettingsForm({ role }: SettingsFormProps) {
           variant="outline"
           size="md"
           onClick={() => setReportOpen(true)}
-          style={{ marginLeft: 8 }}
+          style={{ marginLeft: 8, borderColor: "#EF4444", color: "#EF4444" }}
         >
           <Bug className="h-4 w-4" />
           Lapor
