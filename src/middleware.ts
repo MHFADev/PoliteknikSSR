@@ -31,11 +31,12 @@ export async function middleware(request: NextRequest) {
 
   const isAuthRoute = pathname === "/login";
   const isProtectedRoute = pathname.startsWith("/dashboard");
+  const isProfileRoute = pathname === "/complete-profile";
   const isApiRoute = pathname.startsWith("/_next") || pathname.includes(".");
 
   if (isApiRoute) return response;
 
-  if (!user && isProtectedRoute) {
+  if (!user && (isProtectedRoute || isProfileRoute)) {
     const redirectUrl = new URL("/login", request.url);
     redirectUrl.searchParams.set("redirectedFrom", pathname);
     return NextResponse.redirect(redirectUrl);
@@ -61,5 +62,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/dashboard/:path*", "/login"],
+  matcher: ["/dashboard/:path*", "/login", "/complete-profile"],
 };

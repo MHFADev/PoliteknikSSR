@@ -48,7 +48,7 @@ export async function GET(request: Request) {
     const role = searchParams.get("role") || meta.role || "siswa"
     await admin.from("profiles").insert({
       id: user.id,
-      full_name: meta.full_name || meta.name || user.email?.split("@")[0] || "User",
+      full_name: "Pengguna Baru",
       role,
       approved: true,
       avatar_url: meta.avatar_url || meta.picture || null,
@@ -56,8 +56,7 @@ export async function GET(request: Request) {
     })
     await admin.auth.admin.updateUserById(user.id, { user_metadata: { role, approved: true } })
 
-    const redirectPath = dashboardForRole(role)
-    return NextResponse.redirect(`${origin}${redirectPath}`)
+    return NextResponse.redirect(`${origin}/complete-profile`)
   } catch (err) {
     console.error("[auth/callback] error:", err)
     return NextResponse.redirect(`${origin}/login?error=Terjadi kesalahan saat autentikasi`)
