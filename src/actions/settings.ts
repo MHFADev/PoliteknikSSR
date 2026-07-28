@@ -13,7 +13,7 @@ export async function getSettings(): Promise<{ lateTime: string; qrExpiryHours: 
     .maybeSingle();
 
   return {
-    lateTime: data?.late_time || "08:00",
+    lateTime: data?.late_time || "08:10",
     qrExpiryHours: data?.qr_expiry_hours || 12,
   };
 }

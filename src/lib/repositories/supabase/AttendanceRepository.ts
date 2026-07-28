@@ -29,7 +29,7 @@ import type {
 import type { IAttendanceRepository } from "../interfaces/IAttendanceRepository";
 
 async function getSettings(studentId?: string): Promise<{ lateTime: string; qrExpiryHours: number }> {
-  let lateTime = "08:00";
+  let lateTime = "08:10";
   let qrExpiryHours = 12;
 
   try {
@@ -63,9 +63,9 @@ async function getSettings(studentId?: string): Promise<{ lateTime: string; qrEx
 function isOnTimeByScanTime(lateTime: string, checkTime?: Date): boolean {
   const now = checkTime || new Date();
   const [lateHour, lateMinute] = lateTime.split(":").map(Number);
-  const scanMinutes = now.getHours() * 60 + now.getMinutes();
+  const wibMinutes = (now.getUTCHours() * 60 + now.getUTCMinutes() + 420) % 1440;
   const cutoffMinutes = lateHour * 60 + lateMinute;
-  return scanMinutes < cutoffMinutes;
+  return wibMinutes < cutoffMinutes;
 }
 
 export class SupabaseAttendanceRepository implements IAttendanceRepository {

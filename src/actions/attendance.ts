@@ -86,14 +86,14 @@ export async function autoCheckinByGps(latitude: number, longitude: number, clie
   if (!locResult.allowed) return { success: false, message: "Berada di luar area yang diizinkan." };
 
   // Cek mentor settings + global settings parallel
-  let lateTime = "08:00";
+  let lateTime = "08:10";
   const [{ data: ms }, { data: appCfg }] = await Promise.all([
     mentorRel
       ? adminSupabase.from("mentor_settings").select("late_time").eq("mentor_id", mentorRel.mentor_id).maybeSingle()
       : Promise.resolve({ data: null }),
     supabase.from("app_settings").select("late_time, qr_expiry_hours").eq("id", 1).maybeSingle(),
   ]);
-  lateTime = ms?.late_time || appCfg?.late_time || "08:00";
+  lateTime = ms?.late_time || appCfg?.late_time || "08:10";
   const qrExpiryHours = appCfg?.qr_expiry_hours || 12;
 
   // Cari sesi hari ini; buat otomatis jika belum ada
@@ -115,7 +115,8 @@ export async function autoCheckinByGps(latitude: number, longitude: number, clie
   // Tentukan hadir/telat
   const checkTime = clientDate || new Date();
   const [h, m] = lateTime.split(":").map(Number);
-  const isOnTime = checkTime.getHours() * 60 + checkTime.getMinutes() < h * 60 + m;
+  const wibMinutes = (checkTime.getUTCHours() * 60 + checkTime.getUTCMinutes() + 420) % 1440;
+  const isOnTime = wibMinutes < h * 60 + m;
   const status = isOnTime ? "hadir" : "telat";
 
   const { error } = await adminSupabase.from("attendance_records").insert({ session_id: session.id, student_id: user.id, status, scanned_at: clientDate?.toISOString() });
@@ -144,7 +145,7 @@ export async function getAttendanceSettings() {
     .eq("id", 1)
     .maybeSingle();
   return {
-    lateTime: data?.late_time || "08:00",
+    lateTime: data?.late_time || "08:10",
     qrDuration: data?.qr_expiry_hours || 12,
     entryTime: data?.entry_time || "07:00",
   };

@@ -18,7 +18,7 @@ export async function getMentorSettings(mentorId?: string) {
 
   return {
     entryTime: data?.entry_time || "07:00",
-    lateTime: data?.late_time || "08:00",
+    lateTime: data?.late_time || "08:10",
   }
 }
 
@@ -71,7 +71,7 @@ export async function getStudentEffectiveSettings(studentId: string) {
     if (ms) {
       return {
         entryTime: ms.entry_time || "07:00",
-        lateTime: ms.late_time || "08:00",
+        lateTime: ms.late_time || "08:10",
         mentorId: mentor.mentor_id,
       }
     }
@@ -85,7 +85,7 @@ export async function getStudentEffectiveSettings(studentId: string) {
 
   return {
     entryTime: appCfg?.entry_time || "07:00",
-    lateTime: appCfg?.late_time || "08:00",
+    lateTime: appCfg?.late_time || "08:10",
     mentorId: mentor?.mentor_id || null,
   }
 }
@@ -104,6 +104,6 @@ export async function getCurrentPembimbingSettings() {
 
   return {
     entryTime: data?.entry_time || "07:00",
-    lateTime: data?.late_time || "08:00",
+    lateTime: data?.late_time || "08:10",
   }
 }
