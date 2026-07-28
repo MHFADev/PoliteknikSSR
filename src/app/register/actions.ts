@@ -16,45 +16,49 @@ export async function register(
   jurusanId?: string,
   periode?: string,
 ) {
-  const emailValidation = validateEmail(email);
-  if (!emailValidation.valid) {
-    return { error: emailValidation.error || "Email tidak valid." };
+  try {
+    const emailValidation = validateEmail(email);
+    if (!emailValidation.valid) {
+      return { error: emailValidation.error || "Email tidak valid." };
+    }
+
+    if (!identityNumber?.trim()) {
+      return { error: "Nomor Induk (NISN/NIP) wajib diisi." };
+    }
+
+    if (role === "siswa" && !kelas?.trim()) {
+      return { error: "Pilih kelas terlebih dahulu." };
+    }
+
+    if (role === "siswa" && !jurusanId) {
+      return { error: "Program studi wajib dipilih untuk siswa." };
+    }
+
+    if (role === "pembimbing" && !jurusanId) {
+      return { error: "Jurusan yang dibimbing wajib dipilih untuk pembimbing." };
+    }
+
+    const result = await Repositories.users().signUp({
+      email,
+      password,
+      fullName,
+      role: role as "siswa" | "pembimbing",
+      kelas: kelas || undefined,
+      identityNumber: identityNumber || undefined,
+      instansi: instansi || undefined,
+      jurusanId: jurusanId || undefined,
+      periode: periode || undefined,
+    });
+
+    if (result.error) {
+      return { error: result.error };
+    }
+
+    revalidatePath("/dashboard/admin/pengguna");
+    return { success: true };
+  } catch (err: any) {
+    return { error: err?.message || "Terjadi kesalahan server." };
   }
-
-  if (!identityNumber?.trim()) {
-    return { error: "Nomor Induk (NISN/NIP) wajib diisi." };
-  }
-
-  if (role === "siswa" && !kelas?.trim()) {
-    return { error: "Pilih kelas terlebih dahulu." };
-  }
-
-  if (role === "siswa" && !jurusanId) {
-    return { error: "Program studi wajib dipilih untuk siswa." };
-  }
-
-  if (role === "pembimbing" && !jurusanId) {
-    return { error: "Jurusan yang dibimbing wajib dipilih untuk pembimbing." };
-  }
-
-  const result = await Repositories.users().signUp({
-    email,
-    password,
-    fullName,
-    role: role as "siswa" | "pembimbing",
-    kelas: kelas || undefined,
-    identityNumber: identityNumber || undefined,
-    instansi: instansi || undefined,
-    jurusanId: jurusanId || undefined,
-    periode: periode || undefined,
-  });
-
-  if (result.error) {
-    return { error: result.error };
-  }
-
-  revalidatePath("/dashboard/admin/pengguna");
-  return { success: true };
 }
 
 export async function approveUser(userId: string) {
