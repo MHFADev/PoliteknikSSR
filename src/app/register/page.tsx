@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
@@ -15,8 +15,6 @@ import {
   Hash,
   Lock,
   ArrowRight,
-  ChevronLeft,
-  ChevronRight,
   Calendar,
 } from "lucide-react";
 import { register, getStudyPrograms } from "./actions";
@@ -32,13 +30,6 @@ interface StudyProgram {
   nama: string;
   kode: string;
 }
-
-const HERO_SLIDES = [
-  { src: "/hero/1.jpg", alt: "Kampus Politeknik SSR" },
-  { src: "/hero/2.jpg", alt: "Kegiatan PKL Siswa" },
-  { src: "/hero/3.jpg", alt: "Laboratorium Komputer" },
-];
-/* Ganti ekstensi sesuai format gambar: .jpg, .png, .webp, dll */
 
 export default function RegisterPage() {
   const [fullName, setFullName] = useState("");
@@ -61,9 +52,7 @@ export default function RegisterPage() {
   const [studyPrograms, setStudyPrograms] = useState<StudyProgram[]>([]);
   const [classList, setClassList] = useState<{ id: string; nama: string }[]>([]);
   const [agreed, setAgreed] = useState(false);
-
-  const [currentSlide, setCurrentSlide] = useState(0);
-  const [imageErrors, setImageErrors] = useState<Record<number, boolean>>({});
+  const [heroError, setHeroError] = useState(false);
 
   useEffect(() => {
     getStudyPrograms().then((programs) => {
@@ -71,31 +60,6 @@ export default function RegisterPage() {
     });
     getClasses().then(setClassList);
   }, []);
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % HERO_SLIDES.length);
-    }, 5000);
-    return () => clearInterval(timer);
-  }, []);
-
-  const goToSlide = useCallback((idx: number) => {
-    setCurrentSlide(idx);
-  }, []);
-
-  const prevSlide = useCallback(() => {
-    setCurrentSlide((prev) =>
-      prev === 0 ? HERO_SLIDES.length - 1 : prev - 1
-    );
-  }, []);
-
-  const nextSlide = useCallback(() => {
-    setCurrentSlide((prev) => (prev + 1) % HERO_SLIDES.length);
-  }, []);
-
-  function handleImageError(idx: number) {
-    setImageErrors((prev) => ({ ...prev, [idx]: true }));
-  }
 
   function handleEmailChange(value: string) {
     setEmail(value);
@@ -225,62 +189,16 @@ export default function RegisterPage() {
     <main className={styles.main}>
       {/* ─── Hero Panel (Left) ──────────────────────────── */}
       <div className={styles.heroSection}>
-        {/* Image Carousel */}
+        {/* Single background image */}
         <div className={styles.heroCarousel}>
-          {HERO_SLIDES.map((slide, idx) => (
-            <div
-              key={idx}
-              className={`${styles.heroSlide} ${idx === currentSlide ? styles.heroSlideActive : ""}`}
-            >
-              {!imageErrors[idx] ? (
-                <Image
-                  src={slide.src}
-                  alt={slide.alt}
-                  fill
-                  className={styles.heroSlideImg}
-                  onError={() => handleImageError(idx)}
-                  priority={idx === 0}
-                  sizes="48vw"
-                />
-              ) : (
-                <div className={styles.heroSlideFallback} />
-              )}
-            </div>
-          ))}
+          <div className={`${styles.heroSlide} ${styles.heroSlideActive}`}>
+            {!heroError ? (
+              <Image src="/hero/1.jpg" alt="Politeknik SSR" fill className={styles.heroSlideImg} onError={() => setHeroError(true)} priority sizes="48vw" />
+            ) : (
+              <div className={styles.heroSlideFallback} />
+            )}
+          </div>
           <div className={styles.heroCarouselOverlay} />
-
-          {/* Carousel Controls */}
-          <div className={styles.heroCarouselControls}>
-            <button
-              type="button"
-              onClick={prevSlide}
-              className={styles.heroCarouselBtn}
-              aria-label="Sebelumnya"
-            >
-              <ChevronLeft />
-            </button>
-            <button
-              type="button"
-              onClick={nextSlide}
-              className={styles.heroCarouselBtn}
-              aria-label="Selanjutnya"
-            >
-              <ChevronRight />
-            </button>
-          </div>
-
-          {/* Dots */}
-          <div className={styles.heroDots}>
-            {HERO_SLIDES.map((_, idx) => (
-              <button
-                key={idx}
-                type="button"
-                onClick={() => goToSlide(idx)}
-                className={`${styles.heroDot} ${idx === currentSlide ? styles.heroDotActive : ""}`}
-                aria-label={`Slide ${idx + 1}`}
-              />
-            ))}
-          </div>
         </div>
 
         {/* Content over carousel */}

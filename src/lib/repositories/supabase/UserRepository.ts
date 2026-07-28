@@ -298,7 +298,7 @@ export class SupabaseUserRepository implements IUserRepository {
     const metadata: Record<string, any> = {
       full_name: fullName,
       role,
-      approved: false,
+      approved: role !== "pembimbing",
     };
     if (kelas) metadata.kelas = kelas;
     if (jurusanId) metadata.jurusan_id = jurusanId;
@@ -323,7 +323,7 @@ export class SupabaseUserRepository implements IUserRepository {
     if (instansi) updateData.instansi = instansi;
     if (jurusanId) updateData.jurusan_id = jurusanId;
     if (periode) updateData.periode = periode;
-    updateData.approved = false;
+    updateData.approved = role !== "pembimbing";
 
     if (Object.keys(updateData).length > 0) {
       const { error: profileError } = await admin
