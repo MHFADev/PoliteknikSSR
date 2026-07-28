@@ -38,13 +38,14 @@
 // ============================================================
 
 import { useState, useEffect, useCallback } from "react";
-import { Save, Loader2, CheckCircle2, AlertCircle, Settings, FileText, Clock } from "lucide-react";
+import { Save, Loader2, CheckCircle2, AlertCircle, Settings, FileText, Clock, Bug } from "lucide-react";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { getSettings, updateSettings } from "@/actions/profile";
 import { getCurrentPembimbingSettings, saveMentorSettings } from "@/actions/mentor-settings";
 import { StudentDocuments } from "@/components/StudentDocuments";
 import { useTheme } from "@/components/ThemeProvider";
+import { ReportDialog } from "@/components/ReportDialog";
 import styles from "@/styles/components/profile/Settings.module.css";
 
 // ----------------------------------------------------------
@@ -80,6 +81,7 @@ export function SettingsForm({ role }: SettingsFormProps) {
   const [mentorLateTime, setMentorLateTime] = useState("08:00");
   const [mentorSaving, setMentorSaving] = useState(false);
   const [mentorMsg, setMentorMsg] = useState<string | null>(null);
+  const [reportOpen, setReportOpen] = useState(false);
 
   // ----------------------------------------------------------
   // Fetch data settings saat komponen dimount
@@ -645,7 +647,17 @@ export function SettingsForm({ role }: SettingsFormProps) {
           <Save className="h-4 w-4" />
           Simpan Pengaturan
         </Button>
+        <Button
+          variant="outline"
+          size="md"
+          onClick={() => setReportOpen(true)}
+          style={{ marginLeft: 8 }}
+        >
+          <Bug className="h-4 w-4" />
+          Lapor
+        </Button>
       </div>
+      <ReportDialog open={reportOpen} onClose={() => setReportOpen(false)} />
     </div>
   );
 }
