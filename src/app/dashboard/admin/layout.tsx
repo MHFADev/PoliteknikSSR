@@ -17,6 +17,7 @@ import { MobileNav } from "@/components/layout/MobileNav";
 import { RealtimeClock } from "@/components/RealtimeClock";
 import { TutorialWrapper } from "@/components/tutorial/TutorialWrapper";
 import { AboutButton } from "@/components/AboutButton";
+import { BlockedWatcher } from "@/components/BlockedWatcher";
 
 export default async function AdminLayout({
   children,

@@ -19,6 +19,7 @@ import { StudentDocumentPopup } from "@/components/StudentDocumentPopup";
 import { AutoCheckinBanner } from "@/components/AutoCheckinBanner";
 import { TutorialWrapper } from "@/components/tutorial/TutorialWrapper";
 import { AboutButton } from "@/components/AboutButton";
+import { BlockedWatcher } from "@/components/BlockedWatcher";
 
 export default async function SiswaLayout({ children }: { children: React.ReactNode }) {
   const supabase = createClient();
