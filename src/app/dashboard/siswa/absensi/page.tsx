@@ -3,8 +3,9 @@
 import { useEffect, useState } from "react";
 import { QRScanner } from "@/components/qr/QRScanner";
 import { Card, CardHeader } from "@/components/ui/Card";
-import { Clock, MapPin, Loader2, ShieldOff, CheckCircle2, AlertTriangle } from "lucide-react";
+import { Clock, MapPin, Loader2, ShieldOff, CheckCircle2, AlertTriangle, GraduationCap, UserCog } from "lucide-react";
 import { checkLoginLocation, hasLocationsConfigured } from "@/actions/location";
+import { getMyMentor } from "@/actions/student-mentors";
 import styles from "@/styles/pages/dashboard/siswa/Absensi.module.css";
 
 const DAYS = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
@@ -38,6 +39,13 @@ export default function SiswaAbsensiPage() {
   const [gpsState, setGpsState] = useState<GpsState>("loading");
   const [gpsMsg, setGpsMsg] = useState("");
   const [gpsReady, setGpsReady] = useState(false);
+  const [mentorCheck, setMentorCheck] = useState<"loading" | "no-mentor" | "ok">("loading");
+
+  useEffect(() => {
+    getMyMentor().then((m) => {
+      setMentorCheck(m ? "ok" : "no-mentor");
+    });
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -137,6 +145,28 @@ export default function SiswaAbsensiPage() {
           </div>
         );
     }
+  }
+
+  if (mentorCheck === "no-mentor") {
+    return (
+      <div className={styles.pageContainer}>
+        <div className={styles.pageHeader}>
+          <h1>Absensi QR</h1>
+          <p>Scan QR yang ditampilkan admin untuk mencatat kehadiran hari ini.</p>
+        </div>
+
+        <div className="rounded-xl border-2 border-dashed border-amber-200 bg-amber-50/50 p-6 text-center">
+          <div className="w-14 h-14 rounded-full bg-amber-100 flex items-center justify-center mx-auto mb-4">
+            <GraduationCap className="h-7 w-7 text-amber-600" />
+          </div>
+          <h3 className="text-base font-bold text-amber-800 mb-2">Belum Memilih Pembimbing</h3>
+          <p className="text-sm text-amber-700 leading-relaxed max-w-md mx-auto">
+            Anda harus memilih pembimbing PKL terlebih dahulu sebelum bisa melakukan absensi.
+            Silakan pilih pembimbing di halaman Dashboard atau Pengaturan.
+          </p>
+        </div>
+      </div>
+    );
   }
 
   return (
