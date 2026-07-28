@@ -6,7 +6,15 @@ import { headers } from "next/headers";
 
 export async function signInWithPassword(email: string, password: string) {
   const result = await Repositories.users().signIn(email, password);
-  if (result.error) return { error: result.error };
+  if (result.error) {
+    if (result.error === "AKUN_BELUM_DISETUJUI") {
+      return { error: "Akun Anda belum disetujui admin. Silakan tunggu persetujuan atau hubungi admin." };
+    }
+    if (result.error === "AKUN_DIBLOKIR") {
+      return { error: "Akun Anda diblokir. Hubungi admin untuk informasi lebih lanjut." };
+    }
+    return { error: result.error };
+  }
   return { success: true };
 }
 

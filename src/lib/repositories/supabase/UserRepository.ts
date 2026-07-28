@@ -238,16 +238,6 @@ export class SupabaseUserRepository implements IUserRepository {
       return { user: null, error: "Gagal login: " + error.message };
     }
 
-    // Cek status approved — bedakan antara "diblokir" dan "belum disetujui"
-    const authMeta = data.user?.user_metadata || {};
-    if (authMeta.approved !== true) {
-      await supabase.auth.signOut();
-      if (authMeta.blocked === true) {
-        return { user: null, error: "AKUN_DIBLOKIR" };
-      }
-      return { user: null, error: "AKUN_BELUM_DISETUJUI" };
-    }
-
     // Cari profil di DB — jika tidak ada, buat dari data auth user
     const authUser = data.user;
     const adminClient = this.getAdminClient();
@@ -258,6 +248,10 @@ export class SupabaseUserRepository implements IUserRepository {
       .single();
 
     if (existingProfile) {
+      if (existingProfile.approved !== true) {
+        await supabase.auth.signOut();
+        return { user: null, error: "AKUN_BELUM_DISETUJUI" };
+      }
       return { user: this.mapToUser(existingProfile, authUser.email) };
     }
 
