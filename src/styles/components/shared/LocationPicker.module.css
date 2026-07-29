@@ -100,3 +100,44 @@
 .mapLoading {
   display: none;
 }
+
+.mapLoadingBox {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  height: 320px;
+  width: 100%;
+  border-radius: 0.75rem;
+  border: 1px solid var(--color-outline, #d1d5db);
+  background-color: #f8fafc;
+  color: var(--color-steel, #475569);
+  font-size: 0.875rem;
+}
+
+.radiusSection {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  background-color: var(--color-teal-bg, #e6f7f6);
+  padding: 0.75rem 1rem;
+  border-radius: 0.75rem;
+}
+
+.radiusLabel {
+  font-size: 0.8rem;
+  color: var(--color-ink, #1e293b);
+}
+
+.radiusSlider {
+  width: 100%;
+  accent-color: var(--color-teal, #2BA8A2);
+  cursor: pointer;
+}
+
+.radiusTicks {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.7rem;
+  color: var(--color-ink-subtle, #9ca3af);
+}

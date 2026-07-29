@@ -76,9 +76,10 @@ export function SettingsForm({ role }: SettingsFormProps) {
   const [success, setSuccess] = useState<string | null>(null);        // Pesan sukses
   const [error, setError] = useState<string | null>(null);            // Pesan error
 
-  // Mentor-specific settings (entry_time & late_time)
+  // Mentor-specific settings (entry_time, late_time, work_days)
   const [mentorEntryTime, setMentorEntryTime] = useState("07:00");
   const [mentorLateTime, setMentorLateTime] = useState("08:00");
+  const [mentorWorkDays, setMentorWorkDays] = useState<number[]>([1, 2, 3, 4, 5]);
   const [mentorSaving, setMentorSaving] = useState(false);
   const [mentorMsg, setMentorMsg] = useState<string | null>(null);
   const [reportOpen, setReportOpen] = useState(false);
@@ -113,6 +114,10 @@ export function SettingsForm({ role }: SettingsFormProps) {
         if (data) {
           setMentorEntryTime(data.entryTime);
           setMentorLateTime(data.lateTime);
+          const wd = Array.isArray(data.workDays)
+            ? (data.workDays.filter((n: any) => typeof n === "number") as number[])
+            : [1, 2, 3, 4, 5];
+          setMentorWorkDays(wd);
         }
       });
     }
@@ -455,6 +460,50 @@ export function SettingsForm({ role }: SettingsFormProps) {
               </div>
             </div>
 
+            <div className={styles.formField}>
+              <label className={styles.formLabel}>Hari Masuk PKL</label>
+              <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
+                {[
+                  { v: 1, l: "Sen" },
+                  { v: 2, l: "Sel" },
+                  { v: 3, l: "Rab" },
+                  { v: 4, l: "Kam" },
+                  { v: 5, l: "Jum" },
+                  { v: 6, l: "Sab" },
+                  { v: 0, l: "Min" },
+                ].map((d) => {
+                  const active = mentorWorkDays.includes(d.v);
+                  return (
+                    <button
+                      key={d.v}
+                      type="button"
+                      onClick={() => {
+                        setMentorWorkDays((prev) =>
+                          active ? prev.filter((x) => x !== d.v) : [...prev, d.v].sort()
+                        );
+                      }}
+                      style={{
+                        padding: "0.5rem 0.875rem",
+                        borderRadius: "0.625rem",
+                        border: active ? "1px solid #0EA5E9" : "1px solid #d1d5db",
+                        background: active ? "#0EA5E9" : "#ffffff",
+                        color: active ? "#ffffff" : "#475569",
+                        fontWeight: 600,
+                        fontSize: "0.85rem",
+                        cursor: "pointer",
+                        transition: "all 0.15s",
+                      }}
+                    >
+                      {d.l}
+                    </button>
+                  );
+                })}
+              </div>
+              <div className={styles.toggleDesc}>
+                Pilih hari siswa boleh absen. Siswa tidak akan bisa scan QR di luar hari yang dipilih.
+              </div>
+            </div>
+
             <div style={{ marginTop: "0.75rem" }}>
               <Button
                 variant="primary"
@@ -463,15 +512,15 @@ export function SettingsForm({ role }: SettingsFormProps) {
                 onClick={async () => {
                   setMentorSaving(true);
                   setMentorMsg(null);
-                  const result = await saveMentorSettings(mentorEntryTime, mentorLateTime);
+                  const result = await saveMentorSettings(mentorEntryTime, mentorLateTime, mentorWorkDays);
                   if (result.error) setMentorMsg(result.error);
-                  else setMentorMsg("Pengaturan jam presensi berhasil disimpan!");
+                  else setMentorMsg("Pengaturan presensi berhasil disimpan!");
                   setTimeout(() => setMentorMsg(null), 3000);
                   setMentorSaving(false);
                 }}
               >
                 <Save className="h-4 w-4" />
-                Simpan Jam Presensi
+                Simpan Presensi
               </Button>
             </div>
           </Card>

@@ -28,9 +28,10 @@ import type {
 } from "../types";
 import type { IAttendanceRepository } from "../interfaces/IAttendanceRepository";
 
-async function getSettings(studentId?: string): Promise<{ lateTime: string; qrExpiryHours: number }> {
+async function getSettings(studentId?: string): Promise<{ lateTime: string; qrExpiryHours: number; workDays: number[] }> {
   let lateTime = "08:10";
   let qrExpiryHours = 12;
+  let workDays: number[] = [1, 2, 3, 4, 5];
 
   try {
     const supabase = createClient();
@@ -43,8 +44,9 @@ async function getSettings(studentId?: string): Promise<{ lateTime: string; qrEx
 
     let mentorLate: string | null = null;
     if (mentor) {
-      const { data: ms } = await createAdminClient().from("mentor_settings").select("late_time").eq("mentor_id", mentor.mentor_id).maybeSingle();
+      const { data: ms } = await createAdminClient().from("mentor_settings").select("late_time, work_days").eq("mentor_id", mentor.mentor_id).maybeSingle();
       mentorLate = ms?.late_time || null;
+      if (Array.isArray(ms?.work_days)) workDays = ms.work_days as number[];
     }
 
     if (mentorLate) lateTime = mentorLate;
@@ -52,7 +54,7 @@ async function getSettings(studentId?: string): Promise<{ lateTime: string; qrEx
     if (appCfg?.qr_expiry_hours) qrExpiryHours = appCfg.qr_expiry_hours;
   } catch {}
 
-  return { lateTime, qrExpiryHours };
+  return { lateTime, qrExpiryHours, workDays };
 }
 
 /**
@@ -236,7 +238,20 @@ export class SupabaseAttendanceRepository implements IAttendanceRepository {
     }
 
     // --- Tentukan status hadir/telat berdasarkan jam batas telat pembimbing/admin ---
-    const { lateTime } = await getSettings(studentId);
+    const { lateTime, workDays } = await getSettings(studentId);
+
+    // Validasi: hari ini termasuk hari kerja pembimbing?
+    const scanDate = clientTime || new Date();
+    const jakartaDate = new Date(scanDate.getTime() + 7 * 60 * 60 * 1000);
+    const scanWeekday = jakartaDate.getUTCDay();
+    if (workDays.length > 0 && !workDays.includes(scanWeekday)) {
+      const dayNames = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
+      return {
+        status: "hadir",
+        error: `Hari ${dayNames[scanWeekday]} bukan hari masuk PKL pembimbingmu. Hubungi pembimbing jika ini keliru.`,
+      };
+    }
+
     const isOnTime = isOnTimeByScanTime(lateTime, clientTime);
     const status: AttendanceStatus = isOnTime ? "hadir" : "telat";
 

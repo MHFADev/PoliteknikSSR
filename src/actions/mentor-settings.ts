@@ -12,17 +12,22 @@ export async function getMentorSettings(mentorId?: string) {
   const adminSupabase = createAdminClient()
   const { data } = await adminSupabase
     .from("mentor_settings")
-    .select("entry_time, late_time")
+    .select("entry_time, late_time, work_days")
     .eq("mentor_id", id)
     .maybeSingle()
 
   return {
     entryTime: data?.entry_time || "07:00",
     lateTime: data?.late_time || "08:10",
+    workDays: Array.isArray(data?.work_days) ? data.work_days : [1, 2, 3, 4, 5],
   }
 }
 
-export async function saveMentorSettings(entryTime: string, lateTime: string) {
+export async function saveMentorSettings(
+  entryTime: string,
+  lateTime: string,
+  workDays: number[],
+) {
   const supabase = createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return { error: "Sesi tidak ditemukan." }
@@ -44,6 +49,7 @@ export async function saveMentorSettings(entryTime: string, lateTime: string) {
       mentor_id: user.id,
       entry_time: entryTime,
       late_time: lateTime,
+      work_days: workDays,
       updated_at: new Date().toISOString(),
     })
 
@@ -64,7 +70,7 @@ export async function getStudentEffectiveSettings(studentId: string) {
   if (mentor) {
     const { data: ms } = await adminSupabase
       .from("mentor_settings")
-      .select("entry_time, late_time")
+      .select("entry_time, late_time, work_days")
       .eq("mentor_id", mentor.mentor_id)
       .maybeSingle()
 
@@ -72,6 +78,7 @@ export async function getStudentEffectiveSettings(studentId: string) {
       return {
         entryTime: ms.entry_time || "07:00",
         lateTime: ms.late_time || "08:10",
+        workDays: Array.isArray(ms.work_days) ? ms.work_days : [1, 2, 3, 4, 5],
         mentorId: mentor.mentor_id,
       }
     }
@@ -86,6 +93,7 @@ export async function getStudentEffectiveSettings(studentId: string) {
   return {
     entryTime: appCfg?.entry_time || "07:00",
     lateTime: appCfg?.late_time || "08:10",
+    workDays: [1, 2, 3, 4, 5],
     mentorId: mentor?.mentor_id || null,
   }
 }
@@ -98,12 +106,13 @@ export async function getCurrentPembimbingSettings() {
   const adminSupabase = createAdminClient()
   const { data } = await adminSupabase
     .from("mentor_settings")
-    .select("entry_time, late_time")
+    .select("entry_time, late_time, work_days")
     .eq("mentor_id", user.id)
     .maybeSingle()
 
   return {
     entryTime: data?.entry_time || "07:00",
     lateTime: data?.late_time || "08:10",
+    workDays: Array.isArray(data?.work_days) ? data.work_days : [1, 2, 3, 4, 5],
   }
 }

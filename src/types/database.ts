@@ -419,18 +419,21 @@ export type Database = {
           late_time: string
           mentor_id: string
           updated_at: string
+          work_days: Json
         }
         Insert: {
           entry_time?: string
           late_time?: string
           mentor_id: string
           updated_at?: string
+          work_days?: Json
         }
         Update: {
           entry_time?: string
           late_time?: string
           mentor_id?: string
           updated_at?: string
+          work_days?: Json
         }
         Relationships: [
           {

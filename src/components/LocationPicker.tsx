@@ -1,8 +1,10 @@
 "use client";
 
-import { useState } from "react";
-import { MapPin, LocateFixed } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import dynamic from "next/dynamic";
+import { MapPin, LocateFixed, Loader2 } from "lucide-react";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
+import "leaflet/dist/leaflet.css";
 import styles from "@/styles/components/shared/LocationPicker.module.css";
 
 type Location = {
@@ -15,6 +17,16 @@ type LocationPickerProps = {
   value: Location;
   onChange: (location: Location) => void;
 };
+
+const MapPicker = dynamic(() => import("./MapPickerInner").then((m) => m.MapPickerInner), {
+  ssr: false,
+  loading: () => (
+    <div className={styles.mapLoadingBox}>
+      <Loader2 className="h-6 w-6 animate-spin" />
+      <span>Memuat peta...</span>
+    </div>
+  ),
+});
 
 export function LocationPicker({ value, onChange }: LocationPickerProps) {
   const [geoError, setGeoError] = useState<string | null>(null);
@@ -83,6 +95,8 @@ export function LocationPicker({ value, onChange }: LocationPickerProps) {
         </button>
       </div>
 
+      <MapPicker value={value} onChange={onChange} />
+
       <div className={styles.coordInfo}>
         <div className={styles.coordText}>
           <MapPin className="w-3 h-3" />
@@ -90,9 +104,29 @@ export function LocationPicker({ value, onChange }: LocationPickerProps) {
             Lat: {value.latitude.toFixed(6)}, Lng: {value.longitude.toFixed(6)}
           </span>
         </div>
-        <span className={styles.coordRadius}>
-          Radius: {value.radius_meters}m
-        </span>
+      </div>
+
+      <div className={styles.radiusSection}>
+        <label className={styles.radiusLabel}>
+          Radius: <strong>{value.radius_meters}m</strong>
+        </label>
+        <input
+          type="range"
+          min={10}
+          max={2000}
+          step={10}
+          value={value.radius_meters}
+          onChange={(e) =>
+            onChange({ ...value, radius_meters: parseInt(e.target.value, 10) })
+          }
+          className={styles.radiusSlider}
+        />
+        <div className={styles.radiusTicks}>
+          <span>10m</span>
+          <span>500m</span>
+          <span>1km</span>
+          <span>2km</span>
+        </div>
       </div>
 
       <ConfirmDialog
