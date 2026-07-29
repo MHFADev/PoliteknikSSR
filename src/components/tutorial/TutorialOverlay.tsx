@@ -5,10 +5,15 @@ import { useRouter } from "next/navigation"
 import { motion, AnimatePresence } from "framer-motion"
 import { X, ChevronLeft, ChevronRight, SkipForward, Sparkles } from "lucide-react"
 import { TUTORIAL_STEPS, TUTORIAL_GROUPS } from "@/lib/tutorial/steps"
-import type { TutorialStep } from "@/lib/tutorial/steps"
+import type { TutorialStep, PageGroup } from "@/lib/tutorial/steps"
 import styles from "@/styles/components/tutorial/TutorialOverlay.module.css"
 
-type Props = { role: string; onComplete: () => void }
+type Props = {
+  role: string
+  onComplete: () => void
+  steps?: TutorialStep[]
+  groups?: PageGroup[]
+}
 
 function q(sel: string): HTMLElement | null { return document.querySelector(sel) }
 

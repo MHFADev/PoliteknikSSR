@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { QRScanner } from "@/components/qr/QRScanner";
 import { Card, CardHeader } from "@/components/ui/Card";
 import { Clock, MapPin, Loader2, ShieldOff, CheckCircle2, AlertTriangle, GraduationCap, UserCog } from "lucide-react";
-import { checkLoginLocation, hasLocationsConfigured } from "@/actions/location";
+import { verifyAttendanceLocation, hasLocationsConfigured } from "@/actions/location";
 import { getMyMentor } from "@/actions/student-mentors";
 import styles from "@/styles/pages/dashboard/siswa/Absensi.module.css";
 
@@ -48,6 +48,8 @@ export default function SiswaAbsensiPage() {
   }, []);
 
   useEffect(() => {
+    if (mentorCheck === "loading") return;
+
     if (mentorCheck === "no-mentor") {
       setGpsState("unavailable");
       setGpsReady(true);
@@ -71,13 +73,14 @@ export default function SiswaAbsensiPage() {
         navigator.geolocation.getCurrentPosition(
           async (pos) => {
             if (cancelled) return;
-            const result = await checkLoginLocation(pos.coords.latitude, pos.coords.longitude);
+            const result = await verifyAttendanceLocation(pos.coords.latitude, pos.coords.longitude);
             if (result.allowed) {
               setGpsState("granted");
               setGpsReady(true);
             } else {
               setGpsState("outside");
-              setGpsMsg(result.error || "Berada di luar area yang diizinkan.");
+              setGpsMsg(`Anda berada di luar area yang diizinkan (${result.locationName || "kampus"}).`);
+              setGpsReady(true);
             }
           },
           (err) => {
@@ -104,7 +107,7 @@ export default function SiswaAbsensiPage() {
     }
     check();
     return () => { cancelled = true; };
-  }, []);
+  }, [mentorCheck]);
 
   function renderGpsBanner() {
     switch (gpsState) {
@@ -131,9 +134,9 @@ export default function SiswaAbsensiPage() {
         );
       case "outside":
         return (
-          <div className={styles.gpsBanner + " " + styles.gpsError}>
+          <div className={styles.gpsBanner + " " + styles.gpsWarning}>
             <MapPin className="h-4 w-4" />
-            <span>{gpsMsg}</span>
+            <span>{gpsMsg} — Anda tetap bisa scan, laporkan ke pembimbing jika perlu.</span>
           </div>
         );
       case "unavailable":

@@ -4,15 +4,16 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   UserCog,
-  Check,
-  ChevronDown,
   Search,
   Loader2,
   X,
   GraduationCap,
-  Calendar,
-  BookOpen,
-  RefreshCw,
+  IdCard,
+  Building2,
+  Clock,
+  Timer,
+  Pencil,
+  ChevronDown,
 } from "lucide-react";
 import { getAvailableMentors, getMyMentor, selectMentor } from "@/actions/student-mentors";
 import type { MentorInfo, StudentMentorInfo } from "@/actions/student-mentors";
@@ -147,27 +148,58 @@ export function MentorSelector({ studentJurusanId, profileMode = false, onMentor
   if (myMentor) {
     return (
       <>
-        <div className="rounded-xl border border-outline bg-card p-5">
-          <div className="flex items-center gap-4">
-            <div className="w-14 h-14 rounded-full bg-sky/10 flex items-center justify-center overflow-hidden shrink-0 ring-2 ring-sky/20">
-              {myMentor.mentorAvatarUrl ? (
-                <img src={myMentor.mentorAvatarUrl} alt={myMentor.mentorName} className="w-full h-full object-cover rounded-full" />
-              ) : (
-                <UserCog className="h-7 w-7 text-sky" />
+        <div className="rounded-xl border border-outline bg-card overflow-hidden">
+          <div className="bg-gradient-to-br from-sky/10 via-sky/5 to-transparent px-5 py-4 border-b border-outline">
+            <div className="flex items-start gap-4">
+              <div className="w-16 h-16 rounded-full bg-card flex items-center justify-center overflow-hidden shrink-0 ring-2 ring-sky/30 shadow-sm">
+                {myMentor.mentorAvatarUrl ? (
+                  <img src={myMentor.mentorAvatarUrl} alt={myMentor.mentorName} className="w-full h-full object-cover rounded-full" />
+                ) : (
+                  <UserCog className="h-8 w-8 text-sky" />
+                )}
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-1.5 mb-1">
+                  <GraduationCap className="h-3.5 w-3.5 text-sky" />
+                  <p className="text-[10px] font-bold text-sky uppercase tracking-wider">Pembimbing PKL</p>
+                </div>
+                <h3 className="text-lg font-bold text-deep truncate">{myMentor.mentorName}</h3>
+                <p className="text-xs text-mist-dim truncate">{myMentor.studyProgramName || "Pembimbing"}</p>
+              </div>
+              {profileMode && !showDropdown && (
+                <button onClick={() => setConfirmChange(true)}
+                  className="shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-deep bg-card border border-outline rounded-lg hover:bg-muted transition-colors"
+                >
+                  <Pencil className="h-3.5 w-3.5" />
+                  Ganti
+                </button>
               )}
             </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-[10px] font-bold text-sky uppercase tracking-wider mb-0.5">Pembimbing</p>
-              <h3 className="text-base font-bold text-deep truncate">{myMentor.mentorName}</h3>
-              <p className="text-xs text-mist-dim truncate">{myMentor.studyProgramName || "-"}</p>
-            </div>
-            {(profileMode) && !showDropdown && (
-              <button onClick={() => setConfirmChange(true)}
-                className="shrink-0 px-3 py-2 text-xs font-semibold text-mist-dim bg-muted border border-outline rounded-lg hover:bg-surface-elevated transition-colors"
-              >
-                Ganti
-              </button>
-            )}
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-px bg-outline">
+            <InfoRow
+              icon={<IdCard className="h-4 w-4" />}
+              label="NIP"
+              value={myMentor.mentorNip || "-"}
+            />
+            <InfoRow
+              icon={<Building2 className="h-4 w-4" />}
+              label="Instansi"
+              value={myMentor.mentorInstansi || myMentor.studyProgramName || "-"}
+            />
+            <InfoRow
+              icon={<Clock className="h-4 w-4" />}
+              label="Jam Masuk"
+              value={formatTime(myMentor.entryTime)}
+              accent="leaf"
+            />
+            <InfoRow
+              icon={<Timer className="h-4 w-4" />}
+              label="Batas Telat"
+              value={formatTime(myMentor.lateTime)}
+              accent="amber"
+            />
           </div>
         </div>
 
@@ -247,5 +279,39 @@ export function MentorSelector({ studentJurusanId, profileMode = false, onMentor
         {success && <p className="mt-2 text-xs text-leaf-deep bg-leaf-soft border border-leaf rounded-lg px-3 py-2">{success}</p>}
       </div>
     </>
+  );
+}
+
+function formatTime(t: string | null): string {
+  if (!t) return "-";
+  const [h, m] = t.split(":");
+  return `${h}:${m}`;
+}
+
+function InfoRow({
+  icon,
+  label,
+  value,
+  accent,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  value: string;
+  accent?: "leaf" | "amber";
+}) {
+  const accentClass =
+    accent === "leaf"
+      ? "text-leaf-deep"
+      : accent === "amber"
+        ? "text-amber-600"
+        : "text-mist-dim";
+  return (
+    <div className="bg-card px-4 py-3 flex items-center gap-3">
+      <div className={`shrink-0 ${accentClass}`}>{icon}</div>
+      <div className="flex-1 min-w-0">
+        <p className="text-[10px] font-semibold text-mist-dim uppercase tracking-wider">{label}</p>
+        <p className={`text-sm font-semibold truncate ${accentClass}`}>{value}</p>
+      </div>
+    </div>
   );
 }

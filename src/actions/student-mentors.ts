@@ -16,9 +16,13 @@ export interface StudentMentorInfo {
   mentorId: string;
   assignedAt: string;
   mentorName: string;
+  mentorNip: string | null;
+  mentorInstansi: string | null;
   mentorJurusan: string | null;
   mentorAvatarUrl: string | null;
   studyProgramName: string | null;
+  entryTime: string | null;
+  lateTime: string | null;
 }
 
 /**
@@ -62,20 +66,28 @@ export async function getMyMentor(): Promise<StudentMentorInfo | null> {
 
   const { data } = await supabase
     .from("student_mentors")
-    .select("student_id, mentor_id, assigned_at, profiles!inner(full_name, avatar_url, jurusan_id, study_programs!left(nama))")
+    .select("student_id, mentor_id, assigned_at, profiles!inner(full_name, identity_number, instansi, avatar_url, jurusan_id, study_programs!left(nama), mentor_settings(entry_time, late_time))")
     .eq("student_id", user.id)
     .single() as { data: any };
 
   if (!data) return null;
+
+  const settings = Array.isArray(data.profiles?.mentor_settings)
+    ? data.profiles.mentor_settings[0]
+    : data.profiles?.mentor_settings;
 
   return {
     studentId: data.student_id,
     mentorId: data.mentor_id,
     assignedAt: data.assigned_at,
     mentorName: data.profiles?.full_name,
+    mentorNip: data.profiles?.identity_number || null,
+    mentorInstansi: data.profiles?.instansi || null,
     mentorJurusan: data.profiles?.jurusan_id,
     mentorAvatarUrl: data.profiles?.avatar_url,
     studyProgramName: data.profiles?.study_programs?.nama || null,
+    entryTime: settings?.entry_time || null,
+    lateTime: settings?.late_time || null,
   };
 }
 

@@ -17,6 +17,10 @@ export async function checkLoginLocation(latitude: number, longitude: number) {
   return { allowed: true };
 }
 
+export async function verifyAttendanceLocation(latitude: number, longitude: number) {
+  return Repositories.location().verifyLocation(latitude, longitude);
+}
+
 export async function hasLocationsConfigured() {
   return Repositories.location().hasLocations();
 }

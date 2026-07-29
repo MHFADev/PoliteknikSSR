@@ -10,7 +10,7 @@ export type TutorialStep = {
   waitFor?: string
 }
 
-type PageGroup = {
+export type PageGroup = {
   label: string
   steps: TutorialStep[]
 }
