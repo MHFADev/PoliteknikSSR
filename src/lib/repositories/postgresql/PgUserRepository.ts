@@ -144,7 +144,7 @@ export class PgUserRepository implements IUserRepository {
           input.instansi || null,
           input.kelas || null,
           input.jurusanId || null,
-          false,
+          true,
         ]
       );
 
