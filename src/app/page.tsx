@@ -13,10 +13,20 @@ export default async function RootPage() {
     .eq("id", user.id)
     .maybeSingle();
 
+  const meta = user.app_metadata as Record<string, any> | undefined;
+  const isGoogleUser =
+    meta?.provider === "google" ||
+    (Array.isArray(meta?.providers) && meta.providers.includes("google"));
+
+  if (!profile) {
+    redirect("/complete-profile");
+  }
+
+  // Complete-profile hanya untuk user login Google (data belum lengkap).
+  // User register manual sudah mengisi data saat mendaftar.
   if (
-    !profile ||
-    profile.full_name === "Pengguna Baru" ||
-    !profile.identity_number
+    isGoogleUser &&
+    (profile.full_name === "Pengguna Baru" || !profile.identity_number)
   ) {
     redirect("/complete-profile");
   }
