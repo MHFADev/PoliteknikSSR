@@ -66,7 +66,7 @@ export async function getMyMentor(): Promise<StudentMentorInfo | null> {
 
   const { data } = await supabase
     .from("student_mentors")
-    .select("student_id, mentor_id, assigned_at, profiles!inner(full_name, identity_number, instansi, avatar_url, jurusan_id, study_programs!left(nama), mentor_settings(entry_time, late_time))")
+    .select("student_id, mentor_id, assigned_at, profiles!student_mentors_mentor_id_fkey!inner(full_name, identity_number, instansi, avatar_url, jurusan_id, study_programs!left(nama), mentor_settings(entry_time, late_time))")
     .eq("student_id", user.id)
     .single() as { data: any };
 
@@ -159,7 +159,7 @@ export async function getMyStudents(): Promise<
 
   const { data } = await supabase
     .from("student_mentors")
-    .select("student_id, assigned_at, profiles!inner(id, full_name, kelas, identity_number, avatar_url, instansi, study_programs!left(nama))")
+    .select("student_id, assigned_at, profiles!student_mentors_student_id_fkey!inner(id, full_name, kelas, identity_number, avatar_url, instansi, study_programs!left(nama))")
     .eq("mentor_id", user.id) as { data: any[] | null };
 
   return (data || []).map((sm: any) => ({

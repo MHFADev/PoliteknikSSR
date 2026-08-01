@@ -118,7 +118,7 @@ export class SupabaseCalendarRepository implements ICalendarRepository {
 
     let query = supabase
       .from("calendar_events")
-      .select("*, profiles!left(full_name, identity_number)")
+      .select("*, profiles!calendar_events_created_by_fkey!left(full_name, identity_number)")
       .gte("event_date", start)
       .lte("event_date", end)
       .order("event_date", { ascending: true });
@@ -159,7 +159,7 @@ export class SupabaseCalendarRepository implements ICalendarRepository {
 
     let query = supabase
       .from("calendar_events")
-      .select("*, profiles!left(full_name, identity_number, study_programs!left(nama))")
+      .select("*, profiles!calendar_events_created_by_fkey!left(full_name, identity_number, study_programs!left(nama))")
       .order("event_date", { ascending: false });
 
     // Filter berdasarkan title atau nama pembuat event
@@ -358,7 +358,7 @@ export class SupabaseCalendarRepository implements ICalendarRepository {
 
     const { data, error } = await supabase
       .from("calendar_events")
-      .select("*, profiles!left(full_name, identity_number)")
+      .select("*, profiles!calendar_events_created_by_fkey!left(full_name, identity_number)")
       .gte("event_date", today)
       .order("event_date", { ascending: true })
       .limit(limit);

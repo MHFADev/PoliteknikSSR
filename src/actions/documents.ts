@@ -127,7 +127,7 @@ export async function getSentDocuments(): Promise<
   const adminSupabase = createAdminClient();
   const { data } = await adminSupabase
     .from("student_documents")
-    .select("id, type, file_name, is_read, is_kept, created_at, expires_at, profiles!inner(full_name)")
+    .select("id, type, file_name, is_read, is_kept, created_at, expires_at, profiles!student_documents_student_id_fkey!inner(full_name)")
     .eq("admin_id", user.id)
     .order("created_at", { ascending: false });
 
