@@ -5,10 +5,11 @@ import { usePathname, useRouter } from "next/navigation";
 import { useState, useRef, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { createClient } from "@/lib/supabase/client";
-import { LogOut, ChevronUp, MoreHorizontal } from "lucide-react";
+import { LogOut, ChevronUp, MoreHorizontal, Info } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { MAIN_NAV, MORE_NAV, type NavItem } from "@/lib/navigation";
 import { useNotificationCounts } from "@/components/layout/NotificationProvider";
+import { AboutButton } from "@/components/AboutButton";
 import styles from "@/styles/components/layout/MobileNav.module.css";
 
 type Props = {
@@ -54,6 +55,9 @@ export function MobileNav({ role, fullName, avatarUrl }: Props) {
           <span className={styles.headerTitle}>Politeknik SSR</span>
         </div>
         <div className={styles.headerRight}>
+          <AboutButton className={styles.aboutBtn}>
+            <Info className="h-5 w-5" />
+          </AboutButton>
           <div className={styles.avatarWrapper} ref={menuRef}>
             <button
               onClick={() => setShowMenu(!showMenu)}

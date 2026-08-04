@@ -17,7 +17,6 @@ import { MobileNav } from "@/components/layout/MobileNav";
 import { NotificationProvider } from "@/components/layout/NotificationProvider";
 import { RealtimeClock } from "@/components/RealtimeClock";
 import { TutorialWrapper } from "@/components/tutorial/TutorialWrapper";
-import { AboutButton } from "@/components/AboutButton";
 import { BlockedWatcher } from "@/components/BlockedWatcher";
 
 export default async function AdminLayout({
@@ -48,7 +47,6 @@ export default async function AdminLayout({
         <Sidebar role={userRole} fullName={profile?.full_name ?? "Admin"} avatarUrl={profile?.avatar_url ?? null} />
         <MobileNav role={userRole} fullName={profile?.full_name ?? "Admin"} avatarUrl={profile?.avatar_url ?? null} />
         <TutorialWrapper role={userRole} />
-        <AboutButton />
 
         <main className="flex-1 overflow-x-hidden overflow-y-auto max-w-full" style={{ backgroundColor: "var(--bg-muted, #F0F0F0)" }}>
           <div className="flex items-center justify-between px-4 sm:px-6 lg:px-8 py-2 mb-2">

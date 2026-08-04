@@ -18,32 +18,30 @@ const DEV2 = {
   avatar: "https://avatars.githubusercontent.com/u/149284463?v=4",
 }
 
-const fabStyle: React.CSSProperties = {
-  position: "fixed", bottom: 88, right: 20, zIndex: 40,
-  width: 44, height: 44, borderRadius: "50%",
-  border: "none", cursor: "pointer",
-  background: "linear-gradient(135deg, #2563EB, #4F46E5)",
-  color: "#fff", display: "flex", alignItems: "center",
-  justifyContent: "center", boxShadow: "0 4px 16px rgba(37,99,235,0.35)",
-  transition: "transform 0.2s, box-shadow 0.2s",
-}
-
 const s = (obj: Record<string, string>) => obj as React.CSSProperties
 
-export function AboutButton() {
+/**
+ * AboutButton — trigger untuk membuka modal "Tentang Aplikasi".
+ * Bukan FAB lagi; dipasang di Sidebar (desktop) & MobileNav (mobile).
+ * Konten tombol bisa dikustomisasi via `children`, styling via `className`.
+ */
+export function AboutButton({ children, className }: { children?: React.ReactNode; className?: string }) {
   const [open, setOpen] = useState(false)
 
   return (
     <>
-      <style>{`@media (max-width: 1023px) { .about-fab { bottom: 80px !important; } }`}</style>
       <button
         onClick={() => setOpen(true)}
-        className="about-fab"
-        style={{ ...fabStyle, bottom: 24 } as React.CSSProperties}
+        className={className}
         aria-label="Tentang Aplikasi"
         title="Tentang Aplikasi"
       >
-        <Info className="h-5 w-5" />
+        {children ?? (
+          <>
+            <Info className="h-5 w-5" />
+            Tentang
+          </>
+        )}
       </button>
 
       <AnimatePresence>

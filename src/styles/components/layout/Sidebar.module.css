@@ -204,3 +204,20 @@
   flex-shrink: 0;
 }
 .logoutBtn:hover { background: var(--bg-muted, #F8FAFC); color: var(--color-danger, #F87171); }
+
+.aboutBtn {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: 12px;
+  border: none;
+  background: none;
+  border-radius: 16px;
+  padding: 10px 12px;
+  font-size: 14px;
+  color: var(--color-ink-muted, #475569);
+  transition: background 150ms, color 150ms;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+.aboutBtn:hover { background: var(--bg-muted, #F8FAFC); color: var(--color-sky, #1D4ED8); }

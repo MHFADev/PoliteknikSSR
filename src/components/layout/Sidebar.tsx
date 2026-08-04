@@ -6,11 +6,12 @@ import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { createClient } from "@/lib/supabase/client";
-import { LogOut, ChevronDown } from "lucide-react";
+import { LogOut, ChevronDown, Info } from "lucide-react";
 import { motion } from "framer-motion";
 import { NAV } from "@/lib/navigation";
 import type { NavItem } from "@/lib/navigation";
 import { useNotificationCounts } from "@/components/layout/NotificationProvider";
+import { AboutButton } from "@/components/AboutButton";
 import styles from "@/styles/components/layout/Sidebar.module.css";
 
 interface SidebarProps {
@@ -116,6 +117,10 @@ export function Sidebar({ role, fullName, avatarUrl }: SidebarProps) {
             <LogOut className="h-5 w-5" />
             Keluar
           </button>
+          <AboutButton className={styles.aboutBtn}>
+            <Info className="h-5 w-5" />
+            Tentang Aplikasi
+          </AboutButton>
         </div>
       </div>
     </aside>
