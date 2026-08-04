@@ -1,0 +1,194 @@
+/* ============================================================
+   AboutButton.module.css — Modal "Tentang Aplikasi"
+   ============================================================ */
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.5);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.dialog {
+  position: relative;
+  width: 100%;
+  max-width: 520px;
+  max-height: 90dvh;
+  overflow-y: auto;
+  border-radius: 20px;
+  border: 1px solid var(--color-outline);
+  background: var(--bg-card);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.12);
+  padding: 28px 24px 24px;
+}
+
+/* Header */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--color-deep);
+}
+
+.closeBtn {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 9999px;
+  border: none;
+  background: var(--bg-muted);
+  color: var(--color-ink-subtle);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+.closeBtn:hover {
+  background: var(--color-danger, #f43f5e);
+  color: #fff;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.625rem;
+  font-weight: 700;
+  color: #2563eb;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  background: rgba(37, 99, 235, 0.08);
+  padding: 3px 8px;
+  border-radius: 6px;
+  margin-bottom: 12px;
+}
+
+.desc {
+  margin: 0 0 20px;
+  font-size: 0.875rem;
+  line-height: 1.7;
+  color: var(--color-mist-dim);
+  text-align: center;
+}
+
+/* Daftar developer */
+.devList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.devCard {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: var(--bg-page);
+  border: 1px solid var(--color-outline);
+}
+
+.devAvatar {
+  flex-shrink: 0;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--color-outline);
+}
+
+.devInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.devName {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--color-deep);
+}
+
+.devRole {
+  margin: 2px 0 0;
+  font-size: 0.8rem;
+  color: var(--color-mist-dim);
+}
+
+.devGithub {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #2563eb;
+  text-decoration: none;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+}
+.devGithub:hover {
+  text-decoration: underline;
+}
+
+/* Footer */
+.footer {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--color-outline);
+  font-size: 0.75rem;
+  color: var(--color-ink-subtle);
+  text-align: center;
+  line-height: 1.6;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .overlay {
+    padding: 12px;
+  }
+
+  .dialog {
+    padding: 20px 16px 16px;
+    border-radius: 16px;
+  }
+
+  .title {
+    font-size: 1rem;
+  }
+
+  .devAvatar {
+    width: 44px;
+    height: 44px;
+  }
+
+  .devCard {
+    padding: 12px;
+    gap: 12px;
+  }
+}
