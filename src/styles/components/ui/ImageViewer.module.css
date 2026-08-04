@@ -1,0 +1,169 @@
+/* ============================================================
+   ImageViewer.module.css — Preview bukti + lightbox zoom
+   ============================================================ */
+
+/* Thumbnail di dalam modal detail */
+.thumbBtn {
+  position: relative;
+  display: block;
+  width: 100%;
+  max-width: 260px;
+  border: 1px solid var(--color-outline, #E2E8F0);
+  border-radius: 0.75rem;
+  overflow: hidden;
+  background: var(--bg-muted, #F8FAFC);
+  cursor: zoom-in;
+  padding: 0;
+  text-align: left;
+}
+
+.thumb {
+  display: block;
+  width: 100%;
+  max-height: 180px;
+  object-fit: cover;
+}
+
+.thumbOverlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  background: rgba(15, 23, 42, 0.45);
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 600;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.thumbBtn:hover .thumbOverlay {
+  opacity: 1;
+}
+
+/* Fallback kalau bukan gambar */
+.fileLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-size: 0.875rem;
+  color: #2BA8A2;
+  text-decoration: none;
+}
+.fileLink:hover {
+  text-decoration: underline;
+}
+
+/* Lightbox fullscreen */
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  background: rgba(0, 0, 0, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.closeBtn {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border: none;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.closeBtn:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.canvas {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  touch-action: none;
+  user-select: none;
+}
+
+.image {
+  max-width: 90vw;
+  max-height: 85vh;
+  object-fit: contain;
+  transform-origin: center;
+  transition: transform 0.05s linear;
+  will-change: transform;
+}
+
+.toolbar {
+  position: absolute;
+  bottom: 1.25rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.375rem 0.5rem;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.14);
+  backdrop-filter: blur(8px);
+  color: #fff;
+}
+
+.toolbar button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 9999px;
+  background: transparent;
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.toolbar button:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.2);
+}
+.toolbar button:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.zoomLabel {
+  min-width: 3.5rem;
+  text-align: center;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.divider {
+  width: 1px;
+  height: 20px;
+  background: rgba(255, 255, 255, 0.25);
+  margin: 0 0.25rem;
+}
+
+.panHint {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding-right: 0.375rem;
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.7);
+}

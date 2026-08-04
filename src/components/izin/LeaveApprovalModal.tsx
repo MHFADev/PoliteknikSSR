@@ -2,10 +2,11 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Check, X, FileText } from "lucide-react";
+import { Check, X } from "lucide-react";
 import { Modal } from "@/components/ui/Modal";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
+import { ImageViewer } from "@/components/ui/ImageViewer";
 import { reviewLeaveRequest } from "@/actions/leave";
 import { formatDate } from "@/lib/utils";
 import { cn } from "@/lib/utils";
@@ -164,14 +165,12 @@ export function PendingLeaveApprovals({
               <p className={styles.detailValue}>{active.reason}</p>
             </div>
             {active.proof_url && (
-              <a
-                href={active.proof_url}
-                target="_blank"
-                rel="noreferrer"
-                className={styles.proofLink}
-              >
-                <FileText className="h-4 w-4" /> Lihat bukti pendukung
-              </a>
+              <div>
+                <p className={styles.detailLabel}>Bukti Pendukung</p>
+                <div className="mt-1">
+                  <ImageViewer src={active.proof_url} alt={`Bukti izin ${active.student.full_name}`} />
+                </div>
+              </div>
             )}
             <div>
               <div className="flex justify-between items-center">
