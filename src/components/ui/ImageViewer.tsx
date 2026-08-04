@@ -28,7 +28,6 @@ export function ImageViewer({ src, alt = "Bukti" }: { src: string | null; alt?: 
   const [drag, setDrag] = useState<{ startX: number; startY: number; x: number; y: number } | null>(null);
 
   const isImage = !!src && isImageUrl(src);
-  if (!src) return null;
 
   const resetView = () => {
     setScale(1);
@@ -60,6 +59,8 @@ export function ImageViewer({ src, alt = "Bukti" }: { src: string | null; alt?: 
     return () => window.removeEventListener("keydown", onKey);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
+
+  if (!src) return null;
 
   // zoom dengan roda mouse
   function onWheel(e: React.WheelEvent) {
