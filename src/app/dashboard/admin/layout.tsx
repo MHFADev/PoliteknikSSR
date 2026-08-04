@@ -43,7 +43,7 @@ export default async function AdminLayout({
   return (
     /* 🔥 Layout — bg pake var() biar otomatis ngikut mode gelap/terang */
     <NotificationProvider>
-      <div className="flex min-h-screen" style={{ backgroundColor: "var(--bg-page, #FFFFFF)" }}>
+      <div className="flex min-h-screen">
         <BlockedWatcher />
         <Sidebar role={userRole} fullName={profile?.full_name ?? "Admin"} avatarUrl={profile?.avatar_url ?? null} />
         <MobileNav role={userRole} fullName={profile?.full_name ?? "Admin"} avatarUrl={profile?.avatar_url ?? null} />

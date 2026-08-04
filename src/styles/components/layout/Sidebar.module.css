@@ -12,6 +12,8 @@
   flex-shrink: 0;
   border-right: 1px solid var(--color-outline, #E2E8F0);
   background: var(--bg-sidebar, #FFF);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
 }
 @media (max-width: 1023px) {
   .desktop { display: none; }

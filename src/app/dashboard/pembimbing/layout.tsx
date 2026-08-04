@@ -36,7 +36,7 @@ export default async function PembimbingLayout({ children }: { children: React.R
   return (
     /* 🔥 Layout — bg pake var() biar otomatis ngikut mode gelap/terang */
     <NotificationProvider>
-      <div className="flex min-h-screen" style={{ backgroundColor: "var(--bg-page, #FFFFFF)" }}>
+      <div className="flex min-h-screen">
         <Sidebar role="pembimbing" fullName={profile?.full_name ?? "Pembimbing"} avatarUrl={profile?.avatar_url ?? null} />
         <MobileNav role="pembimbing" fullName={profile?.full_name ?? "Pembimbing"} avatarUrl={profile?.avatar_url ?? null} />
         <TutorialWrapper role="pembimbing" />

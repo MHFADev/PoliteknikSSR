@@ -23,16 +23,19 @@
   --color-outline: #e2e8f0;
   --color-outline-strong: #94a3b8;
 
-  /* ── Background ───────────────────────── */
+  /* ── Background (glass 15%: semi-transparan, blur dipakai di elemen fixed) ── */
   --color-surface: #ffffff;
   --color-surface-elevated: #f3f4f6;
   --color-surface-sunken: #f1f5f9;
-  --bg-page: #ffffff;
-  --bg-card: #ffffff;
-  --bg-sidebar: #ffffff;
-  --bg-mobile-header: #ffffff;
-  --bg-input: #ffffff;
-  --bg-muted: #f8fafc;
+  --bg-page: #f4f6fb;
+  --bg-card: rgba(255, 255, 255, 0.72);
+  --bg-sidebar: rgba(255, 255, 255, 0.72);
+  --bg-mobile-header: rgba(255, 255, 255, 0.72);
+  --bg-input: rgba(255, 255, 255, 0.6);
+  --bg-muted: rgba(248, 250, 252, 0.55);
+  --bg-grad-1: #eef2ff;
+  --bg-grad-2: #f8fafc;
+  --bg-grad-3: #fdeef3;
 
   /* ── Brand Colors ─────────────────────── */
   --color-teal: #2ba8a2;
@@ -74,12 +77,15 @@
   --color-surface: #1e293b;
   --color-surface-elevated: #334155;
   --color-surface-sunken: #0f172a;
-  --bg-page: #0f172a;
-  --bg-card: #1e293b;
-  --bg-sidebar: #1e293b;
-  --bg-mobile-header: #1e293b;
-  --bg-input: #334155;
-  --bg-muted: #1e293b;
+  --bg-page: #0b1220;
+  --bg-card: rgba(30, 41, 59, 0.72);
+  --bg-sidebar: rgba(30, 41, 59, 0.72);
+  --bg-mobile-header: rgba(30, 41, 59, 0.72);
+  --bg-input: rgba(51, 65, 85, 0.6);
+  --bg-muted: rgba(15, 23, 42, 0.55);
+  --bg-grad-1: #0d1526;
+  --bg-grad-2: #0f172a;
+  --bg-grad-3: #131a30;
   --color-teal: #5eead4;
   --color-teal-light: #2dd4bf;
   --color-teal-dark: #14b8a6;
@@ -113,9 +119,17 @@ html {
 
 body {
   background-color: var(--bg-page, #ffffff);
+  background-image: linear-gradient(135deg, var(--bg-grad-1, #eef2ff) 0%, var(--bg-grad-2, #f8fafc) 55%, var(--bg-grad-3, #fdeef3) 100%);
+  background-attachment: fixed;
   color: var(--color-ink, #0f172a);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/* Glass shell — backdrop-blur ringan, hanya pada elemen fixed (sidebar + mobile nav) supaya hemat render */
+.glass-shell {
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
 }
 
 :focus-visible {

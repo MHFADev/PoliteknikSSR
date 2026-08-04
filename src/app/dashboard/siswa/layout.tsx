@@ -38,7 +38,7 @@ export default async function SiswaLayout({ children }: { children: React.ReactN
   return (
     /* 🔥 Layout utama — bg pake var() biar otomatis ngikut mode gelap/terang */
     <NotificationProvider>
-      <div className="flex min-h-screen" style={{ backgroundColor: "var(--bg-page, #FFFFFF)" }}>
+      <div className="flex min-h-screen">
         <BlockedWatcher />
         <StudentDocumentPopup />
         <Sidebar role="siswa" fullName={profile?.full_name ?? "Siswa"} avatarUrl={profile?.avatar_url ?? null} />
