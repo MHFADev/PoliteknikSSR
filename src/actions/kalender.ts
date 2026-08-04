@@ -1,7 +1,9 @@
 "use server";
 
 import { Repositories } from "@/lib/repositories";
+import { createAdminClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
+import { createNotifications } from "./notifications";
 
 export async function getEvents(year: number, month: number, studentId?: string | null) {
   return Repositories.calendar().getEvents(year, month, studentId);
@@ -33,6 +35,23 @@ export async function addEvent(
   });
 
   if (result.error) return { success: false, message: result.error };
+
+  // Notifikasi semua siswa tentang event baru
+  const adminSupabase = createAdminClient();
+  const { data: students } = await adminSupabase
+    .from("profiles")
+    .select("id")
+    .eq("role", "siswa");
+  if (students?.length) {
+    await createNotifications(
+      students.map((s: any) => ({
+        user_id: s.id,
+        title: tipe === "libur" ? "Hari libur baru" : "Event baru",
+        message: title,
+        link: "/dashboard/siswa/kalender",
+      }))
+    );
+  }
 
   revalidatePath("/dashboard/admin/kalender");
   revalidatePath("/dashboard/siswa/kalender");

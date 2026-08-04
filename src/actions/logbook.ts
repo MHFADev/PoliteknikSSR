@@ -1,8 +1,10 @@
 "use server";
 
 import { Repositories } from "@/lib/repositories";
+import { createAdminClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
+import { createNotifications } from "./notifications";
 
 const entrySchema = z.object({
   entry_date: z.string(),
@@ -25,6 +27,24 @@ export async function saveLogbookEntry(input: z.infer<typeof entrySchema>) {
   );
 
   if (result.error) return { error: result.error };
+
+  // Notifikasi pembimbing bahwa ada kegiatan baru untuk dinilai
+  const adminSupabase = createAdminClient();
+  const { data: sm } = await adminSupabase
+    .from("student_mentors")
+    .select("mentor_id")
+    .eq("student_id", user.id)
+    .maybeSingle();
+  if (sm?.mentor_id) {
+    await createNotifications([
+      {
+        user_id: sm.mentor_id,
+        title: "Kegiatan baru untuk dinilai",
+        message: "Ada kegiatan harian baru dari siswa yang menunggu penilaian.",
+        link: "/dashboard/pembimbing/kegiatan-harian",
+      },
+    ]);
+  }
 
   revalidatePath("/dashboard/siswa/kegiatan-harian");
   return { success: true };
@@ -64,6 +84,24 @@ export async function gradeLogbookEntry(input: z.infer<typeof gradeSchema>) {
   );
 
   if (result.error) return { error: result.error };
+
+  // Notifikasi siswa bahwa kegiatannya sudah dinilai
+  const adminSupabase = createAdminClient();
+  const { data: entry } = await adminSupabase
+    .from("logbook_entries")
+    .select("student_id")
+    .eq("id", parsed.data.id)
+    .single();
+  if (entry?.student_id) {
+    await createNotifications([
+      {
+        user_id: entry.student_id,
+        title: "Kegiatan dinilai",
+        message: `Kegiatan harian Anda telah dinilai: ${parsed.data.grade}.`,
+        link: "/dashboard/siswa/kegiatan-harian",
+      },
+    ]);
+  }
 
   revalidatePath("/dashboard/pembimbing/kegiatan-harian");
   return { success: true };

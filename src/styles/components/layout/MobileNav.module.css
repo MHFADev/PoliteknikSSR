@@ -162,6 +162,28 @@
 .navIconActive {
   color: var(--color-sky, #1D4ED8);
 }
+.navIconWrap {
+  position: relative;
+  display: inline-flex;
+}
+.badge {
+  position: absolute;
+  top: -4px;
+  right: -6px;
+  min-width: 14px;
+  height: 14px;
+  padding: 0 3px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  background: #EF4444;
+  color: #fff;
+  font-size: 9px;
+  font-weight: 700;
+  line-height: 1;
+  border: 1px solid var(--bg-mobile-header, #FFF);
+}
 
 .navLabel {
   font-size: 10px;

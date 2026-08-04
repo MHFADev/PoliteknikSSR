@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { QRScanner } from "@/components/qr/QRScanner";
 import { Card, CardHeader } from "@/components/ui/Card";
-import { Clock, MapPin, Loader2, ShieldOff, CheckCircle2, AlertTriangle, GraduationCap, UserCog } from "lucide-react";
+import { Clock, MapPin, Loader2, ShieldOff, CheckCircle2, AlertTriangle, GraduationCap, UserCog, RefreshCw } from "lucide-react";
 import { verifyAttendanceLocation, hasLocationsConfigured } from "@/actions/location";
 import { getMyMentor } from "@/actions/student-mentors";
 import styles from "@/styles/pages/dashboard/siswa/Absensi.module.css";
@@ -40,6 +40,7 @@ export default function SiswaAbsensiPage() {
   const [gpsMsg, setGpsMsg] = useState("");
   const [gpsReady, setGpsReady] = useState(false);
   const [mentorCheck, setMentorCheck] = useState<"loading" | "no-mentor" | "ok">("loading");
+  const [checking, setChecking] = useState(false);
 
   useEffect(() => {
     getMyMentor().then((m) => {
@@ -47,67 +48,64 @@ export default function SiswaAbsensiPage() {
     });
   }, []);
 
-  useEffect(() => {
-    if (mentorCheck === "loading") return;
-
-    if (mentorCheck === "no-mentor") {
-      setGpsState("unavailable");
-      setGpsReady(true);
-      return;
-    }
-
-    let cancelled = false;
-    async function check() {
-      try {
-        const hasLoc = await hasLocationsConfigured();
-        if (!hasLoc) {
-          if (!cancelled) { setGpsState("unavailable"); setGpsReady(true); }
-          return;
-        }
-
-        if (typeof window === "undefined" || !navigator.geolocation) {
-          if (!cancelled) { setGpsState("unavailable"); setGpsMsg("Geolocation tidak didukung browser ini."); setGpsReady(true); }
-          return;
-        }
-
-        navigator.geolocation.getCurrentPosition(
-          async (pos) => {
-            if (cancelled) return;
-            const result = await verifyAttendanceLocation(pos.coords.latitude, pos.coords.longitude);
-            if (result.allowed) {
-              setGpsState("granted");
-              setGpsReady(true);
-            } else {
-              setGpsState("outside");
-              setGpsMsg(`Anda berada di luar area yang diizinkan (${result.locationName || "kampus"}).`);
-              setGpsReady(true);
-            }
-          },
-          (err) => {
-            if (cancelled) return;
-            if (err.code === 1) {
-              setGpsState("denied");
-              setGpsMsg("Izin lokasi ditolak. Izinkan akses lokasi di pengaturan browser.");
-            } else if (err.code === 2) {
-              setGpsState("error");
-              setGpsMsg("Tidak dapat menemukan lokasi. Pastikan GPS aktif.");
-            } else if (err.code === 3) {
-              setGpsState("error");
-              setGpsMsg("Waktu pencarian lokasi habis. Coba refresh halaman.");
-            } else {
-              setGpsState("error");
-              setGpsMsg("Gagal mendapatkan lokasi.");
-            }
-          },
-          { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 },
-        );
-      } catch {
-        if (!cancelled) { setGpsState("error"); setGpsReady(true); }
+  const runCheck = useCallback(async () => {
+    setChecking(true);
+    try {
+      const hasLoc = await hasLocationsConfigured();
+      if (!hasLoc) {
+        setGpsState("unavailable");
+        setGpsReady(true);
+        return;
       }
+
+      if (typeof window === "undefined" || !navigator.geolocation) {
+        setGpsState("unavailable");
+        setGpsMsg("Geolocation tidak didukung browser ini.");
+        setGpsReady(true);
+        return;
+      }
+
+      navigator.geolocation.getCurrentPosition(
+        async (pos) => {
+          const result = await verifyAttendanceLocation(pos.coords.latitude, pos.coords.longitude);
+          if (result.allowed) {
+            setGpsState("granted");
+            setGpsReady(true);
+          } else {
+            setGpsState("outside");
+            setGpsMsg(`Anda berada di luar area yang diizinkan (${result.locationName || "kampus"}).`);
+            setGpsReady(true);
+          }
+        },
+        (err) => {
+          if (err.code === 1) {
+            setGpsState("denied");
+            setGpsMsg("Izin lokasi ditolak. Izinkan akses lokasi di pengaturan browser.");
+          } else if (err.code === 2) {
+            setGpsState("error");
+            setGpsMsg("Tidak dapat menemukan lokasi. Pastikan GPS aktif.");
+          } else if (err.code === 3) {
+            setGpsState("error");
+            setGpsMsg("Waktu pencarian lokasi habis. Coba lagi.");
+          } else {
+            setGpsState("error");
+            setGpsMsg("Gagal mendapatkan lokasi.");
+          }
+        },
+        { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 },
+      );
+    } catch {
+      setGpsState("error");
+      setGpsReady(true);
+    } finally {
+      setChecking(false);
     }
-    check();
-    return () => { cancelled = true; };
-  }, [mentorCheck]);
+  }, []);
+
+  useEffect(() => {
+    if (mentorCheck !== "ok") return;
+    runCheck();
+  }, [mentorCheck, runCheck]);
 
   function renderGpsBanner() {
     switch (gpsState) {
@@ -190,6 +188,19 @@ export default function SiswaAbsensiPage() {
       <LiveClock />
 
       <div data-tour="absensi-gps">{renderGpsBanner()}</div>
+
+      {(["denied", "error", "outside"].includes(gpsState)) && (
+        <div className="flex justify-center mt-2">
+          <button
+            onClick={runCheck}
+            disabled={checking}
+            className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg border border-outline bg-card text-deep hover:bg-muted transition-colors disabled:opacity-50"
+          >
+            <RefreshCw className={`h-3.5 w-3.5 ${checking ? "animate-spin" : ""}`} />
+            {checking ? "Memeriksa..." : "Cek Ulang Lokasi"}
+          </button>
+        </div>
+      )}
 
       <Card className={styles.scannerCard} data-tour="absensi-scan">
         <QRScanner gpsReady={gpsReady} />

@@ -14,6 +14,7 @@ import {
   Timer,
   Pencil,
   ChevronDown,
+  Filter,
 } from "lucide-react";
 import { getAvailableMentors, getMyMentor, selectMentor } from "@/actions/student-mentors";
 import type { MentorInfo, StudentMentorInfo } from "@/actions/student-mentors";
@@ -32,6 +33,7 @@ export function MentorSelector({ studentJurusanId, profileMode = false, onMentor
   const [selecting, setSelecting] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
   const [search, setSearch] = useState("");
+  const [jurusanFilter, setJurusanFilter] = useState("all");
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [confirmChange, setConfirmChange] = useState(false);
@@ -74,13 +76,36 @@ export function MentorSelector({ studentJurusanId, profileMode = false, onMentor
     setConfirmChange(false);
     await loadData();
     onMentorSelected?.();
+
+    // Minta izin lokasi otomatis setelah berhasil memilih pembimbing
+    requestLocationPermission();
+
     setTimeout(() => setSuccess(null), 3000);
+  }
+
+  /** Minta akses lokasi sekali — dipakai saat siswa memilih pembimbing. */
+  function requestLocationPermission() {
+    if (typeof window === "undefined" || !navigator.geolocation) return;
+    navigator.geolocation.getCurrentPosition(
+      () => {},
+      () => {},
+      { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 },
+    );
   }
 
   const filteredMentors = mentors.filter(
     (m) =>
-      m.fullName.toLowerCase().includes(search.toLowerCase()) ||
-      m.studyProgramName?.toLowerCase().includes(search.toLowerCase()),
+      (jurusanFilter === "all" || m.jurusan === jurusanFilter) &&
+      (m.fullName.toLowerCase().includes(search.toLowerCase()) ||
+        m.studyProgramName?.toLowerCase().includes(search.toLowerCase())),
+  );
+
+  const jurusanList = Array.from(
+    new Map(
+      mentors
+        .filter((m) => m.jurusan && m.studyProgramName)
+        .map((m) => [m.jurusan as string, { id: m.jurusan as string, nama: m.studyProgramName as string }]),
+    ).values(),
   );
 
   if (loading) {
@@ -109,6 +134,37 @@ export function MentorSelector({ studentJurusanId, profileMode = false, onMentor
           <X className="h-4 w-4" />
         </button>
       </div>
+
+      {/* Filter jurusan — semua pembimbing tampil, filter opsional */}
+      {jurusanList.length > 0 && (
+        <div className="flex items-center gap-1.5 px-3 py-2 border-b border-outline bg-muted/20 overflow-x-auto">
+          <Filter className="h-3.5 w-3.5 text-mist-dim shrink-0" />
+          <button
+            onClick={() => setJurusanFilter("all")}
+            className={`shrink-0 text-[11px] font-semibold px-2.5 py-1 rounded-full border transition-colors ${
+              jurusanFilter === "all"
+                ? "bg-sky text-white border-sky"
+                : "bg-card text-mist-dim border-outline hover:border-sky/50"
+            }`}
+          >
+            Semua
+          </button>
+          {jurusanList.map((j) => (
+            <button
+              key={j.id}
+              onClick={() => setJurusanFilter(jurusanFilter === j.id ? "all" : j.id)}
+              className={`shrink-0 text-[11px] font-semibold px-2.5 py-1 rounded-full border transition-colors ${
+                jurusanFilter === j.id
+                  ? "bg-sky text-white border-sky"
+                  : "bg-card text-mist-dim border-outline hover:border-sky/50"
+              }`}
+            >
+              {j.nama}
+            </button>
+          ))}
+        </div>
+      )}
+
       <div className="max-h-64 overflow-y-auto p-1.5">
         {filteredMentors.length === 0 ? (
           <p className="py-6 text-center text-xs text-mist-dim">Tidak ada pembimbing ditemukan</p>
@@ -131,7 +187,14 @@ export function MentorSelector({ studentJurusanId, profileMode = false, onMentor
               </div>
               <div className="flex-1 min-w-0">
                 <span className="text-sm font-semibold text-deep block truncate">{m.fullName}</span>
-                <span className="text-xs text-mist-dim truncate block">{m.studyProgramName || "-"}</span>
+                <span className="flex items-center gap-1.5 mt-0.5">
+                  <span className={`inline-block text-[10px] font-bold px-1.5 py-0.5 rounded-full ${jurusanBadgeClass(m.studyProgramName)}`}>
+                    {m.studyProgramName || "Umum"}
+                  </span>
+                  {m.jurusan === studentJurusanId && (
+                    <span className="inline-block text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-sky/10 text-sky">Jurusan Anda</span>
+                  )}
+                </span>
               </div>
               {m.id === myMentor?.mentorId && (
                 <span className="shrink-0 bg-leaf-soft text-leaf-deep text-[10px] font-bold px-2 py-0.5 rounded-full">Aktif</span>
@@ -286,6 +349,24 @@ function formatTime(t: string | null): string {
   if (!t) return "-";
   const [h, m] = t.split(":");
   return `${h}:${m}`;
+}
+
+const JURUSAN_COLORS = [
+  "bg-sky/10 text-sky",
+  "bg-violet-100 text-violet-600",
+  "bg-emerald-100 text-emerald-600",
+  "bg-amber-100 text-amber-600",
+  "bg-rose-100 text-rose-600",
+  "bg-teal-bg text-teal",
+];
+
+function jurusanBadgeClass(nama: string | null): string {
+  if (!nama) return "bg-muted text-mist-dim";
+  let hash = 0;
+  for (let i = 0; i < nama.length; i++) {
+    hash = (hash * 31 + nama.charCodeAt(i)) >>> 0;
+  }
+  return JURUSAN_COLORS[hash % JURUSAN_COLORS.length];
 }
 
 function InfoRow({

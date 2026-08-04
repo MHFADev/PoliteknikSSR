@@ -7,7 +7,6 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import {
   Loader2,
-  MapPin,
   ShieldCheck,
   Mail,
   Lock,
@@ -17,53 +16,12 @@ import {
 } from "lucide-react";
 import { signInWithPassword, requestPasswordReset } from "./actions";
 import { signInWithGoogle } from "@/actions/auth";
-import { checkLoginLocation, hasLocationsConfigured, needsGpsCheck } from "@/actions/location";
 import { PasswordEye } from "@/components/ui/PasswordEye";
 import styles from "@/styles/pages/Login.module.css";
-
-const GPS_ENABLED = true;
 
 const HERO_SLIDES = [
   { src: "/hero/1.jpg", alt: "Politeknik SSR" },
 ];
-
-function getCurrentPosition(): Promise<GeolocationPosition> {
-  return new Promise((resolve, reject) => {
-    if (typeof window === "undefined" || !navigator.geolocation) {
-      reject({
-        code: 1,
-        message:
-          "Geolocation tidak didukung atau diblokir karena koneksi HTTP tidak aman.",
-      });
-      return;
-    }
-    navigator.geolocation.getCurrentPosition(resolve, reject, {
-      enableHighAccuracy: true,
-      timeout: 15000,
-      maximumAge: 0,
-    });
-  });
-}
-
-function getLocationPermissionState(): Promise<
-  "granted" | "denied" | "prompt" | "unsupported"
-> {
-  try {
-    if (
-      typeof window === "undefined" ||
-      !navigator.permissions ||
-      !navigator.permissions.query
-    ) {
-      return Promise.resolve("unsupported" as const);
-    }
-    const result = navigator.permissions.query({ name: "geolocation" });
-    return result
-      .then((s) => s.state as "granted" | "denied" | "prompt")
-      .catch(() => "unsupported" as const);
-  } catch {
-    return Promise.resolve("unsupported" as const);
-  }
-}
 
 export default function LoginPage() {
   const router = useRouter();
@@ -72,7 +30,6 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [gpsStep, setGpsStep] = useState(false);
   const [forgotMode, setForgotMode] = useState(false);
   const [resetEmail, setResetEmail] = useState("");
   const [resetMsg, setResetMsg] = useState<string | null>(null);
@@ -119,74 +76,6 @@ export default function LoginPage() {
       setError(result.error);
       setIsSubmitting(false);
       return;
-    }
-
-    if (GPS_ENABLED) {
-      const needsGps = await needsGpsCheck();
-      if (!needsGps) {
-        router.replace("/");
-        router.refresh();
-        return;
-      }
-
-      const hasLocations = await hasLocationsConfigured();
-      if (!hasLocations) {
-        router.replace("/");
-        router.refresh();
-        return;
-      }
-
-      setGpsStep(true);
-
-      const locState = await getLocationPermissionState();
-      if (locState === "denied") {
-        setError(
-          "Izin lokasi ditolak permanen. Buka pengaturan browser > izinkan akses lokasi, lalu reload.",
-        );
-        setIsSubmitting(false);
-        setGpsStep(false);
-        return;
-      }
-
-      try {
-        const position = await getCurrentPosition();
-        const { latitude, longitude } = position.coords;
-        const locationResult = await checkLoginLocation(latitude, longitude);
-        if (!locationResult.allowed) {
-          setError(locationResult.error || "Akses ditolak.");
-          setIsSubmitting(false);
-          setGpsStep(false);
-          return;
-        }
-      } catch (error: any) {
-        const code = error?.code;
-        let errMsg: string;
-
-        if (code === 1) {
-          const currentLocState = await getLocationPermissionState();
-          if (currentLocState === "denied") {
-            errMsg =
-              "Izin lokasi ditolak permanen. Buka pengaturan browser > izinkan akses lokasi, lalu reload.";
-          } else {
-            errMsg =
-              "Izin lokasi ditolak atau diblokir browser (HTTP). Jika Anda mengakses via IP local (bukan localhost), browser memblokir sensor lokasi. Silakan gunakan HTTPS atau akses via http://localhost:3000.";
-          }
-        } else if (code === 2) {
-          errMsg =
-            "Tidak dapat menemukan lokasi. Pastikan GPS dan koneksi internet aktif.";
-        } else if (code === 3) {
-          errMsg =
-            "Waktu pencarian lokasi habis. Pastikan GPS aktif, lalu coba lagi.";
-        } else {
-          errMsg =
-            "Gagal mendapatkan lokasi. Pastikan menggunakan HTTPS atau localhost, lalu izinkan akses lokasi.";
-        }
-
-        setError(errMsg);
-        setIsSubmitting(false);
-        setGpsStep(false);
-        return;
-      }
     }
 
     router.replace("/");
@@ -439,13 +328,6 @@ export default function LoginPage() {
                   <motion.p initial={{ opacity: 0, x: -4 }} animate={{ opacity: 1, x: 0 }} className={styles.errorBox}>
                     {error}
                   </motion.p>
-                )}
-
-                {GPS_ENABLED && gpsStep && (
-                  <p className={styles.gpsInfo}>
-                    <MapPin className={styles.gpsIcon} />
-                    Browser akan meminta izin lokasi. Izinkan untuk verifikasi area kampus.
-                  </p>
                 )}
 
                 <button type="submit" className={styles.submitBtn} disabled={isSubmitting}>

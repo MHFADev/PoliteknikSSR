@@ -79,6 +79,25 @@
 .nav::-webkit-scrollbar-track { background: transparent; }
 .nav::-webkit-scrollbar-thumb { background-color: #CBD5E1; border-radius: 8px; }
 .link { position: relative; display: block; }
+.badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  background: #EF4444;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1;
+  border: 1px solid var(--bg-sidebar, #FFF);
+}
+.badge:empty { display: none; }
 .activeBg { position: absolute; inset: 0; border-radius: 16px; background: var(--color-sky-soft, #DBEAFE); }
 .linkText { position: relative; display: flex; align-items: center; gap: 12px; border-radius: 16px; padding: 10px 12px; font-size: 14px; font-weight: 500; transition: color 150ms, background 150ms; }
 .linkActive { color: var(--color-sky, #1D4ED8); }

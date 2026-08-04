@@ -26,26 +26,22 @@ export interface StudentMentorInfo {
 }
 
 /**
- * Get available pembimbing for a specific jurusan.
- * Used by siswa to pick their pembimbing.
+ * Get all available pembimbing.
+ * Semua pembimbing ditampilkan ke semua siswa — siswa tetap bisa memilih
+ * pembimbing dari jurusan lain. Filter jurusan dilakukan di frontend.
  */
-export async function getAvailableMentors(jurusanId?: string): Promise<MentorInfo[]> {
+export async function getAvailableMentors(_jurusanId?: string): Promise<MentorInfo[]> {
   const supabase = createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return [];
 
   const adminSupabase = createAdminClient();
 
-  let query = adminSupabase
+  const { data } = await adminSupabase
     .from("profiles")
     .select("id, full_name, avatar_url, jurusan_id, study_programs!left(nama)")
-    .eq("role", "pembimbing");
-
-  if (jurusanId) {
-    query = query.eq("jurusan_id", jurusanId);
-  }
-
-  const { data } = await query.order("full_name", { ascending: true });
+    .eq("role", "pembimbing")
+    .order("full_name", { ascending: true });
 
   return (data || []).map((m: any) => ({
     id: m.id,

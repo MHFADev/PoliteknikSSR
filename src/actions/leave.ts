@@ -1,8 +1,10 @@
 "use server";
 
 import { Repositories } from "@/lib/repositories";
+import { createAdminClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
+import { createNotifications } from "./notifications";
 
 const createSchema = z
   .object({
@@ -38,6 +40,24 @@ export async function createLeaveRequest(input: z.infer<typeof createSchema>) {
 
   if (result.error) return { error: result.error };
 
+  // Notifikasi ke pembimbing siswa bahwa ada pengajuan izin baru
+  const adminSupabase = createAdminClient();
+  const { data: sm } = await adminSupabase
+    .from("student_mentors")
+    .select("mentor_id")
+    .eq("student_id", user.id)
+    .maybeSingle();
+  if (sm?.mentor_id) {
+    await createNotifications([
+      {
+        user_id: sm.mentor_id,
+        title: "Pengajuan izin baru",
+        message: `Pengajuan ${parsed.data.type.toUpperCase()} menunggu persetujuan Anda.`,
+        link: "/dashboard/pembimbing/izin",
+      },
+    ]);
+  }
+
   revalidatePath("/dashboard/siswa/izin");
   return { success: true };
 }
@@ -67,6 +87,27 @@ export async function reviewLeaveRequest(input: z.infer<typeof reviewSchema>) {
   );
 
   if (result.error) return { error: result.error };
+
+  // Notifikasi hasil persetujuan ke siswa
+  const adminSupabase = createAdminClient();
+  const { data: lr } = await adminSupabase
+    .from("leave_requests")
+    .select("student_id")
+    .eq("id", parsed.data.id)
+    .single();
+  if (lr?.student_id) {
+    await createNotifications([
+      {
+        user_id: lr.student_id,
+        title: `Pengajuan izin ${parsed.data.decision === "disetujui" ? "disetujui" : "ditolak"}`,
+        message:
+          parsed.data.decision === "disetujui"
+            ? "Pengajuan izin Anda telah disetujui oleh pembimbing."
+            : "Pengajuan izin Anda ditolak oleh pembimbing.",
+        link: "/dashboard/siswa/izin",
+      },
+    ]);
+  }
 
   revalidatePath("/dashboard/pembimbing/izin");
   revalidatePath("/dashboard/admin/izin");

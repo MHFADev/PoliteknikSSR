@@ -10,6 +10,7 @@ import { LogOut, ChevronDown } from "lucide-react";
 import { motion } from "framer-motion";
 import { NAV } from "@/lib/navigation";
 import type { NavItem } from "@/lib/navigation";
+import { useNotificationCounts } from "@/components/layout/NotificationProvider";
 import styles from "@/styles/components/layout/Sidebar.module.css";
 
 interface SidebarProps {
@@ -24,6 +25,7 @@ export function Sidebar({ role, fullName, avatarUrl }: SidebarProps) {
   const pathname = usePathname();
   const router = useRouter();
   const items = NAV[role];
+  const notificationCounts = useNotificationCounts();
   const [showAll, setShowAll] = useState(false);
   const collapsed = !showAll && items.length > MAX_VISIBLE;
   const visibleItems = collapsed ? items.slice(0, MAX_VISIBLE) : items;
@@ -47,6 +49,7 @@ export function Sidebar({ role, fullName, avatarUrl }: SidebarProps) {
     }
 
     const tourAttr = `${role}-${item.href.split("/").pop() || "dashboard"}`
+    const badgeCount = notificationCounts[item.href] ?? 0;
     rendered.push(
       <Link key={item.href} href={item.href} className={styles.link} data-tour={tourAttr}>
         {active && (
@@ -60,6 +63,9 @@ export function Sidebar({ role, fullName, avatarUrl }: SidebarProps) {
           <Icon className="h-5 w-5" />
           {item.label}
         </span>
+        {badgeCount > 0 && (
+          <span className={styles.badge}>{badgeCount > 99 ? "99+" : badgeCount}</span>
+        )}
       </Link>
     );
   });

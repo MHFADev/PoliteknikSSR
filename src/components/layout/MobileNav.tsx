@@ -8,6 +8,7 @@ import { createClient } from "@/lib/supabase/client";
 import { LogOut, ChevronUp, MoreHorizontal } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { MAIN_NAV, MORE_NAV, type NavItem } from "@/lib/navigation";
+import { useNotificationCounts } from "@/components/layout/NotificationProvider";
 import styles from "@/styles/components/layout/MobileNav.module.css";
 
 type Props = {
@@ -25,6 +26,8 @@ export function MobileNav({ role, fullName, avatarUrl }: Props) {
 
   const mainItems = MAIN_NAV[role];
   const moreItems = MORE_NAV[role];
+  const notificationCounts = useNotificationCounts();
+  const moreCount = moreItems.reduce((sum, item) => sum + (notificationCounts[item.href] ?? 0), 0);
 
   useEffect(() => {
     function handleClick(e: MouseEvent) {
@@ -111,6 +114,7 @@ export function MobileNav({ role, fullName, avatarUrl }: Props) {
         {mainItems.map((item) => {
           const active = pathname === item.href;
           const Icon = item.icon;
+          const badgeCount = notificationCounts[item.href] ?? 0;
           const tourAttr = `${role}-${item.href.split("/").pop() || "dashboard"}`
           return (
             <Link
@@ -119,7 +123,12 @@ export function MobileNav({ role, fullName, avatarUrl }: Props) {
               data-tour={tourAttr}
               className={cn(styles.navItem, active && styles.navItemActive)}
             >
-              <Icon className={cn(styles.navIcon, active && styles.navIconActive)} />
+              <div className={styles.navIconWrap}>
+                <Icon className={cn(styles.navIcon, active && styles.navIconActive)} />
+                {badgeCount > 0 && (
+                  <span className={styles.badge}>{badgeCount > 99 ? "99+" : badgeCount}</span>
+                )}
+              </div>
               <span className={cn(styles.navLabel, active && styles.navLabelActive)}>
                 {item.label}
               </span>
@@ -135,7 +144,12 @@ export function MobileNav({ role, fullName, avatarUrl }: Props) {
               data-tour="expand-more"
               className={cn(styles.navItem, showMore && styles.navItemActive)}
             >
-              <MoreHorizontal className={cn(styles.navIcon, showMore && styles.navIconActive)} />
+              <div className={styles.navIconWrap}>
+                <MoreHorizontal className={cn(styles.navIcon, showMore && styles.navIconActive)} />
+                {moreCount > 0 && (
+                  <span className={styles.badge}>{moreCount > 99 ? "99+" : moreCount}</span>
+                )}
+              </div>
               <span className={cn(styles.navLabel, showMore && styles.navLabelActive)}>Lainnya</span>
             </button>
 

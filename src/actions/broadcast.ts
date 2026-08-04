@@ -1,7 +1,9 @@
 "use server";
 
 import { Repositories } from "@/lib/repositories";
+import { createAdminClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
+import { createNotifications } from "./notifications";
 
 export async function getStudyPrograms() {
   return Repositories.studyProgram().getAll();
@@ -43,6 +45,23 @@ export async function sendAnnouncement(
   });
 
   if (result.error) return { success: false, message: result.error };
+
+  // Notifikasi semua siswa tentang pengumuman baru
+  const adminSupabase = createAdminClient();
+  const { data: students } = await adminSupabase
+    .from("profiles")
+    .select("id")
+    .eq("role", "siswa");
+  if (students?.length) {
+    await createNotifications(
+      students.map((s: any) => ({
+        user_id: s.id,
+        title: "Pengumuman baru",
+        message: title,
+        link: "/dashboard/siswa/pengumuman",
+      }))
+    );
+  }
 
   revalidatePath("/dashboard/admin/broadcast");
   revalidatePath("/dashboard/siswa/pengumuman");
